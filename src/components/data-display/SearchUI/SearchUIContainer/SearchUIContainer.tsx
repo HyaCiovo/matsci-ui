@@ -8,6 +8,7 @@ export const SearchUIContainer = ({
   defaultQuery,
   searchOnMount,
   columns,
+  filterGroups,
   resultLabel,
   conditionalRowStyles,
   selectableRows,
@@ -23,6 +24,7 @@ export const SearchUIContainer = ({
       defaultQuery={defaultQuery}
       searchOnMount={searchOnMount}
       columns={columns}
+      filterGroups={filterGroups}
       resultLabel={resultLabel}
       conditionalRowStyles={conditionalRowStyles}
       selectableRows={selectableRows}

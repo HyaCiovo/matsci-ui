@@ -1,0 +1,32 @@
+.mpc-dual-range-slider {
+  width: 100%;
+}
+
+.mpc-dual-range-slider .mpc-slider-track {
+  position: relative;
+  height: 6px;
+  border-radius: 999px;
+  background: #dbdbdb;
+}
+
+.mpc-dual-range-slider .mpc-slider-range {
+  position: absolute;
+  height: 100%;
+  border-radius: 999px;
+  background: #3273dc;
+}
+
+.mpc-dual-range-slider .mpc-slider-thumb {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #fff;
+  border: 2px solid #3273dc;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.mpc-dual-range-slider .mpc-slider-thumb:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(50, 115, 220, 0.2);
+}

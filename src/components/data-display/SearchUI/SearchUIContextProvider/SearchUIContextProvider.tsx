@@ -8,7 +8,21 @@ import {
   useMemo,
   useState,
 } from 'react';
-import type { Column, ConditionalRowStyle, SearchUIContextValue } from '../types';
+import type {
+  ActiveFilter,
+  Column,
+  ConditionalRowStyle,
+  FilterGroup,
+  SearchUIContextValue,
+} from '../types';
+import {
+  getActiveFilters,
+  initFilterGroups,
+  isNotEmpty,
+  parseSearchQuery,
+  preprocessQueryParams,
+  serializeSearchQuery,
+} from '../utils';
 
 interface SearchUIContextProviderProps extends PropsWithChildren {
   apiEndpoint?: string;
@@ -17,6 +31,7 @@ interface SearchUIContextProviderProps extends PropsWithChildren {
   defaultQuery?: Record<string, any>;
   searchOnMount?: boolean;
   columns?: Column[];
+  filterGroups?: FilterGroup[];
   resultLabel?: string;
   conditionalRowStyles?: ConditionalRowStyle[];
   selectableRows?: boolean;
@@ -53,6 +68,7 @@ export const SearchUIContextProvider = ({
   defaultQuery = {},
   searchOnMount = false,
   columns = [],
+  filterGroups = [],
   resultLabel = 'result',
   conditionalRowStyles = [],
   selectableRows = false,
@@ -60,28 +76,43 @@ export const SearchUIContextProvider = ({
   initialTotalResults,
   children,
 }: SearchUIContextProviderProps) => {
-  const [query, setQueryState] = useState<Record<string, any>>(defaultQuery);
+  const initializedFilterGroups = useMemo(() => initFilterGroups(filterGroups), [filterGroups]);
+  const initialQuery = useMemo(
+    () =>
+      typeof window === 'undefined'
+        ? defaultQuery
+        : parseSearchQuery(window.location.search, initializedFilterGroups, defaultQuery),
+    [defaultQuery, initializedFilterGroups]
+  );
+
+  const [query, setQueryState] = useState<Record<string, any>>(initialQuery);
   const [results, setResults] = useState<any[]>(initialResults);
   const [totalResults, setTotalResults] = useState(initialTotalResults ?? initialResults.length);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
+  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>(() =>
+    getActiveFilters(initializedFilterGroups, initialQuery)
+  );
 
   const setQuery = useCallback((nextQuery: Record<string, any>) => {
     setQueryState(nextQuery);
-  }, []);
+    setActiveFilters(getActiveFilters(initializedFilterGroups, nextQuery));
+  }, [initializedFilterGroups]);
 
   const resetSearch = useCallback(() => {
     setQueryState(defaultQuery);
     setResults([]);
     setTotalResults(0);
     setError(null);
-  }, [defaultQuery]);
+    setActiveFilters(getActiveFilters(initializedFilterGroups, defaultQuery));
+  }, [defaultQuery, initializedFilterGroups]);
 
   const submitSearch = useCallback(
     async (nextQuery?: Record<string, any>) => {
       const resolvedQuery = nextQuery ?? query;
       setQueryState(resolvedQuery);
+      setActiveFilters(getActiveFilters(initializedFilterGroups, resolvedQuery));
 
       if (!apiEndpoint) {
         setResults([]);
@@ -94,8 +125,9 @@ export const SearchUIContextProvider = ({
       setError(null);
 
       try {
+        const processedQuery = preprocessQueryParams(resolvedQuery, initializedFilterGroups, defaultQuery);
         const response = await axios.get(apiEndpoint, {
-          params: resolvedQuery,
+          params: processedQuery,
           headers: apiKey ? { 'X-Api-Key': apiKey } : undefined,
         });
         const nextResults = getResultsFromResponse(response.data);
@@ -109,14 +141,83 @@ export const SearchUIContextProvider = ({
         setLoading(false);
       }
     },
-    [apiEndpoint, apiKey, query]
+    [apiEndpoint, apiKey, defaultQuery, initializedFilterGroups, query]
   );
+
+  const applyQuery = useCallback(
+    async (nextQuery: Record<string, any>) => {
+      if (apiEndpoint) {
+        await submitSearch(nextQuery);
+      } else {
+        setQuery(nextQuery);
+      }
+    },
+    [apiEndpoint, setQuery, submitSearch]
+  );
+
+  const setFilterValue = useCallback(
+    async (value: any, param: string, overrides: string[] = []) => {
+      const nextQuery = { ...query, [param]: value };
+      overrides.forEach((override) => {
+        delete nextQuery[override];
+      });
+      if (!isNotEmpty(value)) {
+        delete nextQuery[param];
+      }
+      await applyQuery(nextQuery);
+    },
+    [applyQuery, query]
+  );
+
+  const setFilterValues = useCallback(
+    async (values: any[], params: string[], overrides: string[] = []) => {
+      const nextQuery = { ...query };
+      params.forEach((param, index) => {
+        const value = values[index];
+        if (isNotEmpty(value)) {
+          nextQuery[param] = value;
+        } else {
+          delete nextQuery[param];
+        }
+      });
+      overrides.forEach((override) => {
+        delete nextQuery[override];
+      });
+      await applyQuery(nextQuery);
+    },
+    [applyQuery, query]
+  );
+
+  const removeFilters = useCallback(
+    async (params: string[]) => {
+      const nextQuery = { ...query };
+      params.forEach((param) => {
+        delete nextQuery[param];
+      });
+      await applyQuery(nextQuery);
+    },
+    [applyQuery, query]
+  );
+
+  const resetFilters = useCallback(async () => {
+    await applyQuery(defaultQuery);
+  }, [applyQuery, defaultQuery]);
 
   useEffect(() => {
     if (searchOnMount) {
-      void submitSearch(defaultQuery);
+      void submitSearch(initialQuery);
     }
-  }, [defaultQuery, searchOnMount, submitSearch]);
+  }, [initialQuery, searchOnMount, submitSearch]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const nextSearch = serializeSearchQuery(query, defaultQuery);
+    const nextUrl = `${window.location.pathname}${nextSearch}${window.location.hash}`;
+    window.history.replaceState({}, '', nextUrl);
+  }, [defaultQuery, query]);
 
   const value = useMemo<SearchUIContextValue>(
     () => ({
@@ -124,6 +225,8 @@ export const SearchUIContextProvider = ({
       apiKey,
       autocompleteFormulaUrl,
       columns,
+      filterGroups: initializedFilterGroups,
+      activeFilters,
       resultLabel,
       conditionalRowStyles,
       selectableRows,
@@ -137,21 +240,31 @@ export const SearchUIContextProvider = ({
       resetSearch,
       setQuery,
       setSelectedRows,
+      setFilterValue,
+      setFilterValues,
+      removeFilters,
+      resetFilters,
     }),
     [
+      activeFilters,
       apiEndpoint,
       apiKey,
       autocompleteFormulaUrl,
       columns,
       conditionalRowStyles,
       error,
+      initializedFilterGroups,
       loading,
+      removeFilters,
+      resetFilters,
       query,
       resetSearch,
       resultLabel,
       results,
       selectableRows,
       selectedRows,
+      setFilterValue,
+      setFilterValues,
       setQuery,
       setSelectedRows,
       submitSearch,
