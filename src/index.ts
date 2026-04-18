@@ -7,6 +7,8 @@ export * from './components/data-display/Modal';
 export * from './components/data-display/SearchUI/types';
 export * from './components/data-display/SearchUI/SearchUIContainer';
 export * from './components/data-display/SearchUI/SearchUIContextProvider';
+export * from './components/data-display/SearchUI/SearchUIDataHeader';
+export * from './components/data-display/SearchUI/SearchUIDataTable';
 export * from './components/data-display/SearchUI/SearchUISearchBar';
 export * from './components/data-display/Tooltip';
 export * from './components/data-entry/GlobalSearchBar';

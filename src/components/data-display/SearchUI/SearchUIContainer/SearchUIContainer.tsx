@@ -7,6 +7,12 @@ export const SearchUIContainer = ({
   autocompleteFormulaUrl,
   defaultQuery,
   searchOnMount,
+  columns,
+  resultLabel,
+  conditionalRowStyles,
+  selectableRows,
+  initialResults,
+  initialTotalResults,
   children,
 }: SearchUIContainerProps) => {
   return (
@@ -16,6 +22,12 @@ export const SearchUIContainer = ({
       autocompleteFormulaUrl={autocompleteFormulaUrl}
       defaultQuery={defaultQuery}
       searchOnMount={searchOnMount}
+      columns={columns}
+      resultLabel={resultLabel}
+      conditionalRowStyles={conditionalRowStyles}
+      selectableRows={selectableRows}
+      initialResults={initialResults}
+      initialTotalResults={initialTotalResults}
     >
       {children}
     </SearchUIContextProvider>

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { PeriodicTableMode } from '../../../data-entry/MaterialsInput/MaterialsInput';
 import { SearchUIContainer } from '../SearchUIContainer';
 import { SearchUISearchBar } from './SearchUISearchBar';
@@ -24,7 +24,9 @@ const SearchResultsProbe = () => {
 
 describe('SearchUISearchBar', () => {
   afterEach(() => {
+    cleanup();
     vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('maps input types to query fields and submits a search request through context', async () => {

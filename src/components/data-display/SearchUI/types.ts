@@ -47,6 +47,11 @@ export interface SearchUIContextValue {
   apiEndpoint?: string;
   apiKey?: string;
   autocompleteFormulaUrl?: string;
+  columns: Column[];
+  resultLabel: string;
+  conditionalRowStyles: ConditionalRowStyle[];
+  selectableRows: boolean;
+  selectedRows: any[];
   query: Record<string, any>;
   results: any[];
   totalResults: number;
@@ -55,6 +60,7 @@ export interface SearchUIContextValue {
   submitSearch: (nextQuery?: Record<string, any>) => Promise<void>;
   resetSearch: () => void;
   setQuery: (nextQuery: Record<string, any>) => void;
+  setSelectedRows: (rows: any[]) => void;
 }
 
 export interface SearchUIContainerProps {
@@ -63,5 +69,11 @@ export interface SearchUIContainerProps {
   autocompleteFormulaUrl?: string;
   defaultQuery?: Record<string, any>;
   searchOnMount?: boolean;
+  columns?: Column[];
+  resultLabel?: string;
+  conditionalRowStyles?: ConditionalRowStyle[];
+  selectableRows?: boolean;
+  initialResults?: any[];
+  initialTotalResults?: number;
   children?: ReactNode;
 }

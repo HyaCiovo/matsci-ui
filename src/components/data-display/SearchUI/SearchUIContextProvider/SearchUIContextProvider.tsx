@@ -8,7 +8,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import type { SearchUIContextValue } from '../types';
+import type { Column, ConditionalRowStyle, SearchUIContextValue } from '../types';
 
 interface SearchUIContextProviderProps extends PropsWithChildren {
   apiEndpoint?: string;
@@ -16,6 +16,12 @@ interface SearchUIContextProviderProps extends PropsWithChildren {
   autocompleteFormulaUrl?: string;
   defaultQuery?: Record<string, any>;
   searchOnMount?: boolean;
+  columns?: Column[];
+  resultLabel?: string;
+  conditionalRowStyles?: ConditionalRowStyle[];
+  selectableRows?: boolean;
+  initialResults?: any[];
+  initialTotalResults?: number;
 }
 
 const SearchUIContext = createContext<SearchUIContextValue | undefined>(undefined);
@@ -46,13 +52,20 @@ export const SearchUIContextProvider = ({
   autocompleteFormulaUrl,
   defaultQuery = {},
   searchOnMount = false,
+  columns = [],
+  resultLabel = 'result',
+  conditionalRowStyles = [],
+  selectableRows = false,
+  initialResults = [],
+  initialTotalResults,
   children,
 }: SearchUIContextProviderProps) => {
   const [query, setQueryState] = useState<Record<string, any>>(defaultQuery);
-  const [results, setResults] = useState<any[]>([]);
-  const [totalResults, setTotalResults] = useState(0);
+  const [results, setResults] = useState<any[]>(initialResults);
+  const [totalResults, setTotalResults] = useState(initialTotalResults ?? initialResults.length);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedRows, setSelectedRows] = useState<any[]>([]);
 
   const setQuery = useCallback((nextQuery: Record<string, any>) => {
     setQueryState(nextQuery);
@@ -110,6 +123,11 @@ export const SearchUIContextProvider = ({
       apiEndpoint,
       apiKey,
       autocompleteFormulaUrl,
+      columns,
+      resultLabel,
+      conditionalRowStyles,
+      selectableRows,
+      selectedRows,
       query,
       results,
       totalResults,
@@ -118,17 +136,24 @@ export const SearchUIContextProvider = ({
       submitSearch,
       resetSearch,
       setQuery,
+      setSelectedRows,
     }),
     [
       apiEndpoint,
       apiKey,
       autocompleteFormulaUrl,
+      columns,
+      conditionalRowStyles,
       error,
       loading,
       query,
       resetSearch,
+      resultLabel,
       results,
+      selectableRows,
+      selectedRows,
       setQuery,
+      setSelectedRows,
       submitSearch,
       totalResults,
     ]
