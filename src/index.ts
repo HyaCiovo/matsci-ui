@@ -6,6 +6,7 @@ export * from './components/data-display/Markdown';
 export * from './components/data-display/Modal';
 export * from './components/data-display/SearchUI/types';
 export * from './components/data-display/Tooltip';
+export * from './components/data-entry/GlobalSearchBar';
 export * from './components/data-entry/MaterialsInput';
 export * from './components/data-entry/Switch';
 export * from './components/navigation/Dropdown';
