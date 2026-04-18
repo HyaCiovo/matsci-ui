@@ -13,7 +13,7 @@ import {
 import { FaAngleDown, FaExclamationTriangle, FaQuestionCircle } from 'react-icons/fa';
 import { Tooltip } from '../../data-display/Tooltip';
 import { PeriodicTableModeSwitcher } from '../../periodic-table/PeriodicTableModeSwitcher';
-import { SelectableTable } from '../../periodic-table/SelectableTable';
+import { SelectableTable, TableLayout } from '../../periodic-table/SelectableTable';
 import { FormulaAutocomplete } from './FormulaAutocomplete';
 import { InputHelp, type InputHelpItem } from './InputHelp';
 import {
@@ -177,6 +177,46 @@ export const MaterialsInput = ({
     () => getAllowedSelectionModes(props.allowedInputTypes as MaterialsInputType[]),
     [props.allowedInputTypes]
   );
+  const callbackProps = useMemo(
+    () => ({
+      ...props,
+      value: inputValue,
+      type: inputType,
+    }),
+    [
+      inputType,
+      inputValue,
+      props.allowedInputTypes,
+      props.autocompleteApiKey,
+      props.autocompleteFormulaUrl,
+      props.className,
+      props.chemicalSystemSelectHelpText,
+      props.debounce,
+      props.elementsSelectHelpText,
+      props.errorMessage,
+      props.helpItems,
+      props.hidePeriodicTable,
+      props.hideWildcardButton,
+      props.id,
+      props.inputClassName,
+      props.label,
+      props.loading,
+      props.maxElementSelectable,
+      props.onChange,
+      props.onInputTypeChange,
+      props.onPropsChange,
+      props.onSubmit,
+      props.periodicTableMode,
+      props.placeholder,
+      props.setProps,
+      props.showSubmitButton,
+      props.showTypeDropdown,
+      props.submitButtonClicks,
+      props.submitButtonText,
+      props.type,
+      props.value,
+    ]
+  );
 
   const applyValidatedValue = (nextValue: string) => {
     const [detectedType, parsedValue] = detectAndValidateInputType(nextValue, props.allowedInputTypes);
@@ -242,31 +282,6 @@ export const MaterialsInput = ({
     }
   };
 
-  const toggleElement = (element: string) => {
-    const enabled = selectedElements.includes(element);
-    let nextElements = enabled
-      ? selectedElements.filter((candidate) => candidate !== element)
-      : [...selectedElements, element];
-
-    if (!enabled && nextElements.length > props.maxElementSelectable) {
-      return;
-    }
-
-    setSelectedElements(nextElements);
-    setError(null);
-    setInputValue(renderPeriodicTableValue(selectionMode, nextElements));
-  };
-
-  const appendWildcard = () => {
-    if (selectionMode === PeriodicTableSelectionMode.FORMULA) {
-      setInputValue((current) => `${current}*`);
-      return;
-    }
-
-    const nextElements = [...selectedElements, '*'];
-    setInputValue(renderPeriodicTableValue(selectionMode, nextElements));
-  };
-
   const handleFormulaButtonClick = (valueToAppend: string) => {
     const nextValue =
       selectionMode === PeriodicTableSelectionMode.CHEMICAL_SYSTEM
@@ -310,22 +325,20 @@ export const MaterialsInput = ({
     window.clearTimeout(debounceTimeoutRef.current);
     debounceTimeoutRef.current = window.setTimeout(() => {
       if (!error) {
-        props.onChange(inputValue);
-        props.onPropsChange?.({ ...props, value: inputValue, type: inputType });
+        callbackProps.onChange(inputValue);
+        callbackProps.onPropsChange?.(callbackProps);
       }
-    }, props.debounce);
+    }, callbackProps.debounce);
 
     return () => window.clearTimeout(debounceTimeoutRef.current);
-  }, [error, inputType, inputValue, props]);
+  }, [callbackProps, error, inputValue]);
 
   useEffect(() => {
-    props.setProps?.({
-      ...props,
-      value: inputValue,
-      type: inputType,
+    callbackProps.setProps?.({
+      ...callbackProps,
       submitButtonClicks,
     });
-  }, [inputType, inputValue, props, submitButtonClicks]);
+  }, [callbackProps, submitButtonClicks]);
 
   useEffect(() => {
     setInputValue(props.value);
@@ -336,7 +349,10 @@ export const MaterialsInput = ({
   }, [props.type]);
 
   useEffect(() => {
-    setSelectedElements(normalizeElementsFromValue(inputType, inputValue));
+    const nextSelectedElements = normalizeElementsFromValue(inputType, inputValue);
+    setSelectedElements((current) =>
+      current.join('|') === nextSelectedElements.join('|') ? current : nextSelectedElements
+    );
   }, [inputType, inputValue]);
 
   useEffect(() => {
@@ -568,8 +584,14 @@ export const MaterialsInput = ({
           }}
         >
           <SelectableTable
+            className="box"
+            disabled={!showPeriodicTable}
             enabledElements={selectedElements}
-            maxElementSelectable={props.maxElementSelectable}
+            maxElementSelectable={
+              selectionMode === PeriodicTableSelectionMode.ELEMENTS ? 5 : props.maxElementSelectable
+            }
+            forceTableLayout={TableLayout.MINI}
+            hiddenElements={[]}
             onStateChange={(nextElements) => {
               setSelectedElements(nextElements);
               setError(null);

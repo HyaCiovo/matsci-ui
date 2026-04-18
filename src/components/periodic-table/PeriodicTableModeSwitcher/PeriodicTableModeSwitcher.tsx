@@ -62,7 +62,7 @@ export const PeriodicTableModeSwitcher = ({
               <>
                 <button
                   type="button"
-                  className="pt-wildcard-button mat-element"
+                  className="pt-wildcard-button mat-element has-tooltip-bottom"
                   onClick={() => props.onFormulaButtonClick('-*')}
                   data-tip
                   data-for="element-wildcard-button"
