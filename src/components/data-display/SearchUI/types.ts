@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 export enum ColumnFormat {
   FIXED_DECIMAL = 'FIXED_DECIMAL',
   SIGNIFICANT_FIGURES = 'SIGNIFICANT_FIGURES',
@@ -33,4 +35,33 @@ export interface ConditionalRowStyle {
   value: any;
   condition: 'lt' | 'gt' | 'eq';
   style: Record<string, any>;
+}
+
+export interface SearchUIInputTypeConfig {
+  field: string;
+}
+
+export type SearchUIAllowedInputTypesMap = Partial<Record<string, SearchUIInputTypeConfig>>;
+
+export interface SearchUIContextValue {
+  apiEndpoint?: string;
+  apiKey?: string;
+  autocompleteFormulaUrl?: string;
+  query: Record<string, any>;
+  results: any[];
+  totalResults: number;
+  loading: boolean;
+  error: string | null;
+  submitSearch: (nextQuery?: Record<string, any>) => Promise<void>;
+  resetSearch: () => void;
+  setQuery: (nextQuery: Record<string, any>) => void;
+}
+
+export interface SearchUIContainerProps {
+  apiEndpoint?: string;
+  apiKey?: string;
+  autocompleteFormulaUrl?: string;
+  defaultQuery?: Record<string, any>;
+  searchOnMount?: boolean;
+  children?: ReactNode;
 }
