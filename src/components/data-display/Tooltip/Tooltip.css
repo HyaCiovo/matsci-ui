@@ -1,0 +1,14 @@
+.mpc-tooltip {
+  font-weight: normal;
+  text-align: left;
+  background: rgba(54, 54, 54, 0.95);
+  color: #fff;
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  z-index: 1000;
+}
+
+.mpc-tooltip[data-border='true'] {
+  border: 1px solid #fff;
+}

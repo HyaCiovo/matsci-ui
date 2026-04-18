@@ -1,0 +1,24 @@
+.mpc-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mpc-switch-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+}
+
+.mpc-switch-icon {
+  font-size: 2rem;
+}
+
+.mpc-switch-label {
+  line-height: 1.5;
+}

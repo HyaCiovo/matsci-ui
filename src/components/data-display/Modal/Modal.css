@@ -1,0 +1,33 @@
+.mpc-modal.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.mpc-modal.modal .modal-background {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.5);
+}
+
+.mpc-modal.modal .modal-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: min(90vw, 960px);
+  width: auto;
+  z-index: 1001;
+}
+
+.mpc-modal.modal-content {
+  background: #fff;
+  border-radius: 6px;
+}
+
+.mpc-modal-close-button {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 2;
+}

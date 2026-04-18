@@ -33,6 +33,7 @@ export default [
       resolve({ extensions: ['.ts', '.tsx', '.js', '.jsx'] }),
       commonjs(),
       swc({
+        exclude: /\.?(css|less)$/,
         swc: {
           jsc: {
             parser: {
