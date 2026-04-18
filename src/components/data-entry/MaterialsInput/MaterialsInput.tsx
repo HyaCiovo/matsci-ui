@@ -12,6 +12,8 @@ import {
 } from 'react';
 import { FaAngleDown, FaExclamationTriangle, FaQuestionCircle } from 'react-icons/fa';
 import { Tooltip } from '../../data-display/Tooltip';
+import { PeriodicTableModeSwitcher } from '../../periodic-table/PeriodicTableModeSwitcher';
+import { SelectableTable } from '../../periodic-table/SelectableTable';
 import { FormulaAutocomplete } from './FormulaAutocomplete';
 import { InputHelp, type InputHelpItem } from './InputHelp';
 import {
@@ -263,6 +265,28 @@ export const MaterialsInput = ({
 
     const nextElements = [...selectedElements, '*'];
     setInputValue(renderPeriodicTableValue(selectionMode, nextElements));
+  };
+
+  const handleFormulaButtonClick = (valueToAppend: string) => {
+    const nextValue =
+      selectionMode === PeriodicTableSelectionMode.CHEMICAL_SYSTEM
+        ? inputValue
+          ? `${inputValue}${valueToAppend}`
+          : valueToAppend.replace(/^-/, '')
+        : `${inputValue}${valueToAppend}`;
+
+    setInputValue(nextValue);
+    setSelectedElements(normalizeElementsFromValue(inputType, nextValue));
+  };
+
+  const getNextInputTypeForSelectionMode = (mode: PeriodicTableSelectionMode) => {
+    if (mode === PeriodicTableSelectionMode.CHEMICAL_SYSTEM) {
+      return MaterialsInputType.CHEMICAL_SYSTEM;
+    }
+    if (mode === PeriodicTableSelectionMode.FORMULA) {
+      return MaterialsInputType.FORMULA;
+    }
+    return MaterialsInputType.ELEMENTS;
   };
 
   const handleSubmit = (event: FormEvent | MouseEvent, submittedValue?: string) => {
@@ -543,81 +567,37 @@ export const MaterialsInput = ({
             panelInteractionRef.current = true;
           }}
         >
-          {allowedSelectionModes.length > 1 ? (
-            <div className="materials-input-mode-switcher">
-              {allowedSelectionModes.map((mode) => (
-                <button
-                  key={mode}
-                  type="button"
-                  className={classNames('button is-small', {
-                    'is-link': selectionMode === mode,
-                  })}
-                  onClick={() => {
+          <SelectableTable
+            enabledElements={selectedElements}
+            maxElementSelectable={props.maxElementSelectable}
+            onStateChange={(nextElements) => {
+              setSelectedElements(nextElements);
+              setError(null);
+              setInputValue(renderPeriodicTableValue(selectionMode, nextElements));
+            }}
+            plugin={
+              allowedSelectionModes.length > 0 ? (
+                <PeriodicTableModeSwitcher
+                  mode={selectionMode}
+                  allowedModes={allowedSelectionModes}
+                  hideWildcardButton={props.hideWildcardButton}
+                  chemicalSystemSelectHelpText={props.chemicalSystemSelectHelpText}
+                  elementsSelectHelpText={props.elementsSelectHelpText}
+                  onSwitch={(mode) => {
                     setSelectionMode(mode);
-                    if (mode === PeriodicTableSelectionMode.CHEMICAL_SYSTEM) {
-                      convertSelectionToInputType(
-                        materialsInputTypes[MaterialsInputType.CHEMICAL_SYSTEM]?.selectionMode,
-                        'selectionMode',
-                        inputType,
-                        inputValue
-                      );
-                    } else if (mode === PeriodicTableSelectionMode.ELEMENTS) {
-                      convertSelectionToInputType(
-                        materialsInputTypes[MaterialsInputType.ELEMENTS]?.selectionMode,
-                        'selectionMode',
-                        inputType,
-                        inputValue
-                      );
-                    } else {
-                      convertSelectionToInputType(
-                        materialsInputTypes[MaterialsInputType.FORMULA]?.selectionMode,
-                        'selectionMode',
-                        inputType,
-                        inputValue
-                      );
-                    }
+                    const nextInputType = getNextInputTypeForSelectionMode(mode);
+                    convertSelectionToInputType(
+                      materialsInputTypes[nextInputType]?.selectionMode,
+                      'selectionMode',
+                      inputType,
+                      inputValue
+                    );
                   }}
-                >
-                  {capitalize(mode.replace('_', ' '))}
-                </button>
-              ))}
-              {!props.hideWildcardButton &&
-              [PeriodicTableSelectionMode.CHEMICAL_SYSTEM, PeriodicTableSelectionMode.ELEMENTS].includes(
-                selectionMode
-              ) ? (
-                <button type="button" className="button is-small" onClick={appendWildcard}>
-                  *
-                </button>
-              ) : null}
-            </div>
-          ) : null}
-
-          <div className="materials-input-elements-grid">
-            {VALID_ELEMENTS.map((element) => {
-              const enabled = selectedElements.includes(element);
-              const disabled =
-                !enabled &&
-                selectedElements.filter((item) => item !== '*').length >= props.maxElementSelectable;
-
-              return (
-                <button
-                  key={element}
-                  type="button"
-                  className={classNames('mat-element', {
-                    enabled,
-                    disabled,
-                  })}
-                  onClick={() => {
-                    if (!disabled) {
-                      toggleElement(element);
-                    }
-                  }}
-                >
-                  {element}
-                </button>
-              );
-            })}
-          </div>
+                  onFormulaButtonClick={handleFormulaButtonClick}
+                />
+              ) : undefined
+            }
+          />
 
           {selectionMode === PeriodicTableSelectionMode.CHEMICAL_SYSTEM && props.chemicalSystemSelectHelpText ? (
             <p className="help mt-3">{props.chemicalSystemSelectHelpText}</p>

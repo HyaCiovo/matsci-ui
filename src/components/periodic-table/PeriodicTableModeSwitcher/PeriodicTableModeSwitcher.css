@@ -1,0 +1,26 @@
+.mpc-pt-mode-switcher .dropdown-container {
+  width: 100%;
+  text-align: center;
+}
+
+.mpc-pt-mode-content {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: 1fr;
+  grid-gap: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+
+.mpc-pt-mode-content .pt-description {
+  grid-column: 5 / span 6;
+  grid-row: 1 / span 2;
+}
+
+.mpc-pt-mode-content .pt-description > * {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 100%;
+  background: #fafafa;
+}

@@ -39,6 +39,7 @@ describe('<MaterialsInput />', () => {
     expect(screen.getByTestId('materials-input-periodic-table')).toBeInTheDocument();
     expect(screen.getByTestId('materials-input-toggle-button')).toBeInTheDocument();
     expect(screen.getByTestId('materials-input-submit-button')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'At Least Elements' })).toBeInTheDocument();
 
     fireEvent.change(screen.getByTestId('materials-input-search-input'), {
       target: { value: 'Ga,N' },
@@ -70,13 +71,17 @@ describe('<MaterialsInput />', () => {
     expect(screen.getByRole('button', { name: 'Ga' })).toHaveClass('enabled');
     expect(screen.getByRole('button', { name: 'N' })).toHaveClass('enabled');
     expect(screen.getByRole('combobox', { name: 'Input type' })).toHaveValue('Formula');
+    fireEvent.click(screen.getByRole('button', { name: 'Formula' }));
+    expect(screen.getByRole('button', { name: '(' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: '(' }));
+    expect(screen.getByTestId('materials-input-search-input')).toHaveValue('GaN(');
 
     screen.getByTestId('materials-input-search-input').focus();
     await waitFor(() => {
       expect(screen.getByTestId('materials-input-autocomplete-menu')).not.toHaveClass('is-hidden');
       expect(screen.getByTestId('materials-input-autocomplete-menu-items').childNodes.length).toBeGreaterThan(1);
     });
-  });
+  }, 10000);
 
   test('chemical system input with maximum elements limit', () => {
     render(

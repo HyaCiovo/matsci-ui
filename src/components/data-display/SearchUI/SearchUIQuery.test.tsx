@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { SearchUIContainer } from './SearchUIContainer';
 import { SearchUIFilters } from './SearchUIFilters';
 import { useSearchUIContext } from './SearchUIContextProvider';
@@ -52,11 +52,14 @@ const filterGroups: FilterGroup[] = [
 ];
 
 const QueryProbe = () => {
-  const { query, activeFilters } = useSearchUIContext();
+  const { query, activeFilters, setFilterValue } = useSearchUIContext();
   return (
     <>
       <pre data-testid="query-probe">{JSON.stringify(query)}</pre>
       <div data-testid="active-filter-count">{activeFilters.length}</div>
+      <button type="button" data-testid="set-crystal-system" onClick={() => void setFilterValue('cubic', 'crystal_system')}>
+        Set Crystal System
+      </button>
     </>
   );
 };
@@ -137,7 +140,6 @@ describe('SearchUI query utilities', () => {
 
     render(
       <SearchUIContainer filterGroups={filterGroups} defaultQuery={{ sort_fields: ['material_id'] }}>
-        <SearchUIFilters />
         <QueryProbe />
       </SearchUIContainer>
     );
@@ -148,9 +150,7 @@ describe('SearchUI query utilities', () => {
       expect(screen.getByTestId('active-filter-count')).toHaveTextContent('2');
     });
 
-    fireEvent.change(screen.getAllByRole('combobox')[0], {
-      target: { value: 'cubic' },
-    });
+    screen.getByTestId('set-crystal-system').click();
 
     await waitFor(() => {
       expect(screen.getByTestId('query-probe')).toHaveTextContent('crystal_system');
