@@ -5,3 +5,7 @@ package-lock.json
 storybook-static/*
 dist/*
 .storybook-home/*
+
+.node-version
+.nvmrc
+.npmrc

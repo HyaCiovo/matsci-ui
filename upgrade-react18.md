@@ -447,7 +447,7 @@ pre-push:
 
 - 新建 `mp-react18-components`
 - 初始化 React 18、TypeScript 5、Vite、Vitest、Storybook 8
-- 初始化 `oxlint`、`lefthook`、`prettier`
+- 初始化 `oxlint`、`lefthook`
 - 初始化 `Rollup + SWC` 主打包链路，并预留 `tsup` 子包构建能力
 - 迁移旧库的 Bulma、CSS、Less 样式组织方式，确保新仓库先具备样式兼容底座
 - 配置 peerDependencies、构建脚本、lint/test/build 流程

@@ -18,6 +18,7 @@ export const PeriodicTableFormulaButtons = ({ onClick, hideWildcardButton }: Pro
             type="button"
             className="pt-wildcard-button mat-element has-tooltip-bottom"
             onClick={() => onClick('*')}
+            title="Wildcard element"
             data-tip
             data-for="formula-wildcard-button"
           >

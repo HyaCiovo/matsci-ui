@@ -1,8 +1,8 @@
 pre-commit:
   parallel: true
   commands:
-    oxlint:
-      run: npx oxlint src
+    lint:
+      run: npm run lint
 
 pre-push:
   commands:
