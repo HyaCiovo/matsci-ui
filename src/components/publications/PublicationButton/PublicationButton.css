@@ -1,0 +1,9 @@
+.mpc-publication-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.mpc-publication-button .mpc-publication-label {
+  margin-left: 0.25rem;
+}

@@ -1,0 +1,8 @@
+.mp-element-wrapper {
+  display: inline-flex;
+}
+
+.mp-element-wrapper .mat-element {
+  width: 100%;
+  height: 100%;
+}

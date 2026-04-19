@@ -1,0 +1,20 @@
+.mpc-bib-card {
+  padding: 0.75rem;
+  border: 1px solid #dbdbdb;
+  border-radius: 6px;
+}
+
+.mpc-bib-card-title {
+  margin-bottom: 0.25rem;
+}
+
+.mpc-bib-card-authors {
+  margin-bottom: 0.5rem;
+  color: #4a4a4a;
+}
+
+.mpc-bib-card-buttons.tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
