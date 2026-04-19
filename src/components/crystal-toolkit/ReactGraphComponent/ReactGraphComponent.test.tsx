@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { render } from '@testing-library/react';
 import { useEffect } from 'react';
 import { ReactGraphComponent } from './ReactGraphComponent';

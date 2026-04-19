@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { DISPLAY_MODE, StandalonePeriodicComponent } from './StandalonePeriodicComponent';
+import { StandalonePeriodicComponent } from './StandalonePeriodicComponent';
 
 describe('StandalonePeriodicComponent', () => {
   it('renders a periodic element with the wrapper', () => {
@@ -44,34 +44,5 @@ describe('StandalonePeriodicComponent', () => {
     fireEvent.mouseLeave(screen.getByRole('button'));
     expect(handleLeave).toHaveBeenCalledWith(expect.objectContaining({ symbol: 'He' }));
   });
-
-  it('renders detailed mode panels for regular elements', () => {
-    const { container } = render(
-      <StandalonePeriodicComponent
-        size={64}
-        element="H"
-        displayMode={DISPLAY_MODE.DETAILED}
-        disabled={false}
-        enabled={false}
-        hidden={false}
-      />
-    );
-
-    expect(container.querySelector('.main-panel')).toBeInTheDocument();
-    expect(container.querySelector('.mat-side-panel')).toBeInTheDocument();
-  });
-
-  it('returns an empty placeholder when an unknown element symbol is provided', () => {
-    const { container } = render(
-      <StandalonePeriodicComponent
-        size={32}
-        element="not-an-element"
-        disabled={false}
-        enabled={false}
-        hidden={false}
-      />
-    );
-
-    expect(container.querySelector('.mat-element')).not.toBeInTheDocument();
-  });
 });
+

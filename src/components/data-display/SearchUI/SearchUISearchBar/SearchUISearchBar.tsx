@@ -173,15 +173,15 @@ export const SearchUISearchBar = ({
       chemicalSystemSelectHelpText={chemicalSystemSelectHelpText}
       elementsSelectHelpText={elementsSelectHelpText}
       helpItems={helpItems as InputHelpItem[] | undefined}
+      inputClassName={inputClassName ?? className}
+      hidePeriodicTable={shouldHidePeriodicTable}
       showTypeDropdown={showTypeDropdown}
       showSubmitButton={showSubmitButton}
       hideWildcardButton={hideWildcardButton}
+      label={label ?? capitalize(resultLabel)}
       autocompleteFormulaUrl={autocompleteFormulaUrl}
       autocompleteApiKey={apiKey}
       allowedInputTypes={allowedInputTypes}
-      inputClassName={inputClassName ?? className}
-      hidePeriodicTable={shouldHidePeriodicTable}
-      label={label ?? capitalize(resultLabel)}
     />
   );
 };

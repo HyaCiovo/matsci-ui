@@ -25,3 +25,8 @@ export interface SelectableTableStateChange {
   forwardOuterChange: boolean;
   lastAction?: SelectableTableLastAction;
 }
+
+export interface SelectableTableSelectionChange {
+  enabledElements: string[];
+  disabledElements: string[];
+}

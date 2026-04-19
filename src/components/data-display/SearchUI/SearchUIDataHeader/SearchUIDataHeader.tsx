@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { FaTable, FaThLarge } from 'react-icons/fa';
+import { FaTable, FaTh, FaThLarge } from 'react-icons/fa';
 import { ActiveFilterButtons } from '../../ActiveFilterButtons';
 import { SortDropdown } from '../../SortDropdown';
 import { useSearchUIContext } from '../SearchUIContextProvider';
@@ -34,6 +34,7 @@ export const SearchUIDataHeader = ({ exportDataButton }: SearchUIDataHeaderProps
     setSortField,
     skipKey,
     sortFields,
+    state,
     totalResults,
     view,
   } = useSearchUIContext();
@@ -46,6 +47,7 @@ export const SearchUIDataHeader = ({ exportDataButton }: SearchUIDataHeaderProps
   const primarySortField = String(sortFields[0] ?? '').replace(/^-/, '');
   const sortAscending = !String(sortFields[0] ?? '').startsWith('-');
   const resultsPerPageOptions = [10, 15, 30, 50, 75];
+  const hasCardsView = Boolean(state.cardOptions);
 
   const title = useMemo(() => {
     if (loading) {
@@ -122,6 +124,21 @@ export const SearchUIDataHeader = ({ exportDataButton }: SearchUIDataHeaderProps
                 </span>
               </button>
             </div>
+            {hasCardsView ? (
+              <div className="control">
+                <button
+                  type="button"
+                  className={`button is-small ${view === SearchUIViewType.CARDS ? 'is-primary' : ''}`}
+                  aria-pressed={view === SearchUIViewType.CARDS}
+                  data-testid="search-ui-view-cards"
+                  onClick={() => setView(SearchUIViewType.CARDS)}
+                >
+                  <span className="icon is-small">
+                    <FaTh />
+                  </span>
+                </button>
+              </div>
+            ) : null}
             <div className="control">
               <button
                 type="button"

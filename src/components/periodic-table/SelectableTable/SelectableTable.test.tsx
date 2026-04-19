@@ -71,7 +71,10 @@ describe('SelectableTable compatibility', () => {
     render(<SelectableTable maxElementSelectable={5} onStateChange={handleStateChange} />);
 
     expect(handleStateChange).toHaveBeenCalledTimes(1);
-    expect(handleStateChange).toHaveBeenLastCalledWith([]);
+    expect(handleStateChange).toHaveBeenLastCalledWith({
+      enabledElements: [],
+      disabledElements: [],
+    });
   });
 
   it('consumes initial enabled elements from PeriodicContext', () => {
@@ -94,7 +97,10 @@ describe('SelectableTable compatibility', () => {
     );
 
     expect(handleStateChange).toHaveBeenCalledTimes(1);
-    expect(handleStateChange).toHaveBeenLastCalledWith(['Li']);
+    expect(handleStateChange).toHaveBeenLastCalledWith({
+      enabledElements: ['Li'],
+      disabledElements: ['He'],
+    });
   });
 
   it('shares selection state across tables inside the same PeriodicContext', () => {
@@ -112,7 +118,10 @@ describe('SelectableTable compatibility', () => {
 
     fireEvent.click(firstTableHeButton);
 
-    expect(handleStateChange).toHaveBeenLastCalledWith(['He']);
+    expect(handleStateChange).toHaveBeenLastCalledWith({
+      enabledElements: ['He'],
+      disabledElements: [],
+    });
     expect(firstTableHeButton).toHaveClass('enabled');
     expect(secondTableHeButton).toHaveClass('enabled');
   });
@@ -149,7 +158,10 @@ describe('SelectableTable compatibility', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Set enabled elements' }));
 
-    expect(handleStateChange).toHaveBeenLastCalledWith(['Li', 'Fe']);
+    expect(handleStateChange).toHaveBeenLastCalledWith({
+      enabledElements: ['Li', 'Fe'],
+      disabledElements: [],
+    });
   });
 
   it('forwards disabled toggles in enable-disable mode', () => {
@@ -168,7 +180,10 @@ describe('SelectableTable compatibility', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Toggle disabled He' }));
 
-    expect(handleStateChange).toHaveBeenLastCalledWith([]);
+    expect(handleStateChange).toHaveBeenLastCalledWith({
+      enabledElements: [],
+      disabledElements: ['He'],
+    });
   });
 
   it('disables other elements when the max selection limit is reached in select mode', () => {
@@ -192,11 +207,17 @@ describe('SelectableTable compatibility', () => {
     const heliumButton = screen.getByTestId('periodic-element-He');
 
     fireEvent.click(lithiumButton);
-    expect(handleStateChange).toHaveBeenLastCalledWith(['Li']);
+    expect(handleStateChange).toHaveBeenLastCalledWith({
+      enabledElements: ['Li'],
+      disabledElements: [],
+    });
     expect(heliumButton).toHaveClass('disabled');
 
     fireEvent.click(heliumButton);
-    expect(handleStateChange).toHaveBeenLastCalledWith(['He']);
+    expect(handleStateChange).toHaveBeenLastCalledWith({
+      enabledElements: ['He'],
+      disabledElements: [],
+    });
     expect(lithiumButton).not.toHaveClass('enabled');
     expect(heliumButton).toHaveClass('enabled');
   });

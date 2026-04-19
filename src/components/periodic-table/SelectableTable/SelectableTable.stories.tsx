@@ -15,9 +15,10 @@ type Story = StoryObj<typeof meta>;
 
 function SelectableTableStory(args: SelectableTableProps) {
   const [selectedElements, setSelectedElements] = useState<string[]>(args.enabledElements ?? []);
+  const [disabledElements, setDisabledElements] = useState<string[]>(args.disabledElements ?? []);
 
   return (
-    <PeriodicContext enabledElements={selectedElements}>
+    <PeriodicContext enabledElements={selectedElements} disabledElements={disabledElements}>
       <div style={{ display: 'grid', gap: '1rem' }}>
         <div>
           <strong>Selected elements:</strong> {selectedElements.join(', ') || 'none'}
@@ -25,9 +26,11 @@ function SelectableTableStory(args: SelectableTableProps) {
         <SelectableTable
           {...args}
           enabledElements={selectedElements}
-          onStateChange={(nextElements) => {
-            setSelectedElements(nextElements);
-            args.onStateChange?.(nextElements);
+          disabledElements={disabledElements}
+          onStateChange={(nextState) => {
+            setSelectedElements(nextState.enabledElements);
+            setDisabledElements(nextState.disabledElements);
+            args.onStateChange?.(nextState);
           }}
         />
       </div>

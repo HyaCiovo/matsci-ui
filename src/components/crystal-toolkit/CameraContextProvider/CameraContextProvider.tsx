@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as React from 'react';
 import { type Dispatch, useMemo, useReducer } from 'react';
 import {

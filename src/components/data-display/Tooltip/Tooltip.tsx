@@ -46,6 +46,9 @@ export const Tooltip = ({
   id,
   children,
   place = 'top',
+  event,
+  eventOff,
+  globalEventOff,
   offset,
   multiline = true,
   className,
@@ -55,6 +58,7 @@ export const Tooltip = ({
   border = false,
   disable = false,
   scrollHide = true,
+  clickable = false,
 }: TooltipProps) => {
   const [open, setOpen] = useState(false);
   const [referenceEl, setReferenceEl] = useState<HTMLElement | null>(null);
@@ -105,26 +109,55 @@ export const Tooltip = ({
       hideTimeoutRef.current = window.setTimeout(() => setOpen(false), delayHide);
     };
 
-    const handleMouseEnter = (event: Event) => show(event.currentTarget as HTMLElement);
-    const handleFocus = (event: Event) => show(event.currentTarget as HTMLElement);
+    const handleMouseEnter = (triggerEvent: Event) => show(triggerEvent.currentTarget as HTMLElement);
+    const handleFocus = (triggerEvent: Event) => show(triggerEvent.currentTarget as HTMLElement);
+    const handleCustomShow = (triggerEvent: Event) => show(triggerEvent.currentTarget as HTMLElement);
+    const handleCustomHide = () => hide();
+    const handleGlobalHide = () => setOpen(false);
 
     triggers.forEach((trigger) => {
-      trigger.addEventListener('mouseenter', handleMouseEnter);
-      trigger.addEventListener('mouseleave', hide);
-      trigger.addEventListener('focus', handleFocus);
-      trigger.addEventListener('blur', hide);
+      if (event) {
+        trigger.addEventListener(event, handleCustomShow);
+      } else {
+        trigger.addEventListener('mouseenter', handleMouseEnter);
+        trigger.addEventListener('mouseleave', hide);
+        trigger.addEventListener('focus', handleFocus);
+        trigger.addEventListener('blur', hide);
+      }
+
+      if (eventOff) {
+        trigger.addEventListener(eventOff, handleCustomHide);
+      }
     });
+
+    if (globalEventOff) {
+      document.addEventListener(globalEventOff, handleGlobalHide);
+      window.addEventListener(globalEventOff, handleGlobalHide);
+    }
 
     return () => {
       clearTimers();
       triggers.forEach((trigger) => {
-        trigger.removeEventListener('mouseenter', handleMouseEnter);
-        trigger.removeEventListener('mouseleave', hide);
-        trigger.removeEventListener('focus', handleFocus);
-        trigger.removeEventListener('blur', hide);
+        if (event) {
+          trigger.removeEventListener(event, handleCustomShow);
+        } else {
+          trigger.removeEventListener('mouseenter', handleMouseEnter);
+          trigger.removeEventListener('mouseleave', hide);
+          trigger.removeEventListener('focus', handleFocus);
+          trigger.removeEventListener('blur', hide);
+        }
+
+        if (eventOff) {
+          trigger.removeEventListener(eventOff, handleCustomHide);
+        }
       });
+
+      if (globalEventOff) {
+        document.removeEventListener(globalEventOff, handleGlobalHide);
+        window.removeEventListener(globalEventOff, handleGlobalHide);
+      }
     };
-  }, [delayHide, delayShow, disable, id]);
+  }, [delayHide, delayShow, disable, event, eventOff, globalEventOff, id]);
 
   useEffect(() => {
     if (!open || !scrollHide) {
@@ -156,6 +189,9 @@ export const Tooltip = ({
         style={{ ...floatingStyles, ...style }}
         className={clsx('mpc-tooltip', className)}
         data-border={border}
+        data-clickable={clickable}
+        onMouseEnter={clickable ? () => setOpen(true) : undefined}
+        onMouseLeave={clickable ? () => setOpen(false) : undefined}
       >
         {content}
       </div>

@@ -12,3 +12,7 @@
 .mpc-tooltip[data-border='true'] {
   border: 1px solid #fff;
 }
+
+.mpc-tooltip[data-clickable='true'] {
+  pointer-events: auto;
+}

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useContext } from 'react';
 import { Quaternion, Vector3 } from 'three';

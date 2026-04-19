@@ -60,7 +60,8 @@ describe('DataTable', () => {
     render(<DataTable data={records} columns={columns} selectableRows setProps={setProps} />);
 
     fireEvent.click(screen.getByRole('link', { name: 'mp-2' }));
-    expect(setProps).toHaveBeenCalledWith({
+    expect(setProps).toHaveBeenLastCalledWith({
+      data: records,
       selectedRows: [records[1]],
     });
   });

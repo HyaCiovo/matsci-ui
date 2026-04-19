@@ -13,6 +13,7 @@ import { PeriodicTableSpacer } from './PeriodicTableSpacer';
 import {
   TableLayout,
   TableSelectionStyle,
+  type SelectableTableSelectionChange,
   type SelectableTableStateChange,
 } from './types';
 import {
@@ -28,7 +29,7 @@ export interface SelectableTableProps {
   disabledElements?: string[];
   hiddenElements?: string[];
   maxElementSelectable: number;
-  onStateChange?: (selected: string[]) => void;
+  onStateChange?: (state: SelectableTableSelectionChange) => void;
   onTableStateChange?: (state: SelectableTableStateChange) => void;
   plugin?: JSX.Element;
   disabled?: boolean;
@@ -61,7 +62,10 @@ function SelectableTableView({
   const context = useOptionalPeriodicSelectionContext();
   const handleElementsChange = useCallback(
     (state: { enabledElements: string[]; disabledElements: string[] }) => {
-      onStateChange?.(state.enabledElements);
+      onStateChange?.({
+        enabledElements: state.enabledElements,
+        disabledElements: state.disabledElements,
+      });
     },
     [onStateChange]
   );

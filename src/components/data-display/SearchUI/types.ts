@@ -63,7 +63,15 @@ export enum ColumnFormat {
   LINK = 'LINK',
   ARRAY = 'ARRAY',
   BOOLEAN = 'BOOLEAN',
+  BOOLEAN_CLASS = 'BOOLEAN_CLASS',
+  SPACEGROUP_SYMBOL = 'SPACEGROUP_SYMBOL',
+  POINTGROUP = 'POINTGROUP',
+  TAG = 'TAG',
   RADIO = 'RADIO',
+  EMAIL = 'EMAIL',
+  DICT = 'DICT',
+  CONTRIBS_FILES_DOWNLOAD = 'CONTRIBS_FILES_DOWNLOAD',
+  PUBLICATION = 'PUBLICATION',
 }
 
 export interface Column {
@@ -81,11 +89,14 @@ export interface Column {
   minWidth?: string;
   maxWidth?: string;
   tooltip?: string;
+  cellTooltip?: string;
   right?: boolean;
   center?: boolean;
   sortable?: boolean;
   style?: Record<string, any>;
   excludeFromColumnsSelector?: boolean;
+  hideName?: boolean;
+  nameString?: string;
   onChange?: (row: any) => void;
 }
 
@@ -104,6 +115,7 @@ export type SearchUIAllowedInputTypesMap = Partial<Record<string, SearchUIInputT
 
 export enum SearchUIViewType {
   TABLE = 'table',
+  CARDS = 'cards',
   SYNTHESIS = 'synthesis',
 }
 
@@ -142,29 +154,6 @@ export interface SearchUILegacyState {
   disableRichColumnHeaders?: boolean;
   cardOptions?: any;
   setProps: (value: any) => any;
-}
-
-export interface SearchState extends SearchUIContainerProps {
-  setProps: (value: any) => any;
-  sortFields: (string | null | undefined)[];
-  sortKey: string;
-  skipKey: string;
-  limitKey: string;
-  fieldsKey: string;
-  totalKey: string;
-  defaultLimit?: number;
-  defaultSkip?: number;
-  totalResults?: number;
-  activeFilters?: ActiveFilter[];
-  loading?: boolean;
-  error?: string | null;
-  searchBarValue?: string;
-  resultsRef?: RefObject<HTMLDivElement> | null;
-}
-
-export interface SearchContextValue {
-  state: SearchState;
-  query: SearchParams;
 }
 
 export interface SearchUIContextValue {
@@ -218,6 +207,29 @@ export interface SearchUIContextValue {
   removeFilter: (param: string) => Promise<void>;
   removeFilters: (params: string[]) => Promise<void>;
   resetFilters: () => Promise<void>;
+}
+
+export interface SearchState extends SearchUIContainerProps {
+  setProps: (value: any) => any;
+  sortFields: (string | null | undefined)[];
+  sortKey: string;
+  skipKey: string;
+  limitKey: string;
+  fieldsKey: string;
+  totalKey: string;
+  defaultLimit?: number;
+  defaultSkip?: number;
+  totalResults?: number;
+  activeFilters?: ActiveFilter[];
+  loading?: boolean;
+  error?: string | null;
+  searchBarValue?: string;
+  resultsRef?: RefObject<HTMLDivElement> | null;
+}
+
+export interface SearchContextValue {
+  state: SearchState;
+  query: SearchParams;
 }
 
 export interface SearchUIContainerProps {

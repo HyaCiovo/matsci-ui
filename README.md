@@ -9,16 +9,17 @@ English documentation. For Chinese documentation, see [README.zh-CN.md](file:///
 ### Data Display
 - `DataBlock`: key-value data sections with support for rich value formatting.
 - `DataCard`: card-style layout for grouped records.
-- `DataTable`: sortable and optionally selectable result table.
+- `DataTable`: sortable and optionally selectable result table with rich headers and optional expanded pagination.
 - `JsonView`: expandable JSON object viewer.
 - `Formula`: formatted chemical formula rendering.
 - `Markdown`: markdown-to-HTML renderer for help text and rich content.
-- `Tooltip`: hover and focus tooltip wrapper.
+- `Tooltip`: tooltip wrapper supporting hover, focus, and custom event triggers.
 - `Modal`, `Drawer`: overlay patterns for dialogs and slide-over panels.
 - `ButtonBar`, `Paginator`, `SortDropdown`, `ArrayChips`, `ActiveFilterButtons`: common UI helpers.
 - Search UI family:
   - `SearchUIContainer`
   - `SearchUIContextProvider`
+  - `SearchUIDataCards`
   - `SearchUIDataHeader`
   - `SearchUIDataTable`
   - `SearchUIDataView`
@@ -59,7 +60,10 @@ English documentation. For Chinese documentation, see [README.zh-CN.md](file:///
 
 ### Crystal Toolkit
 - `CameraContextProvider`: shared camera state provider for crystal scene workflows.
+- `CrystalToolkitScene`: main crystal scene renderer with camera controls, exports, and optional settings panels.
+- `CrystalToolkitAnimationScene`: animation-enabled wrapper over the crystal scene runtime.
 - `Download`: browser download trigger for generated data.
+- `PhononAnimationScene`: phonon-specific animation scene wrapper.
 - `ReactGraphComponent`: thin wrapper around graph visualization.
 
 ## Usage

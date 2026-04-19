@@ -9,16 +9,17 @@
 ### 数据展示
 - `DataBlock`：键值型数据展示区域，支持富格式值渲染。
 - `DataCard`：卡片式记录展示布局。
-- `DataTable`：支持排序、分页和可选行选择的结果表格。
+- `DataTable`：支持排序、分页、富表头和可选扩展分页的结果表格。
 - `JsonView`：可展开的 JSON 查看器。
 - `Formula`：化学式格式化渲染。
 - `Markdown`：Markdown 内容渲染器。
-- `Tooltip`：hover / focus 提示层。
+- `Tooltip`：支持 hover / focus 以及自定义事件触发的提示层。
 - `Modal`、`Drawer`：弹窗与抽屉式覆盖层。
 - `ButtonBar`、`Paginator`、`SortDropdown`、`ArrayChips`、`ActiveFilterButtons`：常用界面辅助组件。
 - Search UI 组件族：
   - `SearchUIContainer`
   - `SearchUIContextProvider`
+  - `SearchUIDataCards`
   - `SearchUIDataHeader`
   - `SearchUIDataTable`
   - `SearchUIDataView`
@@ -59,7 +60,10 @@
 
 ### Crystal Toolkit
 - `CameraContextProvider`：面向晶体场景工作流的相机共享状态提供器。
+- `CrystalToolkitScene`：主晶体场景组件，支持相机控制、导出和可选设置面板。
+- `CrystalToolkitAnimationScene`：基于同一 scene runtime 的动画场景封装。
 - `Download`：浏览器下载触发组件。
+- `PhononAnimationScene`：面向声子动画的场景封装。
 - `ReactGraphComponent`：图谱展示组件的轻封装。
 
 ## 使用方式

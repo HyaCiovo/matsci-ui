@@ -10,6 +10,8 @@ import {
 } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'react';
 import { Markdown } from '../Markdown';
+import { Tooltip } from '../Tooltip';
+import { Paginator } from '../Paginator';
 import { Column, ColumnFormat, ConditionalRowStyle } from '../SearchUI/types';
 import { formatColumnValue, getColumnsFromKeys, matchesConditionalStyle } from '../../../utils/table';
 import './DataTable.css';
@@ -57,6 +59,29 @@ const getInitialSorting = (props: DataTableProps): SortingState => {
 };
 
 const getRowKey = (row: any, index: number) => row?._index ?? row?.material_id ?? index;
+
+const renderColumnHeader = (column: Column, disableRichColumnHeaders?: boolean) => {
+  if (disableRichColumnHeaders) {
+    return column.title === '' ? '' : column.title;
+  }
+
+  return (
+    <div
+      className={clsx({
+        'column-header-right': column?.right,
+        'column-header-center': column?.center,
+        'column-header-left': !column?.right && !column?.center,
+        'tooltip-label': column?.tooltip,
+      })}
+      data-tip={column?.tooltip}
+      data-for={column.selector}
+    >
+      <div>{column.title === '' ? '' : column.title}</div>
+      {column.units ? <div className="column-units">({column.units})</div> : null}
+      {column.tooltip ? <Tooltip id={column.selector}>{column.tooltip}</Tooltip> : null}
+    </div>
+  );
+};
 
 export const DataTable = ({
   className = 'box p-0',
@@ -112,7 +137,7 @@ export const DataTable = ({
       accessorFn: (row: any) => row,
       enableSorting: column.sortable !== false && column.selector !== '_isSelected',
       size: column.width ? parseInt(column.width, 10) : undefined,
-      header: () => (column.title === '' ? '' : column.title),
+      header: () => renderColumnHeader(column, props.disableRichColumnHeaders),
       cell: ({ row }: { row: any }) => {
         if (column.formatType === ColumnFormat.RADIO) {
           return (
@@ -158,8 +183,8 @@ export const DataTable = ({
     }
 
     const selected = table.getSelectedRowModel().rows.map((row) => row.original);
-    setProps({ selectedRows: selected });
-  }, [rowSelection, setProps, table]);
+    setProps({ data, selectedRows: selected });
+  }, [data, rowSelection, setProps, table]);
 
   const visibleSelectorColumns = columnDefs.filter((column) => !column.excludeFromColumnsSelector);
   const rows = props.pagination ? table.getRowModel().rows : table.getPrePaginationRowModel().rows;
@@ -250,7 +275,17 @@ export const DataTable = ({
         </table>
       </div>
 
-      {props.pagination ? (
+      {props.pagination ? props.paginationIsExpanded ? (
+        <div className="mpc-data-table-pagination">
+          <Paginator
+            rowCount={data.length}
+            rowsPerPage={table.getState().pagination.pageSize}
+            currentPage={table.getState().pagination.pageIndex + 1}
+            onChangePage={(page) => table.setPageIndex(page - 1)}
+            onChangeRowsPerPage={(pageSize) => table.setPageSize(pageSize)}
+          />
+        </div>
+      ) : (
         <div className="mpc-data-table-pagination">
           <button type="button" className="button is-small" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
             Previous

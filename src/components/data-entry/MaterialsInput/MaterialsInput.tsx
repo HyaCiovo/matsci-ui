@@ -12,7 +12,11 @@ import {
   useState,
 } from 'react';
 import { PeriodicTableModeSwitcher } from '../../periodic-table/PeriodicTableModeSwitcher';
-import { SelectableTable, TableLayout } from '../../periodic-table/SelectableTable';
+import {
+  SelectableTable,
+  TableLayout,
+  type SelectableTableSelectionChange,
+} from '../../periodic-table/SelectableTable';
 import { type InputHelpItem } from './InputHelp';
 import { MaterialsInputBox } from './MaterialsInputBox/MaterialsInputBox';
 import {
@@ -385,7 +389,8 @@ export const MaterialsInput = ({
   };
 
   const handleTableStateChange = useCallback(
-    (nextElements: string[]) => {
+    (nextState: SelectableTableSelectionChange) => {
+      const nextElements = nextState.enabledElements;
       const nextValue = renderPeriodicTableValue(selectionMode, nextElements);
 
       setSelectedElements((current) => (areElementListsEqual(current, nextElements) ? current : nextElements));
