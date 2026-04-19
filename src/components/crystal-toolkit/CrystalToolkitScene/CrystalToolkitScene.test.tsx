@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -21,8 +20,6 @@ const sceneApi = vi.hoisted(() => ({
   onDestroy: vi.fn(),
 }));
 
-const tooltipHide = vi.hoisted(() => vi.fn());
-
 vi.mock('use-resize-observer', () => ({
   default: () => ({ width: 500, height: 500 }),
 }));
@@ -30,11 +27,6 @@ vi.mock('use-resize-observer', () => ({
 vi.mock('../scene/download-event', () => ({
   subscribe: () => ({ unsubscribe: vi.fn() }),
 }));
-
-vi.mock('react-tooltip', () => {
-  const Tooltip = ({ children }: { children?: ReactNode }) => <>{children}</>;
-  return { default: Object.assign(Tooltip, { hide: tooltipHide }) };
-});
 
 vi.mock('../scene/Scene', () => ({
   default: vi.fn(function MockScene() {
@@ -49,7 +41,6 @@ vi.mock('../scene/Scene', () => ({
 describe('CrystalToolkitScene', () => {
   beforeEach(() => {
     vi.mocked(Scene).mockClear();
-    tooltipHide.mockClear();
     Object.values(sceneApi).forEach((spy) => spy.mockClear());
   });
 
@@ -105,7 +96,7 @@ describe('CrystalToolkitScene', () => {
 
     await waitFor(() => expect(Scene).toHaveBeenCalled());
 
-    const settingsButton = container.querySelector('[data-for^="settings-"]') as HTMLButtonElement | null;
+    const settingsButton = container.querySelector('[data-tooltip-id^="settings-"]') as HTMLButtonElement | null;
     expect(settingsButton).not.toBeNull();
 
     await user.click(settingsButton!);
@@ -135,7 +126,7 @@ describe('CrystalToolkitScene', () => {
 
     await waitFor(() => expect(Scene).toHaveBeenCalled());
 
-    await user.click(document.querySelector('[data-for^="export-"] button') as HTMLButtonElement);
+    await user.click(document.querySelector('[data-tooltip-id^="export-"] button') as HTMLButtonElement);
     await user.click(await waitFor(async () => await document.body.querySelector('.dropdown-item')) as any);
 
     expect(setProps).toHaveBeenCalledWith(

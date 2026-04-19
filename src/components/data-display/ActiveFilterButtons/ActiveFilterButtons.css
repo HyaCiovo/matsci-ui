@@ -1,10 +1,4 @@
-.mpc-active-filter-buttons {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
 .mpc-active-filter-button {
-  display: inline-flex;
+  display: inline-block;
+  margin-right: 0.5rem;
 }

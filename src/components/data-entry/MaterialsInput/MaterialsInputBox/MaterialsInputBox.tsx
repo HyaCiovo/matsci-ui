@@ -177,7 +177,7 @@ export const MaterialsInputBox = ({
               'has-text-link': showInputHelp,
             })}
             onClick={onHelpToggle}
-            data-for={helpTooltipId}
+            data-tooltip-id={helpTooltipId}
           >
             <CircleHelp />
             <Tooltip id={helpTooltipId} place="bottom">
@@ -196,7 +196,7 @@ export const MaterialsInputBox = ({
               'has-tooltip-active': errorTipStayActive,
             })}
             onMouseOver={onErrorMouseOver}
-            data-for={errorTooltipId}
+            data-tooltip-id={errorTooltipId}
           >
             <TriangleAlert />
             <Tooltip id={errorTooltipId} place="bottom">
@@ -213,7 +213,7 @@ export const MaterialsInputBox = ({
             type="button"
             className="button has-oversized-icon is-size-2"
             onClick={onPeriodicToggle}
-            data-for={periodicToggleTooltipId}
+            data-tooltip-id={periodicToggleTooltipId}
           >
             <i
               className={clsx('icon-fontastic-periodic-table-squares', {

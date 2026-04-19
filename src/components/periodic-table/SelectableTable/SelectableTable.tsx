@@ -22,7 +22,7 @@ import {
   getDetailedElementDetail,
   getSelectableTableElementViewModels,
 } from './view-model';
-import './SelectableTable.css';
+import './SelectableTable.less';
 
 function SelectableTableDetailObserver({
   onDetailedElementChange,
@@ -35,6 +35,50 @@ function SelectableTableDetailObserver({
   }, [detailedElement, detailedElementSymbol, onDetailedElementChange]);
 
   return null;
+}
+
+function SelectableTableStateObserver({
+  onTableStateChange,
+}: Pick<SelectableTableProps, 'onTableStateChange'>) {
+  const context = useOptionalPeriodicSelectionContext();
+  const detailedElementSymbol = useDetailedElement();
+  const tableStateChange = useMemo(
+    () =>
+      context
+        ? getSelectableTableStateChange({
+            enabledRecord: context.enabledRecord,
+            effectiveDisabledRecord: context.effectiveDisabledRecord,
+            hiddenRecord: context.hiddenRecord,
+            detailedElementSymbol,
+            forwardOuterChange: context.forwardOuterChange,
+            lastAction: context.lastAction,
+          })
+        : null,
+    [context, detailedElementSymbol]
+  );
+
+  useEffect(() => {
+    if (!tableStateChange) {
+      return;
+    }
+
+    onTableStateChange?.(tableStateChange);
+  }, [onTableStateChange, tableStateChange]);
+
+  return null;
+}
+
+function getLayoutClass(forceTableLayout: TableLayout) {
+  if (forceTableLayout === TableLayout.MINI) {
+    return 'small';
+  }
+  if (forceTableLayout === TableLayout.COMPACT) {
+    return 'compact';
+  }
+  if (forceTableLayout === TableLayout.MAP) {
+    return 'map';
+  }
+  return 'spaced';
 }
 
 export interface SelectableTableProps {
@@ -116,45 +160,17 @@ function SelectableTableView({
         positionedElements: DEFAULT_POSITIONED_ELEMENTS,
         enabledRecord,
         effectiveDisabledRecord,
+        explicitDisabledRecord: context?.disabledRecord ?? {},
         hiddenRecord,
         disabled,
       }),
-    [disabled, effectiveDisabledRecord, enabledRecord, hiddenRecord]
+    [context?.disabledRecord, disabled, effectiveDisabledRecord, enabledRecord, hiddenRecord]
   );
-  const tableStateChange = useMemo(
-    () =>
-      context
-        ? getSelectableTableStateChange({
-            enabledRecord,
-            effectiveDisabledRecord,
-            hiddenRecord,
-            detailedElementSymbol: context.detailedElementSymbol,
-            forwardOuterChange: context.forwardOuterChange,
-            lastAction,
-          })
-        : null,
-    [
-      context,
-      context?.detailedElementSymbol,
-      context?.forwardOuterChange,
-      effectiveDisabledRecord,
-      enabledRecord,
-      hiddenRecord,
-      lastAction,
-    ]
-  );
+  const layoutClass = getLayoutClass(forceTableLayout);
 
   useEffect(() => {
     actions.setForwardChange(forwardOuterChange);
   }, [actions, forwardOuterChange]);
-
-  useEffect(() => {
-    if (!tableStateChange) {
-      return;
-    }
-
-    onTableStateChange?.(tableStateChange);
-  }, [onTableStateChange, tableStateChange]);
 
   return (
     <div
@@ -164,9 +180,26 @@ function SelectableTableView({
       data-table-layout={forceTableLayout}
     >
       <SelectableTableDetailObserver onDetailedElementChange={onDetailedElementChange} />
-      <PeriodicTableSpacer plugin={plugin} disabled={disabled} />
-      <div className="materials-input-elements-grid">
-        {elementViewModels.map(({ symbol: element, xpos, ypos, detail, enabled, disabled: elementDisabled, defaultDisabled }) => (
+      <SelectableTableStateObserver onTableStateChange={onTableStateChange} />
+      <div
+        className={clsx('table-container', layoutClass)}
+        onMouseLeave={() => {
+          actions.setDetailedElement(null);
+        }}
+      >
+        <PeriodicTableSpacer plugin={plugin} disabled={disabled} />
+        {elementViewModels.map(
+          ({
+            symbol: element,
+            xpos,
+            ypos,
+            detail,
+            enabled,
+            hidden,
+            disabled: elementDisabled,
+            interactionDisabled,
+            defaultDisabled,
+          }) => (
           <PeriodicTableElementButton
             key={element}
             element={element}
@@ -175,12 +208,15 @@ function SelectableTableView({
             detail={detail}
             enabled={enabled}
             disabled={elementDisabled}
+            hidden={hidden}
+            interactionDisabled={interactionDisabled}
             defaultDisabled={defaultDisabled}
             lastAction={lastAction}
             onToggle={actions.toggleEnabledElement}
             onHoverDetail={actions.setDetailedElement}
           />
-        ))}
+          )
+        )}
       </div>
       {children}
     </div>

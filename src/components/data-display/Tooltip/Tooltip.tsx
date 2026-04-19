@@ -83,9 +83,7 @@ export const Tooltip = ({
       return;
     }
 
-    const triggers = Array.from(
-      document.querySelectorAll<HTMLElement>(`[data-for="${id}"], [data-tooltip-id="${id}"]`)
-    );
+    const triggers = Array.from(document.querySelectorAll<HTMLElement>(`[data-tooltip-id="${id}"]`));
 
     const clearTimers = () => {
       if (showTimeoutRef.current) {

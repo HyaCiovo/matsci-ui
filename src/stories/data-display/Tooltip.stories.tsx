@@ -10,7 +10,7 @@ export default {
 
 const Template: StoryFn<React.PropsWithChildren<TooltipProps>> = (args) => (
   <>
-    <button className="button" data-tip data-for={args.id}>
+    <button className="button" data-tooltip-id={args.id}>
       Tooltip Trigger
     </button>
     <Tooltip {...args} />

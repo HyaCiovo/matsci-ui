@@ -17,64 +17,33 @@ export function PeriodicTableSpacer({ plugin, disabled = false }: PeriodicTableS
   );
   const detailedElement = getElementDetail(detailedElementSymbol, elementMap);
 
-  if (!plugin && !detailedElement) {
-    return null;
-  }
-
   return (
-    <div className="mpc-selectable-table-spacer">
-      {disabled || !plugin ? (
-        <>
-          <div className="first-span mpc-selectable-table-placeholder" />
-          <div className="second-span mpc-selectable-table-placeholder" />
-        </>
-      ) : (
-        plugin
-      )}
-      <div
-        className={clsx('element-description mpc-selectable-table-detail', {
-          'is-empty': !detailedElement,
-        })}
-      >
+    <>
+      {disabled || !plugin ? <div className="first-span" /> : plugin}
+      <div className="element-description mpc-selectable-table-detail">
         {detailedElement ? (
-          <>
-            <div className="mpc-selectable-table-detail-header">
-              <div
-                className={clsx(
-                  'mpc-selectable-table-detail-tile',
-                  categoryToClassName(detailedElement.category, detailedElement.symbol)
-                )}
-              >
-                <span className="mpc-selectable-table-detail-number">{detailedElement.number}</span>
-                <span className="mpc-selectable-table-detail-symbol">{detailedElement.symbol}</span>
-                <span className="mpc-selectable-table-detail-name">{detailedElement.name}</span>
-                {!detailedElement.hasGroup ? (
-                  <span className="mpc-selectable-table-detail-weight">{detailedElement.atomic_mass}</span>
-                ) : null}
-              </div>
+          <div
+            className={clsx('mat-element detailed', categoryToClassName(detailedElement.category, detailedElement.symbol), {
+              'mat-group': detailedElement.hasGroup,
+            })}
+          >
+            <div className="main-panel">
+              <div className="mat-number">{detailedElement.number}</div>
+              <div className="mat-symbol">{detailedElement.symbol}</div>
+              <div className="mat-name">{detailedElement.name}</div>
+            </div>
+            <div className="mat-side-panel">
+              <div className="mat-weight">{detailedElement.atomic_mass.toFixed(3)}</div>
               {detailedElement.shells && !detailedElement.hasGroup ? (
-                <div className="mpc-selectable-table-detail-shells">
-                  {detailedElement.shells.map((shell, index) => (
-                    <span key={`${detailedElement.symbol}-${index}`}>{shell}</span>
-                  ))}
-                </div>
+                <div className="mat-shells">{detailedElement.shells.join(' ')}</div>
               ) : null}
             </div>
-            <div className="mpc-selectable-table-detail-meta">
-              <span>No. {detailedElement.number}</span>
-              <span>{detailedElement.phase}</span>
-              <span>{detailedElement.category}</span>
-              <span>{detailedElement.atomic_mass.toFixed(3)}</span>
-            </div>
-            <div className="mpc-selectable-table-detail-summary">{detailedElement.summary}</div>
-          </>
-        ) : (
-          <span>Hover an element to inspect details</span>
-        )}
+          </div>
+        ) : null}
       </div>
-      <div className="separator-span mpc-selectable-table-separator" />
-      <div className="first-lower-span mpc-selectable-table-lower-block" />
-      <div className="second-lower-span mpc-selectable-table-lower-block" />
-    </div>
+      <div className="separator-span" />
+      <div className="first-lower-span" />
+      <div className="second-lower-span" />
+    </>
   );
 }

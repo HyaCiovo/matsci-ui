@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -21,8 +20,6 @@ const sceneApi = vi.hoisted(() => ({
   onDestroy: vi.fn(),
 }));
 
-const tooltipHide = vi.hoisted(() => vi.fn());
-
 vi.mock('use-resize-observer', () => ({
   default: () => ({ width: 500, height: 500 }),
 }));
@@ -30,11 +27,6 @@ vi.mock('use-resize-observer', () => ({
 vi.mock('../scene/download-event', () => ({
   subscribe: () => ({ unsubscribe: vi.fn() }),
 }));
-
-vi.mock('react-tooltip', () => {
-  const Tooltip = ({ children }: { children?: ReactNode }) => <>{children}</>;
-  return { default: Object.assign(Tooltip, { hide: tooltipHide }) };
-});
 
 vi.mock('../../data-entry/RangeSlider', () => ({
   RangeSlider: ({ onChange }: { onChange?: (values: number[]) => void }) => (
@@ -57,7 +49,6 @@ vi.mock('../scene/Scene', () => ({
 describe('PhononAnimationScene', () => {
   beforeEach(() => {
     vi.mocked(Scene).mockClear();
-    tooltipHide.mockClear();
     Object.values(sceneApi).forEach((spy) => spy.mockClear());
   });
 

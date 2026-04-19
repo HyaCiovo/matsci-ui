@@ -3,12 +3,15 @@
   text-align: center;
 }
 
+.mpc-pt-mode-switcher .dropdown {
+  text-align: left;
+}
+
 .mpc-pt-mode-content {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: 1fr;
-  grid-gap: 0.35rem;
-  margin-bottom: 0.75rem;
+  grid-gap: 2px;
 }
 
 .mpc-pt-mode-content .pt-description {
@@ -17,10 +20,17 @@
 }
 
 .mpc-pt-mode-content .pt-description > * {
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem;
   font-size: 0.85rem;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 2px;
   height: 100%;
-  background: #fafafa;
+}
+
+@media screen and (min-width: 769px) and (max-width: 959px) {
+  .mpc-pt-mode-switcher-description {
+    width: 100%;
+    margin-left: 0;
+    padding: 0.25rem;
+  }
 }

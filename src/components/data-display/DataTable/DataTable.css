@@ -1,90 +1,60 @@
 .mpc-data-table {
-  border: 1px solid #dbdbdb;
+  background-color: #fff;
   border-radius: 6px;
-  overflow: hidden;
-  background: #fff;
 }
 
-.mpc-data-table-header,
-.mpc-data-table-footer {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #ececec;
+.mpc-data-table .rdt_Table,
+.mpc-data-table .rdt_TableRow {
+  background: none;
 }
 
-.mpc-data-table-footer {
-  border-top: 1px solid #ececec;
-  border-bottom: 0;
+.mpc-data-table .mpc-data-table-header {
+  padding: 1rem 1rem 0 1rem;
 }
 
-.mpc-data-table-toolbar {
+.mpc-data-table .mpc-paginator {
+  padding: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.mpc-data-table .react-data-table-outer-container {
+  position: relative;
+  height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  flex-direction: column;
 }
 
-.mpc-data-table-scroll {
-  overflow: auto;
-}
-
-.mpc-data-table-table {
+.mpc-data-table .react-data-table-container {
   width: 100%;
-  border-collapse: collapse;
+  min-height: 0;
+  flex: 1;
 }
 
-.mpc-data-table-table th,
-.mpc-data-table-table td {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #f0f0f0;
-  vertical-align: middle;
+.mpc-data-table .react-data-table {
+  overflow: auto;
+  max-height: 100%;
 }
 
-.mpc-data-table-table th.is-right,
-.mpc-data-table-table td.is-right {
+.mpc-data-table .rdt_TableHead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  box-shadow: #bbb 0px 0px 4px;
+}
+
+.mpc-data-table .react-data-table .column-header-right {
   text-align: right;
 }
 
-.mpc-data-table-table th.is-center,
-.mpc-data-table-table td.is-center {
+.mpc-data-table .react-data-table .column-header-center {
   text-align: center;
 }
 
-.mpc-data-table-table tbody tr:hover {
-  background: #fafafa;
+.mpc-data-table .react-data-table .column-units {
+  font-weight: normal;
 }
 
-.mpc-data-table-table tbody tr.is-clickable {
-  cursor: pointer;
-}
-
-.mpc-data-table-columns details {
-  position: relative;
-}
-
-.mpc-data-table-columns-menu {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 0.5rem);
-  min-width: 220px;
-  padding: 0.75rem;
-  background: #fff;
-  border: 1px solid #dbdbdb;
-  border-radius: 6px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  z-index: 5;
-}
-
-.mpc-data-table-columns-menu label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.mpc-data-table-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
+.mpc-data-table .mpc-data-table-footer {
+  padding: 0 1rem 1rem 1rem;
+  font-size: 0.85rem;
 }

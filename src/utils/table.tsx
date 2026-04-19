@@ -97,7 +97,7 @@ export const formatColumnValue = (column: Column, row: any) => {
       const tooltipId = column.cellTooltip ? `${column.selector}-${row?._index ?? row?.material_id ?? 'cell'}` : undefined;
 
       return (
-        <span className="boolean-cell-wrapper" data-for={tooltipId} data-tip={column.cellTooltip}>
+        <span className="boolean-cell-wrapper" data-tooltip-id={tooltipId}>
           <i className={clsx({ [truthyClass]: cleanValue, [falsyClass]: !cleanValue })}></i>
           {tooltipId && column.cellTooltip ? <Tooltip id={tooltipId}>{column.cellTooltip}</Tooltip> : null}
         </span>

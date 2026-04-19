@@ -66,18 +66,21 @@ interface PeriodicSelectionContextValue {
   disabledRecord: Record<string, boolean>;
   hiddenRecord: Record<string, boolean>;
   effectiveDisabledRecord: Record<string, boolean>;
-  detailedElementSymbol: string | null;
   forwardOuterChange: boolean;
   maxElementSelectable: number;
   lastAction?: SelectableTableLastAction;
   changeOrigin: 'props' | 'action' | null;
-  setDetailedElement: (element: string | null) => void;
-  toggleElement: (element: string) => void;
   actions: PeriodicSelectionActions;
+}
+
+interface PeriodicSelectionDetailContextValue {
+  detailedElementSymbol: string | null;
+  setDetailedElement: (element: string | null) => void;
 }
 
 export const PeriodicSelectionContext = createContext<PeriodicSelectionContextValue | null>(null);
 export const PeriodicSelectionActionsContext = createContext<PeriodicSelectionActions | null>(null);
+export const PeriodicSelectionDetailContext = createContext<PeriodicSelectionDetailContextValue | null>(null);
 
 const normalizeSelectionInput = (values?: SelectionInput) => {
   if (!values) {
@@ -160,12 +163,10 @@ export function PeriodicSelectionProvider({
       return;
     }
     const isHidden = !!hiddenRecord[detailedElementSymbol];
-    const isUnavailable =
-      !!effectiveDisabledRecord[detailedElementSymbol] || !!DEFAULT_DISABLED_ELEMENTS[detailedElementSymbol];
-    if (isHidden || isUnavailable) {
+    if (isHidden) {
       setDetailedElementSymbol(null);
     }
-  }, [detailedElementSymbol, effectiveDisabledRecord, hiddenRecord]);
+  }, [detailedElementSymbol, hiddenRecord]);
 
   const setDetailedElement = useCallback((element: string | null) => {
     setDetailedElementSymbol(element);
@@ -313,18 +314,14 @@ export function PeriodicSelectionProvider({
       disabledRecord,
       hiddenRecord,
       effectiveDisabledRecord,
-      detailedElementSymbol,
       forwardOuterChange: forwardOuterChangeState,
       maxElementSelectable: maxSelectionLimit,
       lastAction,
       changeOrigin,
-      setDetailedElement,
-      toggleElement,
       actions,
     }),
     [
       actions,
-      detailedElementSymbol,
       disabledRecord,
       effectiveDisabledRecord,
       enabledRecord,
@@ -333,14 +330,22 @@ export function PeriodicSelectionProvider({
       hiddenRecord,
       lastAction,
       maxSelectionLimit,
-      setDetailedElement,
-      toggleElement,
     ]
+  );
+
+  const detailValue = useMemo<PeriodicSelectionDetailContextValue>(
+    () => ({
+      detailedElementSymbol,
+      setDetailedElement,
+    }),
+    [detailedElementSymbol, setDetailedElement]
   );
 
   return (
     <PeriodicSelectionActionsContext.Provider value={actions}>
-      <PeriodicSelectionContext.Provider value={value}>{children}</PeriodicSelectionContext.Provider>
+      <PeriodicSelectionContext.Provider value={value}>
+        <PeriodicSelectionDetailContext.Provider value={detailValue}>{children}</PeriodicSelectionDetailContext.Provider>
+      </PeriodicSelectionContext.Provider>
     </PeriodicSelectionActionsContext.Provider>
   );
 }
@@ -449,5 +454,9 @@ export function useElements(_maxElementSelection: number = 10, onStateChange?: (
 }
 
 export function useDetailedElement() {
-  return usePeriodicSelectionContext().detailedElementSymbol;
+  const context = useContext(PeriodicSelectionDetailContext);
+  if (!context) {
+    throw new Error('useDetailedElement must be used within PeriodicSelectionProvider');
+  }
+  return context.detailedElementSymbol;
 }

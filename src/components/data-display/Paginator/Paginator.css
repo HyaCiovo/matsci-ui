@@ -1,21 +1,19 @@
+.mpc-paginator .pagination {
+  display: inline-flex;
+}
+
 .mpc-paginator {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
   justify-content: space-between;
-  align-items: center;
 }
 
-.mpc-paginator-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  align-items: center;
+.mpc-paginator .dropdown {
+  margin-right: 0.5rem;
+  text-align: left;
 }
 
-.mpc-paginator-pages {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-  align-items: center;
+@media screen and (min-width: 1152px) {
+  .mpc-paginator .pagination {
+    min-width: 450px;
+  }
 }

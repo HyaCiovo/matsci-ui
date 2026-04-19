@@ -1,20 +1,12 @@
 .mpc-open-access-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
+  vertical-align: bottom;
 }
 
-.mpc-open-access-loader {
-  width: 0.9rem;
-  height: 0.9rem;
-  border-radius: 9999px;
-  border: 2px solid #dbdbdb;
-  border-top-color: #3273dc;
-  animation: mpc-oa-spin 0.8s linear infinite;
+.mpc-open-access-button img {
+  height: 1.25rem;
+  width: auto;
 }
 
-@keyframes mpc-oa-spin {
-  to {
-    transform: rotate(360deg);
-  }
+.mpc-open-access-button > span > span {
+  vertical-align: top;
 }

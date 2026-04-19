@@ -3,7 +3,7 @@
   z-index: 2;
 }
 
-.mpc-enlargeable.modal.is-active .modal-content.is-large {
-  max-height: 95vh;
+.modal.is-active .modal-content.is-large {
   width: 95vw;
+  max-height: 95vh;
 }

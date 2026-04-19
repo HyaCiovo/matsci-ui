@@ -12,6 +12,8 @@ export interface PositionedElement {
 export interface SelectableTableElementViewModel extends PositionedElement {
   enabled: boolean;
   disabled: boolean;
+  hidden: boolean;
+  interactionDisabled: boolean;
   defaultDisabled: boolean;
 }
 
@@ -21,10 +23,17 @@ export const createElementMap = (elements: MatElement[] = TABLE_V2) =>
 export const getPositionedElements = (elementMap: Record<string, MatElement>): PositionedElement[] =>
   VALID_ELEMENTS.map((symbol, index) => {
     const detail = elementMap[symbol] ?? null;
+    const xpos = detail?.xpos && detail.xpos > 0 ? detail.xpos : detail?.hasGroup ? 3 : (index % 18) + 1;
+    const ypos =
+      symbol === 'La-Lu'
+        ? 6
+        : symbol === 'Ac-Lr'
+          ? 7
+          : detail?.ypos ?? Math.floor(index / 18) + 1;
     return {
       symbol,
-      xpos: detail?.xpos ?? ((index % 18) + 1),
-      ypos: detail?.ypos ?? (Math.floor(index / 18) + 1),
+      xpos,
+      ypos,
       detail,
     };
   }).sort((left, right) => {
@@ -44,24 +53,28 @@ export const getSelectableTableElementViewModels = ({
   positionedElements,
   enabledRecord,
   effectiveDisabledRecord,
+  explicitDisabledRecord,
   hiddenRecord,
   disabled = false,
 }: {
   positionedElements: PositionedElement[];
   enabledRecord: Record<string, boolean>;
   effectiveDisabledRecord: Record<string, boolean>;
+  explicitDisabledRecord: Record<string, boolean>;
   hiddenRecord: Record<string, boolean>;
   disabled?: boolean;
 }): SelectableTableElementViewModel[] =>
   positionedElements
-    .filter(({ symbol }) => !hiddenRecord[symbol])
     .map((positionedElement) => {
       const defaultDisabled = !!DEFAULT_DISABLED_ELEMENTS[positionedElement.symbol];
+      const explicitlyDisabled = !!explicitDisabledRecord[positionedElement.symbol];
       return {
         ...positionedElement,
         enabled: !!enabledRecord[positionedElement.symbol],
+        hidden: !!hiddenRecord[positionedElement.symbol],
         defaultDisabled,
         disabled: disabled || !!effectiveDisabledRecord[positionedElement.symbol] || defaultDisabled,
+        interactionDisabled: disabled || explicitlyDisabled || defaultDisabled,
       };
     });
 

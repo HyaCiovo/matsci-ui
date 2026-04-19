@@ -73,8 +73,7 @@ const renderColumnHeader = (column: Column, disableRichColumnHeaders?: boolean) 
         'column-header-left': !column?.right && !column?.center,
         'tooltip-label': column?.tooltip,
       })}
-      data-tip={column?.tooltip}
-      data-for={column.selector}
+      data-tooltip-id={column.selector}
     >
       <div>{column.title === '' ? '' : column.title}</div>
       {column.units ? <div className="column-units">({column.units})</div> : null}

@@ -1,20 +1,9 @@
-.mpc-filter-field {
-  width: 100%;
-}
-
 .mpc-filter-label {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.35rem;
+  font-weight: 700;
   margin-bottom: 0.5rem;
-  font-weight: 600;
 }
 
 .mpc-units {
-  font-weight: 400;
-}
-
-.filter-cancel-button {
-  color: #7a7a7a;
+  font-weight: normal;
+  font-size: 0.85rem;
 }

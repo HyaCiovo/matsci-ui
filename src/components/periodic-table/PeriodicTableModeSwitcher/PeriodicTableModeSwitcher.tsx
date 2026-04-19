@@ -65,8 +65,8 @@ export const PeriodicTableModeSwitcher = ({
                   className="pt-wildcard-button mat-element has-tooltip-bottom"
                   onClick={() => props.onFormulaButtonClick('-*')}
                   title="Wildcard element"
-                  data-tip
-                  data-for="element-wildcard-button"
+                 
+                  data-tooltip-id="element-wildcard-button"
                 >
                   <span className="mat-symbol">
                     <Asterisk />

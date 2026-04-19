@@ -110,7 +110,7 @@ export const PublicationButton = ({
       href={url}
       target={target}
       rel={target === '_blank' ? 'noreferrer' : undefined}
-      data-for={tooltipId}
+      data-tooltip-id={tooltipId}
     >
       <BookOpen />
       {!compact ? <span className="mpc-publication-label">{linkLabel || 'Publication'}</span> : null}

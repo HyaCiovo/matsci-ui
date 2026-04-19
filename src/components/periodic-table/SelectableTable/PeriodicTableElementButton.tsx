@@ -11,6 +11,8 @@ interface PeriodicTableElementButtonProps {
   detail: MatElement | null;
   enabled: boolean;
   disabled: boolean;
+  hidden: boolean;
+  interactionDisabled: boolean;
   defaultDisabled: boolean;
   lastAction?: SelectableTableLastAction;
   onToggle: (element: string) => void;
@@ -24,11 +26,29 @@ function PeriodicTableElementButtonImpl({
   detail,
   enabled,
   disabled,
+  hidden,
+  interactionDisabled,
   defaultDisabled,
   lastAction,
   onToggle,
   onHoverDetail,
 }: PeriodicTableElementButtonProps) {
+  if (hidden) {
+    return (
+      <div
+        className={clsx('mat-element', 'hidden', {
+          [categoryToClassName(detail?.category, element)]: true,
+          'mat-group': !!detail?.hasGroup,
+        })}
+        style={{
+          gridColumn: xpos,
+          gridRow: ypos,
+        }}
+        aria-hidden="true"
+      />
+    );
+  }
+
   return (
     <button
       type="button"
@@ -45,21 +65,18 @@ function PeriodicTableElementButtonImpl({
         'mat-group': !!detail?.hasGroup,
       })}
       onClick={() => {
-        onToggle(element);
+        if (!interactionDisabled) {
+          onToggle(element);
+        }
       }}
-      onMouseEnter={() => {
+      onMouseOver={() => {
         onHoverDetail(detail?.symbol ?? null);
-      }}
-      onMouseLeave={() => {
-        onHoverDetail(null);
       }}
       onFocus={() => {
         onHoverDetail(detail?.symbol ?? null);
       }}
-      onBlur={() => {
-        onHoverDetail(null);
-      }}
       data-last-action={lastAction?.element === element ? lastAction.type : undefined}
+      aria-disabled={disabled}
       title={defaultDisabled ? 'Unavailable in current table' : undefined}
     >
       {detail ? (

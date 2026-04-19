@@ -1,8 +1,8 @@
 .mpc-button-bar {
   display: flex;
   flex-direction: column;
-  float: right;
   position: relative;
+  float: right;
   z-index: 2;
 }
 

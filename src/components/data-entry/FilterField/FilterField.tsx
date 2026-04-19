@@ -24,8 +24,7 @@ export const FilterField = ({ dois = [], ...props }: FilterFieldProps) => {
       className={clsx({
         'tooltip-label': props.tooltip,
       })}
-      data-tip={props.tooltip ? true : undefined}
-      data-for={tooltipId}
+      data-tooltip-id={tooltipId}
     >
       {props.label}
       {props.units ? <span className="mpc-units"> ({props.units})</span> : null}

@@ -6,7 +6,7 @@
   width: 75%;
   overflow: auto;
   background: #fff;
-  z-index: 30;
+  z-index: 2;
   transition: 0.5s;
 }
 
@@ -17,9 +17,4 @@
 .navbar .modal-background {
   position: fixed;
   transition: 0.5s;
-}
-
-.navbar-mobile .navbar-item-toggle {
-  width: 100%;
-  justify-content: space-between;
 }

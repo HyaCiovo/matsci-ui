@@ -76,7 +76,7 @@ export const OpenAccessButton = ({
       rel={target === '_blank' ? 'noreferrer' : undefined}
       href={openAccessUrl}
       className={clsx('mpc-open-access-button', className)}
-      data-for={tooltipId}
+      data-tooltip-id={tooltipId}
     >
       {openAccessUrl ? <LockOpen /> : <span className="mpc-open-access-loader" />}
       {!compact ? <span className="ml-1">Open Access</span> : null}

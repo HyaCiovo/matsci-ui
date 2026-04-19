@@ -564,8 +564,8 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
                     hideTooltip();
                     setExpanded(!expanded);
                   }}
-                  data-tip
-                  data-for={`expand-${tooltipId}`}
+                 
+                  data-tooltip-id={`expand-${tooltipId}`}
                 >
                   {expanded ? <Minimize2 /> : <Maximize2 />}
                   <Tooltip id={`expand-${tooltipId}`} place="left">
@@ -577,8 +577,8 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
                 <button
                   className="button"
                   onClick={() => setShowSettingsPanel(!showSettingsPanel)}
-                  data-tip
-                  data-for={`settings-${tooltipId}`}
+                 
+                  data-tooltip-id={`settings-${tooltipId}`}
                 >
                   <Settings />
                   <Tooltip id={`settings-${tooltipId}`} place="left">
@@ -602,8 +602,8 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
                       );
                     }
                   }}
-                  data-tip
-                  data-for={`position-${tooltipId}`}
+                 
+                  data-tooltip-id={`position-${tooltipId}`}
                 >
                   <Undo2 />
                   <Tooltip id={`position-${tooltipId}`} place="left">
@@ -612,7 +612,7 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
                 </button>
               )}
               {props.showImageButton && (
-                <div onClick={() => hideTooltip()} data-tip data-for={`image-${tooltipId}`}>
+                <div onClick={() => hideTooltip()} data-tooltip-id={`image-${tooltipId}`}>
                   <Dropdown triggerIcon={<Camera />} isArrowless isRight>
                     <p
                       key={`image-export-png`}
@@ -661,7 +661,7 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
                 </div>
               )}
               {props.showExportButton && (
-                <div onClick={() => hideTooltip()} data-tip data-for={`export-${tooltipId}`}>
+                <div onClick={() => hideTooltip()} data-tooltip-id={`export-${tooltipId}`}>
                   <Dropdown triggerIcon={<FileOutput />} isArrowless isRight>
                     {props.fileOptions?.map((option, i) => (
                       <p

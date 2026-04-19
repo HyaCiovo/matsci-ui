@@ -383,7 +383,7 @@ describe('SelectableTable compatibility', () => {
     expect(detailPanel).toBeTruthy();
     expect(detailPanel).toHaveTextContent('Helium');
     expect(detailPanel).toHaveTextContent('He');
-    expect(detailPanel).toHaveTextContent('No. 2');
+    expect(detailPanel).toHaveTextContent('2');
   });
 
   it('clears hovered element details when the element becomes hidden by a filter', async () => {

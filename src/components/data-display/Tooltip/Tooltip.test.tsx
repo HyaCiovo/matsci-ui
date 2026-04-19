@@ -5,7 +5,7 @@ describe('Tooltip', () => {
   it('shows tooltip content when the trigger is hovered', async () => {
     render(
       <>
-        <button data-for="tooltip-1">Trigger</button>
+        <button data-tooltip-id="tooltip-1">Trigger</button>
         <Tooltip id="tooltip-1" delayShow={0}>
           Hello tooltip
         </Tooltip>
