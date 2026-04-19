@@ -6,7 +6,10 @@ export enum TableSelectionStyle {
 
 export enum TableLayout {
   FULL = 'full',
+  SPACED = 'spaced',
+  COMPACT = 'compact',
   MINI = 'mini',
+  MAP = 'map',
 }
 
 export interface SelectableTableLastAction {

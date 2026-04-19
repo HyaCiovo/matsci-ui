@@ -44,9 +44,6 @@ export function PeriodicTableElementButton({
         'mat-group': !!detail?.hasGroup,
       })}
       onClick={() => {
-        if (disabled) {
-          return;
-        }
         onToggle(element);
       }}
       onMouseEnter={() => {

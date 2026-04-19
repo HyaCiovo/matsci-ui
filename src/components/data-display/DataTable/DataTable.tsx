@@ -158,8 +158,8 @@ export const DataTable = ({
     }
 
     const selected = table.getSelectedRowModel().rows.map((row) => row.original);
-    setProps({ selectedRows: selected });
-  }, [rowSelection, setProps, table]);
+    setProps({ data, selectedRows: selected });
+  }, [data, rowSelection, setProps, table]);
 
   const visibleSelectorColumns = columnDefs.filter((column) => !column.excludeFromColumnsSelector);
   const rows = props.pagination ? table.getRowModel().rows : table.getPrePaginationRowModel().rows;

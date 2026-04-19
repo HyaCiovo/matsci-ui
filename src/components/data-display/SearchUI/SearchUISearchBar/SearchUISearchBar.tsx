@@ -5,12 +5,14 @@ import {
   type MaterialsInputProps,
   type MaterialsInputType,
 } from '../../../data-entry/MaterialsInput/MaterialsInput';
+import { MaterialsInputType as MaterialsInputTypeEnum } from '../../../data-entry/MaterialsInput/utils';
 import { useSearchUIContext } from '../SearchUIContextProvider';
 import type { SearchUIAllowedInputTypesMap } from '../types';
 
 export interface SearchUISearchBarProps
   extends Pick<
     MaterialsInputProps,
+    | 'inputClassName'
     | 'periodicTableMode'
     | 'placeholder'
     | 'errorMessage'
@@ -23,8 +25,21 @@ export interface SearchUISearchBarProps
     | 'hideWildcardButton'
     | 'label'
   > {
-  allowedInputTypesMap: SearchUIAllowedInputTypesMap;
+  className?: string;
+  allowedInputTypesMap?: SearchUIAllowedInputTypesMap;
 }
+
+const DEFAULT_ALLOWED_INPUT_TYPES_MAP: SearchUIAllowedInputTypesMap = {
+  [MaterialsInputTypeEnum.FORMULA]: { field: 'formula' },
+  [MaterialsInputTypeEnum.ELEMENTS]: { field: 'elements' },
+  [MaterialsInputTypeEnum.CHEMICAL_SYSTEM]: { field: 'chemsys' },
+  [MaterialsInputTypeEnum.MPID]: { field: 'material_ids' },
+  [MaterialsInputTypeEnum.TEXT]: { field: 'q' },
+  [MaterialsInputTypeEnum.SMILES]: { field: 'smiles' },
+  [MaterialsInputTypeEnum.MOLECULE_FORMULA]: { field: 'formula' },
+};
+
+const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 
 const getAllowedInputTypes = (allowedInputTypesMap: SearchUIAllowedInputTypesMap) => {
   return Object.keys(allowedInputTypesMap) as MaterialsInputType[];
@@ -79,6 +94,8 @@ const getCurrentInputType = ({
 
 export const SearchUISearchBar = ({
   allowedInputTypesMap,
+  className = 'is-medium',
+  inputClassName,
   periodicTableMode,
   placeholder,
   errorMessage,
@@ -91,21 +108,27 @@ export const SearchUISearchBar = ({
   hideWildcardButton,
   label,
 }: SearchUISearchBarProps) => {
-  const { autocompleteFormulaUrl, apiKey, query, submitSearch, setQuery } = useSearchUIContext();
-  const allowedInputTypes = getAllowedInputTypes(allowedInputTypesMap);
-  const allowedFields = getAllowedFields(allowedInputTypesMap);
+  const { autocompleteFormulaUrl, apiKey, query, submitSearch, setQuery, activeFilters, resultLabel } =
+    useSearchUIContext();
+  const resolvedAllowedInputTypesMap =
+    allowedInputTypesMap && Object.keys(allowedInputTypesMap).length > 0
+      ? allowedInputTypesMap
+      : DEFAULT_ALLOWED_INPUT_TYPES_MAP;
+  const allowedInputTypes = getAllowedInputTypes(resolvedAllowedInputTypesMap);
+  const allowedFields = getAllowedFields(resolvedAllowedInputTypesMap);
   const currentInputType = getCurrentInputType({
     query,
     allowedInputTypes,
-    allowedInputTypesMap,
+    allowedInputTypesMap: resolvedAllowedInputTypesMap,
   });
   const currentField = currentInputType
-    ? mapInputTypeToField(currentInputType, allowedInputTypesMap)
+    ? mapInputTypeToField(currentInputType, resolvedAllowedInputTypesMap)
     : undefined;
+  const shouldHidePeriodicTable = hidePeriodicTable || activeFilters.length > 0;
 
   const handleSubmit = async (event: React.FormEvent | MouseEvent, value?: string) => {
     const targetField = currentInputType
-      ? mapInputTypeToField(currentInputType, allowedInputTypesMap)
+      ? mapInputTypeToField(currentInputType, resolvedAllowedInputTypesMap)
       : undefined;
     if (!targetField || !value) {
       return;
@@ -131,7 +154,7 @@ export const SearchUISearchBar = ({
       type={currentInputType}
       onChange={(value) => {
         const targetField = currentInputType
-          ? mapInputTypeToField(currentInputType, allowedInputTypesMap)
+          ? mapInputTypeToField(currentInputType, resolvedAllowedInputTypesMap)
           : undefined;
         if (targetField) {
           setQuery({
@@ -150,14 +173,15 @@ export const SearchUISearchBar = ({
       chemicalSystemSelectHelpText={chemicalSystemSelectHelpText}
       elementsSelectHelpText={elementsSelectHelpText}
       helpItems={helpItems as InputHelpItem[] | undefined}
-      hidePeriodicTable={hidePeriodicTable}
       showTypeDropdown={showTypeDropdown}
       showSubmitButton={showSubmitButton}
       hideWildcardButton={hideWildcardButton}
-      label={label}
       autocompleteFormulaUrl={autocompleteFormulaUrl}
       autocompleteApiKey={apiKey}
       allowedInputTypes={allowedInputTypes}
+      inputClassName={inputClassName ?? className}
+      hidePeriodicTable={shouldHidePeriodicTable}
+      label={label ?? capitalize(resultLabel)}
     />
   );
 };

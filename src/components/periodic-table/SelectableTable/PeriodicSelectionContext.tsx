@@ -172,6 +172,10 @@ export function PeriodicSelectionProvider({
 
   const toggleElement = useCallback(
     (element: string) => {
+      if (DEFAULT_DISABLED_ELEMENTS[element]) {
+        return;
+      }
+
       if (selectionStyle === TableSelectionStyle.ENABLE_DISABLE) {
         setChangeOrigin('action');
         setDisabledRecord((current) => {
@@ -190,6 +194,13 @@ export function PeriodicSelectionProvider({
       setForwardOuterChangeState(true);
       setEnabledRecord((current) => {
         const enabled = !!current[element];
+        const explicitlyDisabled = !!disabledRecord[element];
+        const atSelectionLimit = Object.keys(current).length >= maxSelectionLimit;
+
+        if (explicitlyDisabled) {
+          return current;
+        }
+
         const nextEnabledRecord = { ...current };
         const nextLastAction: SelectableTableLastAction = enabled
           ? { type: 'deselect', element }
@@ -197,6 +208,11 @@ export function PeriodicSelectionProvider({
 
         if (enabled) {
           delete nextEnabledRecord[element];
+        } else if (selectionStyle === TableSelectionStyle.SELECT && maxSelectionLimit === 1 && atSelectionLimit) {
+          Object.keys(nextEnabledRecord).forEach((selectedElement) => {
+            delete nextEnabledRecord[selectedElement];
+          });
+          nextEnabledRecord[element] = true;
         } else if (selectionStyle === TableSelectionStyle.MULTI_INPUTS_SELECT) {
           // Legacy store exposed slot bookkeeping hooks, but no real consumer wired them.
           // Keep the effective user-facing behavior: one active element at a time.
@@ -212,7 +228,7 @@ export function PeriodicSelectionProvider({
         return nextEnabledRecord;
       });
     },
-    [selectionStyle]
+    [disabledRecord, maxSelectionLimit, selectionStyle]
   );
 
   const actions = useMemo<PeriodicSelectionActions>(

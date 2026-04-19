@@ -183,6 +183,24 @@ describe('SelectableTable compatibility', () => {
     expect(heliumButton).toHaveClass('disabled');
   });
 
+  it('replaces the previous selection when maxElementSelectable is 1 in select mode', () => {
+    const handleStateChange = vi.fn();
+
+    render(<SelectableTable maxElementSelectable={1} onStateChange={handleStateChange} />);
+
+    const lithiumButton = screen.getByTestId('periodic-element-Li');
+    const heliumButton = screen.getByTestId('periodic-element-He');
+
+    fireEvent.click(lithiumButton);
+    expect(handleStateChange).toHaveBeenLastCalledWith(['Li']);
+    expect(heliumButton).toHaveClass('disabled');
+
+    fireEvent.click(heliumButton);
+    expect(handleStateChange).toHaveBeenLastCalledWith(['He']);
+    expect(lithiumButton).not.toHaveClass('enabled');
+    expect(heliumButton).toHaveClass('enabled');
+  });
+
   it('applies the same max-limit disabling behavior in multi-input-select mode', () => {
     render(
       <SelectableTable

@@ -21,19 +21,19 @@ export interface BibCardProps {
   children?: ReactNode;
 }
 
-const stripHtml = (value?: string) => (value ? value.replace(/<[^>]*>/g, '') : '');
-
 export const BibCard = ({ title = '', ...otherProps }: BibCardProps) => {
   const props = { title, ...otherProps };
   const url = props.doi ? `https://doi.org/${props.doi}` : undefined;
-  const titleText = stripHtml(props.title);
 
   const titleElement = url ? (
-    <a href={url} target="_blank" rel="noreferrer">
-      {titleText}
-    </a>
+    <a
+      href={url}
+      target="_blank"
+      rel="noreferrer"
+      dangerouslySetInnerHTML={{ __html: props.title || '' }}
+    />
   ) : (
-    <span>{titleText}</span>
+    <span dangerouslySetInnerHTML={{ __html: props.title || '' }} />
   );
 
   return (
@@ -57,4 +57,3 @@ export const BibCard = ({ title = '', ...otherProps }: BibCardProps) => {
     </div>
   );
 };
-

@@ -114,7 +114,11 @@ export const PublicationButton = ({
     >
       <FaBook />
       {!compact ? <span className="mpc-publication-label">{linkLabel || 'Publication'}</span> : null}
-      {tooltipId && tooltipText ? <Tooltip id={tooltipId}>{tooltipText}</Tooltip> : null}
+      {tooltipId && tooltipText ? (
+        <Tooltip id={tooltipId} html>
+          <span dangerouslySetInnerHTML={{ __html: tooltipText }} />
+        </Tooltip>
+      ) : null}
     </a>
   );
 };

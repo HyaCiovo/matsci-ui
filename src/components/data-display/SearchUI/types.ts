@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, RefObject } from 'react';
 
 export enum FilterType {
   SLIDER = 'SLIDER',
@@ -41,9 +41,20 @@ export interface ActiveFilter {
   params: string[];
   defaultValue?: any;
   conversionFactor?: number;
-  searchParams?: string[];
+  searchParams?: SearchParam[];
   isSearchBarField?: boolean;
 }
+
+export interface SearchParam {
+  field: string;
+  value: any;
+}
+
+export interface SearchParams {
+  [id: string]: any;
+}
+
+export type FilterValues = Partial<Record<string, any>>;
 
 export enum ColumnFormat {
   FIXED_DECIMAL = 'FIXED_DECIMAL',
@@ -121,7 +132,7 @@ export interface SearchUILegacyState {
   fieldsKey: string;
   totalKey: string;
   sortFields: (string | null | undefined)[];
-  resultsRef: React.RefObject<HTMLDivElement> | null;
+  resultsRef: RefObject<HTMLDivElement> | null;
   results: any[];
   totalResults: number;
   loading: boolean;
@@ -131,6 +142,29 @@ export interface SearchUILegacyState {
   disableRichColumnHeaders?: boolean;
   cardOptions?: any;
   setProps: (value: any) => any;
+}
+
+export interface SearchState extends SearchUIContainerProps {
+  setProps: (value: any) => any;
+  sortFields: (string | null | undefined)[];
+  sortKey: string;
+  skipKey: string;
+  limitKey: string;
+  fieldsKey: string;
+  totalKey: string;
+  defaultLimit?: number;
+  defaultSkip?: number;
+  totalResults?: number;
+  activeFilters?: ActiveFilter[];
+  loading?: boolean;
+  error?: string | null;
+  searchBarValue?: string;
+  resultsRef?: RefObject<HTMLDivElement> | null;
+}
+
+export interface SearchContextValue {
+  state: SearchState;
+  query: SearchParams;
 }
 
 export interface SearchUIContextValue {
@@ -158,7 +192,7 @@ export interface SearchUIContextValue {
   fieldsKey: string;
   totalKey: string;
   sortFields: (string | null | undefined)[];
-  resultsRef: React.RefObject<HTMLDivElement> | null;
+  resultsRef: RefObject<HTMLDivElement> | null;
   debounce: number;
   searchBarValue: string;
   state: SearchUILegacyState;
@@ -178,7 +212,7 @@ export interface SearchUIContextValue {
   setSortAscending: (sortAscending: boolean) => Promise<void>;
   setView: (view: SearchUIViewType) => void;
   setColumns: (columns: Column[]) => void;
-  setResultsRef: (resultsRef: React.RefObject<HTMLDivElement> | null) => void;
+  setResultsRef: (resultsRef: RefObject<HTMLDivElement> | null) => void;
   setFilterValue: (value: any, param: string, overrides?: string[]) => Promise<void>;
   setFilterValues: (values: any[], params: string[], overrides?: string[]) => Promise<void>;
   removeFilter: (param: string) => Promise<void>;
