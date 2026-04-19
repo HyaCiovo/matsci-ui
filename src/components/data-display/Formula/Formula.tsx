@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { ELEMENTS_REGEX, ELEMENTS_SPLIT_REGEX } from '../../../utils/formula';
 
 export interface FormulaProps {
@@ -19,7 +19,7 @@ export const Formula = ({ id, className, children }: FormulaProps) => {
   const splitFormula = children.match(ELEMENTS_SPLIT_REGEX) ?? [];
 
   return (
-    <span data-testid="formula" id={id} className={classNames('mpc-formula', className)}>
+    <span data-testid="formula" id={id} className={clsx('mpc-formula', className)}>
       {splitFormula.map((part, index) => (
         <span key={`${part}-${index}`}>{formulaItem(part)}</span>
       ))}

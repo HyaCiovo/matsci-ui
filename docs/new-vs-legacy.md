@@ -9,6 +9,7 @@
   - `navigation`
   - `publications`
   - `data-display` 主路径
+- 新库约定统一使用 `clsx` 进行 `className` 拼接，不再使用 `classnames`
 - 当前仍属于部分迁移的模块：
   - `periodic-table`
   - `crystal-toolkit`
@@ -42,7 +43,7 @@
 
 ### DataTable
 
-- `DataTable.setProps` 已恢复旧回传结构中的 `data + selectedRows`。
+- `DataTable.setProps` 当前回传结构为 `selectedRows`。
 
 ### Periodic Table
 

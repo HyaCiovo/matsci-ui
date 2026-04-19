@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FaCircle } from 'react-icons/fa';
 import { Markdown } from '../../data-display/Markdown';
@@ -92,7 +92,7 @@ export const NotificationDropdown = ({
       id={id}
       ref={dropdownRef}
       data-testid="notification-dropdown"
-      className={classNames('navbar-item has-dropdown', className, { 'is-active': isActive })}
+      className={clsx('navbar-item has-dropdown', className, { 'is-active': isActive })}
       onClick={() => {
         setIsActive((current) => !current);
         if (!isMessageLevel) {
@@ -100,11 +100,11 @@ export const NotificationDropdown = ({
         }
       }}
     >
-      <a className={classNames('navbar-link', 'is-arrowless')}>
+      <a className={clsx('navbar-link', 'is-arrowless')}>
         <Bell showBadge={hasUnreadMessages} />
       </a>
 
-      <div className={classNames('navbar-dropdown', { 'is-right': isRight })}>
+      <div className={clsx('navbar-dropdown', { 'is-right': isRight })}>
         {items.map((item, index) => (
           <div
             key={`notification-item-${index}`}
@@ -115,7 +115,7 @@ export const NotificationDropdown = ({
           >
             <ModalContextProvider>
               <ModalTrigger>
-                <a className={classNames('navbar-item', item.className)}>
+                <a className={clsx('navbar-item', item.className)}>
                   {isMessageLevel && !unreadMessages.find((message) => message.id === item.id)?.isRead ? (
                     <FaCircle className="notification-dot" />
                   ) : null}
@@ -135,7 +135,7 @@ export const NotificationDropdown = ({
         ))}
 
         {link ? (
-          <a className={classNames('navbar-item', 'more')} href={link} target="_blank" rel="noreferrer">
+          <a className={clsx('navbar-item', 'more')} href={link} target="_blank" rel="noreferrer">
             More
           </a>
         ) : null}

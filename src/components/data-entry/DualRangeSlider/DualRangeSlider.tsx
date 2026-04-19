@@ -1,5 +1,5 @@
 import * as Slider from '@radix-ui/react-slider';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { useDebounce } from '../../../utils/hooks';
 import './DualRangeSlider.css';
@@ -78,7 +78,7 @@ export const DualRangeSlider = ({
   };
 
   return (
-    <div className={classNames('mpc-dual-range-slider', className)}>
+    <div className={clsx('mpc-dual-range-slider', className)}>
       <div className="field has-addons mb-4">
         <div className="control is-expanded">
           <input

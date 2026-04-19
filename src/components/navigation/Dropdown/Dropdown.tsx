@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { type ReactNode } from 'react';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
@@ -46,14 +46,14 @@ export const Dropdown = ({
       <div
         data-testid="mpc-dropdown"
         id={id}
-        className={classNames('dropdown is-active', className, {
+        className={clsx('dropdown is-active', className, {
           'is-up': isUp,
           'is-right': isRight,
         })}
       >
         <div className="dropdown-trigger">
           <DropdownMenu.Trigger asChild>
-            <button type="button" className={classNames(triggerClassName)}>
+            <button type="button" className={clsx(triggerClassName)}>
               {renderIcon(triggerIcon)}
               {triggerLabel ? <span>{triggerLabel}</span> : null}
               {!isArrowless ? (

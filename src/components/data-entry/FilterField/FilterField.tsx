@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { type CSSProperties, type PropsWithChildren } from 'react';
 import { FaRegTimesCircle } from 'react-icons/fa';
 import { Tooltip } from '../../data-display/Tooltip';
@@ -21,7 +21,7 @@ export const FilterField = ({ dois = [], ...props }: FilterFieldProps) => {
 
   const innerLabel = (
     <span
-      className={classNames({
+      className={clsx({
         'tooltip-label': props.tooltip,
       })}
       data-tip={props.tooltip ? true : undefined}
@@ -35,7 +35,7 @@ export const FilterField = ({ dois = [], ...props }: FilterFieldProps) => {
   );
 
   return (
-    <div id={props.id} className={classNames('mpc-filter-field', props.className)}>
+    <div id={props.id} className={clsx('mpc-filter-field', props.className)}>
       {props.label ? (
         <div className="mpc-filter-label" style={props.styleLabel}>
           {props.active && props.resetFilter ? (

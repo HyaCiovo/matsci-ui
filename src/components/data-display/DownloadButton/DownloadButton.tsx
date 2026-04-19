@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { type ReactNode } from 'react';
 import { downloadAs, type DownloadType } from '../../../utils/download';
 
@@ -25,7 +25,7 @@ export const DownloadButton = ({
     <button
       type="button"
       id={id}
-      className={classNames('mpc-download-button', className)}
+      className={clsx('mpc-download-button', className)}
       data-tooltip={tooltip}
       onClick={() => downloadAs[filetype](data, filename)}
     >

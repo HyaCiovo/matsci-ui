@@ -1,5 +1,5 @@
 import axios from 'axios';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FaLockOpen } from 'react-icons/fa';
 import { Tooltip } from '../../data-display/Tooltip';
@@ -75,7 +75,7 @@ export const OpenAccessButton = ({
       target={target}
       rel={target === '_blank' ? 'noreferrer' : undefined}
       href={openAccessUrl}
-      className={classNames('mpc-open-access-button', className)}
+      className={clsx('mpc-open-access-button', className)}
       data-for={tooltipId}
     >
       {openAccessUrl ? <FaLockOpen /> : <span className="mpc-open-access-loader" />}

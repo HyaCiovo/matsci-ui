@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import type { MatElement } from '../periodic-table-data/table-v2';
 import { categoryToClassName } from './selection-state';
 import type { SelectableTableLastAction } from './types';
@@ -36,7 +36,7 @@ export function PeriodicTableElementButton({
         gridColumn: `${xpos}`,
         gridRow: `${ypos}`,
       }}
-      className={classNames('mat-element', {
+      className={clsx('mat-element', {
         enabled,
         disabled,
         'default-disabled': defaultDisabled,

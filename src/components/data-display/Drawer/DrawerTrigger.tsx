@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { type ReactNode } from 'react';
 import { useDrawerContext } from './DrawerContextProvider';
 
@@ -16,7 +16,7 @@ export const DrawerTrigger = ({ id, className, forDrawerId, children }: DrawerTr
   return (
     <span
       id={id}
-      className={classNames('mpc-drawer-trigger', className)}
+      className={clsx('mpc-drawer-trigger', className)}
       onClick={() => setActiveDrawer(activeDrawer === forDrawerId ? null : forDrawerId)}
     >
       {children}

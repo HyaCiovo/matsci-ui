@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { AiOutlineFund, AiOutlineSetting } from 'react-icons/ai';
 import './Sidebar.css';
 
@@ -100,9 +100,9 @@ const SidebarItem = ({
   }
 
   return (
-    <span className={classNames('sidebar-menu-item', { selected: selectedParentAppId === app.id })}>
+    <span className={clsx('sidebar-menu-item', { selected: selectedParentAppId === app.id })}>
       {renderedIcon ? (
-        <span className={classNames('sidebar-item icon', renderedIcon)} />
+        <span className={clsx('sidebar-item icon', renderedIcon)} />
       ) : (
         <span className="sidebar-item">{renderedSvg}</span>
       )}
@@ -135,7 +135,7 @@ export const Sidebar = ({ width, currentApp, onAppSelected, layout, height }: Si
 
   return (
     <div
-      className={classNames('sidebar', layout)}
+      className={clsx('sidebar', layout)}
       style={layout === 'vertical' ? { width } : { height }}
       onMouseLeave={() => setOpenAppId(null)}
     >
@@ -155,16 +155,16 @@ export const Sidebar = ({ width, currentApp, onAppSelected, layout, height }: Si
       </div>
 
       {openAppId && activeSubApps.length ? (
-        <div data-testid="sidebar-popover" className={classNames('sidebar-popover', layout)}>
+        <div data-testid="sidebar-popover" className={clsx('sidebar-popover', layout)}>
           {activeSubApps.map((app) => (
             <button
               key={app.id}
               type="button"
-              className={classNames('sidebar-menu-item', { selected: currentAppId === app.id })}
+              className={clsx('sidebar-menu-item', { selected: currentAppId === app.id })}
               onClick={() => setApp(app.id)}
             >
               {app.icon ? (
-                <span className={classNames('sidebar-item icon', app.icon)} />
+                <span className={clsx('sidebar-item icon', app.icon)} />
               ) : (
                 <span className="sidebar-item">{app.svg}</span>
               )}

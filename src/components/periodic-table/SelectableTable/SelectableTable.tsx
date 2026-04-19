@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { useCallback, useEffect, useMemo } from 'react';
 import { type MatElement } from '../periodic-table-data/table-v2';
 import { getSelectableTableStateChange } from './selection-state';
@@ -117,7 +117,7 @@ function SelectableTableView({
 
   return (
     <div
-      className={classNames('mpc-selectable-table', className, {
+      className={clsx('mpc-selectable-table', className, {
         'mpc-selectable-table-mini': forceTableLayout === TableLayout.MINI,
       })}
       data-table-layout={forceTableLayout}

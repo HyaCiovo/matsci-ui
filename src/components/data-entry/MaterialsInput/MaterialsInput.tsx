@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import {
   useCallback,
   type ChangeEvent,
@@ -497,7 +497,7 @@ export const MaterialsInput = ({
   const disableSubmitButton = !!props.loading || !!error || !inputValue;
 
   return (
-    <div id={props.id} className={classNames('mpc-materials-input', props.className)}>
+    <div id={props.id} className={clsx('mpc-materials-input', props.className)}>
       {props.showSubmitButton ? (
         <form data-testid="materials-input-form" onSubmit={(event) => handleSubmit(event)}>
           <MaterialsInputBox
@@ -609,7 +609,7 @@ export const MaterialsInput = ({
       {hasPeriodicTable ? (
         <div
           data-testid="materials-input-periodic-table"
-          className={classNames('materials-input-elements-panel', {
+          className={clsx('materials-input-elements-panel', {
             'is-hidden': !showPeriodicTable,
             'mt-3': showPeriodicTable,
           })}

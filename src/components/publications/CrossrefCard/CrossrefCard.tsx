@@ -1,5 +1,5 @@
 import axios from 'axios';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { BibCard } from '../BibCard';
 
@@ -49,7 +49,7 @@ export const CrossrefCard = ({
 
   if (!crossref) {
     return (
-      <div id={props.id} className={classNames(props.className)}>
+      <div id={props.id} className={clsx(props.className)}>
         {failedRequest ? props.errorMessage : 'Loading...'}
       </div>
     );

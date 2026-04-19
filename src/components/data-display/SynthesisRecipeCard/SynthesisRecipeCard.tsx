@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { FaArrowRight } from 'react-icons/fa';
 import { DataBlock } from '../DataBlock';
 import { Formula } from '../Formula';
@@ -77,7 +77,7 @@ const RenderParagraphOrHighlight = ({
   highlights?: any[];
   className?: string;
 }) => (
-  <div className={classNames('mpc-synthesis-card-paragraph has-text-grey-dark', className)}>
+  <div className={clsx('mpc-synthesis-card-paragraph has-text-grey-dark', className)}>
     <p>
       "
       {highlights
@@ -86,7 +86,7 @@ const RenderParagraphOrHighlight = ({
               {highlight.texts.map((text: any, textIndex: number) => (
                 <span
                   key={textIndex}
-                  className={classNames({
+                  className={clsx({
                     'mpc-synthesis-card-highlight-hit': text.type === 'hit',
                   })}
                 >
@@ -206,7 +206,7 @@ export const SynthesisRecipeCard = ({ id, className, data }: SynthesisRecipeCard
   return (
     <DataBlock
       id={id}
-      className={classNames('mpc-synthesis-card', className)}
+      className={clsx('mpc-synthesis-card', className)}
       data={{
         targetFormula: data.target.material_formula,
         precursorFormulas: data.precursors_formula_s,

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { useEffect, useMemo, useState } from 'react';
 import { FaCaretDown, FaCaretRight, FaRegTimesCircle } from 'react-icons/fa';
 import { CheckboxList } from '../../../data-entry/CheckboxList';
@@ -160,7 +160,7 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
   const renderedGroups = useMemo(() => filterGroups, [filterGroups]);
 
   return (
-    <div className={classNames('panel', className)}>
+    <div className={clsx('panel', className)}>
       <div className="panel-heading">
         <div className="level is-mobile">
           <span>Filters</span>
@@ -179,7 +179,7 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
           return (
             <div
               key={group.name}
-              className={classNames('panel-block', { 'is-active': groupState.expanded })}
+              className={clsx('panel-block', { 'is-active': groupState.expanded })}
             >
               <div className="control">
                 <h3 className="panel-block-title">
@@ -194,7 +194,7 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
                     <span className="mr-4">
                       {groupState.alwaysExpanded ? null : groupState.expanded ? <FaCaretDown /> : <FaCaretRight />}
                     </span>
-                    <span className={classNames('is-size-5', { 'has-opacity-70': !groupState.expanded })}>
+                    <span className={clsx('is-size-5', { 'has-opacity-70': !groupState.expanded })}>
                       {group.name}
                       {groupState.activeFilterCount > 0 ? (
                         <span className="tag is-link is-rounded ml-2">{groupState.activeFilterCount} active</span>
@@ -204,7 +204,7 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
                 </h3>
                 <div
                   id={`filter-group-${index}`}
-                  className={classNames('panel-block-children', { 'is-hidden': !groupState.expanded })}
+                  className={clsx('panel-block-children', { 'is-hidden': !groupState.expanded })}
                 >
                   <div aria-hidden={!groupState.expanded}>
                     {group.filters.map((filter) =>

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { type Dispatch, type ReactNode, type SetStateAction, useState } from 'react';
 import { FaCompress, FaExpand } from 'react-icons/fa';
 import './Enlargeable.css';
@@ -28,19 +28,19 @@ export const Enlargeable = ({
   return (
     <div
       id={id}
-      className={classNames('mpc-enlargeable', {
+      className={clsx('mpc-enlargeable', {
         'modal is-active': expanded,
         [className]: !expanded,
       })}
     >
       <div
-        className={classNames({
+        className={clsx({
           'modal-background': expanded,
         })}
         onClick={() => setExpanded(false)}
       />
       <div
-        className={classNames({
+        className={clsx({
           'modal-content is-large': expanded,
           [className]: expanded,
         })}

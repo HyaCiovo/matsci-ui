@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { type ReactNode } from 'react';
 import { useModalContext } from './ModalContextProvider';
 
@@ -15,7 +15,7 @@ export const ModalTrigger = ({ id, className, children }: ModalTriggerProps) => 
   return (
     <span
       id={id}
-      className={classNames('mpc-modal-trigger', className)}
+      className={clsx('mpc-modal-trigger', className)}
       onClick={() => setActive(!active)}
     >
       {children}

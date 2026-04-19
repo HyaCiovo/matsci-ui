@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import type { ReactNode } from 'react';
 import './DataCard.css';
 
@@ -28,7 +28,7 @@ export const DataCard = ({
   leftComponent,
 }: DataCardProps) => {
   return (
-    <div id={id} className={classNames('mpc-data-card', className)}>
+    <div id={id} className={clsx('mpc-data-card', className)}>
       <div className="mpc-data-card-left">{leftComponent}</div>
       <div className="mpc-data-card-right">
         {levelOneKey ? <p className="title is-4">{data[levelOneKey]}</p> : null}

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { type ReactNode, useState } from 'react';
 import { FaAngleDown } from 'react-icons/fa';
 import { downloadAs, type DownloadType } from '../../../utils/download';
@@ -34,12 +34,12 @@ export const DownloadDropdown = ({
     <div
       id={id}
       data-testid="mpc-download-dropdown"
-      className={classNames('mpc-download-dropdown dropdown', className, { 'is-active': open })}
+      className={clsx('mpc-download-dropdown dropdown', className, { 'is-active': open })}
     >
       <div className="dropdown-trigger">
         <button
           type="button"
-          className={classNames('button', buttonClassName)}
+          className={clsx('button', buttonClassName)}
           data-tooltip={tooltip}
           onClick={() => setOpen((current) => !current)}
         >

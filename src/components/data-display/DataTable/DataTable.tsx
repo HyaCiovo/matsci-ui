@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import {
   type PaginationState,
   type SortingState,
@@ -158,14 +158,14 @@ export const DataTable = ({
     }
 
     const selected = table.getSelectedRowModel().rows.map((row) => row.original);
-    setProps({ data, selectedRows: selected });
-  }, [data, rowSelection, setProps, table]);
+    setProps({ selectedRows: selected });
+  }, [rowSelection, setProps, table]);
 
   const visibleSelectorColumns = columnDefs.filter((column) => !column.excludeFromColumnsSelector);
   const rows = props.pagination ? table.getRowModel().rows : table.getPrePaginationRowModel().rows;
 
   return (
-    <div id={props.id} className={classNames('mpc-data-table', className)}>
+    <div id={props.id} className={clsx('mpc-data-table', className)}>
       {props.hasHeader ? (
         <div className="mpc-data-table-header">
           <div className="mpc-data-table-toolbar">
@@ -203,7 +203,7 @@ export const DataTable = ({
                   return (
                     <th
                       key={header.id}
-                      className={classNames({
+                      className={clsx({
                         'is-right': column?.right,
                         'is-center': column?.center,
                       })}
@@ -225,7 +225,7 @@ export const DataTable = ({
               return (
                 <tr
                   key={row.id}
-                  className={classNames({ 'is-clickable': props.selectableRows })}
+                  className={clsx({ 'is-clickable': props.selectableRows })}
                   style={conditionalStyle?.style}
                   onClick={props.selectableRows ? () => row.toggleSelected() : undefined}
                 >
@@ -234,7 +234,7 @@ export const DataTable = ({
                     return (
                       <td
                         key={cell.id}
-                        className={classNames({
+                        className={clsx({
                           'is-right': column?.right,
                           'is-center': column?.center,
                         })}

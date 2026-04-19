@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { useState } from 'react';
 import { FaAngleDown, FaBars, FaTimes } from 'react-icons/fa';
 import { Link } from '../Link';
@@ -32,7 +32,7 @@ const InternalOrExternalLink = ({
   if (item.href && isUrl(item.href)) {
     return (
       <a
-        className={classNames('navbar-item', className, item.className)}
+        className={clsx('navbar-item', className, item.className)}
         href={item.href}
         target={item.target}
         rel={item.target === '_blank' ? 'noreferrer' : undefined}
@@ -44,7 +44,7 @@ const InternalOrExternalLink = ({
   }
 
   return (
-    <Link className={classNames('navbar-item', className, item.className)} href={item.href || ''}>
+    <Link className={clsx('navbar-item', className, item.className)} href={item.href || ''}>
       <Icon icon={item.icon} />
       {item.label}
     </Link>
@@ -58,12 +58,12 @@ export const Navbar = ({ id, className, items = [], brandItem, children }: Navba
   return (
     <nav
       id={id}
-      className={classNames('navbar', className)}
+      className={clsx('navbar', className)}
       role="navigation"
       aria-label="main navigation"
     >
       <div className="navbar-brand">
-        <Link className={classNames('navbar-item', brandItem.className)} href={brandItem.href || ''}>
+        <Link className={clsx('navbar-item', brandItem.className)} href={brandItem.href || ''}>
           {brandItem.image ? <img src={brandItem.image} alt={brandItem.label || 'brand'} /> : null}
           {!brandItem.image ? <Icon icon={brandItem.icon} /> : null}
           {brandItem.label}
@@ -84,7 +84,7 @@ export const Navbar = ({ id, className, items = [], brandItem, children }: Navba
             item.items ? (
               <NavbarDropdown
                 key={`navbar-item-${index}`}
-                className={classNames('navbar-item', item.className)}
+                className={clsx('navbar-item', item.className)}
                 items={item.items}
                 isArrowless={item.isArrowless}
                 isRight={item.isRight}
@@ -102,9 +102,9 @@ export const Navbar = ({ id, className, items = [], brandItem, children }: Navba
         </div>
       </div>
 
-      <div data-testid="navbar-mobile" className={classNames('navbar-mobile', { 'is-active': activeMobile })}>
+      <div data-testid="navbar-mobile" className={clsx('navbar-mobile', { 'is-active': activeMobile })}>
         <div className="navbar-brand">
-          <Link className={classNames('navbar-item', brandItem.className)} href={brandItem.href || ''}>
+          <Link className={clsx('navbar-item', brandItem.className)} href={brandItem.href || ''}>
             {brandItem.image ? <img src={brandItem.image} alt={brandItem.label || 'brand'} /> : null}
             {!brandItem.image ? <Icon icon={brandItem.icon} /> : null}
             {!brandItem.image && !brandItem.icon ? brandItem.label : null}
@@ -168,7 +168,7 @@ export const Navbar = ({ id, className, items = [], brandItem, children }: Navba
       </div>
 
       <div
-        className={classNames('modal-background', { 'is-hidden-by-opacity': !activeMobile })}
+        className={clsx('modal-background', { 'is-hidden-by-opacity': !activeMobile })}
         onClick={() => setActiveMobile(false)}
       ></div>
     </nav>

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { useMemo } from 'react';
 import { TABLE_V2 } from '../periodic-table-data/table-v2';
 import { categoryToClassName, getElementDetail } from './selection-state';
@@ -32,7 +32,7 @@ export function PeriodicTableSpacer({ plugin, disabled = false }: PeriodicTableS
         plugin
       )}
       <div
-        className={classNames('element-description mpc-selectable-table-detail', {
+        className={clsx('element-description mpc-selectable-table-detail', {
           'is-empty': !detailedElement,
         })}
       >
@@ -40,7 +40,7 @@ export function PeriodicTableSpacer({ plugin, disabled = false }: PeriodicTableS
           <>
             <div className="mpc-selectable-table-detail-header">
               <div
-                className={classNames(
+                className={clsx(
                   'mpc-selectable-table-detail-tile',
                   categoryToClassName(detailedElement.category, detailedElement.symbol)
                 )}

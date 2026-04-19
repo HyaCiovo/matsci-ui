@@ -1,5 +1,5 @@
 import axios from 'axios';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FaBook } from 'react-icons/fa';
 import { Tooltip } from '../../data-display/Tooltip';
@@ -106,7 +106,7 @@ export const PublicationButton = ({
     <a
       data-testid="publication-button"
       id={id}
-      className={classNames('mpc-publication-button', className)}
+      className={clsx('mpc-publication-button', className)}
       href={url}
       target={target}
       rel={target === '_blank' ? 'noreferrer' : undefined}

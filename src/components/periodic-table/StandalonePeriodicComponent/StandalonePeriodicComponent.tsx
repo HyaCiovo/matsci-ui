@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import type { CSSProperties } from 'react';
 import type { MatElement } from '../periodic-table-data/table-v2';
 import { TABLE_V2 } from '../periodic-table-data/table-v2';
@@ -62,7 +62,7 @@ export function StandalonePeriodicComponent({
     <div className="mp-element-wrapper" style={style}>
       <button
         type="button"
-        className={classNames('mat-element', displayMode, categoryToClassName(detail.category, detail.symbol), {
+        className={clsx('mat-element', displayMode, categoryToClassName(detail.category, detail.symbol), {
           enabled: cl.enabled,
           disabled: cl.disabled,
           hidden: cl.hidden,

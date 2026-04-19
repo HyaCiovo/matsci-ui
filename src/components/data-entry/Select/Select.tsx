@@ -1,5 +1,5 @@
 import * as RadixSelect from '@radix-ui/react-select';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { FaCheck, FaChevronDown, FaTimes } from 'react-icons/fa';
 import './Select.css';
 
@@ -39,7 +39,7 @@ export const Select = ({
   const internalValue = selectedOption ? getInternalOptionValue(selectedOption) : '';
 
   return (
-    <div className={classNames('mpc-select', className)}>
+    <div className={clsx('mpc-select', className)}>
       <div className="mpc-select-shell">
         <RadixSelect.Root
           value={internalValue}

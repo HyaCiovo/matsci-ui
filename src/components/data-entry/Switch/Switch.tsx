@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { FaToggleOff, FaToggleOn } from 'react-icons/fa';
 import './Switch.css';
 
@@ -32,7 +32,7 @@ export const Switch = ({
   };
 
   return (
-    <div id={id} className={classNames('mpc-switch', className)}>
+    <div id={id} className={clsx('mpc-switch', className)}>
       <button
         type="button"
         className="mpc-switch-button"

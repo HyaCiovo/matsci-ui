@@ -1,5 +1,5 @@
 import * as Slider from '@radix-ui/react-slider';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { useEffect, useMemo, useState } from 'react';
 import { useDebounce } from '../../../utils/hooks';
 import './RangeSlider.css';
@@ -132,7 +132,7 @@ export const RangeSlider = ({
   }, [debouncedInputValue]);
 
   return (
-    <div id={id} className={classNames('mpc-range-slider', className, { 'no-ticks': !tickMarks })}>
+    <div id={id} className={clsx('mpc-range-slider', className, { 'no-ticks': !tickMarks })}>
       <input
         data-testid="range-slider-input"
         className="input is-small"

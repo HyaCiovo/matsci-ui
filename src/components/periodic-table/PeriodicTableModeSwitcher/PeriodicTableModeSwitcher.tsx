@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { FaAsterisk } from 'react-icons/fa';
 import { Markdown } from '../../data-display/Markdown';
 import { Tooltip } from '../../data-display/Tooltip';
@@ -37,7 +37,7 @@ export const PeriodicTableModeSwitcher = ({
           <div className="tabs is-small is-toggle is-toggle-rounded is-centered">
             <ul>
               {allowedModes.map((mode) => (
-                <li key={mode} className={classNames({ 'is-active': mode === props.mode })}>
+                <li key={mode} className={clsx({ 'is-active': mode === props.mode })}>
                   <button type="button" onClick={() => props.onSwitch(mode)}>
                     <span>{PERIODIC_TABLE_MODE_LABELS[mode]}</span>
                   </button>

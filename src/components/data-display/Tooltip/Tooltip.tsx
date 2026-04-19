@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import {
   autoUpdate,
   flip,
@@ -154,7 +154,7 @@ export const Tooltip = ({
         ref={refs.setFloating}
         role="tooltip"
         style={{ ...floatingStyles, ...style }}
-        className={classNames('mpc-tooltip', className)}
+        className={clsx('mpc-tooltip', className)}
         data-border={border}
       >
         {content}

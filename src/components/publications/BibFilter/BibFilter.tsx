@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { useMemo, useState } from 'react';
 import { SortDropdown } from '../../data-display/SortDropdown';
 import { BibjsonCard } from '../BibjsonCard';
@@ -70,7 +70,7 @@ export const BibFilter = ({
   );
 
   return (
-    <div id={props.id} data-testid="bibjson-filter" className={classNames('mpc-bib-filter', props.className)}>
+    <div id={props.id} data-testid="bibjson-filter" className={clsx('mpc-bib-filter', props.className)}>
       <div className="mpc-bib-filter-controls">
         <input
           className="mpc-bib-filter-input input"

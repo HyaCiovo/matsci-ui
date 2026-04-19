@@ -1,5 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import './Modal.css';
 import { ModalCloseButton } from './ModalCloseButton/ModalCloseButton';
 import { useModalContext } from './ModalContextProvider';
@@ -17,7 +17,7 @@ export const Modal = ({ id, className, children }: ModalProps) => {
   return (
     <Dialog.Root open={active} onOpenChange={(nextOpen) => (!forceAction ? setActive(nextOpen) : undefined)}>
       <Dialog.Portal>
-        <div id={id} className={classNames('mpc-modal modal', className, { 'is-active': active })}>
+        <div id={id} className={clsx('mpc-modal modal', className, { 'is-active': active })}>
           <Dialog.Overlay className="modal-background" />
           <Dialog.Content
             className="modal-content"

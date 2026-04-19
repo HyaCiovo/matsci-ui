@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import './Paginator.css';
 
@@ -50,7 +50,7 @@ export const Paginator = ({
   const visiblePages = getVisiblePages(currentPage, pageCount);
 
   return (
-    <div data-testid="mpc-paginator" className={classNames('mpc-paginator', className)}>
+    <div data-testid="mpc-paginator" className={clsx('mpc-paginator', className)}>
       <div className="mpc-paginator-controls">
         <label className="is-size-7">
           <span className="mr-2">Jump to</span>
@@ -100,7 +100,7 @@ export const Paginator = ({
             <button
               key={page}
               type="button"
-              className={classNames('button is-small', { 'is-primary': page === currentPage })}
+              className={clsx('button is-small', { 'is-primary': page === currentPage })}
               aria-label={page === currentPage ? `Go to page ${page}` : `Page ${page}`}
               onClick={() => onChangePage(page)}
             >

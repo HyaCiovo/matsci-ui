@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import type { SearchUIContainerProps } from '../types';
 import { SearchUIContextProvider } from '../SearchUIContextProvider';
 
@@ -38,7 +38,7 @@ export const SearchUIContainer = ({
   children,
 }: SearchUIContainerProps) => {
   return (
-    <div id={id} className={classNames('mpc-search-ui', className)}>
+    <div id={id} className={clsx('mpc-search-ui', className)}>
       <SearchUIContextProvider
         id={id}
         className={className}

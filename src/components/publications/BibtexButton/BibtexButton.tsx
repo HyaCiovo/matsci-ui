@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import type React from 'react';
 
 export interface BibtexButtonProps extends React.HTMLProps<HTMLAnchorElement> {
@@ -19,7 +19,7 @@ export const BibtexButton = ({ className = 'tag', target = '_blank', doi, url, .
   return (
     <a
       data-testid="bibtex-button"
-      className={classNames('mpc-bibtex-button', className)}
+      className={clsx('mpc-bibtex-button', className)}
       href={bibtexUrl}
       target={target}
       rel={target === '_blank' ? 'noreferrer' : undefined}

@@ -89,6 +89,7 @@
 | `react-tooltip@4` | 直接移除 | `@radix-ui/react-tooltip` | `Tooltip`、`Sidebar`、`CrystalToolkitScene`、`CrystalToolkitAnimationScene`、`PhononAnimationScene` |
 | `react-json-view` | 替换 | `@microlink/react-json-view` 或自建 `JsonTree` | `JsonView` |
 | `react-data-table-component@6` | 优先替换 | `@tanstack/react-table` + 自建表格外壳 | `DataTable`、`SearchUIDataTable` |
+| `classnames` | 替换 | `clsx` | 全量 `className` 拼接逻辑 |
 | `enzyme` + `enzyme-adapter-react-16` | 直接移除 | `Testing Library` + `Vitest` | 全量测试 |
 | `parcel-bundler@1` | 直接移除 | `vite` | demo / playground |
 | `storybook@6.5` | 升级 | `storybook@8` | 文档与交互演示 |

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { Formula } from '../../../data-display/Formula';
 import { MaterialsInputType, validateFormula } from '../utils';
@@ -77,7 +77,7 @@ export const FormulaAutocomplete = ({
   return (
     <div
       data-testid="materials-input-autocomplete-menu"
-      className={classNames('dropdown-menu', 'autocomplete', {
+      className={clsx('dropdown-menu', 'autocomplete', {
         'is-hidden': !isVisible,
       })}
       aria-hidden

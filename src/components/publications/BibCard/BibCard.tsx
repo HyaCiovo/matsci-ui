@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import type { ReactNode } from 'react';
 import { getAuthorString, getJournalAndYear, type CrossrefAuthor } from '../../../utils/publications';
 import { PublicationButton } from '../PublicationButton';
@@ -37,7 +37,7 @@ export const BibCard = ({ title = '', ...otherProps }: BibCardProps) => {
   );
 
   return (
-    <div id={props.id} data-testid="bib-card" className={classNames('mpc-bib-card', props.className)}>
+    <div id={props.id} data-testid="bib-card" className={clsx('mpc-bib-card', props.className)}>
       <p data-testid="bib-card-title" className="mpc-bib-card-title">
         {titleElement}
       </p>

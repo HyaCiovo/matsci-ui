@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { useState } from 'react';
 import { Link } from '../Link';
 import { isUrl } from '../../../utils/navigation';
@@ -40,7 +40,7 @@ const renderNavbarItem = (
         href={item.href}
         target={item.target}
         rel={item.target === '_blank' ? 'noreferrer' : undefined}
-        className={classNames('navbar-item', item.className)}
+        className={clsx('navbar-item', item.className)}
         onClick={onClose}
       >
         {item.label}
@@ -50,7 +50,7 @@ const renderNavbarItem = (
 
   return (
     <span onClick={onClose} key={key}>
-      <Link href={item.href || ''} className={classNames('navbar-item', item.className)}>
+      <Link href={item.href || ''} className={clsx('navbar-item', item.className)}>
         {item.label}
       </Link>
     </span>
@@ -69,7 +69,7 @@ export const NavbarDropdown = ({
   const [isActive, setIsActive] = useState(false);
 
   const dropdownContent = isModal ? (
-    <div className={classNames('navbar-dropdown', { 'is-right': isRight })}>
+    <div className={clsx('navbar-dropdown', { 'is-right': isRight })}>
       {items.map((item, index) => (
         <div key={`modal-item-${index}`} onClick={(event) => event.stopPropagation()}>
           <ModalContextProvider>
@@ -88,8 +88,8 @@ export const NavbarDropdown = ({
     </div>
   ) : (
     <>
-      <a className={classNames('navbar-link', { 'is-arrowless': isArrowless })}>{children}</a>
-      <div className={classNames('navbar-dropdown', { 'is-right': isRight })}>
+      <a className={clsx('navbar-link', { 'is-arrowless': isArrowless })}>{children}</a>
+      <div className={clsx('navbar-dropdown', { 'is-right': isRight })}>
         {items.map((item, index) => renderNavbarItem(item, `navbar-dropdown-item-${index}`, () => setIsActive(false)))}
       </div>
     </>
@@ -99,12 +99,12 @@ export const NavbarDropdown = ({
     return (
       <div
         data-testid="navbar-dropdown"
-        className={classNames('navbar-item has-dropdown', className, { 'is-active': isActive })}
+        className={clsx('navbar-item has-dropdown', className, { 'is-active': isActive })}
         onClick={() => setIsActive((current) => !current)}
       >
         {isModal ? (
           <>
-            <a className={classNames('navbar-link', { 'is-arrowless': isArrowless })}>{children}</a>
+            <a className={clsx('navbar-link', { 'is-arrowless': isArrowless })}>{children}</a>
             {dropdownContent}
           </>
         ) : (
@@ -117,7 +117,7 @@ export const NavbarDropdown = ({
   return (
     <div
       data-testid="navbar-dropdown"
-      className={classNames('navbar-item has-dropdown', className, { 'is-active': isActive })}
+      className={clsx('navbar-item has-dropdown', className, { 'is-active': isActive })}
       onMouseEnter={() => setIsActive(true)}
       onMouseLeave={() => setIsActive(false)}
     >

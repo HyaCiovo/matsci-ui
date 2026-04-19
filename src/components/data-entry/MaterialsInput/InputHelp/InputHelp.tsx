@@ -1,5 +1,4 @@
-import classNames from 'classnames';
-
+import clsx from 'clsx';
 export interface InputHelpItem {
   label?: string | null;
   examples?: string[] | null;
@@ -15,7 +14,7 @@ export const InputHelp = ({ items, show, onChange }: Props) => {
   return (
     <div
       data-testid="materials-input-help-menu"
-      className={classNames('box input-help-menu', {
+      className={clsx('box input-help-menu', {
         'is-hidden': !show,
       })}
     >

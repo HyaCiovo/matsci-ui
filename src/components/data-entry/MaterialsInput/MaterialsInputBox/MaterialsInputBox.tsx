@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import type { FocusEvent, FormEvent, KeyboardEvent, MouseEvent, MutableRefObject, ReactNode } from 'react';
 import { FaAngleDown, FaExclamationTriangle, FaQuestionCircle } from 'react-icons/fa';
 import { Tooltip } from '../../../data-display/Tooltip';
@@ -94,7 +94,7 @@ export const MaterialsInputBox = ({
       <input
         ref={inputRef}
         data-testid="materials-input-search-input"
-        className={classNames('input', inputClassName)}
+        className={clsx('input', inputClassName)}
         type="search"
         autoComplete="off"
         value={inputValue}
@@ -172,7 +172,7 @@ export const MaterialsInputBox = ({
           <button
             data-testid="materials-input-help-button"
             type="button"
-            className={classNames('button input-help-button', {
+            className={clsx('button input-help-button', {
               'has-text-grey-light': !showInputHelp,
               'has-text-link': showInputHelp,
             })}
@@ -192,7 +192,7 @@ export const MaterialsInputBox = ({
           <button
             data-testid="materials-input-error"
             type="button"
-            className={classNames('mpc-materials-input-error button', {
+            className={clsx('mpc-materials-input-error button', {
               'has-tooltip-active': errorTipStayActive,
             })}
             onMouseOver={onErrorMouseOver}
@@ -216,7 +216,7 @@ export const MaterialsInputBox = ({
             data-for={periodicToggleTooltipId}
           >
             <i
-              className={classNames('icon-fontastic-periodic-table-squares', {
+              className={clsx('icon-fontastic-periodic-table-squares', {
                 'is-active': showPeriodicTable,
               })}
             />
@@ -230,7 +230,7 @@ export const MaterialsInputBox = ({
       <div className="control">
         <button
           data-testid="materials-input-submit-button"
-          className={classNames('button is-primary', {
+          className={clsx('button is-primary', {
             'is-loading': loading,
           })}
           type="submit"

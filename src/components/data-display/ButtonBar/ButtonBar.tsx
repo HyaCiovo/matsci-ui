@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import type { ReactNode } from 'react';
 import './ButtonBar.css';
 
@@ -11,7 +11,7 @@ export interface ButtonBarProps {
 
 export const ButtonBar = ({ id, className, children }: ButtonBarProps) => {
   return (
-    <div id={id} className={classNames('mpc-button-bar', className)}>
+    <div id={id} className={clsx('mpc-button-bar', className)}>
       {children}
     </div>
   );

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { useEffect } from 'react';
 import { FaSort, FaSortDown, FaSortUp } from 'react-icons/fa';
 
@@ -61,7 +61,7 @@ export const SortDropdown = ({
   }, [resolvedSortField, setSortValues, sortAscending, sortFn, sortValues]);
 
   return (
-    <div id={id} data-testid="mpc-sort-dropdown" className={classNames('mpc-sort-dropdown field has-addons', className)}>
+    <div id={id} data-testid="mpc-sort-dropdown" className={clsx('mpc-sort-dropdown field has-addons', className)}>
       <div className="control">
         <button
           type="button"

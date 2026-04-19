@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { type ReactNode, useMemo, useState } from 'react';
 import { FaCaretDown, FaCaretUp } from 'react-icons/fa';
 import { Tooltip } from '../Tooltip';
@@ -55,7 +55,7 @@ export const DataBlock = ({
   );
 
   return (
-    <div id={id} className={classNames('mpc-data-block box', className)}>
+    <div id={id} className={clsx('mpc-data-block box', className)}>
       <div className="mpc-data-block-header">
         {topColumns.map((column) => renderColumn(column))}
         {iconClassName ? (

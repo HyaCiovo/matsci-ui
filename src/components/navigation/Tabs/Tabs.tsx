@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import * as RadixTabs from '@radix-ui/react-tabs';
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
 
@@ -45,14 +45,14 @@ export const Tabs = ({
         setInternalTabIndex(nextIndex);
         setVisitedTabs((current) => new Set(current).add(nextIndex));
       }}
-      className={classNames('mpc-tabs', className)}
+      className={clsx('mpc-tabs', className)}
       {...tabProps}
     >
       <div className="tabs">
         <RadixTabs.List asChild>
           <ul>
             {labels.map((label, index) => (
-              <li key={`tab-${index}`} className={classNames({ 'is-active': internalTabIndex === index })}>
+              <li key={`tab-${index}`} className={clsx({ 'is-active': internalTabIndex === index })}>
                 <RadixTabs.Trigger asChild value={String(index)}>
                   <button type="button">
                     <span>{label}</span>
@@ -72,10 +72,10 @@ export const Tabs = ({
             key={`tab-panel-${index}`}
             value={String(index)}
             forceMount
-            className={classNames({ 'is-hidden': !isActive })}
+            className={clsx({ 'is-hidden': !isActive })}
           >
             {(isActive || hasBeenActivated) && (
-              <div className={classNames({ 'is-hidden': !isActive })}>{child}</div>
+              <div className={clsx({ 'is-hidden': !isActive })}>{child}</div>
             )}
           </RadixTabs.Content>
         );
