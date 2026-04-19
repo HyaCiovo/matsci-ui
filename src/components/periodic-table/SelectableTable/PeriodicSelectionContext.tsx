@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
@@ -69,6 +70,7 @@ interface PeriodicSelectionContextValue {
   forwardOuterChange: boolean;
   maxElementSelectable: number;
   lastAction?: SelectableTableLastAction;
+  changeOrigin: 'props' | 'action' | null;
   setDetailedElement: (element: string | null) => void;
   toggleElement: (element: string) => void;
   actions: PeriodicSelectionActions;
@@ -116,16 +118,20 @@ export function PeriodicSelectionProvider({
   const [detailedElementSymbol, setDetailedElementSymbol] = useState<string | null>(initialState.detailedElement);
   const [forwardOuterChangeState, setForwardOuterChangeState] = useState(forwardOuterChange);
   const [maxSelectionLimit, setMaxSelectionLimit] = useState(maxElementSelectable);
+  const [changeOrigin, setChangeOrigin] = useState<'props' | 'action' | null>(null);
 
   useEffect(() => {
+    setChangeOrigin('props');
     setEnabledRecord(toRecord(normalizeSelectionInput(enabledElements)));
   }, [enabledElements]);
 
   useEffect(() => {
+    setChangeOrigin('props');
     setDisabledRecord(toRecord(normalizeSelectionInput(disabledElements)));
   }, [disabledElements]);
 
   useEffect(() => {
+    setChangeOrigin('props');
     setHiddenRecord(toRecord(normalizeSelectionInput(hiddenElements)));
   }, [hiddenElements]);
 
@@ -167,6 +173,7 @@ export function PeriodicSelectionProvider({
   const toggleElement = useCallback(
     (element: string) => {
       if (selectionStyle === TableSelectionStyle.ENABLE_DISABLE) {
+        setChangeOrigin('action');
         setDisabledRecord((current) => {
           const nextDisabledRecord = { ...current };
           if (nextDisabledRecord[element]) {
@@ -179,6 +186,8 @@ export function PeriodicSelectionProvider({
         return;
       }
 
+      setChangeOrigin('action');
+      setForwardOuterChangeState(true);
       setEnabledRecord((current) => {
         const enabled = !!current[element];
         const nextEnabledRecord = { ...current };
@@ -189,6 +198,8 @@ export function PeriodicSelectionProvider({
         if (enabled) {
           delete nextEnabledRecord[element];
         } else if (selectionStyle === TableSelectionStyle.MULTI_INPUTS_SELECT) {
+          // Legacy store exposed slot bookkeeping hooks, but no real consumer wired them.
+          // Keep the effective user-facing behavior: one active element at a time.
           Object.keys(nextEnabledRecord).forEach((selectedElement) => {
             delete nextEnabledRecord[selectedElement];
           });
@@ -210,30 +221,40 @@ export function PeriodicSelectionProvider({
         setForwardOuterChangeState(forwardChange);
       },
       setEnabledElements: (nextEnabledElements) => {
+        setChangeOrigin('action');
         setLastAction(undefined);
         setEnabledRecord({ ...nextEnabledElements });
       },
       setDisabledElements: (nextDisabledElements) => {
+        setChangeOrigin('action');
         setDisabledRecord({ ...nextDisabledElements });
       },
       setHiddenElements: (nextHiddenElements) => {
+        setChangeOrigin('action');
         setHiddenRecord({ ...nextHiddenElements });
       },
       clear: () => {
+        setChangeOrigin('action');
         setEnabledRecord({});
         setDisabledRecord({});
         setHiddenRecord({});
         setDetailedElementSymbol(null);
+        setForwardOuterChangeState(true);
         setLastAction(undefined);
       },
       setDetailedElement,
       addEnabledElement: (element) => {
+        setChangeOrigin('action');
+        setLastAction(undefined);
         setEnabledRecord((current) => ({ ...current, [element]: true }));
       },
       addDisabledElement: (element) => {
+        setChangeOrigin('action');
         setDisabledRecord((current) => ({ ...current, [element]: true }));
       },
       removeEnabledElement: (element) => {
+        setChangeOrigin('action');
+        setLastAction(undefined);
         setEnabledRecord((current) => {
           const next = { ...current };
           delete next[element];
@@ -241,6 +262,7 @@ export function PeriodicSelectionProvider({
         });
       },
       removeDisabledElement: (element) => {
+        setChangeOrigin('action');
         setDisabledRecord((current) => {
           const next = { ...current };
           delete next[element];
@@ -249,6 +271,8 @@ export function PeriodicSelectionProvider({
       },
       toggleEnabledElement: toggleElement,
       toggleDisabledElement: (element) => {
+        setChangeOrigin('action');
+        setForwardOuterChangeState(selectionStyle === TableSelectionStyle.ENABLE_DISABLE);
         setDisabledRecord((current) => {
           const next = { ...current };
           if (next[element]) {
@@ -276,6 +300,7 @@ export function PeriodicSelectionProvider({
       forwardOuterChange: forwardOuterChangeState,
       maxElementSelectable: maxSelectionLimit,
       lastAction,
+      changeOrigin,
       setDetailedElement,
       toggleElement,
       actions,
@@ -286,6 +311,7 @@ export function PeriodicSelectionProvider({
       disabledRecord,
       effectiveDisabledRecord,
       enabledRecord,
+      changeOrigin,
       forwardOuterChangeState,
       hiddenRecord,
       lastAction,
@@ -347,21 +373,37 @@ export function useElements(_maxElementSelection: number = 10, onStateChange?: (
     lastAction,
     actions,
     forwardOuterChange,
+    changeOrigin,
   } = context;
+  const hasInitializedCallbackRef = useRef(false);
 
   useEffect(() => {
     actions.setMaxSelectionLimit(_maxElementSelection);
   }, [_maxElementSelection, actions]);
 
   useEffect(() => {
-    if (!onStateChange || !forwardOuterChange || !lastAction) {
+    if (!onStateChange) {
       return;
     }
+
+    if (!hasInitializedCallbackRef.current) {
+      hasInitializedCallbackRef.current = true;
+      onStateChange({
+        enabledElements: toArray(enabledRecord),
+        disabledElements: toArray(effectiveDisabledRecord),
+      });
+      return;
+    }
+
+    if (!forwardOuterChange || changeOrigin !== 'action') {
+      return;
+    }
+
     onStateChange({
       enabledElements: toArray(enabledRecord),
       disabledElements: toArray(effectiveDisabledRecord),
     });
-  }, [effectiveDisabledRecord, enabledRecord, forwardOuterChange, lastAction, onStateChange]);
+  }, [changeOrigin, effectiveDisabledRecord, enabledRecord, forwardOuterChange, onStateChange]);
 
   return {
     enabledElements: enabledRecord,

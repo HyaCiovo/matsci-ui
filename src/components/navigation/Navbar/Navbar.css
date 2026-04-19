@@ -1,0 +1,25 @@
+.navbar-mobile {
+  position: fixed;
+  right: -75%;
+  top: 0;
+  height: 100%;
+  width: 75%;
+  overflow: auto;
+  background: #fff;
+  z-index: 30;
+  transition: 0.5s;
+}
+
+.navbar-mobile.is-active {
+  right: 0;
+}
+
+.navbar .modal-background {
+  position: fixed;
+  transition: 0.5s;
+}
+
+.navbar-mobile .navbar-item-toggle {
+  width: 100%;
+  justify-content: space-between;
+}

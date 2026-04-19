@@ -1,0 +1,86 @@
+.sidebar {
+  position: relative;
+}
+
+.sidebar .sidebar-menu-item.selected .sidebar-item {
+  border-width: 3px;
+}
+
+.sidebar .sidebar-menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.sidebar.vertical {
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+}
+
+.sidebar.horizontal {
+  display: flex;
+  flex-direction: row;
+}
+
+.sidebar.horizontal .content {
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.sidebar .content {
+  margin: 10px 0;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.sidebar .is-unstyled {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.sidebar .sidebar-item {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border: 1px solid black;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  vertical-align: middle;
+}
+
+.sidebar .sub-app {
+  font-size: 11px;
+}
+
+.sidebar-popover {
+  position: absolute;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 220px;
+  padding: 8px;
+  border: 1px solid #dbdbdb;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(10, 10, 10, 0.12);
+}
+
+.sidebar-popover.vertical {
+  top: 0;
+  left: calc(100% + 16px);
+}
+
+.sidebar-popover.horizontal {
+  top: calc(100% + 12px);
+  left: 0;
+}

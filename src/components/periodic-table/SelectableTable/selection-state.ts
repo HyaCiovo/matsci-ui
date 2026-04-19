@@ -1,6 +1,10 @@
 import { VALID_ELEMENTS } from '../../data-entry/MaterialsInput/utils';
 import type { MatElement } from '../periodic-table-data/table-v2';
-import { TableSelectionStyle, type SelectableTableLastAction } from './types';
+import {
+  TableSelectionStyle,
+  type SelectableTableLastAction,
+  type SelectableTableStateChange,
+} from './types';
 
 export interface SelectableTableStoreState {
   enabledElements: Record<string, boolean>;
@@ -90,7 +94,7 @@ export const getClampedDisabledElements = (
   maxElementSelectable: number,
   selectionStyle: TableSelectionStyle
 ) => {
-  if (selectionStyle !== TableSelectionStyle.SELECT) {
+  if (selectionStyle === TableSelectionStyle.ENABLE_DISABLE) {
     return disabledRecord;
   }
 
@@ -133,3 +137,26 @@ export const createSelectableTableStoreState = ({
 
 export const getElementDetail = (symbol: string | null, elementMap: Record<string, MatElement>) =>
   symbol ? elementMap[symbol] ?? null : null;
+
+export const getSelectableTableStateChange = ({
+  enabledRecord,
+  effectiveDisabledRecord,
+  hiddenRecord,
+  detailedElementSymbol,
+  forwardOuterChange,
+  lastAction,
+}: {
+  enabledRecord: Record<string, boolean>;
+  effectiveDisabledRecord: Record<string, boolean>;
+  hiddenRecord: Record<string, boolean>;
+  detailedElementSymbol: string | null;
+  forwardOuterChange: boolean;
+  lastAction?: SelectableTableLastAction;
+}): SelectableTableStateChange => ({
+  enabledElements: toArray(enabledRecord),
+  disabledElements: toArray(effectiveDisabledRecord),
+  hiddenElements: toArray(hiddenRecord),
+  detailedElement: detailedElementSymbol,
+  forwardOuterChange,
+  lastAction,
+});

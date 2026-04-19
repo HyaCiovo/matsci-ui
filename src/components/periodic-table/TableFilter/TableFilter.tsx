@@ -71,9 +71,8 @@ export function TableFilter() {
       lowerFilter: ALL_FILTER,
     });
 
-    if (nextTopFilter.name === 'All') {
-      actions.setHiddenElements({});
-    }
+    // Switching top-level groups should clear any previous sub-filter hiding.
+    actions.setHiddenElements({});
   };
 
   const handleLowerFilterSelect = (nextLowerFilter: TableFilterOption) => {

@@ -37,6 +37,9 @@ export const getPositionedElements = (elementMap: Record<string, MatElement>): P
     return left.symbol.localeCompare(right.symbol);
   });
 
+export const DEFAULT_ELEMENT_MAP = createElementMap();
+export const DEFAULT_POSITIONED_ELEMENTS = getPositionedElements(DEFAULT_ELEMENT_MAP);
+
 export const getSelectableTableElementViewModels = ({
   positionedElements,
   enabledRecord,
@@ -61,6 +64,11 @@ export const getSelectableTableElementViewModels = ({
         disabled: disabled || !!effectiveDisabledRecord[positionedElement.symbol] || defaultDisabled,
       };
     });
+
+export const getDetailedElementDetail = (
+  symbol: string | null,
+  elementMap: Record<string, MatElement> = DEFAULT_ELEMENT_MAP
+) => (symbol ? elementMap[symbol] ?? null : null);
 
 export const getPeriodicTableFilterValue = (element: MatElement, key: string) => {
   if (key === 'group') {

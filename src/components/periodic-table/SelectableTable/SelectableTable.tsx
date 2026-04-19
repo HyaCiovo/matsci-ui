@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { useCallback, useEffect, useMemo } from 'react';
 import { type MatElement } from '../periodic-table-data/table-v2';
-import { getElementDetail, toArray } from './selection-state';
+import { getSelectableTableStateChange } from './selection-state';
 import {
   useOptionalPeriodicSelectionContext,
   PeriodicSelectionProvider,
@@ -16,8 +16,8 @@ import {
   type SelectableTableStateChange,
 } from './types';
 import {
-  createElementMap,
-  getPositionedElements,
+  DEFAULT_POSITIONED_ELEMENTS,
+  getDetailedElementDetail,
   getSelectableTableElementViewModels,
 } from './view-model';
 import './SelectableTable.css';
@@ -73,20 +73,32 @@ function SelectableTableView({
     actions,
   } = useElements(maxElementSelectable, onStateChange ? handleElementsChange : undefined);
   const detailedElementSymbol = useDetailedElement();
-  const elementMap = useMemo(() => createElementMap(), []);
-  const positionedElements = useMemo(() => getPositionedElements(elementMap), [elementMap]);
   const elementViewModels = useMemo(
     () =>
       getSelectableTableElementViewModels({
-        positionedElements,
+        positionedElements: DEFAULT_POSITIONED_ELEMENTS,
         enabledRecord,
         effectiveDisabledRecord,
         hiddenRecord,
         disabled,
       }),
-    [disabled, effectiveDisabledRecord, enabledRecord, hiddenRecord, positionedElements]
+    [disabled, effectiveDisabledRecord, enabledRecord, hiddenRecord]
   );
-  const detailedElement = getElementDetail(detailedElementSymbol, elementMap);
+  const detailedElement = useMemo(() => getDetailedElementDetail(detailedElementSymbol), [detailedElementSymbol]);
+  const tableStateChange = useMemo(
+    () =>
+      context
+        ? getSelectableTableStateChange({
+            enabledRecord,
+            effectiveDisabledRecord,
+            hiddenRecord,
+            detailedElementSymbol,
+            forwardOuterChange: context.forwardOuterChange,
+            lastAction,
+          })
+        : null,
+    [context, detailedElementSymbol, effectiveDisabledRecord, enabledRecord, hiddenRecord, lastAction]
+  );
   useEffect(() => {
     onDetailedElementChange?.(detailedElementSymbol, detailedElement);
   }, [detailedElement, detailedElementSymbol, onDetailedElementChange]);
@@ -96,27 +108,12 @@ function SelectableTableView({
   }, [actions, forwardOuterChange]);
 
   useEffect(() => {
-    if (!context) {
+    if (!tableStateChange) {
       return;
     }
 
-    onTableStateChange?.({
-      enabledElements: toArray(enabledRecord),
-      disabledElements: toArray(effectiveDisabledRecord),
-      hiddenElements: toArray(hiddenRecord),
-      detailedElement: detailedElementSymbol,
-      forwardOuterChange: context.forwardOuterChange,
-      lastAction,
-    });
-  }, [
-    context,
-    detailedElementSymbol,
-    effectiveDisabledRecord,
-    enabledRecord,
-    hiddenRecord,
-    lastAction,
-    onTableStateChange,
-  ]);
+    onTableStateChange?.(tableStateChange);
+  }, [onTableStateChange, tableStateChange]);
 
   return (
     <div

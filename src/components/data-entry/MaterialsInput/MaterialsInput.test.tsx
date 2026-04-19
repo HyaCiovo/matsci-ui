@@ -1,7 +1,11 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MaterialsInput, MaterialsInputType, PeriodicTableMode } from './MaterialsInput';
 
 describe('MaterialsInput', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('restores the last valid value when input exceeds the max element limit', () => {
     render(
       <MaterialsInput
@@ -57,5 +61,143 @@ describe('MaterialsInput', () => {
 
     expect(handleSubmit).toHaveBeenCalled();
     expect(periodicTable).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  it('keeps focus-mode periodic table open and refocuses input when clicking inside the table', async () => {
+    render(
+      <MaterialsInput
+        value=""
+        type={MaterialsInputType.ELEMENTS}
+        allowedInputTypes={[MaterialsInputType.ELEMENTS]}
+        showSubmitButton
+        periodicTableMode={PeriodicTableMode.FOCUS}
+      />
+    );
+
+    const input = screen.getByTestId('materials-input-search-input');
+    fireEvent.focus(input);
+
+    const periodicTable = screen.getByTestId('materials-input-periodic-table');
+    const lithiumButton = screen.getByTestId('periodic-element-Li');
+    expect(periodicTable).toHaveAttribute('aria-hidden', 'false');
+
+    fireEvent.mouseDown(periodicTable);
+    fireEvent.blur(input, { relatedTarget: lithiumButton });
+    fireEvent.click(lithiumButton);
+
+    expect(periodicTable).toHaveAttribute('aria-hidden', 'false');
+    expect(input).toHaveValue('Li');
+
+    await waitFor(() => {
+      expect(input).toHaveFocus();
+    });
+  });
+
+  it('uses help examples to populate the input with validated values', () => {
+    render(
+      <MaterialsInput
+        value=""
+        type={MaterialsInputType.CHEMICAL_SYSTEM}
+        allowedInputTypes={[MaterialsInputType.CHEMICAL_SYSTEM]}
+        helpItems={[
+          { label: 'Examples' },
+          { label: null, examples: ['Li-Fe'] },
+        ]}
+        showSubmitButton
+      />
+    );
+
+    const input = screen.getByTestId('materials-input-search-input');
+    fireEvent.focus(input);
+    fireEvent.mouseDown(screen.getByText('Li-Fe'));
+
+    expect(input).toHaveValue('Li-Fe');
+  });
+
+  it('submits the latest input immediately even when debounce is enabled', () => {
+    vi.useFakeTimers();
+    const handleChange = vi.fn();
+    const handleSubmit = vi.fn();
+
+    render(
+      <MaterialsInput
+        value=""
+        type={MaterialsInputType.CHEMICAL_SYSTEM}
+        allowedInputTypes={[MaterialsInputType.CHEMICAL_SYSTEM]}
+        showSubmitButton
+        debounce={300}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+      />
+    );
+
+    fireEvent.change(screen.getByTestId('materials-input-search-input'), {
+      target: { value: 'Li-Fe' },
+    });
+
+    expect(handleChange).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByTestId('materials-input-submit-button'));
+    expect(handleSubmit).toHaveBeenCalledWith(expect.anything(), 'Li-Fe');
+    expect(handleChange).not.toHaveBeenCalled();
+
+    act(() => {
+      vi.advanceTimersByTime(300);
+    });
+
+    expect(handleChange).toHaveBeenCalledWith('Li-Fe');
+  });
+
+  it('syncs selection mode formatting when the controlled input type changes', () => {
+    const { rerender } = render(
+      <MaterialsInput
+        value="Li-Fe"
+        type={MaterialsInputType.CHEMICAL_SYSTEM}
+        allowedInputTypes={[MaterialsInputType.CHEMICAL_SYSTEM, MaterialsInputType.ELEMENTS]}
+        showTypeDropdown
+        showSubmitButton
+      />
+    );
+
+    expect(screen.getByTestId('materials-input-search-input')).toHaveValue('Li-Fe');
+
+    rerender(
+      <MaterialsInput
+        value="Li-Fe"
+        type={MaterialsInputType.ELEMENTS}
+        allowedInputTypes={[MaterialsInputType.CHEMICAL_SYSTEM, MaterialsInputType.ELEMENTS]}
+        showTypeDropdown
+        showSubmitButton
+      />
+    );
+
+    expect(screen.getByTestId('materials-input-search-input')).toHaveValue('Li,Fe');
+  });
+
+  it('converts values when periodic table mode switching changes the effective input type', () => {
+    const handleInputTypeChange = vi.fn();
+
+    render(
+      <MaterialsInput
+        value="Li-Fe"
+        type={MaterialsInputType.CHEMICAL_SYSTEM}
+        allowedInputTypes={[
+          MaterialsInputType.CHEMICAL_SYSTEM,
+          MaterialsInputType.ELEMENTS,
+          MaterialsInputType.FORMULA,
+        ]}
+        periodicTableMode={PeriodicTableMode.TOGGLE}
+        onInputTypeChange={handleInputTypeChange}
+        showSubmitButton
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Formula' }));
+    expect(screen.getByTestId('materials-input-search-input')).toHaveValue('LiFe');
+    expect(handleInputTypeChange).toHaveBeenCalledWith(MaterialsInputType.FORMULA);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Only Elements' }));
+    expect(screen.getByTestId('materials-input-search-input')).toHaveValue('Li-Fe');
+    expect(handleInputTypeChange).toHaveBeenCalledWith(MaterialsInputType.CHEMICAL_SYSTEM);
   });
 });

@@ -11,12 +11,10 @@ import {
   useRef,
   useState,
 } from 'react';
-import { FaAngleDown, FaExclamationTriangle, FaQuestionCircle } from 'react-icons/fa';
-import { Tooltip } from '../../data-display/Tooltip';
 import { PeriodicTableModeSwitcher } from '../../periodic-table/PeriodicTableModeSwitcher';
 import { SelectableTable, TableLayout } from '../../periodic-table/SelectableTable';
-import { FormulaAutocomplete } from './FormulaAutocomplete';
-import { InputHelp, type InputHelpItem } from './InputHelp';
+import { type InputHelpItem } from './InputHelp';
+import { MaterialsInputBox } from './MaterialsInputBox/MaterialsInputBox';
 import {
   arrayToDelimitedString,
   capitalize,
@@ -126,6 +124,45 @@ const getSelectionTokens = (type: MaterialsInputType, value: string) => {
 
 const areElementListsEqual = (left: string[], right: string[]) =>
   left.length === right.length && left.every((value, index) => value === right[index]);
+
+const getConvertedValueForInputType = (
+  newSelection: MaterialsInputType,
+  currentInputType: MaterialsInputType,
+  currentInputValue: string
+) => {
+  const { elements, elementsPlusWildcards } = getSelectionTokens(currentInputType, currentInputValue);
+
+  if (newSelection === MaterialsInputType.CHEMICAL_SYSTEM) {
+    if (elementsPlusWildcards.length > 1) {
+      return arrayToDelimitedString(elementsPlusWildcards, /-/);
+    }
+    return currentInputValue;
+  }
+
+  if (newSelection === MaterialsInputType.ELEMENTS) {
+    if (elements.length > 1) {
+      return arrayToDelimitedString(elements, /,/);
+    }
+    return currentInputValue;
+  }
+
+  if (newSelection === MaterialsInputType.FORMULA && currentInputType !== MaterialsInputType.FORMULA) {
+    if (elements.length > 1) {
+      return elements.join('');
+    }
+    return currentInputValue;
+  }
+
+  if (
+    newSelection === MaterialsInputType.MOLECULE_FORMULA &&
+    currentInputType !== MaterialsInputType.MOLECULE_FORMULA &&
+    elements.length > 1
+  ) {
+    return arrayToDelimitedString(elements, /\s/);
+  }
+
+  return currentInputValue;
+};
 
 export const MaterialsInput = ({
   value = '',
@@ -249,41 +286,60 @@ export const MaterialsInput = ({
     ]
   );
 
-  const applyValidatedValue = (nextValue: string) => {
-    const [detectedType, parsedValue] = detectAndValidateInputType(nextValue, props.allowedInputTypes);
-    const resolvedType = detectedType ?? inputType;
-    const validLength = validateInputLength(parsedValue, resolvedType, props.maxElementSelectable);
-    const isValid = Boolean((parsedValue && validLength) || !nextValue);
-    const reachedMax = Array.isArray(parsedValue) && parsedValue.length === props.maxElementSelectable;
-
-    if (!validLength || (maxElementsReached && !isValid)) {
+  const syncInputState = useCallback(
+    (nextValue: string, nextType: MaterialsInputType = inputType) => {
       setError(null);
-      setInputValue(previousValidValue);
-      return false;
-    }
+      setInputValue(nextValue);
+      setSelectedElements(normalizeElementsFromValue(nextType, nextValue));
+      setPreviousValidValue(nextValue);
+      setMaxElementsReached(isMaxSelectionValue(nextType, nextValue, props.maxElementSelectable));
+    },
+    [inputType, props.maxElementSelectable]
+  );
 
-    if (nextValue && (!parsedValue || !validLength)) {
-      setError(props.errorMessage);
-      return false;
-    }
+  const applyValidatedValue = useCallback(
+    (nextValue: string) => {
+      const [detectedType, parsedValue] = detectAndValidateInputType(nextValue, props.allowedInputTypes);
+      const resolvedType = detectedType ?? inputType;
+      const validLength = validateInputLength(parsedValue, resolvedType, props.maxElementSelectable);
+      const isValid = Boolean((parsedValue && validLength) || !nextValue);
+      const reachedMax = Array.isArray(parsedValue) && parsedValue.length === props.maxElementSelectable;
 
-    setError(null);
-    setInputValue(nextValue);
-
-    if (detectedType) {
-      setInputType(detectedType);
-      props.onInputTypeChange?.(detectedType);
-      const nextSelectionMode = materialsInputTypes[detectedType]?.selectionMode;
-      if (nextSelectionMode) {
-        setSelectionMode(nextSelectionMode);
+      if (!validLength || (maxElementsReached && !isValid)) {
+        setError(null);
+        setInputValue(previousValidValue);
+        return false;
       }
-    }
 
-    setSelectedElements(normalizeElementsFromValue(resolvedType, nextValue));
-    setPreviousValidValue(nextValue);
-    setMaxElementsReached(reachedMax);
-    return true;
-  };
+      if (nextValue && (!parsedValue || !validLength)) {
+        setError(props.errorMessage);
+        return false;
+      }
+
+      if (detectedType) {
+        setInputType(detectedType);
+        props.onInputTypeChange?.(detectedType);
+        const nextSelectionMode = materialsInputTypes[detectedType]?.selectionMode;
+        if (nextSelectionMode) {
+          setSelectionMode(nextSelectionMode);
+        }
+      }
+
+      syncInputState(nextValue, resolvedType);
+      setMaxElementsReached(reachedMax);
+      return true;
+    },
+    [
+      inputType,
+      maxElementsReached,
+      previousValidValue,
+      props.allowedInputTypes,
+      props.errorMessage,
+      props.maxElementSelectable,
+      props.onInputTypeChange,
+      syncInputState,
+    ]
+  );
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const nextValue = event.target.value;
@@ -305,7 +361,6 @@ export const MaterialsInput = ({
     currentInputType: MaterialsInputType,
     currentInputValue: string
   ) => {
-    const { elements, elementsPlusWildcards } = getSelectionTokens(currentInputType, currentInputValue);
     const newSelection = getMaterialsInputTypeByMappedValue(lookupKey, selectedValue);
     if (!newSelection) {
       return;
@@ -314,32 +369,8 @@ export const MaterialsInput = ({
     setInputType(newSelection);
     props.onInputTypeChange?.(newSelection);
 
-    let nextValue = currentInputValue;
-    if (newSelection === MaterialsInputType.CHEMICAL_SYSTEM) {
-      if (elementsPlusWildcards.length > 1) {
-        nextValue = arrayToDelimitedString(elementsPlusWildcards, /-/);
-      }
-    } else if (newSelection === MaterialsInputType.ELEMENTS) {
-      if (elements.length > 1) {
-        nextValue = arrayToDelimitedString(elements, /,/);
-      }
-    } else if (newSelection === MaterialsInputType.FORMULA && currentInputType !== MaterialsInputType.FORMULA) {
-      if (elements.length > 1) {
-        nextValue = elements.join('');
-      }
-    } else if (
-      newSelection === MaterialsInputType.MOLECULE_FORMULA &&
-      currentInputType !== MaterialsInputType.MOLECULE_FORMULA &&
-      elements.length > 1
-    ) {
-      nextValue = arrayToDelimitedString(elements, /\s/);
-    }
-
-    setError(null);
-    setInputValue(nextValue);
-    setSelectedElements(normalizeElementsFromValue(newSelection, nextValue));
-    setPreviousValidValue(nextValue);
-    setMaxElementsReached(isMaxSelectionValue(newSelection, nextValue, props.maxElementSelectable));
+    const nextValue = getConvertedValueForInputType(newSelection, currentInputType, currentInputValue);
+    syncInputState(nextValue, newSelection);
   };
 
   const handleFormulaButtonClick = (valueToAppend: string) => {
@@ -350,8 +381,7 @@ export const MaterialsInput = ({
           : valueToAppend.replace(/^-/, '')
         : `${inputValue}${valueToAppend}`;
 
-    setInputValue(nextValue);
-    setSelectedElements(normalizeElementsFromValue(inputType, nextValue));
+    syncInputState(nextValue, inputType);
   };
 
   const handleTableStateChange = useCallback(
@@ -359,10 +389,12 @@ export const MaterialsInput = ({
       const nextValue = renderPeriodicTableValue(selectionMode, nextElements);
 
       setSelectedElements((current) => (areElementListsEqual(current, nextElements) ? current : nextElements));
-      setError(null);
       setInputValue((current) => (current === nextValue ? current : nextValue));
+      setPreviousValidValue(nextValue);
+      setMaxElementsReached(isMaxSelectionValue(inputType, nextValue, props.maxElementSelectable));
+      setError(null);
     },
-    [selectionMode]
+    [inputType, props.maxElementSelectable, selectionMode]
   );
 
   const getNextInputTypeForSelectionMode = (mode: PeriodicTableSelectionMode) => {
@@ -419,8 +451,21 @@ export const MaterialsInput = ({
   }, [props.maxElementSelectable, props.type, props.value]);
 
   useEffect(() => {
+    const previousInputType = inputType;
     setInputType(props.type);
-  }, [props.type]);
+
+    const nextSelectionMode = materialsInputTypes[props.type]?.selectionMode;
+    if (hasPeriodicTable && nextSelectionMode) {
+      setSelectionMode(nextSelectionMode);
+    }
+
+    if (inputValue && previousInputType !== props.type) {
+      const nextValue = getConvertedValueForInputType(props.type, previousInputType, inputValue);
+      if (nextValue !== inputValue) {
+        syncInputState(nextValue, props.type);
+      }
+    }
+  }, [hasPeriodicTable, props.type]);
 
   useEffect(() => {
     const nextSelectedElements = normalizeElementsFromValue(inputType, inputValue);
@@ -455,194 +500,110 @@ export const MaterialsInput = ({
     <div id={props.id} className={classNames('mpc-materials-input', props.className)}>
       {props.showSubmitButton ? (
         <form data-testid="materials-input-form" onSubmit={(event) => handleSubmit(event)}>
-          <div className="field has-addons">
-            {props.label ? (
-              <div className="control">
-                <button type="button" className="button is-static">
-                  {props.label}
-                </button>
-              </div>
-            ) : null}
-
-            {showTypeDropdown ? (
-              <div className="control dropdown is-active" data-testid="mpc-chemsys-dropdown">
-                <div className="dropdown-trigger">
-                  <label className="button">
-                    <span>{typeDropdownValue}</span>
-                    <span className="icon">
-                      <FaAngleDown />
-                    </span>
-                    <select
-                      aria-label="Input type"
-                      style={{ position: 'absolute', inset: 0, opacity: 0 }}
-                      value={typeDropdownValue}
-                      onChange={(event) =>
-                        convertSelectionToInputType(
-                          event.target.value,
-                          dropdownOnlyElementsOrChemSys ? 'elementsOnlyDropdownValue' : 'dropdownValue',
-                          inputType,
-                          inputValue
-                        )
-                      }
-                    >
-                      {typeDropdownOptions.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-              </div>
-            ) : null}
-
-            <div className="control is-expanded">
-              <input
-                ref={inputRef}
-                data-testid="materials-input-search-input"
-                className={classNames('input', props.inputClassName)}
-                type="search"
-                autoComplete="off"
-                value={inputValue}
-                placeholder={props.placeholder}
-                onChange={handleInputChange}
-                onFocus={() => {
-                  setErrorTipStayActive(false);
-                  setIsFocused(true);
-                  if (periodicTableMode === PeriodicTableMode.FOCUS) {
-                    setShowPeriodicTable(true);
-                  }
-                }}
-                onBlur={(event: FocusEvent<HTMLInputElement>) => {
-                  setIsFocused(false);
-                  if (!panelInteractionRef.current && periodicTableMode === PeriodicTableMode.FOCUS) {
-                    setShowPeriodicTable(false);
-                  }
-                  panelInteractionRef.current = false;
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === 'Tab' && periodicTableMode === PeriodicTableMode.FOCUS) {
-                    setShowPeriodicTable(false);
-                  }
-                }}
-              />
-
-              {props.autocompleteFormulaUrl ? (
-                <FormulaAutocomplete
-                  value={inputValue}
-                  inputType={inputType}
-                  apiEndpoint={props.autocompleteFormulaUrl}
-                  apiKey={props.autocompleteApiKey}
-                  show={showAutocomplete}
-                  onChange={(nextValue) => {
-                    applyValidatedValue(nextValue);
-                  }}
-                  onSubmit={props.onSubmit}
-                  setError={setError}
-                />
-              ) : null}
-
-              {props.helpItems ? (
-                <InputHelp
-                  items={props.helpItems}
-                  show={showInputHelp}
-                  onChange={(nextValue) => {
-                    setInputValue(nextValue);
-                    setShowInputHelp(false);
-                  }}
-                />
-              ) : null}
-            </div>
-
-            {props.helpItems ? (
-              <div className="control">
-                <button
-                  data-testid="materials-input-help-button"
-                  type="button"
-                  className={classNames('button input-help-button', {
-                    'has-text-grey-light': !showInputHelp,
-                    'has-text-link': showInputHelp,
-                  })}
-                  onClick={() => setShowInputHelp((current) => !current)}
-                  data-for={helpTooltipId}
-                >
-                  <FaQuestionCircle />
-                  <Tooltip id={helpTooltipId} place="bottom">
-                    {showInputHelp ? 'Hide examples' : 'Show examples'}
-                  </Tooltip>
-                </button>
-              </div>
-            ) : null}
-
-            {error ? (
-              <div className="control">
-                <button
-                  data-testid="materials-input-error"
-                  type="button"
-                  className={classNames('mpc-materials-input-error button', {
-                    'has-tooltip-active': errorTipStayActive,
-                  })}
-                  onMouseOver={() => setErrorTipStayActive(false)}
-                  data-for={errorTooltipId}
-                >
-                  <FaExclamationTriangle />
-                  <Tooltip id={errorTooltipId} place="bottom">
-                    {error}
-                  </Tooltip>
-                </button>
-              </div>
-            ) : null}
-
-            {periodicTableMode === PeriodicTableMode.TOGGLE && hasPeriodicTable ? (
-              <div className="control">
-                <button
-                  data-testid="materials-input-toggle-button"
-                  type="button"
-                  className="button has-oversized-icon is-size-2"
-                  onClick={() => setShowPeriodicTable((current) => !current)}
-                  data-for={periodicToggleTooltipId}
-                >
-                  <i
-                    className={classNames('icon-fontastic-periodic-table-squares', {
-                      'is-active': showPeriodicTable,
-                    })}
-                  />
-                  <Tooltip id={periodicToggleTooltipId} place="bottom">
-                    {showPeriodicTable ? 'Hide Periodic Table' : 'Show Periodic Table'}
-                  </Tooltip>
-                </button>
-              </div>
-            ) : null}
-
-            <div className="control">
-              <button
-                data-testid="materials-input-submit-button"
-                className={classNames('button is-primary', {
-                  'is-loading': props.loading,
-                })}
-                type="submit"
-                disabled={disableSubmitButton}
-              >
-                {props.submitButtonText}
-              </button>
-            </div>
-          </div>
+          <MaterialsInputBox
+            label={props.label}
+            showTypeDropdown={showTypeDropdown}
+            dropdownOnlyElementsOrChemSys={dropdownOnlyElementsOrChemSys}
+            typeDropdownValue={typeDropdownValue}
+            typeDropdownOptions={typeDropdownOptions}
+            onTypeChange={(value) =>
+              convertSelectionToInputType(
+                value,
+                dropdownOnlyElementsOrChemSys ? 'elementsOnlyDropdownValue' : 'dropdownValue',
+                inputType,
+                inputValue
+              )
+            }
+            inputRef={inputRef}
+            inputValue={inputValue}
+            inputType={inputType}
+            inputClassName={props.inputClassName}
+            placeholder={props.placeholder}
+            onInputChange={handleInputChange}
+            onFocus={() => {
+              setErrorTipStayActive(false);
+              setIsFocused(true);
+              if (periodicTableMode === PeriodicTableMode.FOCUS) {
+                setShowPeriodicTable(true);
+              }
+            }}
+            onBlur={(event: FocusEvent<HTMLInputElement>) => {
+              setIsFocused(false);
+              if (!panelInteractionRef.current && periodicTableMode === PeriodicTableMode.FOCUS) {
+                setShowPeriodicTable(false);
+              } else if (panelInteractionRef.current && periodicTableMode === PeriodicTableMode.FOCUS) {
+                window.setTimeout(() => {
+                  inputRef.current?.focus();
+                });
+              }
+              panelInteractionRef.current = false;
+            }}
+            onKeyDown={(event) => {
+              if (event.key === 'Tab' && periodicTableMode === PeriodicTableMode.FOCUS) {
+                setShowPeriodicTable(false);
+              }
+            }}
+            autocompleteFormulaUrl={props.autocompleteFormulaUrl}
+            autocompleteApiKey={props.autocompleteApiKey}
+            showAutocomplete={showAutocomplete}
+            onAutocompleteChange={(nextValue) => {
+              inputRef.current?.blur();
+              applyValidatedValue(nextValue);
+            }}
+            onAutocompleteSubmit={props.onSubmit}
+            setError={setError}
+            helpItems={props.helpItems}
+            showInputHelp={showInputHelp}
+            onHelpChange={(nextValue) => {
+              applyValidatedValue(nextValue);
+              setShowInputHelp(false);
+            }}
+            onHelpToggle={() => setShowInputHelp((current) => !current)}
+            helpTooltipId={helpTooltipId}
+            error={error}
+            errorTipStayActive={errorTipStayActive}
+            onErrorMouseOver={() => setErrorTipStayActive(false)}
+            errorTooltipId={errorTooltipId}
+            periodicTableMode={periodicTableMode}
+            hasPeriodicTable={hasPeriodicTable}
+            showPeriodicTable={showPeriodicTable}
+            onPeriodicToggle={() => setShowPeriodicTable((current) => !current)}
+            periodicToggleTooltipId={periodicToggleTooltipId}
+            showSubmitButton={props.showSubmitButton}
+            loading={props.loading}
+            submitButtonText={props.submitButtonText}
+            disableSubmitButton={disableSubmitButton}
+          />
         </form>
       ) : (
-        <div className="field has-addons">
-          <div className="control is-expanded">
-            <input
-              ref={inputRef}
-              data-testid="materials-input-search-input"
-              className={classNames('input', props.inputClassName)}
-              type="search"
-              autoComplete="off"
-              value={inputValue}
-              placeholder={props.placeholder}
-              onChange={handleInputChange}
-            />
-          </div>
-        </div>
+        <MaterialsInputBox
+          inputRef={inputRef}
+          inputValue={inputValue}
+          inputType={inputType}
+          typeDropdownOptions={[]}
+          onTypeChange={() => undefined}
+          inputClassName={props.inputClassName}
+          placeholder={props.placeholder}
+          onInputChange={handleInputChange}
+          onFocus={() => undefined}
+          onBlur={() => undefined}
+          onKeyDown={() => undefined}
+          onAutocompleteChange={() => undefined}
+          setError={setError}
+          onHelpChange={() => undefined}
+          onHelpToggle={() => undefined}
+          helpTooltipId={helpTooltipId}
+          onErrorMouseOver={() => undefined}
+          errorTooltipId={errorTooltipId}
+          periodicTableMode={periodicTableMode}
+          hasPeriodicTable={hasPeriodicTable}
+          showPeriodicTable={showPeriodicTable}
+          onPeriodicToggle={() => undefined}
+          periodicToggleTooltipId={periodicToggleTooltipId}
+          showSubmitButton={false}
+          submitButtonText={props.submitButtonText}
+          disableSubmitButton={disableSubmitButton}
+        />
       )}
 
       {hasPeriodicTable ? (

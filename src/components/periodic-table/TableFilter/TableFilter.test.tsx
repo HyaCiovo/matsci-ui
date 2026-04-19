@@ -36,4 +36,23 @@ describe('TableFilter', () => {
     expect(screen.getByTestId('periodic-element-H')).toBeInTheDocument();
     expect(screen.queryByTestId('periodic-element-Fe')).not.toBeInTheDocument();
   });
+
+  it('clears the previous hidden state when switching top-level filter groups', () => {
+    render(
+      <PeriodicContext>
+        <TableFilter />
+        <SelectableTable maxElementSelectable={5} />
+      </PeriodicContext>
+    );
+
+    fireEvent.click(screen.getByText('Phase'));
+    fireEvent.click(screen.getByText('Gases'));
+    expect(screen.queryByTestId('periodic-element-Fe')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('Metals'));
+
+    expect(screen.getByTestId('periodic-element-Fe')).toBeInTheDocument();
+    expect(screen.getByText('Metals')).toHaveClass('selected');
+    expect(screen.getByText('Transition Metals')).toBeInTheDocument();
+  });
 });

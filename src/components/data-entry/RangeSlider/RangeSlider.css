@@ -1,0 +1,67 @@
+.mpc-range-slider:not(.no-ticks) {
+  padding-bottom: 1em;
+}
+
+.mpc-range-slider .input {
+  width: 75px;
+}
+
+.mpc-range-slider .slider {
+  padding: 0 0.75em;
+  margin-top: 0.25rem;
+}
+
+.mpc-range-slider .mpc-slider-root {
+  width: 100%;
+}
+
+.mpc-range-slider .mpc-slider-track {
+  position: relative;
+  height: 5px;
+  background: #ccc;
+  border-radius: 9999px;
+}
+
+.mpc-range-slider .mpc-slider-range {
+  position: absolute;
+  height: 100%;
+  background: #3273dc;
+  border-radius: 9999px;
+}
+
+.mpc-range-slider .mpc-slider-thumb {
+  display: block;
+  width: 1.5em;
+  height: 1.5em;
+  border: 1px solid #dbdbdb;
+  border-radius: 9999px;
+  background: white;
+}
+
+.mpc-range-slider .mpc-slider-thumb::after {
+  content: '';
+  display: block;
+  width: 5px;
+  height: 1em;
+  margin: 0.2em auto 0;
+  background-color: #ccc;
+}
+
+.mpc-range-slider .mpc-slider-thumb[data-state='active']::after {
+  background-color: #3273dc;
+}
+
+.mpc-range-slider .slider-tick-mark {
+  position: absolute;
+  height: 0.4em;
+  width: 1px;
+  margin-top: 7px;
+  background-color: #ccc;
+}
+
+.mpc-range-slider .slider-tick-value {
+  position: absolute;
+  top: 2em;
+  font-size: 0.8em;
+  transform: translate(-50%, 0);
+}

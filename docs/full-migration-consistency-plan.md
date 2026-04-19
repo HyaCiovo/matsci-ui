@@ -40,10 +40,12 @@ The target is not only "feature parity", but also:
 - `Switch`
 - `Select`
 - `DualRangeSlider`
+- `RangeSlider`
 - `ThreeStateBooleanSelect`
 - `GlobalSearchBar`
 - `SearchUI` core surface
 - `MaterialsInput`
+- `MaterialsInputBox` as an internal structural helper
 - `PeriodicTableModeSwitcher`
 - `PeriodicTableFormulaButtons`
 - `SelectableTable`
@@ -64,6 +66,8 @@ The target is not only "feature parity", but also:
 ### Still Not Fully Matched
 
 - true observable/store behavior from the old periodic table stack
+- final parity for `SelectableTable` state semantics and `MaterialsInput` edge behavior remains the top active migration stream
+- explicit downgrade decisions should be documented where old internal store hooks existed without real consumers
 - final scope decision and migration for remaining non-SearchUI legacy areas
 - exhaustive story/state coverage parity
 - full interaction parity for some composite components under heavy integration paths
@@ -126,6 +130,21 @@ This is the highest-risk migration area because it combines:
 - visual layout
 - downstream consumers like global search and SearchUI
 
+### Status
+
+- still the highest-priority active migration stream
+- structural React 18 replacements are already in place:
+  - `SelectableTable`
+  - `PeriodicSelectionContext`
+  - `useElements()`
+  - `useDetailedElement()`
+  - `TableFilter`
+  - `PeriodicTableModeSwitcher`
+  - `PeriodicTableFormulaButtons`
+  - `MaterialsInput`
+  - `GlobalSearchBar`
+- remaining work is now concentrated in final state semantics, legacy edge behavior, and scope decisions for adjacent old-only inputs
+
 ### A1. SelectableTable
 
 #### Current Position
@@ -135,28 +154,47 @@ This is the highest-risk migration area because it combines:
 - lightweight `PeriodicSelectionContext` exists
 - `useElements()` and `useDetailedElement()` exist
 - child modules now consume new hooks
+- `selection-state.ts` and `view-model.ts` already isolate part of the old store logic
+- `onStateChange` now distinguishes action-driven updates from prop synchronization
+- selection-limit disabling now matches legacy behavior for both `SELECT` and `MULTI_INPUTS_SELECT`
+- `MULTI_INPUTS_SELECT` keeps the effective legacy user behavior of one active element at a time
+- old slot bookkeeping hooks (`currentElementIndex`, `selectedElements.current`) are currently treated as an explicit internal downgrade because no real consumer was found
 
 #### Remaining Tasks
 
-- extract element view-model creation out of `SelectableTableView`
-- move more item-state derivation into state/helpers
-- align remaining action semantics with the old store
-- decide whether RxJS parity is truly needed or if the current React context/store abstraction is enough
-- review old `table-filter` compatibility requirements before adding more periodic-table modules
+- continue thinning `SelectableTableView` so rendering is mostly driven by `view-model.ts` and selection helpers
+- move any remaining item-state derivation into `selection-state.ts` or helper modules
+- keep aligning `lastAction` and any remaining state-transition edge cases with the legacy store contract
+- decide whether current `PeriodicSelectionContext` is the final replacement for the old observable/RxJS model
+- keep the `MULTI_INPUTS_SELECT` downgrade documented unless a real slot-based consumer appears
+- verify `TableFilter` compatibility before reintroducing any more periodic-table-adjacent helpers
 
 #### Acceptance Criteria
 
 - `SelectableTable` remains API-stable for current consumers
 - hover/detail state stays externally observable
 - selection limits and disable rules match old behavior
+- explicit downgrade decisions are documented for any legacy internal hooks that are not restored
 - visual layout remains close to legacy stories
 
 ### A2. MaterialsInput
 
+#### Current Position
+
+- `MaterialsInput` is already restored with:
+  - formula autocomplete
+  - input help
+  - periodic table integration
+  - internal `MaterialsInputBox` structure restored
+  - story coverage
+  - focused tests
+- `GlobalSearchBar` already consumes the React 18 `MaterialsInput`
+- `RangeSlider` has now been restored as a public data-entry component
+- current gaps are now mostly edge-behavior and final state-semantics issues rather than missing main-path functionality
+
 #### Remaining Tasks
 
 - re-check old `MaterialsInput` substructure:
-  - `MaterialsInputBox`
   - formula autocomplete flow
   - input type switching edge cases
 - verify old behavior for:
@@ -164,7 +202,10 @@ This is the highest-risk migration area because it combines:
   - wildcard insertion
   - periodic table visibility toggling
   - max selected element formatting
-- decide whether `MaterialsInputBox` should be reintroduced as an internal component for structural parity
+- decide whether `MaterialsInputBox` should remain:
+  - an internal structural helper only
+  - or later become a public component if a consuming app needs it
+- verify whether any old stories or consumers require `RangeSlider` behavior beyond the restored public API
 
 #### Acceptance Criteria
 
@@ -173,6 +214,11 @@ This is the highest-risk migration area because it combines:
 - story states cover all supported modes
 
 ### A3. GlobalSearchBar
+
+#### Current Position
+
+- already migrated as a thin wrapper around `MaterialsInput`
+- current risk is mostly inherited from periodic-table and `MaterialsInput` semantics, not from `GlobalSearchBar` itself
 
 #### Remaining Tasks
 
@@ -324,22 +370,26 @@ This is the highest-risk migration area because it combines:
 - `FilterField`
 - `GlobalSearchBar`
 - `MaterialsInput`
+- `RangeSlider`
 - `Select`
 - `Switch`
 - `TextInput`
 - `ThreeStateBooleanSelect`
 
-### Legacy Components Missing In New Repo
+### Legacy Components Not Publicly Reintroduced
 
-- `RangeSlider`
 - `MaterialsInputBox`
 - shared `utils.tsx` equivalents may need review
 
 ### Remaining Tasks
 
-- decide whether `RangeSlider` is still needed
-- review whether `MaterialsInputBox` should reappear internally
+- review whether `MaterialsInputBox` should remain internal or eventually reappear as a public export
 - compare old data-entry utility helpers against current logic duplication
+- verify whether any remaining legacy consumers depend on pre-React-18 `RangeSlider` edge behavior not yet covered
+
+### Note
+
+- `MaterialsInputBox` and `RangeSlider` were treated as part of the periodic-table priority because they directly affected `MaterialsInput` parity
 
 ## Workstream E: Navigation Components
 
@@ -425,8 +475,7 @@ This stream has the highest integration and dependency risk.
   - no known package-level public component gaps
   - `SearchUIDataCards` remains intentionally deferred outside the current public core path
 - data-entry:
-  - `RangeSlider`
-  - `MaterialsInputBox`
+  - no known public gap other than the decision to keep `MaterialsInputBox` internal for now
 - navigation:
   - `Navbar`
   - `NavbarDropdown`
@@ -442,10 +491,16 @@ This stream has the highest integration and dependency risk.
 
 ### Phase 1: Finish Periodic Table Stack
 
+- current top priority
 - thin `SelectableTableView` further
-- consolidate view models and item state
-- decide final store abstraction
-- verify `MaterialsInput` edge behavior against old stories
+- consolidate view models and item state around `view-model.ts` and `selection-state.ts`
+- decide the final store abstraction for periodic selection semantics
+- verify `MaterialsInput` edge behavior against old stories and tests
+- make explicit scope decisions for:
+  - whether `MaterialsInputBox` should stay internal or become public
+  - any remaining table-filter compatibility helpers
+  - whether the documented `MULTI_INPUTS_SELECT` downgrade needs reopening for a real consumer
+  - any legacy `RangeSlider` edge behavior still required by consuming apps
 
 ### Phase 2: Lock SearchUI
 
@@ -558,13 +613,16 @@ Keep this as a lightweight append-only section in future updates or in a separat
 
 The next highest-value slice is now:
 
-1. decide whether `RangeSlider` and `MaterialsInputBox` should return as public data-entry surface
-2. make an explicit scope call on navigation legacy components:
-   - `Navbar`
-   - `NavbarDropdown`
-   - `Sidebar`
-   - `Scrollspy`
-   - `NotificationDropdown`
-3. update the migration plan after each approved scope decision rather than reopening completed SearchUI/data-display work without a concrete consumer need
+1. finish thinning `SelectableTableView` and move remaining derived state into helpers
+2. compare `MaterialsInput` against legacy stories for:
+   - submit timing
+   - wildcard insertion
+   - periodic table visibility toggling
+   - input mode switching
+3. keep documenting and validating `SelectableTable` store-semantic decisions:
+   - action-driven callback forwarding
+   - max-limit behavior
+   - `MULTI_INPUTS_SELECT` downgrade boundary
+4. only after that, return to navigation/publication/crystal-toolkit scope work
 
-That gives the best payoff after SearchUI closeout and the current data-display restoration wave.
+That gives the best payoff now that SearchUI and the main data-display restoration wave are largely closed out.
