@@ -1,6 +1,36 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { GlobalSearchBar } from './GlobalSearchBar';
 
+vi.mock('../MaterialsInput', () => ({
+  MaterialsInputType: {
+    ELEMENTS: 'elements',
+    CHEMICAL_SYSTEM: 'chemical_system',
+    FORMULA: 'formula',
+    MPID: 'material_ids',
+  },
+  PeriodicTableMode: {
+    TOGGLE: 'toggle',
+  },
+  MaterialsInput: ({ onChange, onInputTypeChange, onSubmit }: any) => (
+    <div>
+      <input
+        data-testid="materials-input-search-input"
+        onChange={(event) => {
+          onChange?.(event.target.value);
+          onInputTypeChange?.('chemical_system');
+        }}
+      />
+      <button
+        type="button"
+        data-testid="materials-input-submit-button"
+        onClick={(event) => onSubmit?.(event, 'Fe-Co')}
+      >
+        Search
+      </button>
+    </div>
+  ),
+}));
+
 describe('GlobalSearchBar', () => {
   afterEach(() => {
     vi.restoreAllMocks();

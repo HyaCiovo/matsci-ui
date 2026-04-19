@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import {
+  useCallback,
   type ChangeEvent,
   type FocusEvent,
   type FormEvent,
@@ -77,14 +78,14 @@ const normalizeElementsFromValue = (type: MaterialsInputType | null, value: stri
     return [];
   }
 
-  if (type === MaterialsInputType.CHEMICAL_SYSTEM) {
-    return value.split('-').filter(Boolean);
-  }
-  if (type === MaterialsInputType.ELEMENTS) {
-    return value.split(',').map((item) => item.trim()).filter(Boolean);
-  }
-  if (type === MaterialsInputType.FORMULA) {
-    return value.match(/A[cglmrstu]|B[aehikr]?|C[adeflmnorsu]?|D[bsy]|E[rsu]|F[elmr]?|G[ade]|H[efgos]?|I[nr]?|Kr?|L[airuv]|M[dgnot]|N[abdeiop]?|Os?|P[abdmortu]?|R[abefghnu]|S[bcegimnr]?|T[abcehilm]|U(u[opst])?|V|W|Xe|Yb?|Z[nr]|La\-Lu?|Ac\-Lr?/g) ?? [];
+  if (
+    type === MaterialsInputType.CHEMICAL_SYSTEM ||
+    type === MaterialsInputType.ELEMENTS ||
+    type === MaterialsInputType.FORMULA ||
+    type === MaterialsInputType.MOLECULE_FORMULA
+  ) {
+    const parsedValue = materialsInputTypes[type]?.validate(value);
+    return Array.isArray(parsedValue) ? parsedValue : [];
   }
 
   return [];
@@ -99,6 +100,32 @@ const renderPeriodicTableValue = (mode: PeriodicTableSelectionMode, elements: st
   }
   return arrayToDelimitedString(elements, /,/);
 };
+
+const isMaxSelectionValue = (
+  type: MaterialsInputType | null,
+  value: string,
+  maxElementSelectable: number
+) => {
+  if (!type || !value) {
+    return false;
+  }
+
+  const parsedValue = materialsInputTypes[type]?.validate(value);
+  return Array.isArray(parsedValue) && parsedValue.length === maxElementSelectable;
+};
+
+const getSelectionTokens = (type: MaterialsInputType, value: string) => {
+  const parsedValue = materialsInputTypes[type]?.validate(value);
+  const elements = Array.isArray(parsedValue) ? parsedValue : [];
+  const wildcards = value.match(/\*/g) ?? [];
+  return {
+    elements,
+    elementsPlusWildcards: wildcards.length > 0 ? [...elements, ...wildcards] : elements,
+  };
+};
+
+const areElementListsEqual = (left: string[], right: string[]) =>
+  left.length === right.length && left.every((value, index) => value === right[index]);
 
 export const MaterialsInput = ({
   value = '',
@@ -133,6 +160,10 @@ export const MaterialsInput = ({
   const [showAutocomplete, setShowAutocomplete] = useState(false);
   const [submitButtonClicks, setSubmitButtonClicks] = useState(props.submitButtonClicks ?? 0);
   const [isFocused, setIsFocused] = useState(false);
+  const [previousValidValue, setPreviousValidValue] = useState(props.value);
+  const [maxElementsReached, setMaxElementsReached] = useState(() =>
+    isMaxSelectionValue(props.type, props.value, props.maxElementSelectable)
+  );
   const [showPeriodicTable, setShowPeriodicTable] = useState(
     periodicTableMode === PeriodicTableMode.TOGGLE && !props.hidePeriodicTable
   );
@@ -222,6 +253,14 @@ export const MaterialsInput = ({
     const [detectedType, parsedValue] = detectAndValidateInputType(nextValue, props.allowedInputTypes);
     const resolvedType = detectedType ?? inputType;
     const validLength = validateInputLength(parsedValue, resolvedType, props.maxElementSelectable);
+    const isValid = Boolean((parsedValue && validLength) || !nextValue);
+    const reachedMax = Array.isArray(parsedValue) && parsedValue.length === props.maxElementSelectable;
+
+    if (!validLength || (maxElementsReached && !isValid)) {
+      setError(null);
+      setInputValue(previousValidValue);
+      return false;
+    }
 
     if (nextValue && (!parsedValue || !validLength)) {
       setError(props.errorMessage);
@@ -241,6 +280,8 @@ export const MaterialsInput = ({
     }
 
     setSelectedElements(normalizeElementsFromValue(resolvedType, nextValue));
+    setPreviousValidValue(nextValue);
+    setMaxElementsReached(reachedMax);
     return true;
   };
 
@@ -249,6 +290,8 @@ export const MaterialsInput = ({
     if (!nextValue) {
       setError(null);
       setInputValue('');
+      setPreviousValidValue('');
+      setMaxElementsReached(false);
       setSelectedElements([]);
       return;
     }
@@ -262,7 +305,7 @@ export const MaterialsInput = ({
     currentInputType: MaterialsInputType,
     currentInputValue: string
   ) => {
-    const elements = normalizeElementsFromValue(currentInputType, currentInputValue);
+    const { elements, elementsPlusWildcards } = getSelectionTokens(currentInputType, currentInputValue);
     const newSelection = getMaterialsInputTypeByMappedValue(lookupKey, selectedValue);
     if (!newSelection) {
       return;
@@ -271,15 +314,32 @@ export const MaterialsInput = ({
     setInputType(newSelection);
     props.onInputTypeChange?.(newSelection);
 
+    let nextValue = currentInputValue;
     if (newSelection === MaterialsInputType.CHEMICAL_SYSTEM) {
-      setInputValue(arrayToDelimitedString(elements, /-/));
+      if (elementsPlusWildcards.length > 1) {
+        nextValue = arrayToDelimitedString(elementsPlusWildcards, /-/);
+      }
     } else if (newSelection === MaterialsInputType.ELEMENTS) {
-      setInputValue(arrayToDelimitedString(elements, /,/));
-    } else if (newSelection === MaterialsInputType.FORMULA) {
-      setInputValue(elements.join(''));
-    } else if (newSelection === MaterialsInputType.MOLECULE_FORMULA) {
-      setInputValue(arrayToDelimitedString(elements, /\s/));
+      if (elements.length > 1) {
+        nextValue = arrayToDelimitedString(elements, /,/);
+      }
+    } else if (newSelection === MaterialsInputType.FORMULA && currentInputType !== MaterialsInputType.FORMULA) {
+      if (elements.length > 1) {
+        nextValue = elements.join('');
+      }
+    } else if (
+      newSelection === MaterialsInputType.MOLECULE_FORMULA &&
+      currentInputType !== MaterialsInputType.MOLECULE_FORMULA &&
+      elements.length > 1
+    ) {
+      nextValue = arrayToDelimitedString(elements, /\s/);
     }
+
+    setError(null);
+    setInputValue(nextValue);
+    setSelectedElements(normalizeElementsFromValue(newSelection, nextValue));
+    setPreviousValidValue(nextValue);
+    setMaxElementsReached(isMaxSelectionValue(newSelection, nextValue, props.maxElementSelectable));
   };
 
   const handleFormulaButtonClick = (valueToAppend: string) => {
@@ -293,6 +353,17 @@ export const MaterialsInput = ({
     setInputValue(nextValue);
     setSelectedElements(normalizeElementsFromValue(inputType, nextValue));
   };
+
+  const handleTableStateChange = useCallback(
+    (nextElements: string[]) => {
+      const nextValue = renderPeriodicTableValue(selectionMode, nextElements);
+
+      setSelectedElements((current) => (areElementListsEqual(current, nextElements) ? current : nextElements));
+      setError(null);
+      setInputValue((current) => (current === nextValue ? current : nextValue));
+    },
+    [selectionMode]
+  );
 
   const getNextInputTypeForSelectionMode = (mode: PeriodicTableSelectionMode) => {
     if (mode === PeriodicTableSelectionMode.CHEMICAL_SYSTEM) {
@@ -313,6 +384,7 @@ export const MaterialsInput = ({
       return;
     }
 
+    setShowPeriodicTable(false);
     setShowAutocomplete(false);
     setShowInputHelp(false);
     if (props.setProps) {
@@ -342,7 +414,9 @@ export const MaterialsInput = ({
 
   useEffect(() => {
     setInputValue(props.value);
-  }, [props.value]);
+    setPreviousValidValue(props.value);
+    setMaxElementsReached(isMaxSelectionValue(props.type, props.value, props.maxElementSelectable));
+  }, [props.maxElementSelectable, props.type, props.value]);
 
   useEffect(() => {
     setInputType(props.type);
@@ -592,11 +666,7 @@ export const MaterialsInput = ({
             }
             forceTableLayout={TableLayout.MINI}
             hiddenElements={[]}
-            onStateChange={(nextElements) => {
-              setSelectedElements(nextElements);
-              setError(null);
-              setInputValue(renderPeriodicTableValue(selectionMode, nextElements));
-            }}
+            onStateChange={handleTableStateChange}
             plugin={
               allowedSelectionModes.length > 0 ? (
                 <PeriodicTableModeSwitcher

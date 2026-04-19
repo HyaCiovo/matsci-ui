@@ -30,6 +30,7 @@ export * from './components/navigation/Tabs';
 export * from './components/periodic-table/PeriodicTableFormulaButtons';
 export * from './components/periodic-table/PeriodicTableModeSwitcher';
 export * from './components/periodic-table/SelectableTable';
+export * from './components/periodic-table/TableFilter';
 export * from './utils/download';
 export * from './utils/hooks';
 export * from './utils/table';

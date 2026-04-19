@@ -1,31 +1,26 @@
 import classNames from 'classnames';
-import { useEffect, useMemo, useState } from 'react';
-import { VALID_ELEMENTS } from '../../data-entry/MaterialsInput/utils';
-import { TABLE_V2, type MatElement } from '../periodic-table-data/table-v2';
+import { useCallback, useEffect, useMemo } from 'react';
+import { type MatElement } from '../periodic-table-data/table-v2';
+import { getElementDetail, toArray } from './selection-state';
+import {
+  useOptionalPeriodicSelectionContext,
+  PeriodicSelectionProvider,
+  useDetailedElement,
+  useElements,
+} from './PeriodicSelectionContext';
+import { PeriodicTableElementButton } from './PeriodicTableElementButton';
+import { PeriodicTableSpacer } from './PeriodicTableSpacer';
+import {
+  TableLayout,
+  TableSelectionStyle,
+  type SelectableTableStateChange,
+} from './types';
+import {
+  createElementMap,
+  getPositionedElements,
+  getSelectableTableElementViewModels,
+} from './view-model';
 import './SelectableTable.css';
-
-export enum TableSelectionStyle {
-  ENABLE_DISABLE = 'enableDisable',
-  SELECT = 'select',
-  MULTI_INPUTS_SELECT = 'mis',
-}
-
-export enum TableLayout {
-  FULL = 'full',
-  MINI = 'mini',
-}
-
-export interface SelectableTableLastAction {
-  type: 'select' | 'deselect';
-  element: string;
-}
-
-export interface SelectableTableStateChange {
-  enabledElements: string[];
-  disabledElements: string[];
-  hiddenElements: string[];
-  lastAction?: SelectableTableLastAction;
-}
 
 export interface SelectableTableProps {
   className?: string;
@@ -40,74 +35,118 @@ export interface SelectableTableProps {
   forwardOuterChange?: boolean;
   selectionStyle?: TableSelectionStyle;
   forceTableLayout?: TableLayout;
+  detailedElement?: string | null;
+  onDetailedElementChange?: (element: string | null, detail: MatElement | null) => void;
   children?: React.ReactNode;
 }
 
-const toRecord = (values?: string[]) =>
-  Object.fromEntries((values ?? []).map((value) => [value, true])) as Record<string, boolean>;
+function SelectableTableView({
+  className,
+  maxElementSelectable,
+  plugin,
+  disabled = false,
+  forceTableLayout = TableLayout.FULL,
+  onDetailedElementChange,
+  onStateChange,
+  onTableStateChange,
+  forwardOuterChange = true,
+  children,
+}: Omit<
+  SelectableTableProps,
+  | 'enabledElements'
+  | 'disabledElements'
+  | 'hiddenElements'
+  | 'detailedElement'
+>) {
+  const context = useOptionalPeriodicSelectionContext();
+  const handleElementsChange = useCallback(
+    (state: { enabledElements: string[]; disabledElements: string[] }) => {
+      onStateChange?.(state.enabledElements);
+    },
+    [onStateChange]
+  );
+  const {
+    enabledElements: enabledRecord,
+    disabledElements: effectiveDisabledRecord,
+    hiddenElements: hiddenRecord,
+    lastAction,
+    actions,
+  } = useElements(maxElementSelectable, onStateChange ? handleElementsChange : undefined);
+  const detailedElementSymbol = useDetailedElement();
+  const elementMap = useMemo(() => createElementMap(), []);
+  const positionedElements = useMemo(() => getPositionedElements(elementMap), [elementMap]);
+  const elementViewModels = useMemo(
+    () =>
+      getSelectableTableElementViewModels({
+        positionedElements,
+        enabledRecord,
+        effectiveDisabledRecord,
+        hiddenRecord,
+        disabled,
+      }),
+    [disabled, effectiveDisabledRecord, enabledRecord, hiddenRecord, positionedElements]
+  );
+  const detailedElement = getElementDetail(detailedElementSymbol, elementMap);
+  useEffect(() => {
+    onDetailedElementChange?.(detailedElementSymbol, detailedElement);
+  }, [detailedElement, detailedElementSymbol, onDetailedElementChange]);
 
-const toArray = (values: Record<string, boolean>) => Object.keys(values).filter((key) => values[key]);
+  useEffect(() => {
+    actions.setForwardChange(forwardOuterChange);
+  }, [actions, forwardOuterChange]);
 
-const DEFAULT_DISABLED_ELEMENTS: Record<string, boolean> = {
-  Po: true,
-  Rn: true,
-  Ra: true,
-  At: true,
-  Fr: true,
-  Rf: true,
-  Db: true,
-  Sg: true,
-  Bh: true,
-  Hs: true,
-  Mt: true,
-  Ds: true,
-  Rg: true,
-  Cn: true,
-  Nh: true,
-  Fl: true,
-  Mc: true,
-  Lv: true,
-  Ts: true,
-  Og: true,
-  'La-Lu': true,
-  'Ac-Lr': true,
-  Am: true,
-  Cm: true,
-  Bk: true,
-  Cf: true,
-  Es: true,
-  Fm: true,
-  Md: true,
-  No: true,
-  Lr: true,
-};
+  useEffect(() => {
+    if (!context) {
+      return;
+    }
 
-const getClampedDisabledElements = (
-  enabledRecord: Record<string, boolean>,
-  disabledRecord: Record<string, boolean>,
-  maxElementSelectable: number,
-  selectionStyle: TableSelectionStyle
-) => {
-  if (selectionStyle !== TableSelectionStyle.SELECT) {
-    return disabledRecord;
-  }
-
-  if (Object.keys(enabledRecord).length >= maxElementSelectable) {
-    const nextDisabled = Object.fromEntries(VALID_ELEMENTS.map((element) => [element, true])) as Record<
-      string,
-      boolean
-    >;
-    Object.keys(enabledRecord).forEach((element) => {
-      delete nextDisabled[element];
+    onTableStateChange?.({
+      enabledElements: toArray(enabledRecord),
+      disabledElements: toArray(effectiveDisabledRecord),
+      hiddenElements: toArray(hiddenRecord),
+      detailedElement: detailedElementSymbol,
+      forwardOuterChange: context.forwardOuterChange,
+      lastAction,
     });
-    Object.keys(disabledRecord).forEach((element) => {
-      nextDisabled[element] = true;
-    });
-    return nextDisabled;
-  }
+  }, [
+    context,
+    detailedElementSymbol,
+    effectiveDisabledRecord,
+    enabledRecord,
+    hiddenRecord,
+    lastAction,
+    onTableStateChange,
+  ]);
 
-  return disabledRecord;
-};
+  return (
+    <div
+      className={classNames('mpc-selectable-table', className, {
+        'mpc-selectable-table-mini': forceTableLayout === TableLayout.MINI,
+      })}
+      data-table-layout={forceTableLayout}
+    >
+      <PeriodicTableSpacer plugin={plugin} disabled={disabled} />
+      <div className="materials-input-elements-grid">
+        {elementViewModels.map(({ symbol: element, xpos, ypos, detail, enabled, disabled: elementDisabled, defaultDisabled }) => (
+          <PeriodicTableElementButton
+            key={element}
+            element={element}
+            xpos={xpos}
+            ypos={ypos}
+            detail={detail}
+            enabled={enabled}
+            disabled={elementDisabled}
+            defaultDisabled={defaultDisabled}
+            lastAction={lastAction}
+            onToggle={actions.toggleEnabledElement}
+            onHoverDetail={actions.setDetailedElement}
+          />
+        ))}
+      </div>
+      {children}
+    </div>
+  );
+}
 
 export function SelectableTable({
   className,
@@ -122,169 +161,43 @@ export function SelectableTable({
   forwardOuterChange = true,
   selectionStyle = TableSelectionStyle.SELECT,
   forceTableLayout = TableLayout.FULL,
+  detailedElement,
+  onDetailedElementChange,
   children,
 }: SelectableTableProps) {
-  const [enabledRecord, setEnabledRecord] = useState<Record<string, boolean>>(toRecord(enabledElements));
-  const [disabledRecord, setDisabledRecord] = useState<Record<string, boolean>>(toRecord(disabledElements));
-  const [hiddenRecord, setHiddenRecord] = useState<Record<string, boolean>>(toRecord(hiddenElements));
-  const [lastAction, setLastAction] = useState<SelectableTableLastAction | undefined>();
-  const [detailedElement, setDetailedElement] = useState<MatElement | null>(null);
-
-  useEffect(() => {
-    setEnabledRecord(toRecord(enabledElements));
-  }, [enabledElements]);
-
-  useEffect(() => {
-    setDisabledRecord(toRecord(disabledElements));
-  }, [disabledElements]);
-
-  useEffect(() => {
-    setHiddenRecord(toRecord(hiddenElements));
-  }, [hiddenElements]);
-
-  const effectiveDisabledRecord = useMemo(
-    () => getClampedDisabledElements(enabledRecord, disabledRecord, maxElementSelectable, selectionStyle),
-    [disabledRecord, enabledRecord, maxElementSelectable, selectionStyle]
-  );
-  const elementMap = useMemo(
-    () => Object.fromEntries(TABLE_V2.map((element) => [element.symbol, element])) as Record<string, MatElement>,
-    []
+  const externalContext = useOptionalPeriodicSelectionContext();
+  const tableView = (
+    <SelectableTableView
+      className={className}
+      maxElementSelectable={maxElementSelectable}
+      plugin={plugin}
+      disabled={disabled}
+      selectionStyle={selectionStyle}
+      forceTableLayout={forceTableLayout}
+      onStateChange={onStateChange}
+      onTableStateChange={onTableStateChange}
+      forwardOuterChange={forwardOuterChange}
+      onDetailedElementChange={onDetailedElementChange}
+    >
+      {children}
+    </SelectableTableView>
   );
 
-  const emitStateChange = (
-    nextEnabledRecord: Record<string, boolean>,
-    nextDisabledRecord: Record<string, boolean>,
-    nextLastAction?: SelectableTableLastAction
-  ) => {
-    if (forwardOuterChange) {
-      onStateChange?.(toArray(nextEnabledRecord));
-    }
-
-    onTableStateChange?.({
-      enabledElements: toArray(nextEnabledRecord),
-      disabledElements: toArray(nextDisabledRecord),
-      hiddenElements: toArray(hiddenRecord),
-      lastAction: nextLastAction,
-    });
-  };
+  if (externalContext) {
+    return tableView;
+  }
 
   return (
-    <div
-      className={classNames('mpc-selectable-table', className, {
-        'mpc-selectable-table-mini': forceTableLayout === TableLayout.MINI,
-      })}
-      data-table-layout={forceTableLayout}
+    <PeriodicSelectionProvider
+      enabledElements={enabledElements}
+      disabledElements={disabledElements}
+      hiddenElements={hiddenElements}
+      detailedElement={detailedElement}
+      forwardOuterChange={forwardOuterChange}
+      maxElementSelectable={maxElementSelectable}
+      selectionStyle={selectionStyle}
     >
-      {(plugin || detailedElement) && (
-        <div className="mpc-selectable-table-spacer">
-          <div className="mpc-selectable-table-plugin">{plugin}</div>
-          <div
-            className={classNames('mpc-selectable-table-detail', {
-              'is-empty': !detailedElement,
-            })}
-          >
-            {detailedElement ? (
-              <>
-                <div className="mpc-selectable-table-detail-header">
-                  <span className="mpc-selectable-table-detail-symbol">{detailedElement.symbol}</span>
-                  <span className="mpc-selectable-table-detail-name">{detailedElement.name}</span>
-                </div>
-                <div className="mpc-selectable-table-detail-meta">
-                  <span>No. {detailedElement.number}</span>
-                  <span>{detailedElement.phase}</span>
-                  <span>{detailedElement.category}</span>
-                  <span>{detailedElement.atomic_mass.toFixed(3)}</span>
-                </div>
-                <div className="mpc-selectable-table-detail-summary">
-                  {detailedElement.summary}
-                </div>
-              </>
-            ) : (
-              <span>Hover an element to inspect details</span>
-            )}
-          </div>
-        </div>
-      )}
-      <div className="materials-input-elements-grid">
-        {VALID_ELEMENTS.filter((element) => !hiddenRecord[element]).map((element) => {
-          const enabled = !!enabledRecord[element];
-          const isDefaultDisabled = !!DEFAULT_DISABLED_ELEMENTS[element];
-          const isDisabled = disabled || !!effectiveDisabledRecord[element] || isDefaultDisabled;
-
-          return (
-            <button
-              key={element}
-              type="button"
-              data-testid={`periodic-element-${element}`}
-              className={classNames('mat-element', {
-                enabled,
-                disabled: isDisabled,
-                'default-disabled': isDefaultDisabled,
-              })}
-              onClick={() => {
-                if (isDisabled) {
-                  return;
-                }
-
-                if (selectionStyle === TableSelectionStyle.ENABLE_DISABLE) {
-                  const nextDisabledRecord = { ...disabledRecord };
-                  if (nextDisabledRecord[element]) {
-                    delete nextDisabledRecord[element];
-                  } else {
-                    nextDisabledRecord[element] = true;
-                  }
-                  setDisabledRecord(nextDisabledRecord);
-                  emitStateChange(enabledRecord, nextDisabledRecord);
-                  return;
-                }
-
-                const nextEnabledRecord = { ...enabledRecord };
-                const nextLastAction: SelectableTableLastAction = enabled
-                  ? { type: 'deselect', element }
-                  : { type: 'select', element };
-
-                if (enabled) {
-                  delete nextEnabledRecord[element];
-                } else if (selectionStyle === TableSelectionStyle.MULTI_INPUTS_SELECT) {
-                  Object.keys(nextEnabledRecord).forEach((selectedElement) => {
-                    delete nextEnabledRecord[selectedElement];
-                  });
-                  nextEnabledRecord[element] = true;
-                } else {
-                  nextEnabledRecord[element] = true;
-                }
-
-                const nextDisabledRecord = getClampedDisabledElements(
-                  nextEnabledRecord,
-                  disabledRecord,
-                  maxElementSelectable,
-                  selectionStyle
-                );
-                setEnabledRecord(nextEnabledRecord);
-                setLastAction(nextLastAction);
-                emitStateChange(nextEnabledRecord, nextDisabledRecord, nextLastAction);
-              }}
-              onMouseEnter={() => {
-                setDetailedElement(elementMap[element] ?? null);
-              }}
-              onMouseLeave={() => {
-                setDetailedElement(null);
-              }}
-              onFocus={() => {
-                setDetailedElement(elementMap[element] ?? null);
-              }}
-              onBlur={() => {
-                setDetailedElement(null);
-              }}
-              data-last-action={lastAction?.element === element ? lastAction.type : undefined}
-              title={isDefaultDisabled ? 'Unavailable in current table' : undefined}
-            >
-              {element}
-            </button>
-          );
-        })}
-      </div>
-      {children}
-    </div>
+      {tableView}
+    </PeriodicSelectionProvider>
   );
 }
