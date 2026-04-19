@@ -1,8 +1,8 @@
-// @ts-nocheck
 import * as THREE from 'three';
 import { getSceneWithBackground, ThreeBuilder } from './three_builder';
 import { disposeSceneHierarchy } from '../utils';
 import { ThreePosition } from './constants';
+import type { SceneJsonObject } from './simple-scene';
 
 export enum ScenePosition {
   NW = 'NW',
@@ -20,15 +20,15 @@ const DEFAULT_SIZE = 130;
 
 export class InsetHelper {
   private insetCamera: THREE.OrthographicCamera;
-  private frontRotation;
+  private frontRotation: THREE.Euler;
   private axisPadding = 0; // the space between the edge of the inset and the axis bounding box
   private scene: THREE.Scene;
-  public helper;
-  private axis;
+  public helper?: THREE.CameraHelper;
+  private axis: THREE.Object3D;
 
   constructor(
     private detailedObject: THREE.Object3D,
-    private axisJson: any,
+    private axisJson: SceneJsonObject & Record<string, any>,
     baseScene: THREE.Scene,
     private origin: ThreePosition,
     private cameraToFollow: THREE.Camera,
@@ -82,12 +82,12 @@ export class InsetHelper {
     this.insetCamera.updateProjectionMatrix();
   }
 
-  setAxis(axis, axisJson) {
+  setAxis(axis: THREE.Object3D, axisJson: SceneJsonObject & Record<string, any>) {
     this.axis = axis;
     this.axisJson = axisJson;
   }
 
-  makeObject(object_json) {
+  makeObject(object_json: SceneJsonObject & Record<string, any>) {
     const obj = new THREE.Object3D();
 
     return this.threebuilder.makeObject(object_json, obj);
@@ -129,7 +129,7 @@ export class InsetHelper {
     this.updateSelectedObject(this.axis, this.axisJson);
   }
 
-  public updateSelectedObject(object: THREE.Object3D, objectJson: any) {
+  public updateSelectedObject(object: THREE.Object3D, objectJson: Partial<SceneJsonObject>) {
     this.scene.remove(this.detailedObject);
     this.detailedObject = object;
     this.scene.add(this.detailedObject);
@@ -151,7 +151,7 @@ export class InsetHelper {
     this.setup();
   }
 
-  public render(renderer, [x, y]: [number, number]) {
+  public render(renderer: THREE.WebGLRenderer | THREE.Renderer, [x, y]: [number, number]) {
     // NOTE(chab) this will not work with the SVG renderer, as it has no notion of
     // viewport, if we want the SVG render to work, we'll need to have a separated renderer
     if (renderer instanceof THREE.WebGLRenderer && this.detailedObject) {
@@ -199,11 +199,11 @@ export class InsetHelper {
       (box.max.z - box.min.z) / 2
     );
 
-    let a = center
+    const a = center
       .clone()
       .add(new THREE.Vector3(-extents.x, -extents.y, -extents.z))
       .project(this.insetCamera);
-    let b = center
+    const b = center
       .clone()
       .add(new THREE.Vector3(extents.x, -extents.y, extents.z))
       .project(this.insetCamera);
@@ -227,7 +227,7 @@ export class InsetHelper {
     const targetHeadLength = HEAD_AXIS_LENGTH * (scale / 1.5);
     const targetWidth = HEAD_WIDTH * (scale / 1.5);
     // we assume an axis is made of three arrows and one sphere
-    this.axisJson.contents = this.axisJson.contents.map((a) => {
+    this.axisJson.contents = (this.axisJson.contents ?? []).map((a: SceneJsonObject & Record<string, any>) => {
       return { ...a, radius: targetRadius, headLength: targetHeadLength, headWidth: targetWidth };
     });
     this.detailedObject.remove(

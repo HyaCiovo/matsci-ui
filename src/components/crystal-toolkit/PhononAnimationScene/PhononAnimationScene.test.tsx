@@ -1,48 +1,102 @@
-// @ts-nocheck
-import { mount } from 'enzyme';
-import * as React from 'react';
+import type { ReactNode } from 'react';
+import { render, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PhononAnimationScene } from './PhononAnimationScene';
-import { phonon_scene as scene } from '../scene/phonon-animation-scene';
-import { MOUNT_NODE_CLASS, Renderer } from '../scene/constants';
+import { phonon_scene as sceneData } from '../scene/phonon-animation-scene';
+import { AnimationStyle, MOUNT_NODE_CLASS, Renderer } from '../scene/constants';
 import Scene from '../scene/Scene';
 
-const spy = jest.spyOn(Scene.prototype, 'renderScene');
-const RENDERSCENE_CALLS_BY_REACT_RENDERING = 3; // goal is to reach 1 and stay there :)
+const sceneApi = vi.hoisted(() => ({
+  resizeRendererToDisplaySize: vi.fn(),
+  enableDebug: vi.fn(),
+  addToScene: vi.fn(),
+  toggleVisibility: vi.fn(),
+  updateInsetSettings: vi.fn(),
+  updateCamera: vi.fn(),
+  updateAnimationStyle: vi.fn(),
+  updateTime: vi.fn(),
+  removeListener: vi.fn(),
+  animate: vi.fn(),
+  onDestroy: vi.fn(),
+}));
 
-// When we run test, three.js is bundled differently, and we encounter again the bug
-// where we have 2 different instances of three
-describe('<PhononAnimationScene/>', () => {
-  it('should be rendered', () => {
-    const wrapper = renderElement();
-    expect(wrapper.find(`.${MOUNT_NODE_CLASS}`).length).toBe(1);
-    expect(wrapper.find(`.mpc-scene-square`).length).toBe(1);
+const tooltipHide = vi.hoisted(() => vi.fn());
 
-    // Note(chab) we call renderScene when we mount, due to the react effect
-    // those are the three call sites (constructor / toggleVis / inlet )
-    expect(spy).toBeCalledTimes(1 * RENDERSCENE_CALLS_BY_REACT_RENDERING);
+vi.mock('use-resize-observer', () => ({
+  default: () => ({ width: 500, height: 500 }),
+}));
 
-    // fails because SVGRender will import a different instance of Three
-    // expect(wrapper.find('path').length).toBe(6);
-  });
+vi.mock('../scene/download-event', () => ({
+  subscribe: () => ({ unsubscribe: vi.fn() }),
+}));
 
-  it('should re-render if we change the size of the screen', () => {
-    const wrapper = renderElement();
-    wrapper.setProps({ size: 400 });
-    expect(spy).toBeCalledTimes(2 * RENDERSCENE_CALLS_BY_REACT_RENDERING);
-  });
+vi.mock('react-tooltip', () => {
+  const Tooltip = ({ children }: { children?: ReactNode }) => <>{children}</>;
+  return { default: Object.assign(Tooltip, { hide: tooltipHide }) };
 });
 
-function renderElement() {
-  // we use mount to test the rendering of the underlying elements
-  return mount(
-    <PhononAnimationScene
-      sceneSize={500}
-      settings={{
-        renderer: Renderer.SVG
-      }}
-      data={scene}
-      debug={false}
-      toggleVisibility={{}}
-    />
-  );
-}
+vi.mock('../../data-entry/RangeSlider', () => ({
+  RangeSlider: ({ onChange }: { onChange?: (values: number[]) => void }) => (
+    <button type="button" data-testid="mock-range-slider" onClick={() => onChange?.([25])}>
+      Mock slider
+    </button>
+  ),
+}));
+
+vi.mock('../scene/Scene', () => ({
+  default: vi.fn(function MockScene() {
+    return {
+      ...sceneApi,
+      scene: {},
+      renderer: { domElement: document.createElement('canvas') },
+    };
+  }),
+}));
+
+describe('PhononAnimationScene', () => {
+  beforeEach(() => {
+    vi.mocked(Scene).mockClear();
+    tooltipHide.mockClear();
+    Object.values(sceneApi).forEach((spy) => spy.mockClear());
+  });
+
+  it('mounts and wires the phonon scene runtime', async () => {
+    const { container } = render(
+      <PhononAnimationScene
+        sceneSize={500}
+        settings={{ renderer: Renderer.SVG }}
+        data={sceneData}
+        debug={false}
+        toggleVisibility={{}}
+      />
+    );
+
+    await waitFor(() => expect(Scene).toHaveBeenCalled());
+
+    expect(container.querySelector(`.${MOUNT_NODE_CLASS}`)).not.toBeNull();
+    expect(container.querySelector('.mpc-scene-square')).not.toBeNull();
+    expect(sceneApi.removeListener).toHaveBeenCalled();
+    expect(sceneApi.animate).toHaveBeenCalled();
+    expect(sceneApi.addToScene).toHaveBeenCalledWith(sceneData, false);
+  });
+
+  it('forwards slider interactions to the scene animation time', async () => {
+    const user = userEvent.setup();
+    render(
+      <PhononAnimationScene
+        sceneSize={500}
+        settings={{ renderer: Renderer.SVG }}
+        data={sceneData}
+        debug={false}
+        toggleVisibility={{}}
+        animation={AnimationStyle.SLIDER}
+      />
+    );
+
+    await waitFor(() => expect(Scene).toHaveBeenCalled());
+    await user.click(document.querySelector('[data-testid="mock-range-slider"]') as HTMLButtonElement);
+
+    expect(sceneApi.updateTime).toHaveBeenCalledWith(0.25);
+  });
+});

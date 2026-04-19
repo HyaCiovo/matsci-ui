@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Quaternion, Vector3 } from 'three';
 
 export interface Action<T, P> {

@@ -19,6 +19,13 @@ export const createDownloadLink = (href: string, filename: string) => {
   link.remove();
 };
 
+export const downloadBlob = (blob: Blob, filename: string) => {
+  const href = URL.createObjectURL(blob);
+  createDownloadLink(href, filename);
+  window.setTimeout(() => URL.revokeObjectURL(href), 0);
+  return true;
+};
+
 export const downloadJSON = (data: unknown, filename = 'export') => {
   if (data === undefined || data === null) {
     return false;

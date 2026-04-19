@@ -28,8 +28,10 @@ function SelectableTableStory(args: SelectableTableProps) {
           enabledElements={selectedElements}
           disabledElements={disabledElements}
           onStateChange={(nextState) => {
-            setSelectedElements(nextState.enabledElements);
-            setDisabledElements(nextState.disabledElements);
+            const nextSelected = Array.isArray(nextState) ? nextState : nextState.enabledElements;
+            const nextDisabled = Array.isArray(nextState) ? [] : nextState.disabledElements;
+            setSelectedElements(nextSelected);
+            setDisabledElements(nextDisabled);
             args.onStateChange?.(nextState);
           }}
         />

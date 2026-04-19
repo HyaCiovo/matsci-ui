@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { type MatElement } from '../periodic-table-data/table-v2';
 import { getSelectableTableStateChange } from './selection-state';
 import {
@@ -14,6 +14,7 @@ import {
   TableLayout,
   TableSelectionStyle,
   type SelectableTableSelectionChange,
+  type SelectableTableLegacySelectionChange,
   type SelectableTableStateChange,
 } from './types';
 import {
@@ -29,7 +30,9 @@ export interface SelectableTableProps {
   disabledElements?: string[];
   hiddenElements?: string[];
   maxElementSelectable: number;
-  onStateChange?: (state: SelectableTableSelectionChange) => void;
+  onStateChange?: (
+    state: SelectableTableSelectionChange | SelectableTableLegacySelectionChange
+  ) => void;
   onTableStateChange?: (state: SelectableTableStateChange) => void;
   plugin?: JSX.Element;
   disabled?: boolean;
@@ -60,14 +63,32 @@ function SelectableTableView({
   | 'detailedElement'
 >) {
   const context = useOptionalPeriodicSelectionContext();
+  const forwardOuterChangeRef = useRef(context?.forwardOuterChange ?? true);
+  useEffect(() => {
+    if (!context) {
+      return;
+    }
+    if (context.forwardOuterChange === false) {
+      forwardOuterChangeRef.current = false;
+    }
+  }, [context?.forwardOuterChange]);
   const handleElementsChange = useCallback(
     (state: { enabledElements: string[]; disabledElements: string[] }) => {
+      const wasForward = forwardOuterChangeRef.current;
+      const isForward = context?.forwardOuterChange ?? true;
+      forwardOuterChangeRef.current = isForward;
+
+      if (!wasForward && isForward && context?.changeOrigin === 'action') {
+        onStateChange?.(state.enabledElements);
+        return;
+      }
+
       onStateChange?.({
         enabledElements: state.enabledElements,
         disabledElements: state.disabledElements,
       });
     },
-    [onStateChange]
+    [context?.changeOrigin, context?.forwardOuterChange, onStateChange]
   );
   const {
     enabledElements: enabledRecord,

@@ -1,48 +1,148 @@
-// @ts-nocheck
-import { mount } from 'enzyme';
-import * as React from 'react';
+import type { ReactNode } from 'react';
+import { render, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CrystalToolkitScene } from './CrystalToolkitScene';
-import { s2 as scene } from '../scene/simple-scene';
+import { s2 as sceneData } from '../scene/simple-scene';
 import { MOUNT_NODE_CLASS, Renderer } from '../scene/constants';
 import Scene from '../scene/Scene';
 
-const spy = jest.spyOn(Scene.prototype, 'renderScene');
-const RENDERSCENE_CALLS_BY_REACT_RENDERING = 1; // goal is to reach 1 and stay there :)
+const sceneApi = vi.hoisted(() => ({
+  resizeRendererToDisplaySize: vi.fn(),
+  enableDebug: vi.fn(),
+  addToScene: vi.fn(),
+  toggleVisibility: vi.fn(),
+  updateInsetSettings: vi.fn(),
+  updateCamera: vi.fn(),
+  updateAnimationStyle: vi.fn(),
+  updateTime: vi.fn(),
+  removeListener: vi.fn(),
+  animate: vi.fn(),
+  onDestroy: vi.fn(),
+}));
 
-// When we run test, three.js is bundled differently, and we encounter again the bug
-// where we have 2 different instances of three
-describe('<CrystalToolkitScene/>', () => {
-  it('should be rendered', () => {
-    const wrapper = renderElement();
-    expect(wrapper.find(`.${MOUNT_NODE_CLASS}`).length).toBe(1);
-    expect(wrapper.find(`.mpc-scene-square`).length).toBe(1);
+const tooltipHide = vi.hoisted(() => vi.fn());
 
-    // Note(chab) we call renderScene when we mount, due to the react effect
-    // those are the three call sites (constructor / toggleVis / inlet )
-    expect(spy).toBeCalledTimes(1 * RENDERSCENE_CALLS_BY_REACT_RENDERING);
+vi.mock('use-resize-observer', () => ({
+  default: () => ({ width: 500, height: 500 }),
+}));
 
-    // fails because SVGRender will import a different instance of Three
-    // expect(wrapper.find('path').length).toBe(6);
-  });
+vi.mock('../scene/download-event', () => ({
+  subscribe: () => ({ unsubscribe: vi.fn() }),
+}));
 
-  it('should re-render if we change the size of the screen', () => {
-    const wrapper = renderElement();
-    wrapper.setProps({ size: 400 });
-    expect(spy).toBeCalledTimes(2 * RENDERSCENE_CALLS_BY_REACT_RENDERING);
-  });
+vi.mock('react-tooltip', () => {
+  const Tooltip = ({ children }: { children?: ReactNode }) => <>{children}</>;
+  return { default: Object.assign(Tooltip, { hide: tooltipHide }) };
 });
 
-function renderElement() {
-  // we use mount to test the rendering of the underlying elements
-  return mount(
-    <CrystalToolkitScene
-      sceneSize={500}
-      settings={{
-        renderer: Renderer.SVG
-      }}
-      data={scene}
-      debug={false}
-      toggleVisibility={{}}
-    />
-  );
-}
+vi.mock('../scene/Scene', () => ({
+  default: vi.fn(function MockScene() {
+    return {
+      ...sceneApi,
+      scene: {},
+      renderer: { domElement: document.createElement('canvas') },
+    };
+  }),
+}));
+
+describe('CrystalToolkitScene', () => {
+  beforeEach(() => {
+    vi.mocked(Scene).mockClear();
+    tooltipHide.mockClear();
+    Object.values(sceneApi).forEach((spy) => spy.mockClear());
+  });
+
+  it('mounts and wires the scene runtime', async () => {
+    const { container } = render(
+      <CrystalToolkitScene
+        sceneSize={500}
+        settings={{ renderer: Renderer.SVG }}
+        data={sceneData}
+        debug={false}
+        toggleVisibility={{}}
+      />
+    );
+
+    await waitFor(() => expect(Scene).toHaveBeenCalled());
+
+    expect(container.querySelector(`.${MOUNT_NODE_CLASS}`)).not.toBeNull();
+    expect(container.querySelector('.mpc-scene-square')).not.toBeNull();
+    expect(sceneApi.addToScene).toHaveBeenCalledWith(sceneData, true);
+    expect(sceneApi.toggleVisibility).toHaveBeenCalled();
+  });
+
+  it('destroys the scene runtime on unmount', async () => {
+    const { unmount } = render(
+      <CrystalToolkitScene
+        sceneSize={500}
+        settings={{ renderer: Renderer.SVG }}
+        data={sceneData}
+        debug={false}
+        toggleVisibility={{}}
+      />
+    );
+
+    await waitFor(() => expect(Scene).toHaveBeenCalled());
+    unmount();
+
+    expect(sceneApi.onDestroy).toHaveBeenCalled();
+  });
+
+  it('toggles the settings panel when children are provided', async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <CrystalToolkitScene
+        sceneSize={500}
+        settings={{ renderer: Renderer.SVG }}
+        data={sceneData}
+        debug={false}
+        toggleVisibility={{}}
+      >
+        <div>Settings Panel</div>
+      </CrystalToolkitScene>
+    );
+
+    await waitFor(() => expect(Scene).toHaveBeenCalled());
+
+    const settingsButton = container.querySelector('[data-for^="settings-"]') as HTMLButtonElement | null;
+    expect(settingsButton).not.toBeNull();
+
+    await user.click(settingsButton!);
+    expect(container.querySelector('.mpc-scene-settings-panel.is-hidden')).toBeNull();
+
+    const closeButton = container.querySelector('.delete') as HTMLButtonElement | null;
+    expect(closeButton).not.toBeNull();
+    await user.click(closeButton!);
+
+    expect(container.querySelector('.mpc-scene-settings-panel.is-hidden')).not.toBeNull();
+  });
+
+  it('emits legacy export callbacks through setProps', async () => {
+    const user = userEvent.setup();
+    const setProps = vi.fn();
+    render(
+      <CrystalToolkitScene
+        sceneSize={500}
+        settings={{ renderer: Renderer.SVG }}
+        data={sceneData}
+        debug={false}
+        toggleVisibility={{}}
+        setProps={setProps}
+        fileOptions={['cif']}
+      />
+    );
+
+    await waitFor(() => expect(Scene).toHaveBeenCalled());
+
+    await user.click(document.querySelector('[data-for^="export-"] button') as HTMLButtonElement);
+    await user.click(await waitFor(async () => await document.body.querySelector('.dropdown-item')) as any);
+
+    expect(setProps).toHaveBeenCalledWith(
+      expect.objectContaining({
+        fileType: 'cif',
+        fileTimestamp: expect.any(Number),
+      })
+    );
+  });
+});

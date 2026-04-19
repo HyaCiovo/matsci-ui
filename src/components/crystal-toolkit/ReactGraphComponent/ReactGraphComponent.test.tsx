@@ -1,6 +1,6 @@
-// @ts-nocheck
 import { render } from '@testing-library/react';
 import { useEffect } from 'react';
+import { describe, expect, it, vi } from 'vitest';
 import { ReactGraphComponent } from './ReactGraphComponent';
 
 const fitSpy = vi.fn();

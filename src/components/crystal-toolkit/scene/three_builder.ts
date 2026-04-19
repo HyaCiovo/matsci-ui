@@ -1,11 +1,9 @@
-// @ts-nocheck
 import * as THREE from 'three';
 import {
   AmbientLight,
   DirectionalLight,
   HemisphereLight,
-  Object3D,
-  SphereBufferGeometry
+  Object3D
 } from 'three';
 import {
   JSON3DObject,
@@ -16,14 +14,31 @@ import {
   ThreePosition,
   TUBE_SEGMENTS
 } from './constants';
-import { ConvexGeometry } from 'three/examples/jsm/geometries/ConvexGeometry';
-import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
+import { ConvexGeometry } from 'three/examples/jsm/geometries/ConvexGeometry.js';
+import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { RadiusTubeBufferGeometry } from './RadiusTubeBufferGeometry';
 
 export const DEFAULT_DASHED_LINE_COLOR = '#000000';
 export const DEFAULT_LINE_COLOR = '#2c3c54';
 export const DEFAULT_MATERIAL_COLOR = '#52afb0';
 import { mergeInnerArrays } from '../utils';
+
+type SceneJsonLike = Record<string, any>;
+type PositionPair = [ThreePosition, ThreePosition];
+type BuilderSettings = Record<string, any>;
+type RadiusArrayConfig = {
+  radiusTop: number[];
+  radiusBottom: number[];
+  positionPairs: PositionPair[];
+};
+type LightJsonLike = {
+  type: Light;
+  args: any[];
+  position?: ThreePosition;
+};
+const RadiusTubeGeometryCtor = RadiusTubeBufferGeometry as unknown as new (
+  ...args: any[]
+) => THREE.BufferGeometry;
 
 // i think it would be better to have a mixin or a decorator, so we do not need
 // to create a sub class for each kind of curve. we would store the original curve and
@@ -33,7 +48,7 @@ class QuadraticSteppedBezierCurver extends THREE.QuadraticBezierCurve3 {
   private parts = 2; // let's suppose we use a spline, we'll need to derive the parts from
   // the length of the vector array
 
-  constructor(v0, v1, v2) {
+  constructor(v0: THREE.Vector3, v1: THREE.Vector3, v2: THREE.Vector3) {
     super(v0, v1, v2);
   }
   setPart(part: number) {
@@ -55,9 +70,9 @@ class QuadraticSteppedBezierCurver extends THREE.QuadraticBezierCurve3 {
  *
  */
 export class ThreeBuilder {
-  constructor(private settings) {}
+  constructor(private settings: BuilderSettings) {}
 
-  private validateRadiusArrays({ radiusTop, radiusBottom, positionPairs }) {
+  private validateRadiusArrays({ radiusTop, radiusBottom, positionPairs }: RadiusArrayConfig) {
     if (!Array.isArray(radiusBottom)) {
       console.error('radiusBottom is not an array', radiusBottom);
       return;
@@ -74,7 +89,7 @@ export class ThreeBuilder {
     }
   }
 
-  public makeBezierTube(object_json, obj: THREE.Object3D) {
+  public makeBezierTube(object_json: SceneJsonLike, obj: THREE.Object3D) {
     object_json.controlPoints.forEach(
       (controlPoints: [ThreePosition, ThreePosition, ThreePosition]) => {
         const cps = controlPoints.map((cp) => new THREE.Vector3(...cp)) as [
@@ -88,13 +103,13 @@ export class ThreeBuilder {
           curve.setPart(i);
           const radiusStart = object_json.radius[i];
           const radiusEnd = object_json.radius[i + 1];
-          const geometry = new RadiusTubeBufferGeometry(
+          const geometry = new RadiusTubeGeometryCtor(
             curve,
             TUBE_SEGMENTS,
             radiusStart,
             RADIUS_SEGMENTS,
             false,
-            (a, b) => a + (radiusEnd - radiusStart) * (b / TUBE_SEGMENTS)
+            (a: number, b: number) => a + (radiusEnd - radiusStart) * (b / TUBE_SEGMENTS)
           );
           obj.add(
             new THREE.Mesh(geometry, this.makeMaterial(object_json.color[i], object_json.animate))
@@ -105,16 +120,16 @@ export class ThreeBuilder {
     return obj;
   }
 
-  public makeCylinders(object_json, obj: THREE.Object3D) {
+  public makeCylinders(object_json: SceneJsonLike, obj: THREE.Object3D) {
     const { radius = 1, radiusTop, radiusBottom, color } = object_json;
     const perCylinderGeometry = Array.isArray(radiusTop);
-    perCylinderGeometry && this.validateRadiusArrays(object_json);
+    perCylinderGeometry && this.validateRadiusArrays(object_json as RadiusArrayConfig);
     const perCylinderMaterial = Array.isArray(color);
     const geom = this.getCylinderGeometry(radius, radiusTop, radiusBottom);
     const mat = this.makeMaterial(color, object_json.animate);
     const vec_y = new THREE.Vector3(0, 1, 0); // initial axis of cylinder
     const quaternion = new THREE.Quaternion();
-    object_json.positionPairs.forEach((positionPair, idx) => {
+    object_json.positionPairs.forEach((positionPair: PositionPair, idx: number) => {
       // the following is technically correct but could be optimized?
       const currentGeometry = perCylinderGeometry
         ? this.getCylinderGeometry(radius, radiusTop[idx], radiusBottom[idx])
@@ -140,7 +155,7 @@ export class ThreeBuilder {
     return obj;
   }
 
-  public makeLine(object_json, obj: THREE.Object3D) {
+  public makeLine(object_json: SceneJsonLike, obj: THREE.Object3D) {
     const verts = new THREE.Float32BufferAttribute(mergeInnerArrays(object_json.positions), 3);
     const geom = new THREE.BufferGeometry();
     geom.setAttribute('position', verts);
@@ -169,9 +184,9 @@ export class ThreeBuilder {
     return obj;
   }
 
-  public makeCube(object_json, obj: THREE.Object3D) {
+  public makeCube(object_json: SceneJsonLike, obj: THREE.Object3D) {
     const size = object_json.width * this.settings.sphereScale;
-    const geom = new THREE.BoxBufferGeometry(size, size, size);
+    const geom = new THREE.BoxGeometry(size, size, size);
     const mat = this.makeMaterial(object_json.color, object_json.animate);
     object_json.positions.forEach((position: ThreePosition) => {
       const mesh = new THREE.Mesh(geom, mat);
@@ -182,7 +197,7 @@ export class ThreeBuilder {
     return obj;
   }
 
-  public makeSurfaces(object_json, obj: THREE.Object3D) {
+  public makeSurfaces(object_json: SceneJsonLike, obj: THREE.Object3D) {
     const verts = new THREE.Float32BufferAttribute(mergeInnerArrays(object_json.positions), 3);
     const geom = new THREE.BufferGeometry();
     geom.setAttribute('position', verts);
@@ -212,8 +227,8 @@ export class ThreeBuilder {
     return obj;
   }
 
-  public makeConvex(object_json, obj: THREE.Object3D) {
-    const points = object_json.positions.map((p) => new THREE.Vector3(...p));
+  public makeConvex(object_json: SceneJsonLike, obj: THREE.Object3D) {
+    const points = object_json.positions.map((p: ThreePosition) => new THREE.Vector3(...p));
     const geom = new ConvexGeometry(points);
 
     const opacity = object_json.opacity || this.settings.defaultSurfaceOpacity;
@@ -234,8 +249,8 @@ export class ThreeBuilder {
     return obj;
   }
 
-  public getHeadGeometry(headWidth: number, headLength: number): THREE.ConeBufferGeometry {
-    return new THREE.ConeBufferGeometry(
+  public getHeadGeometry(headWidth: number, headLength: number): THREE.ConeGeometry {
+    return new THREE.ConeGeometry(
       headWidth * this.settings.cylinderScale,
       headLength * this.settings.cylinderScale,
       this.settings.cylinderSegments
@@ -246,12 +261,12 @@ export class ThreeBuilder {
     radius: number,
     radiusTop?: number,
     radiusBottom?: number
-  ): THREE.CylinderBufferGeometry {
+  ): THREE.CylinderGeometry {
     // body
     radiusTop == undefined && (radiusTop = radius);
     radiusBottom == undefined && (radiusBottom = radius);
 
-    return new THREE.CylinderBufferGeometry(
+    return new THREE.CylinderGeometry(
       radiusTop * this.settings.cylinderScale,
       radiusBottom * this.settings.cylinderScale,
       1.0,
@@ -259,7 +274,7 @@ export class ThreeBuilder {
     );
   }
 
-  public makeArrow(object_json, obj: THREE.Object3D) {
+  public makeArrow(object_json: SceneJsonLike, obj: THREE.Object3D) {
     // TODO obj is the parent object, rename to a better name
     const { radius = 1, radiusTop, radiusBottom, headLength = 2, headWidth = 2 } = object_json;
     // body
@@ -274,7 +289,7 @@ export class ThreeBuilder {
     // for each pairs, we have one cylinder and one head, so obj will have meshes as children
     // for 2 position pairs, 1cylinder, 1head, 2cylinder, 2head
 
-    object_json.positionPairs.forEach((positionPair) => {
+    object_json.positionPairs.forEach((positionPair: PositionPair) => {
       // the following is technically correct but could be optimized?
       const mesh = new THREE.Mesh(geom_cyl, mat);
       const vec_a = new THREE.Vector3(...positionPair[0]);
@@ -324,7 +339,7 @@ export class ThreeBuilder {
     }
   }
 
-  public makeSphere(object_json, obj: THREE.Object3D) {
+  public makeSphere(object_json: SceneJsonLike, obj: THREE.Object3D) {
     const { geom, mat } = this.getSphereBuffer(
       object_json.radius * this.settings.sphereScale,
       object_json.color,
@@ -340,7 +355,7 @@ export class ThreeBuilder {
     return obj;
   }
 
-  public makeLabel(object_json, obj: THREE.Object3D) {
+  public makeLabel(object_json: SceneJsonLike, obj: THREE.Object3D) {
     const label = document.createElement('div');
     label.className = 'tooltip';
     label.textContent = object_json.label;
@@ -355,7 +370,7 @@ export class ThreeBuilder {
     return obj;
   }
 
-  public makeEllipsoids(object_json, obj: THREE.Object3D) {
+  public makeEllipsoids(object_json: SceneJsonLike, obj: THREE.Object3D) {
     const { geom, mat } = this.getSphereBuffer(
       this.settings.sphereScale,
       object_json.color,
@@ -372,17 +387,17 @@ export class ThreeBuilder {
     const vec_z = new THREE.Vector3(0, 0, 1);
     const quaternion = new THREE.Quaternion();
     if (object_json.rotate_to) {
-      object_json.rotate_to.forEach((rotation: any, index) => {
+      object_json.rotate_to.forEach((rotation: ThreePosition, index: number) => {
         const rotation_vec = new THREE.Vector3(...rotation);
         quaternion.setFromUnitVectors(vec_z, rotation_vec.normalize());
         meshes[index].setRotationFromQuaternion(quaternion);
       });
     }
-    meshes.forEach((mesh) => obj.add(mesh));
+    meshes.forEach((mesh: THREE.Mesh) => obj.add(mesh));
     return obj;
   }
 
-  public makeObject(object_json, obj: THREE.Object3D): THREE.Object3D {
+  public makeObject(object_json: SceneJsonLike, obj: THREE.Object3D): THREE.Object3D {
     switch (object_json.type as JSON3DObject) {
       case JSON3DObject.SPHERES: {
         return this.makeSphere(object_json, obj);
@@ -422,7 +437,7 @@ export class ThreeBuilder {
   }
 
   public getSphereGeometry(radius: number, phiStart: number, phiEnd: number) {
-    const geom = new THREE.SphereBufferGeometry(
+    const geom = new THREE.SphereGeometry(
       radius,
       this.settings.sphereSegments,
       this.settings.sphereSegments,
@@ -438,10 +453,10 @@ export class ThreeBuilder {
     return { geom, mat };
   }
 
-  public makeLights(light_json): Object3D {
+  public makeLights(light_json: LightJsonLike[]): Object3D {
     const lightGroup = new THREE.Object3D();
     lightGroup.name = 'lights';
-    light_json.forEach((light) => {
+    light_json.forEach((light: LightJsonLike) => {
       let lightObj;
       switch (light.type) {
         case Light.DirectionalLight:
@@ -457,7 +472,7 @@ export class ThreeBuilder {
           throw new Error('Unknown light.');
       }
       if (light.position) {
-        lightObj.position.set(...light.position);
+        lightObj.position.set(...(light.position as ThreePosition));
       }
       lightGroup.add(lightObj);
     });
@@ -488,15 +503,15 @@ export class ThreeBuilder {
 
   public updateSphereCenter(
     obj: THREE.Object3D,
-    baseJsonObject,
+    _baseJsonObject: SceneJsonLike,
     newPosition: ThreePosition,
-    index
+    index: number
   ) {
     const mesh = obj.children[index] as THREE.Mesh;
     mesh.position.set(...newPosition);
   }
 
-  public updateSphereColor(obj: THREE.Object3D, baseJsonObject, newColor) {
+  public updateSphereColor(obj: THREE.Object3D, _baseJsonObject: SceneJsonLike, newColor: string) {
     // get uuid from json object
     obj.children.forEach((o) => {
       const material = (o as THREE.Mesh).material as THREE.MeshStandardMaterial;
@@ -504,24 +519,24 @@ export class ThreeBuilder {
     });
   }
 
-  public updateConvexColor(obj, objjson, color) {
-    obj.children.forEach((o) => {
+  public updateConvexColor(obj: THREE.Object3D, _objjson: SceneJsonLike, color: string) {
+    obj.children.forEach((o: any) => {
       o.material.color = new THREE.Color(color);
     });
   }
 
-  public updateConvexEdges(obj, objjson, positions) {
-    const points = positions.map((p) => new THREE.Vector3(...p));
+  public updateConvexEdges(obj: THREE.Object3D, _objjson: SceneJsonLike, positions: ThreePosition[]) {
+    const points = positions.map((p: ThreePosition) => new THREE.Vector3(...p));
     const geom = new ConvexGeometry(points);
     const edges = new THREE.EdgesGeometry(geom);
-    obj.children[0].geometry.dispose();
-    obj.children[1].geometry.dispose();
-    obj.children[0].geometry = geom;
-    obj.children[1].geometry = edges;
+    (obj.children[0] as THREE.Mesh).geometry.dispose();
+    (obj.children[1] as THREE.Mesh).geometry.dispose();
+    (obj.children[0] as THREE.Mesh).geometry = geom;
+    (obj.children[1] as THREE.Mesh).geometry = edges;
   }
 
-  public updateSphereRadius(obj: THREE.Object3D, baseJsonObject, newRadius) {
-    const geometry = (obj.children[0] as THREE.Mesh).geometry as SphereBufferGeometry;
+  public updateSphereRadius(obj: THREE.Object3D, _baseJsonObject: SceneJsonLike, newRadius: number) {
+    const geometry = (obj.children[0] as THREE.Mesh).geometry as THREE.SphereGeometry;
     const phiStart = geometry.parameters.phiStart;
     const phiEnd = geometry.parameters.phiLength;
     const newGeometry = this.getSphereGeometry(newRadius, phiStart, phiEnd);
@@ -533,9 +548,9 @@ export class ThreeBuilder {
 
   // TODO(chab) merge the two below methods
   // arrow width
-  public updateHeadWidth(obj: THREE.Object3D, baseJsonObject, headWidth) {
+  public updateHeadWidth(obj: THREE.Object3D, baseJsonObject: SceneJsonLike, headWidth: number) {
     const geom_head = this.getHeadGeometry(headWidth, baseJsonObject.headWidth);
-    baseJsonObject.positionPairs.forEach((a, idx) => {
+    baseJsonObject.positionPairs.forEach((_a: PositionPair, idx: number) => {
       const headIndex = idx * 2 + 1;
       const mesh_head = obj.children[headIndex];
       (mesh_head as THREE.Mesh).geometry.dispose();
@@ -544,9 +559,9 @@ export class ThreeBuilder {
   }
 
   // arrow length
-  public updateHeadLength(obj: THREE.Object3D, baseJsonObject, headLength) {
+  public updateHeadLength(obj: THREE.Object3D, baseJsonObject: SceneJsonLike, headLength: number) {
     const geom_head = this.getHeadGeometry(baseJsonObject.headWidth, headLength);
-    baseJsonObject.positionPairs.forEach((a, idx) => {
+    baseJsonObject.positionPairs.forEach((_a: PositionPair, idx: number) => {
       const headIndex = idx * 2 + 1;
       const mesh_head = obj.children[headIndex];
       (mesh_head as THREE.Mesh).geometry.dispose();
@@ -554,15 +569,15 @@ export class ThreeBuilder {
     });
   }
 
-  public updateArrowColor(obj: THREE.Object3D, baseJsonObject, color) {
+  public updateArrowColor(obj: THREE.Object3D, _baseJsonObject: SceneJsonLike, color: string) {
     obj.children.forEach((o) => {
       ((o as THREE.Mesh).material as THREE.MeshStandardMaterial).color = new THREE.Color(color);
     });
   }
 
-  public updateArrowRadius(obj: THREE.Object3D, baseJsonObject, radius) {
+  public updateArrowRadius(obj: THREE.Object3D, baseJsonObject: SceneJsonLike, radius: number) {
     const geom_cyl = this.getCylinderGeometry(radius);
-    baseJsonObject.positionPairs.forEach((a, idx) => {
+    baseJsonObject.positionPairs.forEach((_a: PositionPair, idx: number) => {
       const headIndex = idx * 2;
       const mesh_head = obj.children[headIndex];
       (mesh_head as THREE.Mesh).geometry.dispose();
@@ -572,12 +587,12 @@ export class ThreeBuilder {
 
   //TODO(chab) check if positions are different, update the whole mesh
   // OR let pass the index so we know what to update
-  public updateArrowpositionPair(baseJsonObject, newScale) {
+  public updateArrowpositionPair(baseJsonObject: SceneJsonLike, _newScale: number) {
     //but reuse material if possible
-    baseJsonObject.positionPairs.forEach((a) => {});
+    baseJsonObject.positionPairs.forEach((_a: PositionPair) => {});
   }
 
-  public updateLineSegments(obj: THREE.Object3D, object_json, positions) {
+  public updateLineSegments(obj: THREE.Object3D, _object_json: SceneJsonLike, positions: number[]) {
     const verts = new THREE.Float32BufferAttribute(positions, 3);
     const geom = new THREE.BufferGeometry();
     geom.setAttribute('position', verts);
@@ -587,12 +602,12 @@ export class ThreeBuilder {
 
   public updateLineStyle(
     obj: THREE.Object3D,
-    object_json,
-    color,
-    lineWidth,
-    scale,
-    dashSize,
-    gapSize
+    object_json: SceneJsonLike,
+    color?: string,
+    lineWidth?: number,
+    scale?: number,
+    dashSize?: number,
+    gapSize?: number
   ) {
     const mesh: THREE.LineSegments = obj.children[0] as THREE.LineSegments;
     let mat;
@@ -633,10 +648,15 @@ export class ThreeBuilder {
   }
 
   // generic
-  public updateScale(baseJsonObject, newScale) {}
+  public updateScale(_baseJsonObject: SceneJsonLike, _newScale: number) {}
 
   // cylinder, see arrows
-  public updateCylinderPositionPair(obj: THREE.Object3D, baseJsonObject, newPositionPair, index) {
+  public updateCylinderPositionPair(
+    obj: THREE.Object3D,
+    _baseJsonObject: SceneJsonLike,
+    newPositionPair: PositionPair,
+    index: number
+  ) {
     const mesh = obj.children[index] as THREE.Mesh;
     const { scale, position, quaternion } = this.getCylinderInfo(newPositionPair);
     mesh.position.set(...(position as ThreePosition));
@@ -644,7 +664,7 @@ export class ThreeBuilder {
     mesh.setRotationFromQuaternion(quaternion);
   }
 
-  public getCylinderInfo(positionPair) {
+  public getCylinderInfo(positionPair: PositionPair) {
     const vec_a = new THREE.Vector3(...positionPair[0]);
     const vec_b = new THREE.Vector3(...positionPair[1]);
     const vec_rel = vec_b.sub(vec_a);
@@ -661,7 +681,7 @@ export class ThreeBuilder {
   }
 
   //TODO(chab) can be refactored with the sphere
-  public updateCylinderRadius(obj: THREE.Object3D, baseJsonObject, newRadius) {
+  public updateCylinderRadius(obj: THREE.Object3D, _baseJsonObject: SceneJsonLike, newRadius: number) {
     //CylinderBufferGeometry
     const newGeometry = this.getCylinderGeometry(newRadius);
     obj.children.forEach((o) => {
@@ -670,7 +690,7 @@ export class ThreeBuilder {
     });
   }
 
-  public updateCylinderColor(obj: THREE.Object3D, baseJsonObject, newColor) {
+  public updateCylinderColor(obj: THREE.Object3D, _baseJsonObject: SceneJsonLike, newColor: string) {
     obj.children.forEach((o) => {
       const material = (o as THREE.Mesh).material as THREE.MeshStandardMaterial;
       material.color = new THREE.Color(newColor);
@@ -678,7 +698,7 @@ export class ThreeBuilder {
   }
 }
 
-export function getSceneWithBackground(settings) {
+export function getSceneWithBackground(settings: BuilderSettings) {
   const scene = new THREE.Scene();
   //background
   if (!settings.transparentBackground) {

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, {
   MutableRefObject,
   ReactNode,
@@ -31,23 +30,28 @@ import { usePrevious } from '../../../utils/hooks';
 import toDataUrl from 'svgtodatauri';
 import * as THREE from 'three';
 import { WebGLRenderer } from 'three';
-import { ColladaExporter } from 'three/examples/jsm/exporters/ColladaExporter';
-import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
-import { USDZExporter } from 'three/examples/jsm/exporters/USDZExporter';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
+import { USDZExporter } from 'three/examples/jsm/exporters/USDZExporter.js';
 import useResizeObserver from 'use-resize-observer';
 import { Enlargeable } from '../../data-display/Enlargeable';
 import { FaCamera, FaCogs, FaCompress, FaExpand, FaFileExport, FaUndo } from 'react-icons/fa';
 import { ButtonBar } from '../../data-display/ButtonBar';
 import { Dropdown } from '../../navigation/Dropdown';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { Tooltip } from '../../data-display/Tooltip';
 import ReactTooltip from 'react-tooltip';
 import { v4 as uuidv4 } from 'uuid';
-import { ModalCloseButton } from '../../data-display/Modal/ModalCloseButton';
-import { downloadBlob, downloadJSON } from '../../data-entry/utils';
+import { ModalCloseButton } from '../../data-display/Modal/ModalCloseButton/ModalCloseButton';
+import { downloadBlob, downloadJSON } from '../../../utils/download';
 import { RangeSlider } from '../../data-entry/RangeSlider';
+import { ScenePosition } from '../scene/inset-helper';
 
-const getSceneSize = (sceneSize) => (sceneSize ? sceneSize : DEFAULT_SCENE_SIZE);
+const getSceneSize = (sceneSize?: number | string) =>
+  sceneSize ? sceneSize : DEFAULT_SCENE_SIZE;
+
+const hideTooltip = () => {
+  (ReactTooltip as unknown as { hide?: () => void }).hide?.();
+};
 
 let ID_GENERATOR = 0;
 
@@ -309,11 +313,12 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
    * If using the SVGRenderer, convert SVG to canvas image first
    * Set imageData prop to data uri
    */
-  const setPngData = (sceneComponent) => {
-    if (sceneComponent.renderer instanceof WebGLRenderer) {
+  const setPngData = (sceneComponent: Scene) => {
+    const renderer = (sceneComponent as any).renderer;
+    if (renderer instanceof WebGLRenderer) {
       // force a render (in case buffer has been cleared)
       sceneComponent.renderScene();
-      const imageData = sceneComponent.renderer.domElement.toDataURL('image/png');
+      const imageData = renderer.domElement.toDataURL('image/png');
       const imageDataTimestamp = Date.now();
       props.setProps({ imageData, imageDataTimestamp });
       // wait for next event loop before rendering
@@ -323,7 +328,7 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
     } else {
       // SVGRenderer assumed
       sceneComponent.renderScene();
-      toDataUrl(sceneComponent.renderer.domElement, 'image/png', {
+      toDataUrl((renderer as any).domElement, 'image/png', {
         callback: function (imageData: string) {
           const imageDataTimestamp = Date.now();
           props.setProps({ imageData, imageDataTimestamp });
@@ -336,44 +341,42 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
    * Handle saving image to collada file (.dae)
    * Set imageData prop to data uri
    */
-  const setColladaData = (sceneComponent: Scene) => {
-    const colladaExporter = new ColladaExporter();
-    colladaExporter.parse(sceneComponent.scene, function (result) {
-      const blob = new Blob([result.data], { type: 'model/vnd.collada+xml' });
-      downloadBlob(blob, 'crystal_toolkit_scene.dae');
-    });
-  };
-
   const setGLTFData = (sceneComponent: Scene) => {
     const gltfExporter = new GLTFExporter();
-    gltfExporter.parse(sceneComponent.scene, function (gltf) {
-      const blob = new Blob([JSON.stringify(gltf)], { type: 'model/vnd.gltf+json' });
-      downloadBlob(blob, 'crystal_toolkit_scene.gltf');
-    });
+    gltfExporter.parse(
+      sceneComponent.scene,
+      (gltf) => {
+        const blob = new Blob([JSON.stringify(gltf)], { type: 'model/vnd.gltf+json' });
+        downloadBlob(blob, 'crystal_toolkit_scene.gltf');
+      },
+      () => null
+    );
   };
 
   const setGLBData = (sceneComponent: Scene) => {
     const gltfExporter = new GLTFExporter();
     gltfExporter.parse(
       sceneComponent.scene,
-      function (arraybuffer) {
-        const blob = new Blob([arraybuffer], { type: 'model/gltf-binary' });
+      (gltf) => {
+        const blobPart: BlobPart = gltf instanceof ArrayBuffer ? gltf : JSON.stringify(gltf);
+        const blob = new Blob([blobPart], { type: 'model/gltf-binary' });
         downloadBlob(blob, 'crystal_toolkit_scene.glb');
       },
+      () => null,
       { binary: true }
     );
   };
 
   const setUSDZData = async (sceneComponent: Scene) => {
     const usdzExporter = new USDZExporter();
-    const arrayBuffer = await usdzExporter.parse(sceneComponent.scene);
-    const blob = new Blob([arrayBuffer], { type: 'model/vnd.usdz+zip' });
+    const arrayBuffer = (await usdzExporter.parse(sceneComponent.scene)) as unknown as ArrayBuffer;
+    const blob = new Blob([arrayBuffer as unknown as BlobPart], { type: 'model/vnd.usdz+zip' });
     // consult "AR Quick Look" documentation for more information on why "ar" tag is included
     // https://webkit.org/blog/8421/viewing-augmented-reality-assets-in-safari-for-ios/
     // filename omitted to avoid "Download" dialog box on iOS devices; the intent with
     // this option is to _show_ the file rather than download the file, however on non-iOS
     // devices this may cause confusion
-    downloadBlob(blob, undefined, 'ar');
+    downloadBlob(blob, 'ar');
   };
 
   const requestImage = (filetype: ExportType, sceneComponent: Scene) => {
@@ -382,7 +385,7 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
         setPngData(sceneComponent);
         break;
       case ExportType.dae:
-        setColladaData(sceneComponent);
+        console.warn('DAE export is no longer supported in the React 18 package.');
         break;
       case ExportType.gltf:
         setGLTFData(sceneComponent);
@@ -403,13 +406,15 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
     if (!props.data || !props.data.name || !props.data.contents) {
       return;
     }
+    const inletSize = props.inletSize ?? 130;
+    const inletPadding = props.inletPadding ?? 0;
 
     const _s = (scene.current = new Scene(
       props.data,
       mountNodeRef.current!,
       props.settings,
-      props.inletSize,
-      props.inletPadding,
+      inletSize,
+      inletPadding,
       (objects) => {
         if (props.onObjectClicked) {
           props.onObjectClicked(objects);
@@ -428,7 +433,7 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
             }
           });
       },
-      mountNodeDebugRef.current!
+      mountNodeDebugRef.current ?? undefined
     ));
     _s.removeListener();
     if (props.data !== undefined && props.data !== null) {
@@ -451,7 +456,8 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
   // Note(chab) those hooks will be executed sequentially at mount time, and on change of the deps array elements
   useEffect(() => {
     if (!scene.current) return;
-    scene.current!.enableDebug(props.debug!, mountNodeDebugRef.current);
+    mountNodeDebugRef.current &&
+      scene.current!.enableDebug(props.debug!, mountNodeDebugRef.current);
   }, [props.debug]);
   // An interesting classical react issue that we fixed : look at the stories, we do not pass anymore an empty object,
   // but a reference to an empty object, otherwise, it will be a different reference, and treated as a different object, thus
@@ -479,7 +485,10 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
   }, [props.toggleVisibility]);
   useEffect(() => {
     if (!scene.current) return;
-    scene.current!.updateInsetSettings(props.inletSize!, props.inletPadding!, props.axisView);
+    const inletSize = props.inletSize ?? 130;
+    const inletPadding = props.inletPadding ?? 0;
+    const axisView = (props.axisView as ScenePosition | undefined) ?? ScenePosition.NW;
+    scene.current!.updateInsetSettings(inletSize, inletPadding, axisView);
   }, [props.inletSize, props.inletPadding, props.axisView]);
 
   useEffect(() => {
@@ -583,7 +592,7 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
                 <button
                   className="button"
                   onClick={() => {
-                    ReactTooltip.hide();
+                    hideTooltip();
                     setExpanded(!expanded);
                   }}
                   data-tip
@@ -612,7 +621,11 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
                 <button
                   className="button"
                   onClick={() => {
-                    if (originalCameraState) {
+                    if (
+                      originalCameraState?.position &&
+                      originalCameraState.quaternion &&
+                      originalCameraState.zoom
+                    ) {
                       scene.current!.updateCamera(
                         originalCameraState.position,
                         originalCameraState.quaternion,
@@ -630,7 +643,7 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
                 </button>
               )}
               {props.showImageButton && (
-                <div onClick={() => ReactTooltip.hide()} data-tip data-for={`image-${tooltipId}`}>
+                <div onClick={() => hideTooltip()} data-tip data-for={`image-${tooltipId}`}>
                   <Dropdown triggerIcon={<FaCamera />} isArrowless isRight>
                     <p
                       key={`image-export-png`}
@@ -640,16 +653,6 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
                       }}
                     >
                       {'Screenshot (PNG)'}
-                    </p>
-
-                    <p
-                      key={`image-export-dae`}
-                      className="dropdown-item"
-                      onClick={() => {
-                        requestImage(ExportType.dae, scene.current!);
-                      }}
-                    >
-                      {'3D Model (DAE)'}
                     </p>
 
                     <p
@@ -688,7 +691,7 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
                 </div>
               )}
               {props.showExportButton && (
-                <div onClick={() => ReactTooltip.hide()} data-tip data-for={`export-${tooltipId}`}>
+                <div onClick={() => hideTooltip()} data-tip data-for={`export-${tooltipId}`}>
                   <Dropdown triggerIcon={<FaFileExport />} isArrowless isRight>
                     {props.fileOptions?.map((option, i) => (
                       <p
@@ -712,7 +715,7 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
         )}
         {hasSettingsPanel && (
           <div
-            className={classNames('mpc-scene-settings-panel', {
+            className={clsx('mpc-scene-settings-panel', {
               'is-hidden': !showSettingsPanel
             })}
           >

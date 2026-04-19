@@ -29,7 +29,9 @@ function TableFilterStory() {
           enabledElements={selectedElements}
           maxElementSelectable={5}
           forceTableLayout={TableLayout.MINI}
-          onStateChange={(nextState) => setSelectedElements(nextState.enabledElements)}
+          onStateChange={(nextState) =>
+            setSelectedElements(Array.isArray(nextState) ? nextState : nextState.enabledElements)
+          }
         />
       </div>
     </PeriodicContext>

@@ -1,4 +1,3 @@
-// @ts-nocheck
 export const phonon_scene = {
   name: 'StructureGraph',
   contents: [

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useEffect } from 'react';
 
 interface DataInput {

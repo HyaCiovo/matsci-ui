@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  *
  * A very simple and naive singleton event bus.
@@ -8,7 +7,8 @@
 
 import { Subject, Subscription } from 'rxjs';
 import { ExportType } from './constants';
-interface DownloadRequestEvent {
+
+export interface DownloadRequestEvent {
   filename: string;
   filetype: ExportType;
 }

@@ -30,3 +30,5 @@ export interface SelectableTableSelectionChange {
   enabledElements: string[];
   disabledElements: string[];
 }
+
+export type SelectableTableLegacySelectionChange = string[];

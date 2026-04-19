@@ -384,6 +384,7 @@ export function useElements(_maxElementSelection: number = 10, onStateChange?: (
   const context = usePeriodicSelectionContext();
   const {
     enabledRecord,
+    disabledRecord,
     effectiveDisabledRecord,
     hiddenRecord,
     lastAction,
@@ -406,7 +407,7 @@ export function useElements(_maxElementSelection: number = 10, onStateChange?: (
       hasInitializedCallbackRef.current = true;
       onStateChange({
         enabledElements: toArray(enabledRecord),
-        disabledElements: toArray(effectiveDisabledRecord),
+        disabledElements: toArray(disabledRecord),
       });
       return;
     }
@@ -417,9 +418,9 @@ export function useElements(_maxElementSelection: number = 10, onStateChange?: (
 
     onStateChange({
       enabledElements: toArray(enabledRecord),
-      disabledElements: toArray(effectiveDisabledRecord),
+      disabledElements: toArray(disabledRecord),
     });
-  }, [changeOrigin, effectiveDisabledRecord, enabledRecord, forwardOuterChange, onStateChange]);
+  }, [changeOrigin, disabledRecord, enabledRecord, forwardOuterChange, onStateChange]);
 
   return {
     enabledElements: enabledRecord,

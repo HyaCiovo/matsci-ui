@@ -1,36 +1,34 @@
-// @ts-nocheck
 import * as THREE from 'three';
 
-const EXPORT_PIXEL_RATIO = 8;
-
-function disposeNode(node) {
+function disposeNode(node: THREE.Object3D) {
   if (node instanceof THREE.Mesh) {
     if (node.geometry) {
       node.geometry.dispose();
     }
     if (node.material) {
       const materials = !Array.isArray(node.material) ? [node.material] : node.material;
-      materials.forEach((mtrl: any) => {
-        mtrl.map && mtrl.map.dispose();
-        mtrl.lightMap && mtrl.lightMap.dispose();
-        mtrl.bumpMap && mtrl.bumpMap.dispose();
-        mtrl.normalMap && mtrl.normalMap.dispose();
-        mtrl.specularMap && mtrl.specularMap.dispose();
-        mtrl.envMap && mtrl.envMap.dispose();
-        mtrl.alphaMap && mtrl.alphaMap.dispose();
-        mtrl.aoMap && mtrl.aoMap.dispose();
-        mtrl.displacementMap && mtrl.displacementMap.dispose();
-        mtrl.emissiveMap && mtrl.emissiveMap.dispose();
-        mtrl.gradientMap && mtrl.gradientMap.dispose();
-        mtrl.metalnessMap && mtrl.metalnessMap.dispose();
-        mtrl.roughnessMap && mtrl.roughnessMap.dispose();
-        mtrl.dispose(); // disposes any programs associated with the material
+      materials.forEach((mtrl) => {
+        const material = mtrl as THREE.Material & Partial<Record<string, any>>;
+        material.map?.dispose?.();
+        material.lightMap?.dispose?.();
+        material.bumpMap?.dispose?.();
+        material.normalMap?.dispose?.();
+        material.specularMap?.dispose?.();
+        material.envMap?.dispose?.();
+        material.alphaMap?.dispose?.();
+        material.aoMap?.dispose?.();
+        material.displacementMap?.dispose?.();
+        material.emissiveMap?.dispose?.();
+        material.gradientMap?.dispose?.();
+        material.metalnessMap?.dispose?.();
+        material.roughnessMap?.dispose?.();
+        material.dispose(); // disposes any programs associated with the material
       });
     }
   }
 } // disposeNode
 
-export function disposeSceneHierarchy(scene) {
+export function disposeSceneHierarchy(scene: THREE.Object3D) {
   scene.children.forEach((childNode) => {
     disposeSceneHierarchy(childNode);
     disposeNode(childNode);
@@ -46,11 +44,19 @@ export function disposeSceneHierarchy(scene) {
 // CENTER = > ( 250 / 500 * 2 - 1 = 0, - (250/500) * 2 + 1 = 0)
 // SE (500/500 * 2 -1 ) = 1, ( - (500/500) * 2 + 1 = -1)
 // SW (0 - 1) = -1, -(500 / 500 ) * 2 + 1 = -1)
-export function getThreeScreenCoordinate(size, clientX: number, clientY: number) {
+export function getThreeScreenCoordinate(
+  size: { width: number; height: number },
+  clientX: number,
+  clientY: number
+) {
   return new THREE.Vector2((clientX / size.width) * 2 - 1, -(clientY / size.height) * 2 + 1);
 }
 
-export function getScreenCoordinate(size, point: THREE.Vector3, camera: THREE.Camera) {
+export function getScreenCoordinate(
+  size: { width: number; height: number },
+  point: THREE.Vector3,
+  camera: THREE.Camera
+) {
   point = point.clone();
   const vector = point.project(camera);
   // we are in NDC space
@@ -59,7 +65,12 @@ export function getScreenCoordinate(size, point: THREE.Vector3, camera: THREE.Ca
   return vector;
 }
 
-export function moveAndUnprojectPoint(size, point: THREE.Vector3, camera, delta?) {
+export function moveAndUnprojectPoint(
+  size: { width: number; height: number },
+  point: THREE.Vector3,
+  camera: THREE.Camera,
+  delta?: { x: number; y: number }
+) {
   point = point.clone();
   if (delta) {
     point.x = point.x + delta.x < 0 ? point.x - delta.x : point.x + delta.x;
@@ -79,7 +90,7 @@ export interface Action<T, P> {
 }
 
 export class ObjectRegistry {
-  private objectRegistry = {};
+  private objectRegistry: Record<string, THREE.Object3D> = {};
   clear(): void {
     this.objectRegistry = {};
   }
@@ -107,8 +118,8 @@ export class ObjectRegistry {
  * Takes an array of arrays and merges the inner arrays into a single array.
  * This is a scalable alternative to [].concat.apply([], arr)
  */
-export function mergeInnerArrays(arr: Array<any>): Array<any> {
-  const result: any[] = [];
+export function mergeInnerArrays<T>(arr: Array<T | T[]>): Array<T> {
+  const result: T[] = [];
   arr.forEach((p) => {
     if (Array.isArray(p)) {
       p.forEach((d) => result.push(d));

@@ -1,4 +1,3 @@
-// @ts-nocheck
 export const scene = {
   name: '_ct_AllTransformationsComponent_1',
   contents: [

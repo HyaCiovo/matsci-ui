@@ -1,10 +1,15 @@
-// @ts-nocheck
 import * as THREE from 'three';
 import { BufferAttribute, BufferGeometry } from 'three';
 import { JSON3DObject } from './constants';
-import { ConvexGeometry } from 'three/examples/jsm/geometries/ConvexGeometry';
+import { ConvexGeometry } from 'three/examples/jsm/geometries/ConvexGeometry.js';
 import { SceneJsonObject } from './simple-scene';
 import { ThreeBuilder } from './three_builder';
+
+type AnimationType = 'displacement' | 'position' | string;
+type Vec3AnimationFrame = [number, number, number];
+type Vec3Animation = Vec3AnimationFrame[];
+type PositionPairAnimationFrame = [Vec3AnimationFrame, Vec3AnimationFrame];
+type PositionPairAnimation = PositionPairAnimationFrame[];
 
 export class AnimationHelper {
   private mixers: THREE.AnimationMixer[] = [];
@@ -20,10 +25,10 @@ export class AnimationHelper {
   }
 
   public buildAnimationSupport(json: SceneJsonObject, three: THREE.Object3D) {
-    const animations = json.animate!;
+    const animations = (json.animate ?? []) as any[];
     const kf = json.keyframes!;
     const kfl = kf.length;
-    const animationType = json.animateType!;
+    const animationType = (json.animateType ?? 'displacement') as AnimationType;
 
     // this supports animations based on the position
     // pseudo code:
@@ -44,7 +49,7 @@ export class AnimationHelper {
     //   this.pushAnimations('Action', kfl, [positionKF], three);
     // ```
     if (json.type === JSON3DObject.SPHERES || json.type === JSON3DObject.CUBES) {
-      const animation = json.animate!;
+      const animation = (json.animate ?? []) as Vec3Animation;
       const p = json.positions![0];
 
       const values: number[] = [];
@@ -72,7 +77,7 @@ export class AnimationHelper {
       }
       this.pushAnimations('Action', kflVal, [positionKF], three);
     } else if (json.type === JSON3DObject.CYLINDERS) {
-      animations.forEach((animation, aIdx) => {
+      (animations as PositionPairAnimation[]).forEach((animation, aIdx) => {
         // create cylinders from u to v
         const positionPair = json.positionPairs![aIdx];
         const u_position = positionPair[0];
@@ -83,17 +88,30 @@ export class AnimationHelper {
         let valuess: any[] = [];
 
         for (let i = 0; i < kfl; i++) {
-          let target;
+          let target: [Vec3AnimationFrame, Vec3AnimationFrame] | undefined;
           // The function `this.objectBuilder.getCylinderInfo` requires the actual positions
           // of the atoms involved in the bond.
           if (animationType == 'displacement') {
-            target = positionPair.map((item, index) =>
-              item.map((num, idx) => num + animation[i][index][idx])
-            );
+            target = [
+              [
+                positionPair[0][0] + animation[i][0][0],
+                positionPair[0][1] + animation[i][0][1],
+                positionPair[0][2] + animation[i][0][2],
+              ],
+              [
+                positionPair[1][0] + animation[i][1][0],
+                positionPair[1][1] + animation[i][1][1],
+                positionPair[1][2] + animation[i][1][2],
+              ],
+            ];
           } else if (animationType == 'position') {
-            target = [0, 1].map((r) => [0, 1, 2].map((c) => animation[i][r][c]));
+            target = [
+              [animation[i][0][0], animation[i][0][1], animation[i][0][2]],
+              [animation[i][1][0], animation[i][1][1], animation[i][1][2]],
+            ];
           } else {
             console.warn(`Unknown animationType: ${animationType}`);
+            continue;
           }
 
           const {
@@ -139,10 +157,11 @@ export class AnimationHelper {
       json.positions!.forEach((p, idx) => {
         const pta: number[] = [];
         for (let i = 0; i < kfl; i++) {
+          const lineAnimation = animations[idx] as Vec3Animation;
           pta.push(
-            p[0] + animations[idx][i][0],
-            p[1] + animations[idx][i][1],
-            p[2] + animations[idx][i][2]
+            p[0] + lineAnimation[i][0],
+            p[1] + lineAnimation[i][1],
+            p[2] + lineAnimation[i][2]
           );
         }
         pt.push(pta);
@@ -165,11 +184,12 @@ export class AnimationHelper {
       geo.morphAttributes.position = [];
       // calculate morph target
       const pt = json.positions!.map((p, idx) => {
+        const convexAnimation = animations[idx] as Vec3Animation;
         return new THREE.Vector3(
           ...[
-            p[0] + animations[idx][0][0],
-            p[1] + animations[idx][0][1],
-            p[2] + animations[idx][0][2]
+            p[0] + convexAnimation[0][0],
+            p[1] + convexAnimation[0][1],
+            p[2] + convexAnimation[0][2]
           ]
         );
       });
@@ -202,13 +222,24 @@ export class AnimationHelper {
     }
   }
 
-  private addAnimationForPosition(animation, three, kf: number[], kfl: number, animationType) {
+  private addAnimationForPosition(
+    animation: Vec3Animation,
+    three: THREE.Object3D,
+    kf: number[],
+    kfl: number,
+    animationType: AnimationType
+  ) {
     const values = this.calculateTargetPosition(three, animation, kfl, animationType);
     const positionKF = new THREE.VectorKeyframeTrack('.position', [...kf], values);
     this.pushAnimations('Action', kfl, [positionKF], three);
   }
 
-  private calculateTargetPosition({ position }: THREE.Object3D, animation, kfl, animationType) {
+  private calculateTargetPosition(
+    { position }: THREE.Object3D,
+    animation: Vec3Animation,
+    kfl: number,
+    animationType: AnimationType
+  ) {
     // Iterate through all keyframes and construct a flattened array of their corresponding positions.
     const p = [position.x, position.y, position.z];
     const result: number[] = [];
@@ -226,7 +257,7 @@ export class AnimationHelper {
     return result;
   }
 
-  private updateMixers(timeOrDelta, absolute = false) {
+  private updateMixers(timeOrDelta: number, absolute = false) {
     this.mixers &&
       this.mixers.forEach((m) => (absolute ? m.setTime(timeOrDelta) : m.update(timeOrDelta)));
   }

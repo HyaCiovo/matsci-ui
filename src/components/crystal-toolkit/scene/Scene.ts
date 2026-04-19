@@ -1,10 +1,10 @@
-// @ts-nocheck
 import * as THREE from 'three';
 import { Object3D, Quaternion, Vector3, WebGLRenderer } from 'three';
-import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer';
-import { SVGRenderer } from 'three/examples/jsm/renderers/SVGRenderer';
+import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import { SVGRenderer } from 'three/examples/jsm/renderers/SVGRenderer.js';
 import {
   AnimationStyle,
+  CameraAxis,
   Control,
   defaults,
   ExportType,
@@ -24,19 +24,32 @@ import {
 } from '../utils';
 // @ts-ignore
 //import img from './glass.png';
-import { OutlineEffect } from 'three/examples/jsm/effects/OutlineEffect';
-import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
+import { OutlineEffect } from 'three/examples/jsm/effects/OutlineEffect.js';
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
 import { SceneJsonObject } from './simple-scene';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { AnimationHelper } from './animation-helper';
 import { PhononAnimationHelper } from './phonon-animation-helper';
 import '../CrystalToolkitScene/CrystalToolkitScene.less';
 import { CameraState } from '../CameraContextProvider/camera-reducer';
 
 const POINTER_CLASS = 'show-pointer';
-let D;
+type SceneJsonLike = SceneJsonObject & Record<string, any>;
+type SceneSettings = typeof defaults & Record<string, any>;
+type SceneControls = {
+  update(): void;
+  dispose(): void;
+  addEventListener(type: string, listener: () => void): void;
+};
+type SceneClickReference =
+  | {
+      point: THREE.Vector3;
+      object: { sceneObject: Object3D; jsonObject: SceneJsonLike } | null;
+    }
+  | null
+  | undefined;
 export default class Scene {
-  private settings;
+  private settings: SceneSettings;
   private renderer!: THREE.WebGLRenderer | SVGRenderer;
   private labelRenderer!: CSS2DRenderer;
   public scene!: THREE.Scene; // expose getter instead
@@ -46,23 +59,23 @@ export default class Scene {
   private frameId?: number;
   private clickableObjects: THREE.Object3D[] = [];
   private tooltipObjects: THREE.Object3D[] = [];
-  private objectDictionnary: { [id: string]: any } = {};
-  private controls;
+  private objectDictionnary: Record<number, SceneJsonLike> = {};
+  private controls: SceneControls | null = null;
   private tooltipHelper = new TooltipHelper();
   private axis!: Object3D;
-  private axisJson: any;
+  private axisJson: SceneJsonLike | null = null;
   private inset!: InsetHelper;
   private inletPosition!: ScenePosition;
   private objectBuilder: ThreeBuilder;
-  private clickCallback: (objects: any[]) => void;
+  private clickCallback: (objects: SceneJsonLike[]) => void;
   private debugHelper!: DebugHelper;
   private readonly raycaster = new THREE.Raycaster();
 
   private outline!: OutlineEffect;
-  private selectedJsonObjects: any[] = [];
+  private selectedJsonObjects: SceneJsonLike[] = [];
   private outlineScene = new THREE.Scene();
 
-  private threeUUIDTojsonObject: { [uuid: string]: any } = {};
+  private threeUUIDTojsonObject: Record<string, SceneJsonLike> = {};
   private computeIdToThree: { [id: string]: THREE.Object3D } = {};
 
   // handle multiSelection via shift key
@@ -85,7 +98,7 @@ export default class Scene {
         });
         renderer.autoClear = false;
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.gammaFactor = 2.2;
+        (renderer as any).gammaFactor = 2.2;
         renderer.setClearColor(0xfffff, 0.0);
         return renderer;
       }
@@ -123,10 +136,11 @@ export default class Scene {
     mountNode.appendChild(labelRenderer.domElement);
   }
 
-  mouseMoveListener = (e) => {
+  mouseMoveListener = (e: Event) => {
+    const mouseEvent = e as MouseEvent;
     if (this.renderer instanceof WebGLRenderer || true) {
       // tooltips
-      let p = this.getClickedReference(e.offsetX, e.offsetY, this.tooltipObjects);
+      let p = this.getClickedReference(mouseEvent.offsetX, mouseEvent.offsetY, this.tooltipObjects);
       if (p && p.object) {
         const { object, point } = p;
         this.tooltipHelper.updateTooltip(point, object!.jsonObject, object!.sceneObject);
@@ -135,7 +149,7 @@ export default class Scene {
         this.tooltipHelper.hideTooltipIfNeeded() && this.renderScene();
       }
       // change mouse pointer for clickable objects
-      p = this.getClickedReference(e.offsetX, e.offsetY, this.clickableObjects);
+      p = this.getClickedReference(mouseEvent.offsetX, mouseEvent.offsetY, this.clickableObjects);
       if (p && p.object) {
         this.renderer.domElement.classList.add(POINTER_CLASS);
       } else {
@@ -145,10 +159,11 @@ export default class Scene {
       console.warn('No mousemove implementation for SVG');
     }
   };
-  clickListener = (e) => {
+  clickListener = (e: Event) => {
+    const mouseEvent = e as MouseEvent;
     if (this.renderer instanceof WebGLRenderer || true) {
-      const p = this.getClickedReference(e.offsetX, e.offsetY, this.clickableObjects);
-      this.onClickImplementation(p, e);
+      const p = this.getClickedReference(mouseEvent.offsetX, mouseEvent.offsetY, this.clickableObjects);
+      this.onClickImplementation(p, mouseEvent);
     } else {
       console.warn('No implementation of click for SVG');
     }
@@ -160,7 +175,7 @@ export default class Scene {
     this.objectDictionnary = {};
     // default camera
     this.camera = new THREE.OrthographicCamera(100, 100, 100, 100, 100);
-    const lights = this.objectBuilder.makeLights(this.settings.lights);
+    const lights = this.objectBuilder.makeLights(this.settings.lights as any);
     this.scene.add(lights);
     this.scene.add(this.tooltipHelper.tooltip);
     this.scene.add(this.camera);
@@ -198,6 +213,10 @@ export default class Scene {
         break;
       }
     }
+    const controls = this.controls;
+    if (!controls) {
+      return;
+    }
 
     if (
       this.settings.staticScene ||
@@ -205,17 +224,17 @@ export default class Scene {
       this.settings.animation === AnimationStyle.SLIDER
     ) {
       // only re-render when scene is rotated
-      this.controls.addEventListener('change', () => {
+      controls.addEventListener('change', () => {
         this.dispatch(this.camera.position, this.camera.quaternion, this.camera.zoom);
         this.renderScene();
       });
-      this.controls.addEventListener('start', () => {
-        this.controls.update();
+      controls.addEventListener('start', () => {
+        controls.update();
         this.settings.controls === Control.TRACKBALL &&
           document.addEventListener('mousemove', this.mouseTrackballUpdate, false);
       });
-      this.controls.addEventListener('end', () => {
-        this.controls.update();
+      controls.addEventListener('end', () => {
+        controls.update();
         this.settings.controls === Control.TRACKBALL &&
           document.removeEventListener('mousemove', this.mouseTrackballUpdate, false);
       });
@@ -226,7 +245,7 @@ export default class Scene {
   }
 
   private readonly mouseTrackballUpdate = () => {
-    this.controls.update();
+    this.controls?.update();
   };
 
   public updateCamera(position: Vector3, rotation?: Quaternion, zoom?: number) {
@@ -243,14 +262,14 @@ export default class Scene {
     this.renderScene();
   }
 
-  private onClickImplementation(p, e) {
+  private onClickImplementation(p: SceneClickReference, e: MouseEvent) {
     let needRedraw = false;
     //TODO(chab) make it more readale
     if (p && p.object) {
       const { object, point } = p;
       if (object?.sceneObject) {
         const sceneObject: Object3D = object?.sceneObject;
-        const jsonObject: Object3D = object?.jsonObject;
+        const jsonObject = object?.jsonObject as SceneJsonLike;
         if (this.isMultiSelectionEnabled) {
           // if the object is not in the registry, it just means it's the first time
           // we select it
@@ -359,14 +378,14 @@ export default class Scene {
   private readonly windowListener = () => this.resizeRendererToDisplaySize();
 
   constructor(
-    sceneJson,
+    sceneJson: SceneJsonLike,
     domElement: Element,
-    settings,
-    size,
-    padding,
-    clickCallback,
+    settings: Partial<SceneSettings>,
+    size: number,
+    padding: number,
+    clickCallback: (objects: SceneJsonLike[]) => void,
     private dispatch: (p: Vector3, r: Quaternion, zoom: number) => void,
-    private debugDOMElement?,
+    private debugDOMElement?: Element,
     cameraState?: CameraState
   ) {
     this.settings = Object.assign(defaults, settings);
@@ -378,7 +397,7 @@ export default class Scene {
     this.configureScene();
     this.configurePostProcessing();
     this.clickCallback = clickCallback;
-    this.outlineScene.autoUpdate = false;
+    (this.outlineScene as any).autoUpdate = false;
     const isPhonon = sceneJson?.app === 'phonon';
     this.animationHelper = isPhonon
       ? new PhononAnimationHelper(
@@ -393,9 +412,9 @@ export default class Scene {
     window.addEventListener('resize', this.windowListener, false);
     this.inset = new InsetHelper(
       this.axis,
-      this.axisJson,
+      (this.axisJson ?? {}) as SceneJsonLike,
       this.scene,
-      sceneJson.origin,
+      (sceneJson.origin ?? [0, 0, 0]) as ThreePosition,
       this.camera,
       this.objectBuilder,
       size,
@@ -408,7 +427,7 @@ export default class Scene {
     this.isMultiSelectionEnabled = this.settings.isMultiSelectionEnabled;
   }
 
-  updateInsetSettings(inletSize: number, inletPadding: number, axisView) {
+  updateInsetSettings(inletSize: number, inletPadding: number, axisView: ScenePosition) {
     this.inletPosition = axisView as ScenePosition;
     if (this.axis) {
       this.inset.updateViewportsize(inletSize, inletPadding);
@@ -449,7 +468,7 @@ export default class Scene {
       this.registry.clear();
       this.removeObjectByName(sceneJson.name!);
       if (this.outlineScene.children.length > 0) {
-        outlinedObject = this.selectedJsonObjects.map((o) => o.id);
+        outlinedObject = this.selectedJsonObjects.map((o) => o.id).filter(Boolean) as string[];
         console.log(outlinedObject);
         this.outlineScene.remove(...this.outlineScene.children);
       }
@@ -595,11 +614,12 @@ export default class Scene {
     this.camera.position.y = center.y;
     this.camera.position.x = center.x;
 
-    const axis = this.settings.cameraAxis;
-    this.camera.position[axis] =
+    const axis = (this.settings.cameraAxis ?? CameraAxis.Z) as CameraAxis;
+    const nextValue =
       this.settings.cameraPosition === 'back'
         ? this.camera.position[axis] + length / 2
         : this.camera.position[axis] - length / 2;
+    this.camera.position[axis] = nextValue;
 
     this.camera.lookAt(this.scene.position);
     this.camera.zoom = 4;
@@ -611,7 +631,7 @@ export default class Scene {
     }
   }
 
-  makeObject(object_json): THREE.Object3D {
+  makeObject(object_json: SceneJsonLike): THREE.Object3D {
     const obj = new THREE.Object3D();
 
     if (object_json.clickable) {
@@ -696,6 +716,7 @@ export default class Scene {
   private renderInlet() {
     this.inset &&
       this.inletPosition !== ScenePosition.HIDDEN &&
+      this.renderer instanceof WebGLRenderer &&
       this.inset.render(this.renderer, this.getInletOrigin(this.inletPosition));
   }
 
@@ -712,7 +733,7 @@ export default class Scene {
       // note that we consider that the selection is lost
       const idsToRemove: string[] = [];
       this.selectedJsonObjects = this.selectedJsonObjects.filter((o) => {
-        let threeobject = this.computeIdToThree[o.id];
+        let threeobject = this.computeIdToThree[o.id as string];
         let visible = true;
         if (!threeobject.visible) {
           idsToRemove.push(threeobject.uuid);
@@ -740,7 +761,11 @@ export default class Scene {
 
   // i know this is can be done by implementing a color buffer, with each color matching one
   // object
-  getClickedReference(clientX: number, clientY: number, objectsToCheck: Object3D[]) {
+  getClickedReference(
+    clientX: number,
+    clientY: number,
+    objectsToCheck: Object3D[]
+  ): SceneClickReference {
     //FIXME(chab) ideally we should recompute the objectsToCheck array for better performance
     if (!objectsToCheck || objectsToCheck.length === 0) {
       return;
@@ -765,7 +790,7 @@ export default class Scene {
     return null;
   }
 
-  getParentObject(object: Object3D): { sceneObject: Object3D; jsonObject: any } | null {
+  getParentObject(object: Object3D): { sceneObject: Object3D; jsonObject: SceneJsonLike } | null {
     if (!object.parent || !object.parent.visible || !object.visible) {
       return null;
     }
@@ -776,7 +801,7 @@ export default class Scene {
     }
   }
 
-  public enableDebug(debugEnabled: boolean, node) {
+  public enableDebug(debugEnabled: boolean, node: Element) {
     if (!debugEnabled) {
       if (!this.debugHelper) {
         //
@@ -809,7 +834,7 @@ export default class Scene {
     this.removeListener();
     this.debugHelper && this.debugHelper.onDestroy();
     this.inset.onDestroy();
-    this.controls.dispose();
+    this.controls?.dispose();
     disposeSceneHierarchy(this.scene);
     // this.scene.dispose();
     if (this.renderer instanceof THREE.WebGLRenderer) {
@@ -838,6 +863,9 @@ export default class Scene {
   }
 
   private getHelper() {
+    if (!this.debugDOMElement) {
+      throw new Error('Debug helper requested without a debug mount node');
+    }
     return new DebugHelper(
       this.debugDOMElement,
       this.scene,

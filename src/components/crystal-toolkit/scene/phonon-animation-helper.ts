@@ -1,9 +1,10 @@
-// @ts-nocheck
 import * as THREE from 'three';
-import { BufferAttribute, BufferGeometry } from 'three';
 import { JSON3DObject } from './constants';
 import { SceneJsonObject } from './simple-scene';
 import { ThreeBuilder } from './three_builder';
+
+type ComplexPair = [number, number];
+type EigenVector = [ComplexPair, ComplexPair, ComplexPair];
 
 export class PhononAnimationHelper {
   private clock = new THREE.Clock();
@@ -24,11 +25,11 @@ export class PhononAnimationHelper {
   }
 
   constructor(
-    private objectBuilder: ThreeBuilder,
+    private _objectBuilder: ThreeBuilder,
     private A: number,
     private phases: number[],
     private omega: number,
-    private eigenVectors: number[],
+    private eigenVectors: EigenVector[],
     private velocity: number
   ) {
     this.atomNumber = Array.isArray(phases) ? phases.length : 0;
@@ -86,7 +87,7 @@ export class PhononAnimationHelper {
 
     // update atoms
     this.atomMeshes.forEach((mesh, atomIndex) => {
-      let base = mesh.userData.basePos;
+      let base = mesh.userData.basePos as THREE.Vector3 | undefined;
 
       const unitCellAtomIndex = this.unitCellAtomIndexArray[atomIndex];
 
@@ -126,8 +127,11 @@ export class PhononAnimationHelper {
     this.bondMeshes.forEach((mesh, bondKey) => {
       const [atomIndex1, atomIndex2] = PhononAnimationHelper.parseBondKey(bondKey);
 
-      const atom1Pos = temAtomPosition[atomIndex1];
-      const atom2Pos = temAtomPosition[atomIndex2];
+      const atom1Pos = temAtomPosition[atomIndex1] as THREE.Vector3 | undefined;
+      const atom2Pos = temAtomPosition[atomIndex2] as THREE.Vector3 | undefined;
+      if (!atom1Pos || !atom2Pos) {
+        return;
+      }
 
       atom1Vec.copy(atom1Pos);
       atom2Vec.copy(atom2Pos);

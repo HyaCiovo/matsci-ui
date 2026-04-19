@@ -389,8 +389,8 @@ export const MaterialsInput = ({
   };
 
   const handleTableStateChange = useCallback(
-    (nextState: SelectableTableSelectionChange) => {
-      const nextElements = nextState.enabledElements;
+    (nextState: SelectableTableSelectionChange | string[]) => {
+      const nextElements = Array.isArray(nextState) ? nextState : nextState.enabledElements;
       const nextValue = renderPeriodicTableValue(selectionMode, nextElements);
 
       setSelectedElements((current) => (areElementListsEqual(current, nextElements) ? current : nextElements));

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { JSON3DObject, ThreePosition } from './constants';
 
 export type SceneMeta = {
@@ -9,7 +8,7 @@ export type SceneMeta = {
 export interface SceneJsonObject {
   name?: string;
   contents?: SceneJsonObject[];
-  type?: JSON3DObject;
+  type?: JSON3DObject | `${JSON3DObject}`;
   clickable?: boolean;
   color?: string;
   radius?: number;
@@ -19,13 +18,17 @@ export interface SceneJsonObject {
   headLength?: number;
   headWidth?: number;
   tooltip?: string;
-  scale?: ThreePosition[];
-  positionPairs?: Array<ThreePosition[]>;
+  scale?: ThreePosition | ThreePosition[];
+  positionPairs?: Array<[ThreePosition, ThreePosition]>;
   keyframes?: number[];
-  animate?: any[];
+  animate?: unknown[];
   id?: string;
   animateType?: string;
   _meta?: SceneMeta[];
+  width?: number;
+  opacity?: number;
+  normals?: ThreePosition[];
+  scaleFactor?: number;
 }
 
 export const s4 = {

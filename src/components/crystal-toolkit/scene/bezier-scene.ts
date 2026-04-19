@@ -1,4 +1,3 @@
-// @ts-nocheck
 export const bezierScene = {
   name: '_ct_StructureMoleculeComponent_1',
   contents: [

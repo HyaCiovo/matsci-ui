@@ -1,9 +1,8 @@
-// @ts-nocheck
 import * as THREE from 'three';
-import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { CameraHelper } from 'three';
 import { disposeSceneHierarchy } from '../utils';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 const DEBUG_SIZE = 500;
 
@@ -23,7 +22,7 @@ export class DebugHelper {
   private cameraHelper: THREE.CameraHelper;
   private debugCamera: THREE.Camera;
   private debugRenderer: THREE.WebGLRenderer; // no SVG
-  private controls: any;
+  private controls: { dispose(): void } | null = null;
 
   private showAxis = true;
   private showGrid = true;
@@ -31,16 +30,16 @@ export class DebugHelper {
 
   private axis: THREE.AxesHelper;
   private grid: THREE.GridHelper;
-  private lights!: THREE.Object3D;
+  private lights: THREE.Object3D = new THREE.Object3D();
   private insetHelper: THREE.Object3D;
 
   constructor(
-    private mountNode,
-    private scene,
-    private cameraToTrack,
-    private settings,
-    private builder,
-    insetCameraHelper
+    private mountNode: Element,
+    private scene: THREE.Scene,
+    private cameraToTrack: THREE.Camera,
+    private settings: Record<string, any>,
+    private builder: { makeLightsHelper: (lights: any[]) => THREE.Object3D },
+    insetCameraHelper?: THREE.CameraHelper
   ) {
     if (!mountNode) {
       console.error('No mount node passed for the debug view');
@@ -113,8 +112,12 @@ export class DebugHelper {
     this.scene.background = oldBackgroundColor;
   }
 
-  private setHelperObjectVisibility(isVisible) {
-    this.cameraHelper.visible = this.axis.visible = this.grid.visible = this.lights.visible = this.insetHelper.visible = isVisible;
+  private setHelperObjectVisibility(isVisible: boolean) {
+    this.cameraHelper.visible = isVisible;
+    this.axis.visible = isVisible;
+    this.grid.visible = isVisible;
+    this.lights.visible = isVisible;
+    this.insetHelper.visible = isVisible;
   }
 
   public onDestroy() {
@@ -122,8 +125,8 @@ export class DebugHelper {
     this.scene.remove(this.cameraHelper);
     this.axis && this.scene.remove(this.axis);
     this.grid && this.scene.remove(this.grid);
-    this.scene.dispose();
-    this.controls.dispose();
+    (this.scene as any).dispose?.();
+    this.controls?.dispose();
     this.debugRenderer.forceContextLoss();
     this.debugRenderer.dispose();
     this.debugRenderer.domElement!.parentElement!.removeChild(this.debugRenderer.domElement);

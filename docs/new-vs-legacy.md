@@ -104,13 +104,41 @@
   - `CrystalToolkitAnimationScene`
   - `PhononAnimationScene`
   - 以及运行这些组件所需的 `scene` runtime
+- 已补一轮当前测试栈下的最小 smoke 验证：
+  - `CrystalToolkitScene`
+  - `CrystalToolkitAnimationScene`
+  - `PhononAnimationScene`
+  - 重点验证“可挂载、可接线、可清理”，而不是 Three 运行时的逐像素渲染结果
+- 已额外补一层轻交互验证：
+  - `CrystalToolkitScene` 的 settings panel 开关
+  - `CrystalToolkitScene` 的导出菜单 `setProps` 回调合同
+  - `CrystalToolkitAnimationScene` 的导出菜单 `setProps` 回调合同
+  - `PhononAnimationScene` 的 slider -> `updateTime` 链路
+- 已开始收紧 scene runtime 的类型过渡态：
+  - `scene/Scene.ts`
+  - `scene/animation-helper.ts`
+  - `scene/constants.ts`
+  - `scene/simple-scene.ts`
+  - `scene/download-event.ts`
+  - `scene/inset-helper.ts`
+  - `scene/phonon-animation-helper.ts`
+  - `scene/tooltip-helper.ts`
+  - `scene/debug-helper.ts`
+  - `scene/three_builder.ts`
+  - `scene/RadiusTubeBufferGeometry.ts`
+  - `CameraContextProvider/camera-reducer.ts`
+  - `crystal-toolkit/utils.ts`
+  - 上述文件已移除 `@ts-nocheck`
+  - 当前 `src/` 下已无 `@ts-nocheck`
 - 当前明确选择不补或暂不承诺兼容的内容：
   - `DynamicCrystalToolkitScene`
   - 旧 deep import 路径下的内部工具模块
   - 旧 runtime 的严格 TypeScript 类型精修
+  - 旧的 DAE (`Collada`) 导出
 - 放弃理由：
   - 前两项不是稳定包级公开 API，迁移收益明显低于维护成本
-  - 最后一项属于实现细节整理，不影响当前公开组件可用性
+  - `DAE` 导出依赖的 `ColladaExporter` 已不再随当前 `three` 版本提供，且现代导出格式已有 `GLTF / GLB / USDZ / PNG`
+  - 严格类型精修属于实现细节整理，不影响当前公开组件可用性
 
 ## Export Status
 

@@ -1,7 +1,7 @@
-// @ts-nocheck
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useContext } from 'react';
 import { Quaternion, Vector3 } from 'three';
+import { describe, expect, it } from 'vitest';
 import { CameraContext, CameraContextProvider } from './CameraContextProvider';
 import { CameraReducerAction } from './camera-reducer';
 

@@ -1,40 +1,65 @@
-// @ts-nocheck
-// TubeBufferGeometry
-
 import {
   BufferGeometry,
   Float32BufferAttribute,
-  TubeBufferGeometry,
   Vector2,
   Vector3,
 } from 'three';
 
+type FrenetFrames = {
+  tangents: Vector3[];
+  normals: Vector3[];
+  binormals: Vector3[];
+};
+
+type CurveLike = {
+  computeFrenetFrames: (segments: number, closed: boolean) => FrenetFrames;
+  getPointAt: (t: number, target: Vector3) => Vector3;
+  toJSON: () => unknown;
+};
+
+type RadiusTubeParameters = {
+  path: CurveLike;
+  tubularSegments: number;
+  radius: number;
+  radialSegments: number;
+  closed: boolean;
+};
+
+type RadiusTubeGeometry = BufferGeometry & {
+  type: string;
+  parameters: RadiusTubeParameters;
+  tangents: Vector3[];
+  normals: Vector3[];
+  binormals: Vector3[];
+};
+
 export function RadiusTubeBufferGeometry(
-  this: any,
-  path,
-  tubularSegments,
-  radius,
-  radialSegments,
-  closed,
-  taper
+  this: RadiusTubeGeometry,
+  path: CurveLike,
+  tubularSegments?: number,
+  radius?: number,
+  radialSegments?: number,
+  closed?: boolean,
+  taper?: (radius: number, segmentIndex: number) => number
 ) {
   BufferGeometry.call(this);
 
   this.type = 'RadiusTubeBufferGeometry';
   this.parameters = {
-    path: path,
-    tubularSegments: tubularSegments,
-    radius: radius,
-    radialSegments: radialSegments,
-    closed: closed,
+    path,
+    tubularSegments: tubularSegments ?? 64,
+    radius: radius ?? 1,
+    radialSegments: radialSegments ?? 8,
+    closed: closed ?? false,
   };
 
-  tubularSegments = tubularSegments || 64;
-  radius = radius || 1;
-  radialSegments = radialSegments || 8;
-  closed = closed || false;
+  const resolvedTubularSegments = this.parameters.tubularSegments;
+  const resolvedRadius = this.parameters.radius;
+  const resolvedRadialSegments = this.parameters.radialSegments;
+  const resolvedClosed = this.parameters.closed;
+  const taperFn = taper ?? ((r: number) => r);
 
-  var frames = path.computeFrenetFrames(tubularSegments, closed);
+  const frames = path.computeFrenetFrames(resolvedTubularSegments, resolvedClosed);
 
   // expose internals
 
@@ -44,19 +69,17 @@ export function RadiusTubeBufferGeometry(
 
   // helper variables
 
-  var vertex = new Vector3();
-  var normal = new Vector3();
-  var uv = new Vector2();
-  var P = new Vector3();
-
-  var i, j;
+  const vertex = new Vector3();
+  const normal = new Vector3();
+  const uv = new Vector2();
+  let P = new Vector3();
 
   // buffer
 
-  var vertices: any = [];
-  var normals: any = [];
-  var uvs: any = [];
-  var indices: any = [];
+  const vertices: number[] = [];
+  const normals: number[] = [];
+  const uvs: number[] = [];
+  const indices: number[] = [];
 
   // create buffer data
 
@@ -72,7 +95,7 @@ export function RadiusTubeBufferGeometry(
   // functions
 
   function generateBufferData() {
-    for (i = 0; i < tubularSegments; i++) {
+    for (let i = 0; i < resolvedTubularSegments; i++) {
       generateSegment(i);
     }
 
@@ -81,7 +104,7 @@ export function RadiusTubeBufferGeometry(
     //
     // if the geometry is closed, duplicate the first row of vertices and normals (uvs will differ)
 
-    generateSegment(closed === false ? tubularSegments : 0);
+    generateSegment(resolvedClosed === false ? resolvedTubularSegments : 0);
 
     // uvs are generated in a separate function.
     // this makes it easy compute correct values for closed geometries
@@ -93,23 +116,23 @@ export function RadiusTubeBufferGeometry(
     generateIndices();
   }
 
-  function generateSegment(i) {
+  function generateSegment(i: number) {
     // we use getPointAt to sample evenly distributed points from the given path
 
-    P = path.getPointAt(i / tubularSegments, P);
+    P = path.getPointAt(i / resolvedTubularSegments, P);
 
     // retrieve corresponding normal and binormal
 
-    var N = frames.normals[i];
-    var B = frames.binormals[i];
+    const N = frames.normals[i];
+    const B = frames.binormals[i];
 
     // generate normals and vertices for the current segment
 
-    for (j = 0; j <= radialSegments; j++) {
-      var v = (j / radialSegments) * Math.PI * 2;
+    for (let j = 0; j <= resolvedRadialSegments; j++) {
+      const v = (j / resolvedRadialSegments) * Math.PI * 2;
 
-      var sin = Math.sin(v);
-      var cos = -Math.cos(v);
+      const sin = Math.sin(v);
+      const cos = -Math.cos(v);
 
       // normal
 
@@ -122,21 +145,22 @@ export function RadiusTubeBufferGeometry(
 
       // vertex
 
-      vertex.x = P.x + taper(radius, i) * normal.x;
-      vertex.y = P.y + taper(radius, i) * normal.y;
-      vertex.z = P.z + taper(radius, i) * normal.z;
+      const currentRadius = taperFn(resolvedRadius, i);
+      vertex.x = P.x + currentRadius * normal.x;
+      vertex.y = P.y + currentRadius * normal.y;
+      vertex.z = P.z + currentRadius * normal.z;
 
       vertices.push(vertex.x, vertex.y, vertex.z);
     }
   }
 
   function generateIndices() {
-    for (j = 1; j <= tubularSegments; j++) {
-      for (i = 1; i <= radialSegments; i++) {
-        var a = (radialSegments + 1) * (j - 1) + (i - 1);
-        var b = (radialSegments + 1) * j + (i - 1);
-        var c = (radialSegments + 1) * j + i;
-        var d = (radialSegments + 1) * (j - 1) + i;
+    for (let j = 1; j <= resolvedTubularSegments; j++) {
+      for (let i = 1; i <= resolvedRadialSegments; i++) {
+        const a = (resolvedRadialSegments + 1) * (j - 1) + (i - 1);
+        const b = (resolvedRadialSegments + 1) * j + (i - 1);
+        const c = (resolvedRadialSegments + 1) * j + i;
+        const d = (resolvedRadialSegments + 1) * (j - 1) + i;
 
         // faces
 
@@ -147,10 +171,10 @@ export function RadiusTubeBufferGeometry(
   }
 
   function generateUVs() {
-    for (i = 0; i <= tubularSegments; i++) {
-      for (j = 0; j <= radialSegments; j++) {
-        uv.x = i / tubularSegments;
-        uv.y = j / radialSegments;
+    for (let i = 0; i <= resolvedTubularSegments; i++) {
+      for (let j = 0; j <= resolvedRadialSegments; j++) {
+        uv.x = i / resolvedTubularSegments;
+        uv.y = j / resolvedRadialSegments;
 
         uvs.push(uv.x, uv.y);
       }
@@ -159,10 +183,10 @@ export function RadiusTubeBufferGeometry(
 }
 
 RadiusTubeBufferGeometry.prototype = Object.create(BufferGeometry.prototype);
-RadiusTubeBufferGeometry.prototype.constructor = TubeBufferGeometry;
+RadiusTubeBufferGeometry.prototype.constructor = RadiusTubeBufferGeometry;
 
 RadiusTubeBufferGeometry.prototype.toJSON = function () {
-  var data = BufferGeometry.prototype.toJSON.call(this);
-  data.path = this.parameters.path.toJSON();
-  return data;
+  const data = BufferGeometry.prototype.toJSON.call(this);
+  (data as any).path = (this as RadiusTubeGeometry).parameters.path.toJSON();
+  return data as any;
 };
