@@ -7,7 +7,9 @@ const emptyCellPlaceholder = '-';
 
 const joinUrl = (base: string, rest: string) => {
   if (base.startsWith('http://') || base.startsWith('https://')) {
-    return new URL(rest, base).href;
+    const normalizedBase = base.endsWith('/') ? base : `${base}/`;
+    const normalizedRest = String(rest).replace(/^\/+/, '');
+    return new URL(normalizedRest, normalizedBase).href;
   }
 
   const normalizedBase = base.replace(/\/+$/, '');
