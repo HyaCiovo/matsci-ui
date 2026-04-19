@@ -1,4 +1,4 @@
-import { FaExclamationTriangle } from 'react-icons/fa';
+import { TriangleAlert } from 'lucide-react';
 import { useSearchUIContext } from '../SearchUIContextProvider';
 import { searchUIViewsMap } from '../searchUIViewsMap';
 
@@ -9,7 +9,7 @@ export const SearchUIDataView = () => {
     return (
       <div className="react-data-table-message box">
         <p>
-          <FaExclamationTriangle className="mr-2" />
+          <TriangleAlert className="mr-2" />
           There was an error with your search.
         </p>
         <p>You may have entered an invalid search value, or the API may be temporarily unavailable.</p>

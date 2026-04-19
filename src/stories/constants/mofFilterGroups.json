@@ -1,0 +1,79 @@
+[
+  {
+    "name": "Identifiers",
+    "filters": [
+      {
+        "name": "QMOF ID",
+        "params": ["identifier__exact"],
+        "tooltip": "Find materials with a specific QMOF ID, e.g. qmof-a2d95c3",
+        "type": "TEXT_INPUT"
+      }
+    ]
+  },
+  {
+    "name": "Composition",
+    "expanded": false,
+    "filters": [
+      {
+        "name": "Number of Atoms",
+        "params": ["data__natoms__value__gte", "data__natoms__value__lte"],
+        "tooltip": "Number of atoms per simulation unit cell",
+        "type": "SLIDER",
+        "props": {
+          "domain": [0, 500],
+          "step": 5
+        }
+      },
+      {
+        "name": "Formula",
+        "params": ["data__reducedFormula__exact"],
+        "tooltip": "Enter an empirical (i.e. reduced) chemical formula with the elements in alphabetical order to find materials that have this exact formula. Use the \"*\" symbol to specify a wildcard element.",
+        "type": "MATERIALS_INPUT",
+        "props": {
+          "type": "formula",
+          "periodicTableMode": "none",
+          "errorMessage": "Please enter a valid chemical formula (e.g. Zn4C24H12O13).",
+          "helpItems": [
+            {
+              "label": "Formula Examples"
+            },
+            {
+              "label": null,
+              "examples": ["Zn4C24H12O13", "CuC6H2O4"]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "Structural Properties",
+    "expanded": false,
+    "filters": [
+      {
+        "name": "Pore-limiting Diameter",
+        "params": ["data__pld__value__gte", "data__pld__value__lte"],
+        "tooltip": "The smallest spherical diameter of void space that a guest species would need to traverse in order to diffuse through the material",
+        "type": "SLIDER",
+        "units": "\u212B",
+        "props": {
+          "domain": [0, 25],
+          "step": 0.1
+        }
+      }
+    ]
+  },
+  {
+    "name": "Symmetry",
+    "expanded": false,
+    "filters": [
+      {
+        "name": "Crystal System",
+        "params": ["data__spacegroupCrystal__exact"],
+        "tooltip": "The crystal system for the lattice",
+        "type": "SELECT_CRYSTAL_SYSTEM",
+        "makeLowerCase": true
+      }
+    ]
+  }
+]

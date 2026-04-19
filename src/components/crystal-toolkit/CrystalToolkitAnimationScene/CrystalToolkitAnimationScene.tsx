@@ -34,12 +34,11 @@ import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 import { USDZExporter } from 'three/examples/jsm/exporters/USDZExporter.js';
 import useResizeObserver from 'use-resize-observer';
 import { Enlargeable } from '../../data-display/Enlargeable';
-import { FaCamera, FaCogs, FaCompress, FaExpand, FaFileExport, FaUndo } from 'react-icons/fa';
+import { Camera, Settings, Minimize2, Maximize2, FileOutput, Undo2 } from 'lucide-react';
 import { ButtonBar } from '../../data-display/ButtonBar';
 import { Dropdown } from '../../navigation/Dropdown';
 import clsx from 'clsx';
 import { Tooltip } from '../../data-display/Tooltip';
-import ReactTooltip from 'react-tooltip';
 import { v4 as uuidv4 } from 'uuid';
 import { ModalCloseButton } from '../../data-display/Modal/ModalCloseButton/ModalCloseButton';
 import { downloadBlob, downloadJSON } from '../../../utils/download';
@@ -49,9 +48,7 @@ import { ScenePosition } from '../scene/inset-helper';
 const getSceneSize = (sceneSize?: number | string) =>
   sceneSize ? sceneSize : DEFAULT_SCENE_SIZE;
 
-const hideTooltip = () => {
-  (ReactTooltip as unknown as { hide?: () => void }).hide?.();
-};
+const hideTooltip = () => undefined;
 
 let ID_GENERATOR = 0;
 
@@ -579,7 +576,7 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
                   data-tip
                   data-for={`expand-${tooltipId}`}
                 >
-                  {expanded ? <FaCompress /> : <FaExpand />}
+                  {expanded ? <Minimize2 /> : <Maximize2 />}
                   <Tooltip id={`expand-${tooltipId}`} place="left">
                     {expanded ? 'Exit full screen' : 'Full screen'}
                   </Tooltip>
@@ -592,7 +589,7 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
                   data-tip
                   data-for={`settings-${tooltipId}`}
                 >
-                  <FaCogs />
+                  <Settings />
                   <Tooltip id={`settings-${tooltipId}`} place="left">
                     {showSettingsPanel ? 'Hide settings' : 'Show settings'}
                   </Tooltip>
@@ -617,7 +614,7 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
                   data-tip
                   data-for={`position-${tooltipId}`}
                 >
-                  <FaUndo />
+                  <Undo2 />
                   <Tooltip id={`position-${tooltipId}`} place="left">
                     Return to original position
                   </Tooltip>
@@ -625,7 +622,7 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
               )}
               {props.showImageButton && (
                 <div onClick={() => hideTooltip()} data-tip data-for={`image-${tooltipId}`}>
-                  <Dropdown triggerIcon={<FaCamera />} isArrowless isRight>
+                  <Dropdown triggerIcon={<Camera />} isArrowless isRight>
                     <p
                       key={`image-export-png`}
                       className="dropdown-item"
@@ -673,7 +670,7 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
               )}
               {props.showExportButton && (
                 <div onClick={() => hideTooltip()} data-tip data-for={`export-${tooltipId}`}>
-                  <Dropdown triggerIcon={<FaFileExport />} isArrowless isRight>
+                  <Dropdown triggerIcon={<FileOutput />} isArrowless isRight>
                     {props.fileOptions?.map((option, i) => (
                       <p
                         key={`file-export-${i}`}

@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { FaToggleOff, FaToggleOn } from 'react-icons/fa';
+import { ToggleLeft, ToggleRight } from 'lucide-react';
 import './Switch.css';
 
 export interface SwitchProps {
@@ -40,7 +40,7 @@ export const Switch = ({
         aria-label={nextLabel}
         onClick={handleClick}
       >
-        {value ? <FaToggleOn className="mpc-switch-icon" /> : <FaToggleOff className="mpc-switch-icon" />}
+        {value ? <ToggleRight className="mpc-switch-icon" /> : <ToggleLeft className="mpc-switch-icon" />}
       </button>
       {hasLabel ? <span className="mpc-switch-label">{nextLabel}</span> : null}
     </div>

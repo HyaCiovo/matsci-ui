@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { memo } from 'react';
 import type { MatElement } from '../periodic-table-data/table-v2';
 import { categoryToClassName } from './selection-state';
 import type { SelectableTableLastAction } from './types';
@@ -16,7 +17,7 @@ interface PeriodicTableElementButtonProps {
   onHoverDetail: (element: string | null) => void;
 }
 
-export function PeriodicTableElementButton({
+function PeriodicTableElementButtonImpl({
   element,
   xpos,
   ypos,
@@ -72,3 +73,5 @@ export function PeriodicTableElementButton({
     </button>
   );
 }
+
+export const PeriodicTableElementButton = memo(PeriodicTableElementButtonImpl);

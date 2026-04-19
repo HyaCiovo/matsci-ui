@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useEffect, useMemo, useState } from 'react';
-import { FaCaretDown, FaCaretRight, FaRegTimesCircle } from 'react-icons/fa';
+import { ChevronDown, ChevronRight, CircleX } from 'lucide-react';
 import { CheckboxList } from '../../../data-entry/CheckboxList';
 import { DualRangeSlider } from '../../../data-entry/DualRangeSlider';
 import { FilterField } from '../../../data-entry/FilterField';
@@ -192,7 +192,7 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
                     onMouseDown={() => toggleGroup(group.name)}
                   >
                     <span className="mr-4">
-                      {groupState.alwaysExpanded ? null : groupState.expanded ? <FaCaretDown /> : <FaCaretRight />}
+                      {groupState.alwaysExpanded ? null : groupState.expanded ? <ChevronDown /> : <ChevronRight />}
                     </span>
                     <span className={clsx('is-size-5', { 'has-opacity-70': !groupState.expanded })}>
                       {group.name}

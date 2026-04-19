@@ -77,6 +77,7 @@ interface PeriodicSelectionContextValue {
 }
 
 export const PeriodicSelectionContext = createContext<PeriodicSelectionContextValue | null>(null);
+export const PeriodicSelectionActionsContext = createContext<PeriodicSelectionActions | null>(null);
 
 const normalizeSelectionInput = (values?: SelectionInput) => {
   if (!values) {
@@ -337,7 +338,11 @@ export function PeriodicSelectionProvider({
     ]
   );
 
-  return <PeriodicSelectionContext.Provider value={value}>{children}</PeriodicSelectionContext.Provider>;
+  return (
+    <PeriodicSelectionActionsContext.Provider value={actions}>
+      <PeriodicSelectionContext.Provider value={value}>{children}</PeriodicSelectionContext.Provider>
+    </PeriodicSelectionActionsContext.Provider>
+  );
 }
 
 export function PeriodicContext({
@@ -363,6 +368,18 @@ export function PeriodicContext({
       {children}
     </PeriodicSelectionProvider>
   );
+}
+
+export function usePeriodicSelectionActions() {
+  const actions = useContext(PeriodicSelectionActionsContext);
+  if (!actions) {
+    throw new Error('usePeriodicSelectionActions must be used within PeriodicSelectionProvider');
+  }
+  return actions;
+}
+
+export function useOptionalPeriodicSelectionActions() {
+  return useContext(PeriodicSelectionActionsContext);
 }
 
 export function useOptionalPeriodicSelectionContext() {

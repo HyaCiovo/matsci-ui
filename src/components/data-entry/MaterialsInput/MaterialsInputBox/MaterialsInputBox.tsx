@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import type { FocusEvent, FormEvent, KeyboardEvent, MouseEvent, MutableRefObject, ReactNode } from 'react';
-import { FaAngleDown, FaExclamationTriangle, FaQuestionCircle } from 'react-icons/fa';
+import { ChevronDown, TriangleAlert, CircleHelp } from 'lucide-react';
 import { Tooltip } from '../../../data-display/Tooltip';
 import { FormulaAutocomplete } from '../FormulaAutocomplete';
 import { InputHelp, type InputHelpItem } from '../InputHelp';
@@ -146,7 +146,7 @@ export const MaterialsInputBox = ({
             <label className="button">
               <span>{typeDropdownValue}</span>
               <span className="icon">
-                <FaAngleDown />
+                <ChevronDown />
               </span>
               <select
                 aria-label="Input type"
@@ -179,7 +179,7 @@ export const MaterialsInputBox = ({
             onClick={onHelpToggle}
             data-for={helpTooltipId}
           >
-            <FaQuestionCircle />
+            <CircleHelp />
             <Tooltip id={helpTooltipId} place="bottom">
               {showInputHelp ? 'Hide examples' : 'Show examples'}
             </Tooltip>
@@ -198,7 +198,7 @@ export const MaterialsInputBox = ({
             onMouseOver={onErrorMouseOver}
             data-for={errorTooltipId}
           >
-            <FaExclamationTriangle />
+            <TriangleAlert />
             <Tooltip id={errorTooltipId} place="bottom">
               {error}
             </Tooltip>

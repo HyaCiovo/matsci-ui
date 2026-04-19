@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { FaDownload, FaEnvelope } from 'react-icons/fa';
+import { Download, Mail } from 'lucide-react';
 import { pointGroups } from '../constants/pointGroups';
 import { spaceGroups } from '../constants/spaceGroups';
 import { ArrayChips } from '../components/data-display/ArrayChips';
@@ -178,7 +178,7 @@ export const formatColumnValue = (column: Column, row: any) => {
 
       return (
         <a className="tag" href={href} onClick={(event) => event.stopPropagation()}>
-          <FaEnvelope className="mr-1" />
+          <Mail className="mr-1" />
           {firstAuthor}
         </a>
       );
@@ -228,7 +228,7 @@ export const formatColumnValue = (column: Column, row: any) => {
             <span key={item.id ?? item.name}>
               <span className="tag">{item.name}</span>
               <a href={joinUrl(String(options.baseUrl), item.id)}>
-                <FaDownload className="mr-1" />
+                <Download className="mr-1" />
               </a>
             </span>
           ))}

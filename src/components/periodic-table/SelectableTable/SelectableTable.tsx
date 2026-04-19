@@ -24,6 +24,19 @@ import {
 } from './view-model';
 import './SelectableTable.css';
 
+function SelectableTableDetailObserver({
+  onDetailedElementChange,
+}: Pick<SelectableTableProps, 'onDetailedElementChange'>) {
+  const detailedElementSymbol = useDetailedElement();
+  const detailedElement = useMemo(() => getDetailedElementDetail(detailedElementSymbol), [detailedElementSymbol]);
+
+  useEffect(() => {
+    onDetailedElementChange?.(detailedElementSymbol, detailedElement);
+  }, [detailedElement, detailedElementSymbol, onDetailedElementChange]);
+
+  return null;
+}
+
 export interface SelectableTableProps {
   className?: string;
   enabledElements?: string[];
@@ -97,7 +110,6 @@ function SelectableTableView({
     lastAction,
     actions,
   } = useElements(maxElementSelectable, onStateChange ? handleElementsChange : undefined);
-  const detailedElementSymbol = useDetailedElement();
   const elementViewModels = useMemo(
     () =>
       getSelectableTableElementViewModels({
@@ -109,7 +121,6 @@ function SelectableTableView({
       }),
     [disabled, effectiveDisabledRecord, enabledRecord, hiddenRecord]
   );
-  const detailedElement = useMemo(() => getDetailedElementDetail(detailedElementSymbol), [detailedElementSymbol]);
   const tableStateChange = useMemo(
     () =>
       context
@@ -117,16 +128,21 @@ function SelectableTableView({
             enabledRecord,
             effectiveDisabledRecord,
             hiddenRecord,
-            detailedElementSymbol,
+            detailedElementSymbol: context.detailedElementSymbol,
             forwardOuterChange: context.forwardOuterChange,
             lastAction,
           })
         : null,
-    [context, detailedElementSymbol, effectiveDisabledRecord, enabledRecord, hiddenRecord, lastAction]
+    [
+      context,
+      context?.detailedElementSymbol,
+      context?.forwardOuterChange,
+      effectiveDisabledRecord,
+      enabledRecord,
+      hiddenRecord,
+      lastAction,
+    ]
   );
-  useEffect(() => {
-    onDetailedElementChange?.(detailedElementSymbol, detailedElement);
-  }, [detailedElement, detailedElementSymbol, onDetailedElementChange]);
 
   useEffect(() => {
     actions.setForwardChange(forwardOuterChange);
@@ -147,6 +163,7 @@ function SelectableTableView({
       })}
       data-table-layout={forceTableLayout}
     >
+      <SelectableTableDetailObserver onDetailedElementChange={onDetailedElementChange} />
       <PeriodicTableSpacer plugin={plugin} disabled={disabled} />
       <div className="materials-input-elements-grid">
         {elementViewModels.map(({ symbol: element, xpos, ypos, detail, enabled, disabled: elementDisabled, defaultDisabled }) => (

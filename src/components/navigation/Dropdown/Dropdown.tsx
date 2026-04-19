@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { type ReactNode } from 'react';
-import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 export interface DropdownProps {
   id?: string;
@@ -57,7 +57,7 @@ export const Dropdown = ({
               {renderIcon(triggerIcon)}
               {triggerLabel ? <span>{triggerLabel}</span> : null}
               {!isArrowless ? (
-                <span className="icon">{isUp ? <FaAngleUp /> : <FaAngleDown />}</span>
+                <span className="icon">{isUp ? <ChevronUp /> : <ChevronDown />}</span>
               ) : null}
             </button>
           </DropdownMenu.Trigger>

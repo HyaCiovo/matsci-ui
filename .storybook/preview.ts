@@ -1,14 +1,49 @@
 import type { Preview } from '@storybook/react';
 import 'bulma/css/bulma.css';
 import '../src/styles.less';
+import '../src/stories/stories.css';
 
 const preview: Preview = {
   parameters: {
-    actions: { argTypesRegex: '^on[A-Z].*' },
-    controls: {
-      matchers: {
-        color: /(background|color)$/i,
-        date: /Date$/i,
+    controls: { expanded: true, sort: 'alpha' },
+    options: {
+      storySort: {
+        order: [
+          'Introduction',
+          ['MP React Components', 'Usage with Dash'],
+          'Search UI',
+          [
+            'Building a Search UI',
+            'SearchUIContainer',
+            ['Fully Featured', 'With MP Contribs Data', 'Matscholar Alpha'],
+            'SearchUISearchBar',
+            'SearchUIFilters',
+            'SearchUIDataHeader',
+            'SearchUIDataTable',
+            'SearchUIDataView',
+            'SearchUIGrid',
+            'Columns',
+            'Filters',
+            'Conditional Row Styles',
+            'Search Bar Input Types',
+          ],
+          'Data-Entry',
+          [
+            'MaterialsInput',
+            'PeriodicTable',
+            'RangeSlider',
+            'DualRangeSlider',
+            'Select',
+            'ThreeStateBooleanSelect',
+            'Switch',
+          ],
+          'Data-Display',
+          'Publications',
+          ['BibCard', 'CrossrefCard', 'BibjsonCard', 'PublicationCard', 'BibtexCard', 'BibFilter'],
+          'Crystal Toolkit',
+          ['CrystalToolkitScene', 'ReactGraphComponent'],
+          'Navigation',
+        ],
       },
     },
   },

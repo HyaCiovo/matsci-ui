@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { TABLE_V2 } from '../periodic-table-data/table-v2';
 import {
   type PeriodicSelectionActions,
-  useOptionalPeriodicSelectionContext,
+  useOptionalPeriodicSelectionActions,
 } from '../SelectableTable/PeriodicSelectionContext';
 import { categoryToClassName } from '../SelectableTable/selection-state';
 import { getPeriodicTableFilterValue } from '../SelectableTable/view-model';
@@ -50,8 +50,7 @@ const performFilter = (key: NonNullable<TableFilterOption['key']>, value: string
   }, {});
 
 export function TableFilter() {
-  const periodicContext = useOptionalPeriodicSelectionContext();
-  const actions = periodicContext?.actions ?? noopActions;
+  const actions = useOptionalPeriodicSelectionActions() ?? noopActions;
   const [filter, setFilter] = useState<{
     topFilter: TableFilterOption;
     lowerFilter: TableFilterOption;

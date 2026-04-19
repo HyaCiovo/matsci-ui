@@ -1,7 +1,7 @@
 import axios from 'axios';
 import clsx from 'clsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FaLockOpen } from 'react-icons/fa';
+import { LockOpen } from 'lucide-react';
 import { Tooltip } from '../../data-display/Tooltip';
 import './OpenAccessButton.css';
 
@@ -78,7 +78,7 @@ export const OpenAccessButton = ({
       className={clsx('mpc-open-access-button', className)}
       data-for={tooltipId}
     >
-      {openAccessUrl ? <FaLockOpen /> : <span className="mpc-open-access-loader" />}
+      {openAccessUrl ? <LockOpen /> : <span className="mpc-open-access-loader" />}
       {!compact ? <span className="ml-1">Open Access</span> : null}
       {compact && tooltipId ? <Tooltip id={tooltipId}>Open Access</Tooltip> : null}
     </a>

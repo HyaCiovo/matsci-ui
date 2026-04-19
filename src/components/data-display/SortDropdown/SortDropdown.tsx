@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useEffect } from 'react';
-import { FaSort, FaSortDown, FaSortUp } from 'react-icons/fa';
+import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 
 export interface DropdownItem {
   label: string;
@@ -70,8 +70,8 @@ export const SortDropdown = ({
           onClick={() => setSortAscending(!sortAscending)}
           aria-label={sortAscending ? 'Sorted in ascending order' : 'Sorted in descending order'}
         >
-          <FaSort className="mr-1" />
-          {sortAscending ? <FaSortUp /> : <FaSortDown />}
+          <ArrowUpDown className="mr-1" />
+          {sortAscending ? <ArrowUp /> : <ArrowDown />}
         </button>
       </div>
       <div className="control">

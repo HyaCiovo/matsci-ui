@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { FaBell } from 'react-icons/fa';
+import { Bell as BellIcon } from 'lucide-react';
 
 interface BellProps {
   className?: string;
@@ -10,7 +10,7 @@ interface BellProps {
 
 export const Bell = ({ className, showBadge, showNumber, badgeNumber }: BellProps) => (
   <span className="notification-bell">
-    <FaBell className={clsx('notification-bell-icon', className)} />
+    <BellIcon className={clsx('notification-bell-icon', className)} />
     {showBadge ? (
       <span className={clsx('notification-badge', { 'has-number': showNumber })}>
         {showNumber ? badgeNumber : null}

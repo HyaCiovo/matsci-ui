@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import './Paginator.css';
 
 export interface PaginatorProps {
@@ -92,7 +92,7 @@ export const Paginator = ({
           aria-hidden={currentPage === 1}
           onClick={() => onChangePage(currentPage - 1)}
         >
-          <FaArrowLeft />
+          <ArrowLeft />
           <span className="ml-1">Previous</span>
         </button>
         {visiblePages.map((page, index) =>
@@ -120,7 +120,7 @@ export const Paginator = ({
           onClick={() => onChangePage(currentPage + 1)}
         >
           <span className="mr-1">Next</span>
-          <FaArrowRight />
+          <ArrowRight />
         </button>
       </nav>
     </div>

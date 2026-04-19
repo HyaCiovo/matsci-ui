@@ -82,6 +82,61 @@ Destined for overrides.scss in mp-web
   top: 1px;
 }
 
+svg.lucide {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: -0.125em;
+  stroke-width: 2;
+  flex-shrink: 0;
+}
+
+.icon > svg.lucide {
+  display: block;
+}
+
+.icon.is-small > svg.lucide {
+  width: 0.875em;
+  height: 0.875em;
+}
+
+.mpc-network-circle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25em;
+  height: 1.25em;
+  border-radius: 9999px;
+  background: #fff;
+  border: 2px solid currentColor;
+}
+
+.mpc-network-circle-icon__glyph {
+  width: 0.75em;
+  height: 0.75em;
+  stroke-width: 2.25;
+}
+
+.mpc-network-circle-icon--success {
+  color: #48c774;
+}
+
+.mpc-network-circle-icon--danger {
+  color: #f14668;
+}
+
+.mpc-network-circle-icon--info {
+  color: #3e8ed0;
+}
+
+.mpc-network-circle-icon--warning {
+  color: #ffb000;
+}
+
+.mpc-network-circle-icon--neutral {
+  color: #7a7a7a;
+}
+
 a.tag {
   color: #3273dc !important;
 }

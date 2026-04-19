@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { type ReactNode, useState } from 'react';
-import { FaAngleDown } from 'react-icons/fa';
+import { ChevronDown } from 'lucide-react';
 import { downloadAs, type DownloadType } from '../../../utils/download';
 
 export interface DownloadDropdownProps {
@@ -45,7 +45,7 @@ export const DownloadDropdown = ({
         >
           <span>{children ?? 'Download'}</span>
           <span className="icon">
-            <FaAngleDown />
+            <ChevronDown />
           </span>
         </button>
       </div>

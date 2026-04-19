@@ -1,4 +1,4 @@
-import { FaTimes } from 'react-icons/fa';
+import { X } from 'lucide-react';
 import { Formula } from '../Formula';
 import { validateFormula } from '../../data-entry/MaterialsInput/utils';
 import { formatPointGroup } from '../SearchUI/utils';
@@ -52,7 +52,7 @@ export const ActiveFilterButtons = ({ filters, onClick }: ActiveFilterButtonsPro
       {filters.map((filter, index) => (
         <div key={`${filter.name}-${index}`} className="mpc-active-filter-button">
           <button type="button" className="button is-small is-rounded" onClick={() => onClick(filter.params)}>
-            <FaTimes />
+            <X />
             <span className="ml-1">
               {filter.name}: {renderFilterValue(filter)}
             </span>

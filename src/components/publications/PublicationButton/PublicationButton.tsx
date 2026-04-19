@@ -1,7 +1,7 @@
 import axios from 'axios';
 import clsx from 'clsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FaBook } from 'react-icons/fa';
+import { BookOpen } from 'lucide-react';
 import { Tooltip } from '../../data-display/Tooltip';
 import './PublicationButton.css';
 import { getJournalAndYear } from '../../../utils/publications';
@@ -112,7 +112,7 @@ export const PublicationButton = ({
       rel={target === '_blank' ? 'noreferrer' : undefined}
       data-for={tooltipId}
     >
-      <FaBook />
+      <BookOpen />
       {!compact ? <span className="mpc-publication-label">{linkLabel || 'Publication'}</span> : null}
       {tooltipId && tooltipText ? (
         <Tooltip id={tooltipId} html>

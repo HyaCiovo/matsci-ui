@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { FaAsterisk } from 'react-icons/fa';
+import { Asterisk } from 'lucide-react';
 import { Markdown } from '../../data-display/Markdown';
 import { Tooltip } from '../../data-display/Tooltip';
 import { PeriodicTableFormulaButtons } from '../PeriodicTableFormulaButtons';
@@ -69,7 +69,7 @@ export const PeriodicTableModeSwitcher = ({
                   data-for="element-wildcard-button"
                 >
                   <span className="mat-symbol">
-                    <FaAsterisk />
+                    <Asterisk />
                   </span>
                 </button>
                 <Tooltip id="element-wildcard-button" place="bottom">

@@ -1,5 +1,5 @@
 import * as Checkbox from '@radix-ui/react-checkbox';
-import { FaCheck } from 'react-icons/fa';
+import { Check } from 'lucide-react';
 
 export interface CheckboxOption {
   label: string;
@@ -30,7 +30,7 @@ export const CheckboxList = ({ options, value = [], onChange }: CheckboxListProp
               }}
             >
               <Checkbox.Indicator>
-                <FaCheck />
+                <Check />
               </Checkbox.Indicator>
             </Checkbox.Root>
             {option.label}
