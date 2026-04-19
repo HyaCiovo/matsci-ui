@@ -1,9 +1,112 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { SearchUIContainer } from '../SearchUIContainer';
 import { SearchUIFilters } from './SearchUIFilters';
 import { useSearchUIContext } from '../SearchUIContextProvider';
 import { FilterType, type FilterGroup } from '../types';
+
+vi.mock('../../../data-entry/MaterialsInput', () => ({
+  MaterialsInputType: {
+    CHEMICAL_SYSTEM: 'chemical_system',
+    ELEMENTS: 'elements',
+    FORMULA: 'formula',
+    MPID: 'mpid',
+  },
+  MaterialsInput: ({ value, onChange }: { value?: string; onChange?: (value: string) => void }) => (
+    <input
+      data-testid="materials-input-search-input"
+      value={value ?? ''}
+      onChange={(event) => onChange?.(event.target.value)}
+    />
+  ),
+}));
+
+vi.mock('../../../data-entry/Select', () => ({
+  Select: ({
+    value,
+    options,
+    placeholder,
+    onChange,
+  }: {
+    value?: string;
+    options: { label: string; value: string }[];
+    placeholder?: string;
+    onChange?: (option: { label: string; value: string } | null) => void;
+  }) => (
+    <select
+      value={value ?? ''}
+      aria-label={placeholder ?? 'Select'}
+      onChange={(event) => {
+        const option = options.find((item) => item.value === event.target.value) ?? null;
+        onChange?.(option);
+      }}
+    >
+      <option value="">Any</option>
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  ),
+}));
+
+vi.mock('../../../data-entry/CheckboxList', () => ({
+  CheckboxList: ({
+    value,
+    options,
+    onChange,
+  }: {
+    value?: string[];
+    options: { label: string; value: string }[];
+    onChange?: (value: string[]) => void;
+  }) => {
+    const current = value ?? [];
+    return (
+      <div>
+        {options.map((option) => (
+          <label key={option.value}>
+            <input
+              type="checkbox"
+              checked={current.includes(option.value)}
+              onChange={(event) => {
+                const nextValues = event.target.checked
+                  ? [...current, option.value]
+                  : current.filter((item) => item !== option.value);
+                onChange?.(nextValues);
+              }}
+            />
+            {option.label}
+          </label>
+        ))}
+      </div>
+    );
+  },
+}));
+
+vi.mock('../../../data-entry/TextInput', () => ({
+  TextInput: ({
+    value,
+    placeholder,
+    debounceTime,
+    onChange,
+  }: {
+    value?: string;
+    placeholder?: string;
+    debounceTime?: number;
+    onChange?: (value: string) => void;
+  }) => (
+    <input
+      value={value ?? ''}
+      placeholder={placeholder}
+      onChange={(event) => {
+        const nextValue = event.target.value;
+        setTimeout(() => {
+          onChange?.(nextValue);
+        }, debounceTime ?? 0);
+      }}
+    />
+  ),
+}));
 
 const filterGroups: FilterGroup[] = [
   {
@@ -56,30 +159,15 @@ const QueryProbe = () => {
 };
 
 describe('SearchUIFilters', () => {
-  beforeAll(() => {
-    Object.defineProperty(HTMLElement.prototype, 'hasPointerCapture', {
-      configurable: true,
-      value: () => false,
-    });
-    Object.defineProperty(HTMLElement.prototype, 'releasePointerCapture', {
-      configurable: true,
-      value: () => undefined,
-    });
-    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
-      configurable: true,
-      value: () => undefined,
-    });
-  });
-
   afterEach(() => {
-    cleanup();
     vi.restoreAllMocks();
+    vi.useRealTimers();
+    window.history.replaceState({}, '', '/');
   });
 
   it('updates query values through filters and resets them', async () => {
-    const user = userEvent.setup();
     render(
-      <SearchUIContainer filterGroups={filterGroups} defaultQuery={{ sort_fields: ['material_id'] }}>
+      <SearchUIContainer filterGroups={filterGroups} defaultQuery={{ _sort_fields: ['material_id'] }}>
         <SearchUIFilters />
         <QueryProbe />
       </SearchUIContainer>
@@ -88,8 +176,9 @@ describe('SearchUIFilters', () => {
     fireEvent.change(screen.getByTestId('materials-input-search-input'), {
       target: { value: 'mp-149' },
     });
-    await user.click(screen.getAllByRole('combobox')[0]);
-    await user.click(await screen.findByText('Cubic'));
+    fireEvent.change(screen.getAllByRole('combobox')[0], {
+      target: { value: 'cubic' },
+    });
     fireEvent.click(screen.getByLabelText('DOS'));
 
     await waitFor(() => {
@@ -102,9 +191,49 @@ describe('SearchUIFilters', () => {
     fireEvent.click(screen.getByTestId('search-ui-reset-button'));
 
     await waitFor(() => {
-      expect(screen.getByTestId('search-ui-query')).toHaveTextContent('sort_fields');
+      expect(screen.getByTestId('search-ui-query')).toHaveTextContent('_sort_fields');
       expect(screen.getByTestId('search-ui-query')).not.toHaveTextContent('material_ids');
       expect(screen.getByTestId('search-ui-active-filters')).toHaveTextContent('0');
     });
+  });
+
+  it('uses container debounce for text filters when filter-level debounce is not provided', async () => {
+    vi.useFakeTimers();
+
+    const textFilterGroups: FilterGroup[] = [
+      {
+        name: 'Keyword',
+        expanded: true,
+        filters: [
+          {
+            name: 'Keyword',
+            type: FilterType.TEXT_INPUT,
+            params: ['keyword'],
+            props: {
+              placeholder: 'Search keyword',
+            },
+          },
+        ],
+      },
+    ];
+
+    render(
+      <SearchUIContainer filterGroups={textFilterGroups} debounce={50} defaultQuery={{ _sort_fields: ['material_id'] }}>
+        <SearchUIFilters />
+        <QueryProbe />
+      </SearchUIContainer>
+    );
+
+    fireEvent.change(screen.getByPlaceholderText('Search keyword'), {
+      target: { value: 'oxide' },
+    });
+
+    expect(screen.getByTestId('search-ui-query')).not.toHaveTextContent('keyword');
+
+    await act(async () => {
+      vi.advanceTimersByTime(50);
+    });
+
+    expect(screen.getByTestId('search-ui-query')).toHaveTextContent('"keyword":"oxide"');
   });
 });

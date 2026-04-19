@@ -13,6 +13,8 @@ export * from './components/data-display/SearchUI/SearchUIDataView';
 export * from './components/data-display/SearchUI/SearchUIGrid';
 export * from './components/data-display/SearchUI/SearchUIFilters';
 export * from './components/data-display/SearchUI/SearchUISearchBar';
+export * from './components/data-display/SearchUI/SearchUISynthesisRecipeCards';
+export * from './components/data-display/SearchUI/searchUIViewsMap';
 export * from './components/data-display/SearchUI/utils';
 export * from './components/data-display/Tooltip';
 export * from './components/data-entry/CheckboxList';

@@ -52,6 +52,7 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
     resetFilters,
     autocompleteFormulaUrl,
     apiKey,
+    debounce,
   } = useSearchUIContext();
   const [groupsByName, setGroupsByName] = useState(() => getGroupsByName(filterGroups, activeFilters));
 
@@ -92,7 +93,7 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
           <TextInput
             value={queryValue ?? ''}
             placeholder={filter.props?.placeholder}
-            debounceTime={filter.props?.debounce ?? 0}
+            debounceTime={filter.props?.debounce ?? debounce}
             onChange={(value) => void setFilterValue(value, queryParam, filter.overrides)}
           />
         );

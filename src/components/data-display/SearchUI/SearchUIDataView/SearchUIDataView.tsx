@@ -1,9 +1,9 @@
 import { FaExclamationTriangle } from 'react-icons/fa';
-import { SearchUIDataTable } from '../SearchUIDataTable';
 import { useSearchUIContext } from '../SearchUIContextProvider';
+import { searchUIViewsMap } from '../searchUIViewsMap';
 
 export const SearchUIDataView = () => {
-  const { error, results } = useSearchUIContext();
+  const { error, results, view } = useSearchUIContext();
 
   if (error) {
     return (
@@ -25,9 +25,11 @@ export const SearchUIDataView = () => {
     );
   }
 
+  const SearchUIViewComponent = searchUIViewsMap[view] ?? searchUIViewsMap.table;
+
   return (
     <div className="mpc-search-ui-data-view">
-      <SearchUIDataTable />
+      {SearchUIViewComponent ? <SearchUIViewComponent /> : null}
     </div>
   );
 };

@@ -284,6 +284,54 @@
 - 切换视图
 - 快速连续修改筛选项
 
+#### 收尾结论
+
+`SearchUI` 已完成迁移收尾，当前可按“主干行为兼容已达成”处理。
+
+#### 已对齐
+
+- legacy query key 与请求协议：
+  - `_sort_fields`
+  - `_limit`
+  - `_skip`
+  - `_fields`
+  - `apiEndpointParams`
+  - `totalKey`
+- URL 行为：
+  - 初始 URL hydrate
+  - `replaceState` 回写
+  - 浏览器 `popstate` 反同步
+- context / hooks：
+  - 扁平 React 18 context
+  - legacy `state + query` 兼容形状
+  - `useSearchUIContextActions()`
+- 交互主链路：
+  - filters
+  - search bar 输入类型回推与 URL 回填
+  - pagination / sorting / secondary sort
+  - `table / synthesis` 视图切换
+  - matscholar 两段式搜索
+- 交付物：
+  - 组件级 stories
+  - 顶层 `SearchUIContainer` 组合 story
+  - `MatscholarAlpha` story
+  - SearchUI 主链路聚焦测试
+
+#### 有意简化
+
+- 旧 `ActiveFilterButtons`、`SortDropdown`、`Paginator` 等子组件未逐个 1:1 恢复，而是以内联或轻量实现承接原有交互语义。
+- `cards` 视图未恢复为主路径，保留 `table / synthesis` 两条当前有效视图。
+- 部分视觉细节因 Radix UI 和新表格壳层替代而与旧仓库存在轻微样式差异。
+
+#### 当前验证基线
+
+- `SearchUIQuery.test.tsx`
+- `SearchUISearchBar.test.tsx`
+- `MatscholarSearchUI.test.tsx`
+- `SearchUIDataView.test.tsx`
+- `SearchUIFilters.test.tsx`
+- `npm run typecheck`
+
 ### 7.8 three.js 晶体场景
 
 #### 目标

@@ -85,10 +85,21 @@ export interface SearchUIInputTypeConfig {
 
 export type SearchUIAllowedInputTypesMap = Partial<Record<string, SearchUIInputTypeConfig>>;
 
-export interface SearchUIContextValue {
+export enum SearchUIViewType {
+  TABLE = 'table',
+  SYNTHESIS = 'synthesis',
+}
+
+export interface SearchUILegacyState {
+  id?: string;
+  className?: string;
   apiEndpoint?: string;
   apiKey?: string;
   autocompleteFormulaUrl?: string;
+  matscholarEndpoint?: string;
+  apiEndpointParams: Record<string, any>;
+  hasSortMenu: boolean;
+  view: SearchUIViewType;
   columns: Column[];
   filterGroups: FilterGroup[];
   activeFilters: ActiveFilter[];
@@ -96,6 +107,55 @@ export interface SearchUIContextValue {
   conditionalRowStyles: ConditionalRowStyle[];
   selectableRows: boolean;
   selectedRows: any[];
+  defaultLimit: number;
+  defaultSkip: number;
+  sortKey: string;
+  skipKey: string;
+  limitKey: string;
+  fieldsKey: string;
+  totalKey: string;
+  sortFields: (string | null | undefined)[];
+  resultsRef: React.RefObject<HTMLDivElement> | null;
+  results: any[];
+  totalResults: number;
+  loading: boolean;
+  error: string | null;
+  debounce: number;
+  searchBarValue: string;
+  disableRichColumnHeaders?: boolean;
+  cardOptions?: any;
+  setProps: (value: any) => any;
+}
+
+export interface SearchUIContextValue {
+  id?: string;
+  className?: string;
+  apiEndpoint?: string;
+  apiKey?: string;
+  autocompleteFormulaUrl?: string;
+  matscholarEndpoint?: string;
+  apiEndpointParams: Record<string, any>;
+  hasSortMenu: boolean;
+  view: SearchUIViewType;
+  columns: Column[];
+  filterGroups: FilterGroup[];
+  activeFilters: ActiveFilter[];
+  resultLabel: string;
+  conditionalRowStyles: ConditionalRowStyle[];
+  selectableRows: boolean;
+  selectedRows: any[];
+  defaultLimit: number;
+  defaultSkip: number;
+  sortKey: string;
+  skipKey: string;
+  limitKey: string;
+  fieldsKey: string;
+  totalKey: string;
+  sortFields: (string | null | undefined)[];
+  resultsRef: React.RefObject<HTMLDivElement> | null;
+  debounce: number;
+  searchBarValue: string;
+  state: SearchUILegacyState;
   query: Record<string, any>;
   results: any[];
   totalResults: number;
@@ -105,24 +165,53 @@ export interface SearchUIContextValue {
   resetSearch: () => void;
   setQuery: (nextQuery: Record<string, any>) => void;
   setSelectedRows: (rows: any[]) => void;
+  setPage: (page: number) => Promise<void>;
+  setResultsPerPage: (pageSize: number) => Promise<void>;
+  setSort: (sortField: string, sortAscending: boolean) => Promise<void>;
+  setSortField: (sortField: string) => Promise<void>;
+  setSortAscending: (sortAscending: boolean) => Promise<void>;
+  setView: (view: SearchUIViewType) => void;
+  setColumns: (columns: Column[]) => void;
+  setResultsRef: (resultsRef: React.RefObject<HTMLDivElement> | null) => void;
   setFilterValue: (value: any, param: string, overrides?: string[]) => Promise<void>;
   setFilterValues: (values: any[], params: string[], overrides?: string[]) => Promise<void>;
+  removeFilter: (param: string) => Promise<void>;
   removeFilters: (params: string[]) => Promise<void>;
   resetFilters: () => Promise<void>;
 }
 
 export interface SearchUIContainerProps {
+  id?: string;
+  className?: string;
   apiEndpoint?: string;
   apiKey?: string;
   autocompleteFormulaUrl?: string;
+  matscholarEndpoint?: string;
+  apiEndpointParams?: Record<string, any>;
   defaultQuery?: Record<string, any>;
   searchOnMount?: boolean;
   columns?: Column[];
   filterGroups?: FilterGroup[];
   resultLabel?: string;
+  hasSortMenu?: boolean;
   conditionalRowStyles?: ConditionalRowStyle[];
   selectableRows?: boolean;
+  selectedRows?: any[];
+  results?: any[];
   initialResults?: any[];
   initialTotalResults?: number;
+  sortFields?: (string | null | undefined)[];
+  sortKey?: string;
+  skipKey?: string;
+  limitKey?: string;
+  fieldsKey?: string;
+  totalKey?: string;
+  defaultLimit?: number;
+  defaultSkip?: number;
+  view?: SearchUIViewType;
+  debounce?: number;
+  disableRichColumnHeaders?: boolean;
+  cardOptions?: any;
+  setProps?: (value: any) => any;
   children?: ReactNode;
 }

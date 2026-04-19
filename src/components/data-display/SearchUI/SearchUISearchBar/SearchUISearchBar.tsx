@@ -30,11 +30,51 @@ const getAllowedInputTypes = (allowedInputTypesMap: SearchUIAllowedInputTypesMap
   return Object.keys(allowedInputTypesMap) as MaterialsInputType[];
 };
 
+const getAllowedFields = (allowedInputTypesMap: SearchUIAllowedInputTypesMap) => {
+  return Array.from(
+    new Set(
+      Object.values(allowedInputTypesMap)
+        .map((config) => config?.field)
+        .filter((field): field is string => Boolean(field))
+    )
+  );
+};
+
+const hasSearchValue = (value: unknown) => {
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+
+  return value !== undefined && value !== null && value !== '';
+};
+
 const mapInputTypeToField = (
   inputType: MaterialsInputType,
   allowedInputTypesMap: SearchUIAllowedInputTypesMap
 ) => {
   return allowedInputTypesMap[inputType]?.field;
+};
+
+const getCurrentInputType = ({
+  query,
+  allowedInputTypes,
+  allowedInputTypesMap,
+}: {
+  query: Record<string, any>;
+  allowedInputTypes: MaterialsInputType[];
+  allowedInputTypesMap: SearchUIAllowedInputTypesMap;
+}) => {
+  const explicitInputType = query._inputType as MaterialsInputType | undefined;
+  if (explicitInputType && allowedInputTypes.includes(explicitInputType)) {
+    return explicitInputType;
+  }
+
+  const inferredInputType = allowedInputTypes.find((inputType) => {
+    const field = mapInputTypeToField(inputType, allowedInputTypesMap);
+    return field ? hasSearchValue(query[field]) : false;
+  });
+
+  return inferredInputType ?? allowedInputTypes[0];
 };
 
 export const SearchUISearchBar = ({
@@ -53,7 +93,12 @@ export const SearchUISearchBar = ({
 }: SearchUISearchBarProps) => {
   const { autocompleteFormulaUrl, apiKey, query, submitSearch, setQuery } = useSearchUIContext();
   const allowedInputTypes = getAllowedInputTypes(allowedInputTypesMap);
-  const currentInputType = (query._inputType as MaterialsInputType) ?? allowedInputTypes[0];
+  const allowedFields = getAllowedFields(allowedInputTypesMap);
+  const currentInputType = getCurrentInputType({
+    query,
+    allowedInputTypes,
+    allowedInputTypesMap,
+  });
   const currentField = currentInputType
     ? mapInputTypeToField(currentInputType, allowedInputTypesMap)
     : undefined;
@@ -66,10 +111,15 @@ export const SearchUISearchBar = ({
       return;
     }
 
-    const nextQuery = {
-      ...query,
-      [targetField]: value,
-    };
+    const nextQuery = { ...query } as Record<string, any>;
+
+    allowedFields.forEach((field) => {
+      if (field !== targetField) {
+        delete nextQuery[field];
+      }
+    });
+
+    nextQuery[targetField] = value;
 
     delete nextQuery._inputType;
     await submitSearch(nextQuery);

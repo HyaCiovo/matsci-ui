@@ -1,6 +1,6 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import axios from 'axios';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { SearchUIContainer } from './SearchUIContainer';
-import { SearchUIFilters } from './SearchUIFilters';
 import { useSearchUIContext } from './SearchUIContextProvider';
 import { FilterType, type FilterGroup } from './types';
 import {
@@ -52,13 +52,28 @@ const filterGroups: FilterGroup[] = [
 ];
 
 const QueryProbe = () => {
-  const { query, activeFilters, setFilterValue } = useSearchUIContext();
+  const { state, query, activeFilters, totalResults, submitSearch, setFilterValue, setPage, setResultsPerPage, setSort } =
+    useSearchUIContext();
   return (
     <>
       <pre data-testid="query-probe">{JSON.stringify(query)}</pre>
+      <pre data-testid="state-probe">{JSON.stringify({ sortKey: state.sortKey, limitKey: state.limitKey, view: state.view })}</pre>
       <div data-testid="active-filter-count">{activeFilters.length}</div>
+      <div data-testid="total-results-probe">{totalResults}</div>
+      <button type="button" data-testid="run-search" onClick={() => void submitSearch()}>
+        Run Search
+      </button>
       <button type="button" data-testid="set-crystal-system" onClick={() => void setFilterValue('cubic', 'crystal_system')}>
         Set Crystal System
+      </button>
+      <button type="button" data-testid="set-page-two" onClick={() => void setPage(2)}>
+        Set Page Two
+      </button>
+      <button type="button" data-testid="set-results-per-page" onClick={() => void setResultsPerPage(30)}>
+        Set Results Per Page
+      </button>
+      <button type="button" data-testid="set-sort-desc" onClick={() => void setSort('material_id', false)}>
+        Set Sort Desc
       </button>
     </>
   );
@@ -92,6 +107,7 @@ describe('SearchUI query utilities', () => {
 
   afterEach(() => {
     cleanup();
+    vi.restoreAllMocks();
     window.history.replaceState({}, '', '/');
   });
 
@@ -99,7 +115,7 @@ describe('SearchUI query utilities', () => {
     const initialized = initFilterGroups(filterGroups);
     expect(initialized[0].filters[1].props?.options?.length).toBeGreaterThan(0);
 
-    const defaultQuery = { sort_fields: ['material_id'] };
+    const defaultQuery = { _sort_fields: ['material_id'] };
     const parsed = parseSearchQuery('?has_props=dos,bandstructure&band_gap_min=1.5', initialized, defaultQuery);
     expect(parsed.has_props).toEqual(['dos', 'bandstructure']);
     expect(parsed.band_gap_min).toBe(1.5);
@@ -132,14 +148,28 @@ describe('SearchUI query utilities', () => {
     expect(processed.crystal_system).toBe('cubic');
     expect(processed.band_gap_min).toBeUndefined();
     expect(processed.band_gap_max).toBe(4.2);
-    expect(processed.sort_fields).toEqual(['material_id']);
+    expect(processed._sort_fields).toEqual(['material_id']);
+
+    const processedSecondarySort = preprocessQueryParams(
+      { _sort_fields: ['band_gap'] },
+      initialized,
+      { _sort_fields: ['band_gap', 'formula_pretty'] }
+    );
+    expect(processedSecondarySort._sort_fields).toEqual(['band_gap', 'formula_pretty']);
+
+    const processedDefaultSecondarySort = preprocessQueryParams(
+      {},
+      initialized,
+      { _sort_fields: [null, 'formula_pretty'] }
+    );
+    expect(processedDefaultSecondarySort._sort_fields).toEqual(['formula_pretty']);
   });
 
   it('hydrates query from URL and writes updated filters back to the URL', async () => {
     window.history.replaceState({}, '', '/materials?material_ids=mp-149&has_props=dos');
 
     render(
-      <SearchUIContainer filterGroups={filterGroups} defaultQuery={{ sort_fields: ['material_id'] }}>
+      <SearchUIContainer filterGroups={filterGroups} defaultQuery={{ _sort_fields: ['material_id'] }}>
         <QueryProbe />
       </SearchUIContainer>
     );
@@ -150,13 +180,118 @@ describe('SearchUI query utilities', () => {
       expect(screen.getByTestId('active-filter-count')).toHaveTextContent('2');
     });
 
-    screen.getByTestId('set-crystal-system').click();
+    fireEvent.click(screen.getByTestId('set-crystal-system'));
 
     await waitFor(() => {
       expect(screen.getByTestId('query-probe')).toHaveTextContent('crystal_system');
       expect(window.location.search).toContain('material_ids=mp-149');
       expect(window.location.search).toContain('has_props=dos');
       expect(window.location.search).toContain('crystal_system=cubic');
+    });
+  });
+
+  it('syncs query from browser navigation events and exposes legacy state shape', async () => {
+    render(
+      <SearchUIContainer filterGroups={filterGroups} defaultQuery={{ _sort_fields: ['material_id'] }}>
+        <QueryProbe />
+      </SearchUIContainer>
+    );
+
+    expect(screen.getByTestId('state-probe')).toHaveTextContent('"sortKey":"_sort_fields"');
+    expect(screen.getByTestId('state-probe')).toHaveTextContent('"limitKey":"_limit"');
+
+    window.history.pushState({}, '', '/materials?material_ids=mp-13');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('query-probe')).toHaveTextContent('"material_ids":"mp-13"');
+      expect(screen.getByTestId('active-filter-count')).toHaveTextContent('1');
+    });
+  });
+
+  it('restores legacy paging and sorting actions with default query omission semantics', async () => {
+    render(
+      <SearchUIContainer filterGroups={filterGroups} defaultQuery={{ _sort_fields: ['material_id'] }} defaultLimit={15}>
+        <QueryProbe />
+      </SearchUIContainer>
+    );
+
+    expect(screen.getByTestId('query-probe')).toHaveTextContent('"_sort_fields":["material_id"]');
+    expect(screen.getByTestId('query-probe')).toHaveTextContent('"_limit":15');
+    expect(screen.getByTestId('query-probe')).toHaveTextContent('"_skip":0');
+
+    fireEvent.click(screen.getByTestId('set-page-two'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('query-probe')).toHaveTextContent('"_skip":15');
+      expect(window.location.search).toContain('_skip=15');
+    });
+
+    fireEvent.click(screen.getByTestId('set-results-per-page'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('query-probe')).toHaveTextContent('"_limit":30');
+      expect(screen.getByTestId('query-probe')).not.toHaveTextContent('"_skip":15');
+      expect(window.location.search).toContain('_limit=30');
+      expect(window.location.search).not.toContain('_skip=15');
+    });
+
+    fireEvent.click(screen.getByTestId('set-sort-desc'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('query-probe')).toHaveTextContent('"-material_id"');
+      expect(window.location.search).toContain('_sort_fields=-material_id');
+    });
+  });
+
+  it('uses legacy request params, fields key, and total key when submitting a search', async () => {
+    const getSpy = vi.spyOn(axios, 'get').mockResolvedValue({
+      data: {
+        data: [{ material_id: 'mp-149' }],
+        meta: {
+          custom_total: 42,
+        },
+      },
+    });
+
+    render(
+      <SearchUIContainer
+        apiEndpoint="https://example.com/materials"
+        apiEndpointParams={{ project: 'materials' }}
+        searchOnMount={false}
+        columns={[
+          { title: 'Material ID', selector: 'material_id' },
+          { title: 'Formula', selector: 'formula_pretty' },
+        ]}
+        totalKey="meta.custom_total"
+      >
+        <QueryProbe />
+      </SearchUIContainer>
+    );
+
+    fireEvent.click(screen.getByTestId('run-search'));
+
+    await waitFor(() => {
+      expect(getSpy).toHaveBeenCalled();
+    });
+
+    const requestConfig = getSpy.mock.calls[0]?.[1];
+    const serializedParams =
+      typeof requestConfig?.paramsSerializer === 'function'
+        ? requestConfig.paramsSerializer(requestConfig.params)
+        : '';
+    expect(requestConfig?.params).toMatchObject({
+      _sort_fields: ['material_id'],
+      _limit: 15,
+      _skip: 0,
+      project: 'materials',
+      _fields: ['material_id', 'formula_pretty'],
+    });
+    expect(serializedParams).toContain('_fields=material_id%2Cformula_pretty');
+
+    await waitFor(() => {
+      expect(screen.getByTestId('query-probe')).toHaveTextContent('"_sort_fields"');
+      expect(screen.getByTestId('total-results-probe')).toHaveTextContent('42');
     });
   });
 });

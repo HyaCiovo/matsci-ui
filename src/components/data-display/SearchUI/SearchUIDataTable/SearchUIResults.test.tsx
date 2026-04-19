@@ -1,7 +1,8 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { SearchUIContainer } from '../SearchUIContainer';
 import { SearchUIDataHeader } from '../SearchUIDataHeader';
 import { SearchUIDataTable } from './SearchUIDataTable';
+import { useSearchUIContext } from '../SearchUIContextProvider';
 import { ColumnFormat, type Column } from '../types';
 
 const results = [
@@ -38,6 +39,11 @@ const columns: Column[] = [
   },
 ];
 
+const QueryProbe = () => {
+  const { query } = useSearchUIContext();
+  return <pre data-testid="search-ui-query-probe">{JSON.stringify(query)}</pre>;
+};
+
 describe('SearchUI result views', () => {
   afterEach(() => {
     cleanup();
@@ -53,7 +59,7 @@ describe('SearchUI result views', () => {
     );
 
     expect(screen.getByTestId('data-table-title')).toHaveTextContent('All 2 materials');
-    expect(screen.getByText('Showing 2 of 2')).toBeInTheDocument();
+    expect(screen.getByText('Showing 1-2 of 2')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'mp-149' })).toBeInTheDocument();
     expect(screen.getByText('trigonal')).toBeInTheDocument();
   });
@@ -73,5 +79,47 @@ describe('SearchUI result views', () => {
 
     fireEvent.click(screen.getByRole('link', { name: 'mp-13' }));
     expect(screen.getByRole('link', { name: 'mp-13' })).toBeInTheDocument();
+  });
+
+  it('updates query and rendered rows through header sort and pagination controls', async () => {
+    render(
+      <SearchUIContainer
+        columns={columns}
+        resultLabel="material"
+        initialResults={results}
+        initialTotalResults={2}
+        defaultLimit={1}
+        sortFields={['material_id']}
+      >
+        <SearchUIDataHeader />
+        <QueryProbe />
+        <SearchUIDataTable />
+      </SearchUIContainer>
+    );
+
+    expect(screen.getByText('Showing 1-1 of 2')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'mp-13' })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'mp-149' })).not.toBeInTheDocument();
+
+    fireEvent.change(screen.getByTestId('search-ui-sort-direction'), {
+      target: { value: 'desc' },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('link', { name: 'mp-149' })).toBeInTheDocument();
+      expect(screen.queryByRole('link', { name: 'mp-13' })).not.toBeInTheDocument();
+      expect(screen.getByTestId('search-ui-query-probe')).toHaveTextContent('"-material_id"');
+    });
+
+    fireEvent.change(screen.getByTestId('search-ui-results-per-page'), {
+      target: { value: '10' },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Showing 1-2 of 2')).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'mp-149' })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'mp-13' })).toBeInTheDocument();
+      expect(screen.getByTestId('search-ui-query-probe')).toHaveTextContent('"_limit":10');
+    });
   });
 });

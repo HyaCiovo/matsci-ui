@@ -163,7 +163,8 @@ const getFilterForParam = (paramName: string, filterGroups: FilterGroup[]) => {
 export const preprocessQueryParams = (
   query: Record<string, any>,
   filterGroups: FilterGroup[],
-  defaultQuery: Record<string, any>
+  defaultQuery: Record<string, any>,
+  sortParamKey = Object.keys(defaultQuery).find((key) => Array.isArray(defaultQuery[key])) ?? '_sort_fields'
 ) => {
   const processedQuery: Record<string, any> = {};
 
@@ -190,6 +191,12 @@ export const preprocessQueryParams = (
           }
           processedQuery[paramName] = paramValue;
       }
+    } else if (paramName === sortParamKey && query[sortParamKey]) {
+      const processedSortFields = [...query[sortParamKey]];
+      if (defaultQuery[sortParamKey] && defaultQuery[sortParamKey].length === 2) {
+        processedSortFields.push(defaultQuery[sortParamKey][1]);
+      }
+      processedQuery[sortParamKey] = processedSortFields;
     } else {
       processedQuery[paramName] = query[paramName];
     }
@@ -197,7 +204,15 @@ export const preprocessQueryParams = (
 
   Object.keys(defaultQuery).forEach((defaultParam) => {
     if (query[defaultParam] === undefined) {
-      processedQuery[defaultParam] = defaultQuery[defaultParam];
+      if (
+        defaultParam === sortParamKey &&
+        defaultQuery[sortParamKey]?.[1] &&
+        (defaultQuery[sortParamKey]?.[0] === null || defaultQuery[sortParamKey]?.[0] === undefined)
+      ) {
+        processedQuery[defaultParam] = [defaultQuery[defaultParam][1]];
+      } else {
+        processedQuery[defaultParam] = defaultQuery[defaultParam];
+      }
     }
   });
 

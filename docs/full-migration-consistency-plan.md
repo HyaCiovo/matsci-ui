@@ -182,6 +182,12 @@ This is the highest-risk migration area because it combines:
 
 `SearchUI` is the second largest migration surface.
 
+### Status
+
+- completed for migration closeout
+- core behavior parity is now treated as achieved
+- remaining differences are documented as intentional simplifications or visual drift
+
 ### Current Surface In New Repo
 
 - container
@@ -192,6 +198,9 @@ This is the highest-risk migration area because it combines:
 - filters
 - grid
 - search bar
+- matscholar container/provider compatibility layer
+- synthesis cards view
+- top-level composed stories
 
 ### Legacy Features To Compare Explicitly
 
@@ -201,18 +210,44 @@ This is the highest-risk migration area because it combines:
 - container behavior under empty/loading/error states
 - any old matscholar-specific variants that may need explicit scope decisions
 
-### Remaining Tasks
+### Closeout Summary
 
-- do a one-to-one comparison between old and new `SearchUI` context shape
-- verify utility functions and query serialization rules
-- re-evaluate missing tests after periodic-table stabilization
-- identify any old-only subcomponents intentionally left out
+- query/request protocol parity restored:
+  - legacy `_sort_fields`, `_limit`, `_skip`, `_fields`
+  - `apiEndpointParams`
+  - `totalKey`
+  - comma-style array serialization
+- container/context compatibility restored:
+  - legacy `state + query` shape
+  - `useSearchUIContextActions()`
+  - browser `popstate` synchronization
+  - container-level `debounce`
+- view and result behavior restored:
+  - `table / synthesis` switching
+  - local pagination and sorting parity
+  - matscholar two-step search flow with cached `material_ids`
+- composed stories now exist for:
+  - primary SearchUI container flow
+  - matscholar alpha flow
+- focused regression tests now cover:
+  - query serialization and URL hydration
+  - filters
+  - search bar value/type inference
+  - matscholar flow
+  - data view switching
+
+### Intentional Simplifications
+
+- header controls use lighter React 18 implementations instead of fully recreating every old subcomponent
+- `cards` view remains out of scope because it was not an active primary path in the legacy mapping
+- visual details may differ where Radix UI or new table primitives replaced old third-party widgets
 
 ### Acceptance Criteria
 
 - same query -> same outgoing request params
 - same user interaction -> same context transitions
 - stories cover empty/loading/populated states
+- SearchUI closeout is documented and no known migration-blocking gaps remain
 
 ## Workstream C: Data Display Components
 
@@ -397,9 +432,8 @@ This stream has the highest integration and dependency risk.
 
 ### Phase 2: Lock SearchUI
 
-- compare container/context/query behavior one-by-one
-- restore any missing edge handling
-- verify story parity for primary result states
+- completed
+- preserve as maintenance-only unless new consuming apps surface undocumented edge cases
 
 ### Phase 3: Resolve Missing Core Components
 

@@ -85,7 +85,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Basic: Story = {
   render: () => (
-    <SearchUIContainer filterGroups={filterGroups} defaultQuery={{ sort_fields: ['material_id'] }}>
+    <SearchUIContainer filterGroups={filterGroups} defaultQuery={{ _sort_fields: ['material_id'] }}>
       <SearchUIFilters />
     </SearchUIContainer>
   ),
