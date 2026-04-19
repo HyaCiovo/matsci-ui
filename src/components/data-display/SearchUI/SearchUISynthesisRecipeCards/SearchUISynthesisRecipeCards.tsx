@@ -1,4 +1,6 @@
 import { useMemo } from 'react';
+import { Paginator } from '../../Paginator';
+import { SynthesisRecipeCard } from '../../SynthesisRecipeCard';
 import { useSearchUIContext } from '../SearchUIContextProvider';
 
 const getCardTitle = (result: Record<string, any>) =>
@@ -25,6 +27,8 @@ export const SearchUISynthesisRecipeCards = () => {
   const currentPage = Math.floor(currentSkip / currentLimit) + 1;
   const totalPages = Math.max(1, Math.ceil(totalResults / currentLimit));
   const visibleResults = useMemo(() => results.slice(0, currentLimit), [currentLimit, results]);
+  const isSynthesisRecipe = (result: Record<string, any>) =>
+    Boolean(result?.target?.material_formula && Array.isArray(result?.precursors) && Array.isArray(result?.operations));
 
   return (
     <div data-testid="mpc-synthesis-recipe-cards" className="mpc-synthesis-recipe-cards">
@@ -50,6 +54,10 @@ export const SearchUISynthesisRecipeCards = () => {
 
       <div className="mpc-synthesis-recipe-cards-container" style={{ display: 'grid', gap: '1rem' }}>
         {visibleResults.map((result, index) => {
+          if (isSynthesisRecipe(result)) {
+            return <SynthesisRecipeCard key={`${result.doi ?? 'recipe'}-${index}`} data={result} />;
+          }
+
           const title = getCardTitle(result);
           const subtitle = getCardSubtitle(result);
           return (
@@ -62,24 +70,13 @@ export const SearchUISynthesisRecipeCards = () => {
         })}
       </div>
 
-      <div className="is-flex is-justify-content-space-between is-align-items-center mt-4">
-        <button
-          type="button"
-          className="button is-small"
-          disabled={currentPage <= 1}
-          onClick={() => void setPage(currentPage - 1)}
-        >
-          Previous
-        </button>
-        <button
-          type="button"
-          className="button is-small"
-          disabled={currentPage >= totalPages}
-          onClick={() => void setPage(currentPage + 1)}
-        >
-          Next
-        </button>
-      </div>
+      <Paginator
+        rowCount={totalResults}
+        rowsPerPage={currentLimit}
+        currentPage={currentPage}
+        onChangePage={(page) => void setPage(page)}
+        onChangeRowsPerPage={(rowsPerPage) => void setResultsPerPage(rowsPerPage)}
+      />
     </div>
   );
 };

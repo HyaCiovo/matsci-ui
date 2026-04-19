@@ -101,9 +101,7 @@ describe('SearchUI result views', () => {
     expect(screen.getByRole('link', { name: 'mp-13' })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'mp-149' })).not.toBeInTheDocument();
 
-    fireEvent.change(screen.getByTestId('search-ui-sort-direction'), {
-      target: { value: 'desc' },
-    });
+    fireEvent.click(screen.getByTestId('sort-button'));
 
     await waitFor(() => {
       expect(screen.getByRole('link', { name: 'mp-149' })).toBeInTheDocument();

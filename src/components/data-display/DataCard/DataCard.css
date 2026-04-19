@@ -1,0 +1,20 @@
+.mpc-data-card {
+  display: inline-flex;
+}
+
+.mpc-data-card-right {
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.mpc-data-card-right-bottom > * {
+  column-gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  row-gap: 1rem;
+  flex: 1;
+}
+
+.mpc-data-card-right-bottom p:first-child {
+  font-weight: 600;
+}

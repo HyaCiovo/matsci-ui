@@ -1,0 +1,9 @@
+.mpc-enlarge-button {
+  float: right;
+  z-index: 2;
+}
+
+.mpc-enlargeable.modal.is-active .modal-content.is-large {
+  max-height: 95vh;
+  width: 95vw;
+}

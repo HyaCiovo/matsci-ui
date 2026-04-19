@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { FaTable, FaThLarge } from 'react-icons/fa';
+import { ActiveFilterButtons } from '../../ActiveFilterButtons';
+import { SortDropdown } from '../../SortDropdown';
 import { useSearchUIContext } from '../SearchUIContextProvider';
 import { SearchUIViewType } from '../types';
 
@@ -75,47 +77,22 @@ export const SearchUIDataHeader = ({ exportDataButton }: SearchUIDataHeaderProps
         </div>
         <div className="is-flex is-align-items-center" style={{ gap: '0.75rem', flexWrap: 'wrap' }}>
           {activeFilters.length > 0 ? (
-            <div className="is-flex is-align-items-center" style={{ gap: '0.5rem', flexWrap: 'wrap' }}>
-              {activeFilters.map((filter) => (
-                <button
-                  key={filter.params.join('-')}
-                  type="button"
-                  className="button is-small"
-                  onClick={() => void removeFilters(filter.params)}
-                >
-                  {filter.name}: {Array.isArray(filter.value) ? filter.value.join(', ') : String(filter.value)} x
-                </button>
-              ))}
-            </div>
+            <ActiveFilterButtons filters={activeFilters} onClick={(params) => void removeFilters(params)} />
           ) : null}
           {hasSortMenu ? (
-            <>
-              <label className="is-size-7">
-                <span className="mr-2">Sort by</span>
-                <select
-                  value={primarySortField}
-                  onChange={(event) => void setSortField(event.target.value)}
-                  data-testid="search-ui-sort-field"
-                >
-                  {columns.filter((column) => !column.hidden).map((column) => (
-                    <option key={column.selector} value={column.selector}>
-                      {String(column.title)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="is-size-7">
-                <span className="mr-2">Direction</span>
-                <select
-                  value={sortAscending ? 'asc' : 'desc'}
-                  onChange={(event) => void setSortAscending(event.target.value === 'asc')}
-                  data-testid="search-ui-sort-direction"
-                >
-                  <option value="asc">Ascending</option>
-                  <option value="desc">Descending</option>
-                </select>
-              </label>
-            </>
+            <SortDropdown
+              sortValues={results}
+              sortOptions={columns
+                .filter((column) => !column.hidden)
+                .map((column) => ({
+                  label: String(column.title),
+                  value: column.selector,
+                }))}
+              sortField={primarySortField}
+              setSortField={(value) => void setSortField(String(value))}
+              sortAscending={sortAscending}
+              setSortAscending={(value) => void setSortAscending(Boolean(value))}
+            />
           ) : null}
           <label className="is-size-7">
             <span className="mr-2">Results per page</span>

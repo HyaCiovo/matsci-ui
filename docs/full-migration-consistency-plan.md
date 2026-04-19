@@ -16,8 +16,19 @@ The target is not only "feature parity", but also:
 
 ### Already Migrated Or Reworked
 
+- `ActiveFilterButtons`
+- `ArrayChips`
+- `ButtonBar`
+- `DataBlock`
+- `DataCard`
+- `DownloadDropdown`
+- `Enlargeable`
 - `Formula`
+- `JsonView`
 - `Markdown`
+- `Paginator`
+- `SortDropdown`
+- `SynthesisRecipeCard`
 - `Tooltip`
 - `DownloadButton`
 - `Drawer`
@@ -53,8 +64,7 @@ The target is not only "feature parity", but also:
 ### Still Not Fully Matched
 
 - true observable/store behavior from the old periodic table stack
-- full parity for all SearchUI edge behaviors
-- full parity for all old-only components that do not yet exist in the new repo
+- final scope decision and migration for remaining non-SearchUI legacy areas
 - exhaustive story/state coverage parity
 - full interaction parity for some composite components under heavy integration paths
 
@@ -251,43 +261,59 @@ This is the highest-risk migration area because it combines:
 
 ## Workstream C: Data Display Components
 
+### Status
+
+- substantially complete for the public data-display surface
+- SearchUI-adjacent display components have been restored and reconnected
+- remaining gaps are now mostly intentional deferrals or lower-priority leaf areas
+
 ### Components Already Present
-
-- `DataTable`
-- `DownloadButton`
-- `Drawer`
-- `Formula`
-- `Markdown`
-- `Modal`
-- `Tooltip`
-
-### Legacy Components Missing In New Repo
 
 - `ActiveFilterButtons`
 - `ArrayChips`
 - `ButtonBar`
 - `DataBlock`
 - `DataCard`
+- `DataTable`
+- `DownloadButton`
 - `DownloadDropdown`
+- `Drawer`
 - `Enlargeable`
+- `Formula`
 - `JsonView`
+- `Markdown`
+- `Modal`
 - `Paginator`
 - `SortDropdown`
 - `SynthesisRecipeCard`
+- `Tooltip`
 
-### Decision Needed For Each Missing Component
+### Components Reconnected To Current Flows
 
-For every old-only component, choose one of:
+- `ActiveFilterButtons` now powers `SearchUIDataHeader`
+- `DataBlock` is now used by `SynthesisRecipeCard`
+- `SynthesisRecipeCard` now powers the recipe branch of `SearchUISynthesisRecipeCards`
+- `Paginator` now powers synthesis paging
+- `SortDropdown` now powers SearchUI header sorting
+- `ArrayChips` now backs `ColumnFormat.ARRAY` rendering in the shared table formatter
 
-1. migrate fully
-2. intentionally defer
-3. intentionally drop with documented rationale
-4. replace with an existing React 18 component already covering the same need
+### Remaining Gaps / Decisions
+
+- `SearchUIDataCards` remains intentionally out of scope for now
+- any future additions should justify consumer need before implementation
+- visual parity may still differ slightly where Bulma-era widgets were replaced with lighter React 18 implementations
+
+### Closeout Summary
+
+- public old-only data-display component gaps have been closed
+- each newly restored component now includes package export coverage
+- most restored components also include stories and focused tests
+- remaining work in this area is maintenance-level unless a consuming app identifies a missing edge case
 
 ### Acceptance Criteria
 
-- a written scope decision exists for every old-only component
-- no silent omissions remain
+- public data-display surface is either migrated or intentionally deferred with rationale
+- no known migration-blocking omissions remain in the data-display package surface
 
 ## Workstream D: Data Entry Components
 
@@ -396,17 +422,8 @@ This stream has the highest integration and dependency risk.
 ### Legacy Components Not Yet In New Repo
 
 - data-display:
-  - `ActiveFilterButtons`
-  - `ArrayChips`
-  - `ButtonBar`
-  - `DataBlock`
-  - `DataCard`
-  - `DownloadDropdown`
-  - `Enlargeable`
-  - `JsonView`
-  - `Paginator`
-  - `SortDropdown`
-  - `SynthesisRecipeCard`
+  - no known package-level public component gaps
+  - `SearchUIDataCards` remains intentionally deferred outside the current public core path
 - data-entry:
   - `RangeSlider`
   - `MaterialsInputBox`
@@ -437,8 +454,9 @@ This stream has the highest integration and dependency risk.
 
 ### Phase 3: Resolve Missing Core Components
 
-- explicit scope decisions for missing data-display/data-entry/navigation components
-- migrate highest leverage missing components
+- data-display public surface: largely completed
+- next focus should shift to explicit scope decisions for remaining data-entry and navigation components
+- only reopen data-display when a consuming app needs currently deferred behavior
 
 ### Phase 4: Publications
 
@@ -538,10 +556,15 @@ Keep this as a lightweight append-only section in future updates or in a separat
 
 ## Immediate Next Recommended Slice
 
-The next highest-value slice is:
+The next highest-value slice is now:
 
-1. further thin `SelectableTableView`
-2. centralize element view-model derivation
-3. re-check `MaterialsInput` behavior against old stories using the new selection hooks
+1. decide whether `RangeSlider` and `MaterialsInputBox` should return as public data-entry surface
+2. make an explicit scope call on navigation legacy components:
+   - `Navbar`
+   - `NavbarDropdown`
+   - `Sidebar`
+   - `Scrollspy`
+   - `NotificationDropdown`
+3. update the migration plan after each approved scope decision rather than reopening completed SearchUI/data-display work without a concrete consumer need
 
-That gives the best payoff before moving into broader SearchUI parity and missing component streams.
+That gives the best payoff after SearchUI closeout and the current data-display restoration wave.

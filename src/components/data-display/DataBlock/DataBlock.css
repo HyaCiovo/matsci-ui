@@ -1,0 +1,67 @@
+.mpc-data-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mpc-data-block-header,
+.mpc-data-block-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.mpc-data-block-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.mpc-data-block-item .heading {
+  color: #6b7280;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.mpc-data-block-item .value {
+  min-width: 0;
+  word-break: break-word;
+}
+
+.mpc-data-block-icon-container {
+  margin-left: auto;
+}
+
+.mpc-data-block-icon {
+  align-items: center;
+  cursor: help;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.mpc-data-block-expandable {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mpc-data-block-trigger {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.5rem;
+}
+
+.mpc-data-block-trigger button {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.mpc-data-block-footer {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding-top: 0.75rem;
+}

@@ -39,6 +39,9 @@ export interface ActiveFilter {
   name: string;
   value: any;
   params: string[];
+  defaultValue?: any;
+  conversionFactor?: number;
+  searchParams?: string[];
   isSearchBarField?: boolean;
 }
 
@@ -47,6 +50,7 @@ export enum ColumnFormat {
   SIGNIFICANT_FIGURES = 'SIGNIFICANT_FIGURES',
   FORMULA = 'FORMULA',
   LINK = 'LINK',
+  ARRAY = 'ARRAY',
   BOOLEAN = 'BOOLEAN',
   RADIO = 'RADIO',
 }
@@ -59,6 +63,8 @@ export interface Column {
   units?: string;
   conversionFactor?: number;
   hidden?: boolean;
+  isTop?: boolean;
+  isBottom?: boolean;
   omit?: boolean;
   width?: string;
   minWidth?: string;
