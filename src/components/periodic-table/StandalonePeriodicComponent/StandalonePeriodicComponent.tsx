@@ -63,12 +63,17 @@ export function StandalonePeriodicComponent({
     <div className="mp-element-wrapper" style={style}>
       <button
         type="button"
-        className={clsx('mat-element', displayMode, categoryToClassName(detail.category, detail.symbol), {
+        className={clsx(
+          'mat-element',
+          displayMode,
+          categoryToClassName(detail.category ?? detail.category_2, detail.symbol),
+          {
           enabled: cl.enabled,
           disabled: cl.disabled,
           hidden: cl.hidden,
           'mat-group': !!detail.hasGroup,
-        })}
+          }
+        )}
         onClick={() => (!detail.hasGroup ? onElementClicked(detail) : undefined)}
         onMouseOver={() => onElementMouseOver(detail)}
         onMouseLeave={() => onElementMouseLeave(detail)}

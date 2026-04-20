@@ -37,7 +37,7 @@ function PeriodicTableElementButtonImpl({
     return (
       <div
         className={clsx('mat-element', 'hidden', {
-          [categoryToClassName(detail?.category, element)]: true,
+          [categoryToClassName(detail?.category ?? detail?.category_2, element)]: true,
           'mat-group': !!detail?.hasGroup,
         })}
         style={{
@@ -61,7 +61,7 @@ function PeriodicTableElementButtonImpl({
         enabled,
         disabled,
         'default-disabled': defaultDisabled,
-        [categoryToClassName(detail?.category, element)]: true,
+        [categoryToClassName(detail?.category ?? detail?.category_2, element)]: true,
         'mat-group': !!detail?.hasGroup,
       })}
       onClick={() => {

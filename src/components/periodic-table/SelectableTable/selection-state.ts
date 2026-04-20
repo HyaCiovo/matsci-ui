@@ -1,4 +1,5 @@
 import { VALID_ELEMENTS } from '../../data-entry/MaterialsInput/utils';
+import { LEGACY_CLASS_MAP } from '../periodic-table-data/legacyClassMap';
 import type { MatElement } from '../periodic-table-data/table-v2';
 import {
   TableSelectionStyle,
@@ -55,6 +56,10 @@ export const DEFAULT_DISABLED_ELEMENTS: Record<string, boolean> = {
 };
 
 export const categoryToClassName = (category?: string, symbol?: string) => {
+  if (symbol && LEGACY_CLASS_MAP[symbol]) {
+    return LEGACY_CLASS_MAP[symbol];
+  }
+
   if (symbol === 'La-Lu') {
     return 'element-lanthanoid-transitional-metal';
   }

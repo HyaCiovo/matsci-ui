@@ -23,9 +23,13 @@ export function PeriodicTableSpacer({ plugin, disabled = false }: PeriodicTableS
       <div className="element-description mpc-selectable-table-detail">
         {detailedElement ? (
           <div
-            className={clsx('mat-element detailed', categoryToClassName(detailedElement.category, detailedElement.symbol), {
-              'mat-group': detailedElement.hasGroup,
-            })}
+            className={clsx(
+              'mat-element detailed',
+              categoryToClassName(detailedElement.category ?? detailedElement.category_2, detailedElement.symbol),
+              {
+                'mat-group': detailedElement.hasGroup,
+              }
+            )}
           >
             <div className="main-panel">
               <div className="mat-number">{detailedElement.number}</div>

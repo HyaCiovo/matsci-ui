@@ -39,7 +39,7 @@ const performFilter = (key: NonNullable<TableFilterOption['key']>, value: string
   TABLE_V2.reduce<Record<string, boolean>>((accumulator, element) => {
     const elementValue =
       key === 'category'
-        ? categoryToClassName(element.category, element.symbol)
+        ? categoryToClassName(element.category ?? element.category_2, element.symbol)
         : getPeriodicTableFilterValue(element, key);
 
     if (elementValue !== value) {
