@@ -1,7 +1,9 @@
 import clsx from 'clsx';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { type ReactNode, useState } from 'react';
 import { FaAngleDown } from 'react-icons/fa';
 import { downloadAs, type DownloadType } from '../../../utils/download';
+import '../../navigation/Dropdown/Dropdown.css';
 
 export interface DownloadDropdownProps {
   id?: string;
@@ -30,37 +32,47 @@ export const DownloadDropdown = ({
     setOpen(false);
   };
 
-  return (
-    <div
-      id={id}
-      data-testid="mpc-download-dropdown"
-      className={clsx('mpc-download-dropdown dropdown', className, { 'is-active': open })}
+  const triggerButton = (
+    <button
+      type="button"
+      className={clsx('button', buttonClassName)}
+      title={tooltip}
     >
-      <div className="dropdown-trigger">
-        <button
-          type="button"
-          className={clsx('button', buttonClassName)}
-          data-tooltip={tooltip}
-          onClick={() => setOpen((current) => !current)}
-        >
-          <span>{children ?? 'Download'}</span>
-          <span className="icon">
-            <FaAngleDown />
-          </span>
-        </button>
-      </div>
-      {open ? (
-        <div className="dropdown-menu">
-          <div className="dropdown-content">
-            <button type="button" className="dropdown-item" onClick={() => handleDownload('json')}>
-              JSON
-            </button>
-            <button type="button" className="dropdown-item" onClick={() => handleDownload('csv')}>
-              CSV
-            </button>
-          </div>
+      <span>{children ?? 'Download'}</span>
+      <span className="icon">
+        <FaAngleDown />
+      </span>
+    </button>
+  );
+
+  return (
+    <DropdownMenu.Root modal={false} open={open} onOpenChange={setOpen}>
+      <div
+        id={id}
+        data-testid="mpc-download-dropdown"
+        className={clsx('mpc-download-dropdown dropdown', className, { 'is-active': open })}
+      >
+        <div className="dropdown-trigger">
+          <DropdownMenu.Trigger asChild>{triggerButton}</DropdownMenu.Trigger>
         </div>
-      ) : null}
-    </div>
+      </div>
+      <DropdownMenu.Portal>
+        <DropdownMenu.Content
+          className="mpc-dropdown-menu dropdown-menu"
+          align="end"
+          sideOffset={4}
+          collisionPadding={8}
+        >
+          <div className="mpc-dropdown-content dropdown-content">
+            <DropdownMenu.Item className="dropdown-item" onSelect={() => handleDownload('json')}>
+              JSON
+            </DropdownMenu.Item>
+            <DropdownMenu.Item className="dropdown-item" onSelect={() => handleDownload('csv')}>
+              CSV
+            </DropdownMenu.Item>
+          </div>
+        </DropdownMenu.Content>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Root>
   );
 };

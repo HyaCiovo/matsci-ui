@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { FaToggleOff, FaToggleOn } from 'react-icons/fa';
+import { type CSSProperties } from 'react';
 import './Switch.css';
 
 export interface SwitchProps {
@@ -10,6 +10,9 @@ export interface SwitchProps {
   hasLabel?: boolean;
   truthyLabel?: string;
   falsyLabel?: string;
+  iconColor?: string;
+  truthyColor?: string;
+  falsyColor?: string;
   onChange?: (value: boolean) => void;
 }
 
@@ -21,9 +24,16 @@ export const Switch = ({
   hasLabel = false,
   truthyLabel = 'On',
   falsyLabel = 'Off',
+  iconColor,
+  truthyColor,
+  falsyColor,
   onChange,
 }: SwitchProps) => {
   const nextLabel = value ? truthyLabel : falsyLabel;
+  const currentIconColor = value ? truthyColor ?? iconColor ?? '#3273dc' : falsyColor ?? iconColor ?? '#b5b5b5';
+  const style = {
+    '--mpc-switch-icon-color': currentIconColor,
+  } as CSSProperties;
 
   const handleClick = () => {
     const nextValue = !value;
@@ -32,7 +42,7 @@ export const Switch = ({
   };
 
   return (
-    <div id={id} className={clsx('mpc-switch', className)}>
+    <div id={id} className={clsx('mpc-switch', className)} style={style}>
       <button
         type="button"
         className="mpc-switch-button"
@@ -40,7 +50,9 @@ export const Switch = ({
         aria-label={nextLabel}
         onClick={handleClick}
       >
-        {value ? <FaToggleOn className="mpc-switch-icon" /> : <FaToggleOff className="mpc-switch-icon" />}
+        <span className={clsx('mpc-switch-visual', { 'is-active': value })} aria-hidden="true">
+          <span className="mpc-switch-thumb" />
+        </span>
       </button>
       {hasLabel ? <span className="mpc-switch-label">{nextLabel}</span> : null}
     </div>

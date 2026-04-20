@@ -567,126 +567,140 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
           <>
             <ButtonBar>
               {props.showExpandButton && (
-                <button
-                  className="button"
-                  onClick={() => {
-                    hideTooltip();
-                    setExpanded(!expanded);
-                  }}
-                 
-                  data-tooltip-id={`expand-${tooltipId}`}
+                <Tooltip
+                  place="left"
+                  trigger={
+                    <button
+                      className="button"
+                      onClick={() => {
+                        hideTooltip();
+                        setExpanded(!expanded);
+                      }}
+                    >
+                      {expanded ? <FaCompress /> : <FaExpand />}
+                    </button>
+                  }
                 >
-                  {expanded ? <FaCompress /> : <FaExpand />}
-                  <Tooltip id={`expand-${tooltipId}`} place="left">
-                    {expanded ? 'Exit full screen' : 'Full screen'}
-                  </Tooltip>
-                </button>
+                  {expanded ? 'Exit full screen' : 'Full screen'}
+                </Tooltip>
               )}
               {hasSettingsPanel && (
-                <button
-                  className="button"
-                  onClick={() => setShowSettingsPanel(!showSettingsPanel)}
-                 
-                  data-tooltip-id={`settings-${tooltipId}`}
+                <Tooltip
+                  place="left"
+                  trigger={
+                    <button
+                      className="button"
+                      onClick={() => setShowSettingsPanel(!showSettingsPanel)}
+                    >
+                      <FaCogs />
+                    </button>
+                  }
                 >
-                  <FaCogs />
-                  <Tooltip id={`settings-${tooltipId}`} place="left">
-                    {showSettingsPanel ? 'Hide settings' : 'Show settings'}
-                  </Tooltip>
-                </button>
+                  {showSettingsPanel ? 'Hide settings' : 'Show settings'}
+                </Tooltip>
               )}
               {props.showPositionButton && (
-                <button
-                  className="button"
-                  onClick={() => {
-                    if (
-                      originalCameraState?.position &&
-                      originalCameraState.quaternion &&
-                      originalCameraState.zoom
-                    ) {
-                      scene.current!.updateCamera(
-                        originalCameraState.position,
-                        originalCameraState.quaternion,
-                        originalCameraState.zoom
-                      );
-                    }
-                  }}
-                 
-                  data-tooltip-id={`position-${tooltipId}`}
+                <Tooltip
+                  place="left"
+                  trigger={
+                    <button
+                      className="button"
+                      onClick={() => {
+                        if (
+                          originalCameraState?.position &&
+                          originalCameraState.quaternion &&
+                          originalCameraState.zoom
+                        ) {
+                          scene.current!.updateCamera(
+                            originalCameraState.position,
+                            originalCameraState.quaternion,
+                            originalCameraState.zoom
+                          );
+                        }
+                      }}
+                    >
+                      <FaUndo />
+                    </button>
+                  }
                 >
-                  <FaUndo />
-                  <Tooltip id={`position-${tooltipId}`} place="left">
-                    Return to original position
-                  </Tooltip>
-                </button>
+                  Return to original position
+                </Tooltip>
               )}
               {props.showImageButton && (
-                <div onClick={() => hideTooltip()} data-tooltip-id={`image-${tooltipId}`}>
-                  <Dropdown triggerIcon={<FaCamera />} isArrowless isRight>
-                    <p
-                      key={`image-export-png`}
-                      className="dropdown-item"
-                      onClick={() => {
-                        requestImage(ExportType.png, scene.current!);
-                      }}
-                    >
-                      {'Screenshot (PNG)'}
-                    </p>
+                <Tooltip
+                  place="left"
+                  trigger={
+                    <div onClick={() => hideTooltip()}>
+                      <Dropdown triggerIcon={<FaCamera />} isArrowless isRight>
+                        <p
+                          key={`image-export-png`}
+                          className="dropdown-item"
+                          onClick={() => {
+                            requestImage(ExportType.png, scene.current!);
+                          }}
+                        >
+                          {'Screenshot (PNG)'}
+                        </p>
 
-                    <p
-                      key={`image-export-gltf`}
-                      className="dropdown-item"
-                      onClick={() => {
-                        requestImage(ExportType.gltf, scene.current!);
-                      }}
-                    >
-                      {'3D Model (GLTF)'}
-                    </p>
+                        <p
+                          key={`image-export-gltf`}
+                          className="dropdown-item"
+                          onClick={() => {
+                            requestImage(ExportType.gltf, scene.current!);
+                          }}
+                        >
+                          {'3D Model (GLTF)'}
+                        </p>
 
-                    <p
-                      key={`image-export-glb`}
-                      className="dropdown-item"
-                      onClick={() => {
-                        requestImage(ExportType.glb, scene.current!);
-                      }}
-                    >
-                      {'3D Model (GLB)'}
-                    </p>
+                        <p
+                          key={`image-export-glb`}
+                          className="dropdown-item"
+                          onClick={() => {
+                            requestImage(ExportType.glb, scene.current!);
+                          }}
+                        >
+                          {'3D Model (GLB)'}
+                        </p>
 
-                    <p
-                      key={`image-export-udz`}
-                      className="dropdown-item"
-                      onClick={() => {
-                        requestImage(ExportType.usdz, scene.current!);
-                      }}
-                    >
-                      {'Augmented Reality (iOS devices only)'}
-                    </p>
-                  </Dropdown>
-                  <Tooltip id={`image-${tooltipId}`} place="left">
-                    Download visualization as
-                  </Tooltip>
-                </div>
+                        <p
+                          key={`image-export-udz`}
+                          className="dropdown-item"
+                          onClick={() => {
+                            requestImage(ExportType.usdz, scene.current!);
+                          }}
+                        >
+                          {'Augmented Reality (iOS devices only)'}
+                        </p>
+                      </Dropdown>
+                    </div>
+                  }
+                >
+                  Download visualization as
+                </Tooltip>
               )}
               {props.showExportButton && (
-                <div onClick={() => hideTooltip()} data-tooltip-id={`export-${tooltipId}`}>
-                  <Dropdown triggerIcon={<FaFileExport />} isArrowless isRight>
-                    {props.fileOptions?.map((option, i) => (
-                      <p
-                        key={`file-export-${i}`}
-                        className="dropdown-item"
-                        onClick={() => {
-                          props.setProps({ fileType: option, fileTimestamp: Date.now() });
-                        }}
-                      >
-                        {option}
-                      </p>
-                    ))}
-                  </Dropdown>
-                  <Tooltip id={`export-${tooltipId}`} place="left">
-                    Export as
-                  </Tooltip>
-                </div>
+                <Tooltip
+                  place="left"
+                  trigger={
+                    <div onClick={() => hideTooltip()}>
+                      <Dropdown triggerIcon={<FaFileExport />} isArrowless isRight>
+                        {props.fileOptions?.map((option, i) => (
+                          <p
+                            key={`file-export-${i}`}
+                            className="dropdown-item"
+                            onClick={() => {
+                              props.setProps({ fileType: option, fileTimestamp: Date.now() });
+                            }}
+                          >
+                            {option}
+                          </p>
+                        ))}
+                      </Dropdown>
+                    </div>
+                  }
+                >
+                  Export as
+                </Tooltip>
               )}
             </ButtonBar>
           </>

@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { Dropdown } from '../../navigation/Dropdown';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import './Paginator.css';
 
@@ -23,19 +24,19 @@ const getPageCount = (rowCount: number, rowsPerPage: number) => {
 };
 
 const getVisiblePages = (currentPage: number, pageCount: number) => {
-  if (pageCount <= 6) {
+  if (pageCount <= 3) {
     return Array.from({ length: pageCount }, (_, index) => index + 1);
   }
 
-  if (currentPage < 4) {
-    return [1, 2, 3, 4, 'ellipsis-start', pageCount] as const;
+  if (currentPage <= 2) {
+    return [1, 2, 3] as const;
   }
 
-  if (currentPage > pageCount - 3) {
-    return [1, 'ellipsis-end', pageCount - 3, pageCount - 2, pageCount - 1, pageCount] as const;
+  if (currentPage >= pageCount - 1) {
+    return [pageCount - 2, pageCount - 1, pageCount] as const;
   }
 
-  return [1, 'ellipsis-end', currentPage - 1, currentPage, currentPage + 1, 'ellipsis-start', pageCount] as const;
+  return [currentPage - 1, currentPage, currentPage + 1] as const;
 };
 
 export const Paginator = ({
@@ -44,47 +45,52 @@ export const Paginator = ({
   onChangePage,
   onChangeRowsPerPage,
   currentPage,
+  isTop = false,
   className,
 }: PaginatorProps) => {
   const pageCount = getPageCount(rowCount, rowsPerPage);
   const visiblePages = getVisiblePages(currentPage, pageCount);
+  const resultsPerPageOptions = [10, 15, 30, 50, 75];
+  const jumpToPageOptions = Array.from({ length: pageCount }, (_, index) => index + 1);
 
   return (
     <div data-testid="mpc-paginator" className={clsx('mpc-paginator', className)}>
       <div className="mpc-paginator-controls">
-        <label className="is-size-7 mr-3">
-          <span className="mr-2">Jump to</span>
-          <div className="select is-small">
-            <select
-              data-testid="mpc-jump-to-page-menu"
-              value={currentPage}
-              onChange={(event) => onChangePage(Number(event.target.value))}
+        <Dropdown
+          className="mpc-paginator-dropdown"
+          triggerLabel="Jump to"
+          triggerClassName="button is-small"
+          isUp={!isTop}
+        >
+          {jumpToPageOptions.map((page) => (
+            <button
+              key={page}
+              type="button"
+              className={clsx('dropdown-item', { 'is-active': page === currentPage })}
+              onClick={() => onChangePage(page)}
             >
-              {Array.from({ length: pageCount }, (_, index) => index + 1).map((page) => (
-                <option key={page} value={page}>
-                  {page}
-                </option>
-              ))}
-            </select>
-          </div>
-        </label>
+              {page}
+            </button>
+          ))}
+        </Dropdown>
         {onChangeRowsPerPage ? (
-          <label className="is-size-7">
-            <span className="mr-2">Rows per page</span>
-            <div className="select is-small">
-              <select
-                data-testid="results-per-page-menu"
-                value={rowsPerPage}
-                onChange={(event) => onChangeRowsPerPage(Number(event.target.value))}
+          <Dropdown
+            className="mpc-paginator-dropdown"
+            triggerLabel={`${rowsPerPage} / page`}
+            triggerClassName="button is-small"
+            isUp={!isTop}
+          >
+            {resultsPerPageOptions.map((value) => (
+              <button
+                key={value}
+                type="button"
+                className={clsx('dropdown-item', { 'is-active': value === rowsPerPage })}
+                onClick={() => onChangeRowsPerPage(Number(value))}
               >
-                {RESULTS_PER_PAGE_OPTIONS.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </label>
+                {value}
+              </button>
+            ))}
+          </Dropdown>
         ) : null}
       </div>
 
@@ -108,23 +114,17 @@ export const Paginator = ({
           <FaArrowRight />
         </button>
         <ul className="pagination-list">
-          {visiblePages.map((page, index) =>
-            typeof page === 'number' ? (
-              <li key={page}>
-                <a
-                  className={clsx('pagination-link', { 'is-current': page === currentPage })}
-                  aria-label={page === currentPage ? `Go to page ${page}` : `Page ${page}`}
-                  onClick={() => onChangePage(page)}
-                >
-                  {page.toLocaleString()}
-                </a>
-              </li>
-            ) : (
-              <li key={`${page}-${index}`}>
-                <span className="pagination-ellipsis">&hellip;</span>
-              </li>
-            )
-          )}
+          {visiblePages.map((page) => (
+            <li key={page}>
+              <a
+                className={clsx('pagination-link', { 'is-current': page === currentPage })}
+                aria-label={page === currentPage ? `Go to page ${page}` : `Page ${page}`}
+                onClick={() => onChangePage(page)}
+              >
+                {page.toLocaleString()}
+              </a>
+            </li>
+          ))}
         </ul>
       </nav>
     </div>

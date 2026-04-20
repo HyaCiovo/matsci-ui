@@ -2,8 +2,10 @@ import ReactMarkdown from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
+import remarkHighlight from 'remark-highlight.js';
 import remarkMath from 'remark-math';
 import 'katex/dist/katex.min.css';
+import 'highlight.js/styles/github-dark.css';
 
 export interface MarkdownProps {
   id?: string;
@@ -60,7 +62,10 @@ export const Markdown = ({
       style={style}
       data-dash-is-loading={loading_state?.is_loading || undefined}
     >
-      <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeSlug, rehypeKatex]}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm, remarkMath, remarkHighlight as any]}
+        rehypePlugins={[rehypeSlug, rehypeKatex]}
+      >
         {markdown}
       </ReactMarkdown>
     </div>

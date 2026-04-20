@@ -9,24 +9,19 @@ export default {
 };
 
 const Template: StoryFn<React.PropsWithChildren<TooltipProps>> = (args) => (
-  <>
-    <button className="button" data-tooltip-id={args.id}>
-      Tooltip Trigger
-    </button>
-    <Tooltip {...args} />
-  </>
+  <Tooltip
+    {...args}
+    trigger={
+      <button className="button" type="button">
+        Tooltip Trigger
+      </button>
+    }
+  />
 );
 
 export const Basic = Template.bind({});
 Basic.args = {
   id: 'Tooltip 1',
-  children: 'This is a solid tooltip'
-};
-
-export const Floating = Template.bind({});
-Floating.args = {
-  id: 'Tooltip 2',
-  effect: 'float',
   delayShow: 0,
-  children: 'This is a floating tooltip'
+  children: 'This is a tooltip'
 };

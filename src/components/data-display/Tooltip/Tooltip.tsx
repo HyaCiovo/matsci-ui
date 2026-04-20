@@ -1,13 +1,6 @@
 import clsx from 'clsx';
-import {
-  autoUpdate,
-  flip,
-  FloatingPortal,
-  offset as floatingOffset,
-  shift,
-  useFloating,
-} from '@floating-ui/react';
-import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react';
+import * as TooltipPrimitive from '@radix-ui/react-tooltip';
+import { type CSSProperties, type ReactElement, type ReactNode, useEffect, useState } from 'react';
 import './Tooltip.css';
 
 export type TooltipPlace = 'top' | 'right' | 'bottom' | 'left';
@@ -17,6 +10,7 @@ export interface TooltipProps {
   id?: string;
   setProps?: (value: any) => any;
   children?: ReactNode;
+  trigger?: ReactElement;
   place?: TooltipPlace;
   effect?: TooltipEffect;
   event?: string;
@@ -36,126 +30,40 @@ export interface TooltipProps {
 
 const resolveOffset = (value?: TooltipProps['offset']) => {
   if (!value) {
-    return 8;
+    return 6;
   }
 
-  return (value.top ?? 0) - (value.bottom ?? 0) + (value.right ?? 0) - (value.left ?? 0) + 8;
+  return (value.top ?? 0) - (value.bottom ?? 0) + (value.right ?? 0) - (value.left ?? 0) + 6;
+};
+
+const renderContent = (children: ReactNode, multiline: boolean, html: boolean) => {
+  const content = multiline ? (
+    <div style={{ maxWidth: '200px', whiteSpace: 'normal' }}>{children}</div>
+  ) : (
+    children
+  );
+
+  const style = html ? undefined : ({ whiteSpace: multiline ? 'normal' : 'nowrap' } satisfies CSSProperties);
+
+  return { content, style };
 };
 
 export const Tooltip = ({
-  id,
+  trigger,
   children,
   place = 'top',
-  event,
-  eventOff,
-  globalEventOff,
   offset,
   multiline = true,
   className,
   html = false,
-  delayHide = 0,
-  delayShow = 350,
+  delayShow = 0,
   border = false,
   disable = false,
   scrollHide = true,
   clickable = false,
 }: TooltipProps) => {
   const [open, setOpen] = useState(false);
-  const [referenceEl, setReferenceEl] = useState<HTMLElement | null>(null);
-  const showTimeoutRef = useRef<number>();
-  const hideTimeoutRef = useRef<number>();
-
-  const { refs, floatingStyles } = useFloating({
-    placement: place,
-    open,
-    whileElementsMounted: autoUpdate,
-    middleware: [floatingOffset(resolveOffset(offset)), flip(), shift({ padding: 8 })],
-  });
-
-  useEffect(() => {
-    if (referenceEl) {
-      refs.setReference(referenceEl);
-    }
-  }, [referenceEl, refs]);
-
-  useEffect(() => {
-    if (!id || disable) {
-      return;
-    }
-
-    const triggers = Array.from(document.querySelectorAll<HTMLElement>(`[data-tooltip-id="${id}"]`));
-
-    const clearTimers = () => {
-      if (showTimeoutRef.current) {
-        window.clearTimeout(showTimeoutRef.current);
-      }
-      if (hideTimeoutRef.current) {
-        window.clearTimeout(hideTimeoutRef.current);
-      }
-    };
-
-    const show = (target: HTMLElement) => {
-      clearTimers();
-      showTimeoutRef.current = window.setTimeout(() => {
-        setReferenceEl(target);
-        setOpen(true);
-      }, delayShow);
-    };
-
-    const hide = () => {
-      clearTimers();
-      hideTimeoutRef.current = window.setTimeout(() => setOpen(false), delayHide);
-    };
-
-    const handleMouseEnter = (triggerEvent: Event) => show(triggerEvent.currentTarget as HTMLElement);
-    const handleFocus = (triggerEvent: Event) => show(triggerEvent.currentTarget as HTMLElement);
-    const handleCustomShow = (triggerEvent: Event) => show(triggerEvent.currentTarget as HTMLElement);
-    const handleCustomHide = () => hide();
-    const handleGlobalHide = () => setOpen(false);
-
-    triggers.forEach((trigger) => {
-      if (event) {
-        trigger.addEventListener(event, handleCustomShow);
-      } else {
-        trigger.addEventListener('mouseenter', handleMouseEnter);
-        trigger.addEventListener('mouseleave', hide);
-        trigger.addEventListener('focus', handleFocus);
-        trigger.addEventListener('blur', hide);
-      }
-
-      if (eventOff) {
-        trigger.addEventListener(eventOff, handleCustomHide);
-      }
-    });
-
-    if (globalEventOff) {
-      document.addEventListener(globalEventOff, handleGlobalHide);
-      window.addEventListener(globalEventOff, handleGlobalHide);
-    }
-
-    return () => {
-      clearTimers();
-      triggers.forEach((trigger) => {
-        if (event) {
-          trigger.removeEventListener(event, handleCustomShow);
-        } else {
-          trigger.removeEventListener('mouseenter', handleMouseEnter);
-          trigger.removeEventListener('mouseleave', hide);
-          trigger.removeEventListener('focus', handleFocus);
-          trigger.removeEventListener('blur', hide);
-        }
-
-        if (eventOff) {
-          trigger.removeEventListener(eventOff, handleCustomHide);
-        }
-      });
-
-      if (globalEventOff) {
-        document.removeEventListener(globalEventOff, handleGlobalHide);
-        window.removeEventListener(globalEventOff, handleGlobalHide);
-      }
-    };
-  }, [delayHide, delayShow, disable, event, eventOff, globalEventOff, id]);
+  const { content, style } = renderContent(children, multiline, html);
 
   useEffect(() => {
     if (!open || !scrollHide) {
@@ -167,32 +75,37 @@ export const Tooltip = ({
     return () => window.removeEventListener('scroll', hide, true);
   }, [open, scrollHide]);
 
-  if (!id || disable || !open || !referenceEl) {
+  if (!trigger) {
     return null;
   }
 
-  const content = multiline ? (
-    <div style={{ maxWidth: '200px', whiteSpace: 'normal' }}>{children}</div>
-  ) : (
-    children
-  );
-
-  const style = html ? undefined : ({ whiteSpace: multiline ? 'normal' : 'nowrap' } satisfies CSSProperties);
+  if (disable) {
+    return trigger;
+  }
 
   return (
-    <FloatingPortal>
-      <div
-        ref={refs.setFloating}
-        role="tooltip"
-        style={{ ...floatingStyles, ...style }}
-        className={clsx('mpc-tooltip', className)}
-        data-border={border}
-        data-clickable={clickable}
-        onMouseEnter={clickable ? () => setOpen(true) : undefined}
-        onMouseLeave={clickable ? () => setOpen(false) : undefined}
-      >
-        {content}
-      </div>
-    </FloatingPortal>
+    <TooltipPrimitive.Provider
+      delayDuration={delayShow}
+      skipDelayDuration={0}
+      disableHoverableContent={!clickable}
+    >
+      <TooltipPrimitive.Root open={open} onOpenChange={setOpen}>
+        <TooltipPrimitive.Trigger asChild>{trigger}</TooltipPrimitive.Trigger>
+        <TooltipPrimitive.Portal>
+          <TooltipPrimitive.Content
+            side={place}
+            sideOffset={resolveOffset(offset)}
+            collisionPadding={8}
+            className={clsx('mpc-tooltip', className)}
+            data-border={border}
+            data-clickable={clickable}
+            style={style}
+          >
+            {content}
+            <TooltipPrimitive.Arrow className="mpc-tooltip-arrow" width={8} height={4} />
+          </TooltipPrimitive.Content>
+        </TooltipPrimitive.Portal>
+      </TooltipPrimitive.Root>
+    </TooltipPrimitive.Provider>
   );
 };

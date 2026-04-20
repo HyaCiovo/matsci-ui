@@ -1,7 +1,8 @@
 import clsx from 'clsx';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { FaAngleDown, FaSort, FaSortDown, FaSortUp } from 'react-icons/fa';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import '../../navigation/Dropdown/Dropdown.css';
 
 export interface DropdownItem {
   label: string;
@@ -49,6 +50,7 @@ export const SortDropdown = ({
   setSortAscending,
   sortFn = defaultSort,
 }: SortDropdownProps) => {
+  const [open, setOpen] = useState(false);
   const resolvedSortField = sortField ?? sortOptions[0]?.value ?? '';
   const selectedOption = sortOptions.find((option) => option.value === resolvedSortField);
 
@@ -76,8 +78,8 @@ export const SortDropdown = ({
         </button>
       </div>
       <div className="control">
-        <DropdownMenu.Root modal={false}>
-          <div className="dropdown is-active is-right">
+        <DropdownMenu.Root modal={false} open={open} onOpenChange={setOpen}>
+          <div className={clsx('dropdown is-right', { 'is-active': open })}>
             <div className="dropdown-trigger">
               <DropdownMenu.Trigger asChild>
                 <button type="button" className="button">
@@ -89,8 +91,13 @@ export const SortDropdown = ({
               </DropdownMenu.Trigger>
             </div>
             <DropdownMenu.Portal>
-              <DropdownMenu.Content className="dropdown-menu" align="end" sideOffset={4}>
-                <div className="dropdown-content">
+              <DropdownMenu.Content
+                className="mpc-dropdown-menu dropdown-menu"
+                align="end"
+                sideOffset={4}
+                collisionPadding={8}
+              >
+                <div className="mpc-dropdown-content dropdown-content">
                   {sortOptions.map((option) => (
                     <DropdownMenu.Item
                       key={option.value}

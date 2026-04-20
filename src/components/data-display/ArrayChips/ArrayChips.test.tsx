@@ -15,4 +15,11 @@ describe('ArrayChips', () => {
     expect(screen.getByTestId('formula')).toHaveTextContent('LiFePO4');
     expect(screen.getByRole('link', { name: 'mp-149' })).toHaveAttribute('href', 'https://example.com/mp-149');
   });
+
+  it('does not treat plain strings as formulas', () => {
+    render(<ArrayChips chips={['AA']} />);
+
+    expect(screen.getByText('AA')).toBeInTheDocument();
+    expect(screen.queryByTestId('formula')).not.toBeInTheDocument();
+  });
 });

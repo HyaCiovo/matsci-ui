@@ -169,61 +169,70 @@ export const MaterialsInputBox = ({
 
       {helpItems ? (
         <div className="control">
-          <button
-            data-testid="materials-input-help-button"
-            type="button"
-            className={clsx('button input-help-button', {
-              'has-text-grey-light': !showInputHelp,
-              'has-text-link': showInputHelp,
-            })}
-            onClick={onHelpToggle}
-            data-tooltip-id={helpTooltipId}
+          <Tooltip
+            place="bottom"
+            trigger={
+              <button
+                data-testid="materials-input-help-button"
+                type="button"
+                className={clsx('button input-help-button', {
+                  'has-text-grey-light': !showInputHelp,
+                  'has-text-link': showInputHelp,
+                })}
+                onClick={onHelpToggle}
+              >
+                <FaQuestionCircle />
+              </button>
+            }
           >
-            <FaQuestionCircle />
-            <Tooltip id={helpTooltipId} place="bottom">
-              {showInputHelp ? 'Hide examples' : 'Show examples'}
-            </Tooltip>
-          </button>
+            {showInputHelp ? 'Hide examples' : 'Show examples'}
+          </Tooltip>
         </div>
       ) : null}
 
       {error ? (
         <div className="control">
-          <button
-            data-testid="materials-input-error"
-            type="button"
-            className={clsx('mpc-materials-input-error button', {
-              'has-tooltip-active': errorTipStayActive,
-            })}
-            onMouseOver={onErrorMouseOver}
-            data-tooltip-id={errorTooltipId}
+          <Tooltip
+            place="bottom"
+            trigger={
+              <button
+                data-testid="materials-input-error"
+                type="button"
+                className={clsx('mpc-materials-input-error button', {
+                  'has-tooltip-active': errorTipStayActive,
+                })}
+                onMouseOver={onErrorMouseOver}
+              >
+                <FaExclamationTriangle />
+              </button>
+            }
           >
-            <FaExclamationTriangle />
-            <Tooltip id={errorTooltipId} place="bottom">
-              {error}
-            </Tooltip>
-          </button>
+            {error}
+          </Tooltip>
         </div>
       ) : null}
 
       {periodicTableMode === 'toggle' && hasPeriodicTable ? (
         <div className="control">
-          <button
-            data-testid="materials-input-toggle-button"
-            type="button"
-            className="button has-oversized-icon is-size-2"
-            onClick={onPeriodicToggle}
-            data-tooltip-id={periodicToggleTooltipId}
+          <Tooltip
+            place="bottom"
+            trigger={
+              <button
+                data-testid="materials-input-toggle-button"
+                type="button"
+                className="button has-oversized-icon is-size-2"
+                onClick={onPeriodicToggle}
+              >
+                <i
+                  className={clsx('icon-fontastic-periodic-table-squares', {
+                    'is-active': showPeriodicTable,
+                  })}
+                />
+              </button>
+            }
           >
-            <i
-              className={clsx('icon-fontastic-periodic-table-squares', {
-                'is-active': showPeriodicTable,
-              })}
-            />
-            <Tooltip id={periodicToggleTooltipId} place="bottom">
-              {showPeriodicTable ? 'Hide Periodic Table' : 'Show Periodic Table'}
-            </Tooltip>
-          </button>
+            {showPeriodicTable ? 'Hide Periodic Table' : 'Show Periodic Table'}
+          </Tooltip>
         </div>
       ) : null}
 

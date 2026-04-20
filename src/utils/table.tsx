@@ -94,13 +94,18 @@ export const formatColumnValue = (column: Column, row: any) => {
       const falsyClass = options.falsyClass ?? '';
       const truthyValue = options.truthyValue;
       const cleanValue = truthyValue !== undefined ? rawValue === truthyValue : rawValue;
-      const tooltipId = column.cellTooltip ? `${column.selector}-${row?._index ?? row?.material_id ?? 'cell'}` : undefined;
 
       return (
-        <span className="boolean-cell-wrapper" data-tooltip-id={tooltipId}>
-          <i className={clsx({ [truthyClass]: cleanValue, [falsyClass]: !cleanValue })}></i>
-          {tooltipId && column.cellTooltip ? <Tooltip id={tooltipId}>{column.cellTooltip}</Tooltip> : null}
-        </span>
+        <Tooltip
+          disable={!column.cellTooltip}
+          trigger={
+            <span className="boolean-cell-wrapper">
+              <i className={clsx({ [truthyClass]: cleanValue, [falsyClass]: !cleanValue })}></i>
+            </span>
+          }
+        >
+          {column.cellTooltip}
+        </Tooltip>
       );
     }
     case ColumnFormat.SPACEGROUP_SYMBOL: {
@@ -137,7 +142,8 @@ export const formatColumnValue = (column: Column, row: any) => {
           chipLinks={options.arrayLinksKey ? row?.[options.arrayLinksKey] : undefined}
           chipTooltips={options.arrayTooltipsKey ? row?.[options.arrayTooltipsKey] : undefined}
           chipLinksTarget={options.arrayLinksTarget}
-          showDownloadIcon={options.showDownloadIcon}
+          chipType={options.arrayChipType}
+          showDownloadIcon={options.arrayLinksShowDownload ?? options.showDownloadIcon}
         />
       );
     }

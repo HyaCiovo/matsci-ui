@@ -59,23 +59,23 @@ export const PeriodicTableModeSwitcher = ({
           <>
             <div className="pt-spacer" />
             {!props.hideWildcardButton ? (
-              <>
-                <button
-                  type="button"
-                  className="pt-wildcard-button mat-element has-tooltip-bottom"
-                  onClick={() => props.onFormulaButtonClick('-*')}
-                  title="Wildcard element"
-                 
-                  data-tooltip-id="element-wildcard-button"
-                >
-                  <span className="mat-symbol">
-                    <FaAsterisk />
-                  </span>
-                </button>
-                <Tooltip id="element-wildcard-button" place="bottom">
+              <Tooltip
+                place="bottom"
+                trigger={
+                  <button
+                    type="button"
+                    className="pt-wildcard-button mat-element has-tooltip-bottom"
+                    onClick={() => props.onFormulaButtonClick('-*')}
+                    title="Wildcard element"
+                  >
+                    <span className="mat-symbol">
+                      <FaAsterisk />
+                    </span>
+                  </button>
+                }
+              >
                   Wildcard element
-                </Tooltip>
-              </>
+              </Tooltip>
             ) : null}
             <div className="pt-description">
               {props.chemicalSystemSelectHelpText ? (

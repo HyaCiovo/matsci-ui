@@ -61,4 +61,28 @@ describe('DataBlock', () => {
     fireEvent.click(screen.getByText('See less'));
     expect(screen.queryByText('Silicon entry')).not.toBeInTheDocument();
   });
+
+  it('supports old array download link options in datablock arrays', () => {
+    render(
+      <DataBlock
+        data={{
+          tables: ['AA'],
+          tablesLinks: ['https://example.com/file.csv'],
+        }}
+        columns={[
+          {
+            title: 'Tables',
+            selector: 'tables',
+            formatType: ColumnFormat.ARRAY,
+            formatOptions: {
+              arrayLinksKey: 'tablesLinks',
+              arrayLinksShowDownload: true,
+            },
+          },
+        ]}
+      />
+    );
+
+    expect(screen.getByRole('link', { name: /AA/i })).toBeInTheDocument();
+  });
 });

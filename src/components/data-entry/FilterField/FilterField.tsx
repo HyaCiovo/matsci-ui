@@ -17,20 +17,23 @@ export interface FilterFieldProps extends PropsWithChildren {
 }
 
 export const FilterField = ({ dois = [], ...props }: FilterFieldProps) => {
-  const tooltipId = props.id ? `filter_${props.id}` : undefined;
-
   const innerLabel = (
-    <span
-      className={clsx({
-        'tooltip-label': props.tooltip,
-      })}
-      data-tooltip-id={tooltipId}
+    <Tooltip
+      disable={!props.tooltip}
+      trigger={
+        <span
+          className={clsx({
+            'tooltip-label': props.tooltip,
+          })}
+        >
+          {props.label}
+          {props.units ? <span className="mpc-units"> ({props.units})</span> : null}
+          {props.active ? <FaRegTimesCircle className="ml-2 filter-cancel-button" /> : null}
+        </span>
+      }
     >
-      {props.label}
-      {props.units ? <span className="mpc-units"> ({props.units})</span> : null}
-      {props.active ? <FaRegTimesCircle className="ml-2 filter-cancel-button" /> : null}
-      {props.tooltip && tooltipId ? <Tooltip id={tooltipId}>{props.tooltip}</Tooltip> : null}
-    </span>
+      {props.tooltip}
+    </Tooltip>
   );
 
   return (

@@ -41,8 +41,6 @@ export const PublicationButton = ({
   const [tooltipText, setTooltipText] = useState<string | undefined>();
   const didFetchRef = useRef(false);
 
-  const tooltipId = useMemo(() => (doi ? `publication-tooltip-${encodeURIComponent(doi)}` : undefined), [doi]);
-
   useEffect(() => {
     setUrl(urlProp ?? (doiProp ? `https://doi.org/${doiProp}` : undefined));
     setLinkLabel(children);
@@ -103,22 +101,24 @@ export const PublicationButton = ({
   }
 
   return (
-    <a
-      data-testid="publication-button"
-      id={id}
-      className={clsx('mpc-publication-button', className)}
-      href={url}
-      target={target}
-      rel={target === '_blank' ? 'noreferrer' : undefined}
-      data-tooltip-id={tooltipId}
+    <Tooltip
+      disable={!tooltipText}
+      html
+      trigger={
+        <a
+          data-testid="publication-button"
+          id={id}
+          className={clsx('mpc-publication-button', className)}
+          href={url}
+          target={target}
+          rel={target === '_blank' ? 'noreferrer' : undefined}
+        >
+          <FaBook />
+          {!compact ? <span className="ml-1">{linkLabel || 'Publication'}</span> : null}
+        </a>
+      }
     >
-      <FaBook />
-      {!compact ? <span className="ml-1">{linkLabel || 'Publication'}</span> : null}
-      {tooltipId && tooltipText ? (
-        <Tooltip id={tooltipId} html>
-          <span dangerouslySetInnerHTML={{ __html: tooltipText }} />
-        </Tooltip>
-      ) : null}
-    </a>
+      <span dangerouslySetInnerHTML={{ __html: tooltipText ?? '' }} />
+    </Tooltip>
   );
 };

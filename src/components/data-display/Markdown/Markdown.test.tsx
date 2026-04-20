@@ -24,4 +24,12 @@ describe('Markdown', () => {
     render(<Markdown>{`# A Heading`}</Markdown>);
     expect(screen.getByRole('heading', { name: 'A Heading' })).toHaveAttribute('id', 'a-heading');
   });
+
+  it('renders highlighted code blocks with the old theme classes', () => {
+    render(<Markdown>{'```js\nconst answer = 42;\n```'}</Markdown>);
+
+    const code = document.querySelector('pre code');
+    expect(code).not.toBeNull();
+    expect(code?.className).toContain('hljs');
+  });
 });

@@ -60,12 +60,18 @@ export const DataBlock = ({
         {topColumns.map((column) => renderColumn(column))}
         {iconClassName ? (
           <span className="mpc-data-block-icon-container">
-            <span data-testid="data-block-icon" className="mpc-data-block-icon" data-tooltip-id={iconTooltip}>
-              <i className={iconClassName} />
-            </span>
+            <Tooltip
+              disable={!iconTooltip}
+              trigger={
+                <span data-testid="data-block-icon" className="mpc-data-block-icon">
+                  <i className={iconClassName} />
+                </span>
+              }
+            >
+              {iconTooltip}
+            </Tooltip>
           </span>
         ) : null}
-        {iconTooltip ? <Tooltip id={iconTooltip}>{iconTooltip}</Tooltip> : null}
       </div>
 
       {bottomColumns.length > 0 ? (

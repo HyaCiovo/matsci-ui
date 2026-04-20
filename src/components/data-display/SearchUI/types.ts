@@ -1,4 +1,4 @@
-import type { ReactNode, RefObject } from 'react';
+import type { CSSProperties, ReactNode, RefObject } from 'react';
 
 export enum FilterType {
   SLIDER = 'SLIDER',
@@ -77,6 +77,7 @@ export enum ColumnFormat {
 export interface Column {
   title: string | number;
   selector: string;
+  render?: (row: any, column: Column) => ReactNode;
   formatType?: ColumnFormat;
   formatOptions?: Record<string, any>;
   units?: string;
@@ -90,10 +91,14 @@ export interface Column {
   maxWidth?: string;
   tooltip?: string;
   cellTooltip?: string;
+  align?: 'left' | 'center' | 'right';
   right?: boolean;
   center?: boolean;
   sortable?: boolean;
+  sortIconPosition?: 'left' | 'right';
+  fixed?: boolean | 'left' | 'right';
   style?: Record<string, any>;
+  headerStyle?: CSSProperties;
   excludeFromColumnsSelector?: boolean;
   hideName?: boolean;
   nameString?: string;

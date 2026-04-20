@@ -1,0 +1,33 @@
+.mpc-dropdown-menu {
+  display: block;
+  z-index: 1000;
+}
+
+.mpc-dropdown-content {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.dropdown.is-up .mpc-dropdown-menu {
+  margin-bottom: 0.25rem;
+}
+
+.dropdown:not(.is-up) .mpc-dropdown-menu {
+  margin-top: 0.25rem;
+}
+
+.dropdown.is-active .mpc-dropdown-menu {
+  animation: mpc-dropdown-fade-in 140ms ease-out;
+}
+
+@keyframes mpc-dropdown-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

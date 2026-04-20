@@ -13,23 +13,23 @@ export const PeriodicTableFormulaButtons = ({ onClick, hideWildcardButton }: Pro
     <>
       <div className="pt-spacer" />
       {!hideWildcardButton ? (
-        <>
-          <button
-            type="button"
-            className="pt-wildcard-button mat-element has-tooltip-bottom"
-            onClick={() => onClick('*')}
-            title="Wildcard element"
-           
-            data-tooltip-id="formula-wildcard-button"
-          >
-            <span className="mat-symbol">
-              <FaAsterisk />
-            </span>
-          </button>
-          <Tooltip id="formula-wildcard-button" place="bottom">
+        <Tooltip
+          place="bottom"
+          trigger={
+            <button
+              type="button"
+              className="pt-wildcard-button mat-element has-tooltip-bottom"
+              onClick={() => onClick('*')}
+              title="Wildcard element"
+            >
+              <span className="mat-symbol">
+                <FaAsterisk />
+              </span>
+            </button>
+          }
+        >
             Wildcard element
-          </Tooltip>
-        </>
+        </Tooltip>
       ) : null}
       {values.map((value) => (
         <button key={value} type="button" className="mat-element" onClick={() => onClick(value)}>

@@ -23,4 +23,9 @@ describe('Switch', () => {
     expect(screen.getByText('Enabled')).toBeInTheDocument();
     expect(screen.getByRole('button')).toHaveAttribute('aria-pressed', 'true');
   });
+
+  it('supports configurable icon colors', () => {
+    render(<Switch value truthyColor="#ff0000" />);
+    expect(screen.getByRole('button').parentElement).toHaveStyle('--mpc-switch-icon-color: #ff0000');
+  });
 });

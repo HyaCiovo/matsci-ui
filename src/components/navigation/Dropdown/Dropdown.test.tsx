@@ -22,4 +22,16 @@ describe('Dropdown', () => {
 
     expect(screen.getByText('Two')).toBeInTheDocument();
   });
+
+  it('keeps the menu on the top side when isUp is enabled', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<Dropdown triggerLabel="Items" items={['One', 'Two']} isUp />);
+
+    await user.click(screen.getByRole('button', { name: /Items/i }));
+
+    expect(container.querySelector('.dropdown')).toHaveClass('is-up');
+    expect(container.querySelector('.mpc-dropdown-menu')).toBeInTheDocument();
+    expect(await screen.findByText('One')).toBeInTheDocument();
+    expect(screen.getByText('Two')).toBeInTheDocument();
+  });
 });

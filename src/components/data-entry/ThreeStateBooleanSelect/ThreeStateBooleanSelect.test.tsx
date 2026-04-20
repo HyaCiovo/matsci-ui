@@ -21,11 +21,13 @@ describe('ThreeStateBooleanSelect', () => {
   it('returns null when selecting Any', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
+    const setProps = vi.fn();
 
     render(
       <ThreeStateBooleanSelect
         value={true}
         onChange={onChange}
+        setProps={setProps}
         options={[
           { label: 'Yes', value: true },
           { label: 'No', value: false },
@@ -36,5 +38,6 @@ describe('ThreeStateBooleanSelect', () => {
     await user.click(screen.getByRole('combobox'));
     await user.click(await screen.findByText('Any'));
     expect(onChange).toHaveBeenCalledWith(null);
+    expect(setProps).toHaveBeenCalledWith({ value: null });
   });
 });

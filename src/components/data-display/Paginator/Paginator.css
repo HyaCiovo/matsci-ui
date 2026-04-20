@@ -5,11 +5,64 @@
 .mpc-paginator {
   display: flex;
   justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
-.mpc-paginator .dropdown {
+.mpc-paginator-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.mpc-paginator nav.pagination {
+  margin-left: auto;
+}
+
+.mpc-paginator .dropdown,
+.mpc-paginator .mpc-paginator-dropdown {
   margin-right: 0.5rem;
   text-align: left;
+}
+
+.mpc-paginator .mpc-paginator-dropdown:last-child {
+  margin-right: 0;
+}
+
+.mpc-paginator .mpc-paginator-dropdown .mpc-dropdown-content {
+  min-width: 120px;
+  padding: 0.25rem 0;
+}
+
+.mpc-paginator .mpc-paginator-dropdown .dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 1rem;
+  border: 0;
+  background: transparent;
+  color: #4a4a4a;
+  text-align: left;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.mpc-paginator .mpc-paginator-dropdown .dropdown-item:hover {
+  background-color: #f5f5f5;
+  color: #363636;
+}
+
+.mpc-paginator .mpc-paginator-dropdown .dropdown-item.is-active {
+  background-color: #3273dc;
+  color: #fff;
+}
+
+.mpc-paginator .mpc-paginator-dropdown .dropdown-item.is-active:hover {
+  background-color: #3273dc;
+  color: #fff;
 }
 
 @media screen and (min-width: 1152px) {

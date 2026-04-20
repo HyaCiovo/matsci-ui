@@ -1,6 +1,6 @@
 import axios from 'axios';
 import clsx from 'clsx';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Tooltip } from '../../data-display/Tooltip';
 import openAccessButtonLogo from './oabColorPng';
 import './OpenAccessButton.css';
@@ -25,11 +25,6 @@ export const OpenAccessButton = ({
   const [openAccessUrl, setOpenAccessUrl] = useState<string | undefined>(urlProp);
   const [cannotFetchOpenAccessUrl, setCannotFetchOpenAccessUrl] = useState(() => !doi);
   const didFetchRef = useRef(false);
-
-  const tooltipId = useMemo(
-    () => (doi ? `open-access-tooltip-${encodeURIComponent(doi)}` : undefined),
-    [doi]
-  );
 
   useEffect(() => {
     setOpenAccessUrl(urlProp);
@@ -69,18 +64,23 @@ export const OpenAccessButton = ({
   }
 
   return (
-    <a
-      id={id}
-      data-testid="open-access-button"
-      target={target}
-      rel={target === '_blank' ? 'noreferrer' : undefined}
-      href={openAccessUrl}
-      className={clsx('mpc-open-access-button', className)}
-      data-tooltip-id={tooltipId}
+    <Tooltip
+      disable={!compact}
+      trigger={
+        <a
+          id={id}
+          data-testid="open-access-button"
+          target={target}
+          rel={target === '_blank' ? 'noreferrer' : undefined}
+          href={openAccessUrl}
+          className={clsx('mpc-open-access-button', className)}
+        >
+          {openAccessUrl ? <img src={openAccessButtonLogo} /> : <div className="loader mpc-open-access-loader" />}
+          {!compact ? <span className="ml-1">Open Access</span> : null}
+        </a>
+      }
     >
-      {openAccessUrl ? <img src={openAccessButtonLogo} /> : <div className="loader mpc-open-access-loader" />}
-      {!compact ? <span className="ml-1">Open Access</span> : null}
-      {compact && tooltipId ? <Tooltip id={tooltipId}>Open Access</Tooltip> : null}
-    </a>
+      Open Access
+    </Tooltip>
   );
 };

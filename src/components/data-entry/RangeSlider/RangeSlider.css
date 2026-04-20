@@ -1,62 +1,91 @@
+.mpc-range-slider {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
 .mpc-range-slider:not(.no-ticks) {
-  padding-bottom: 1em;
+  padding-bottom: 1.25rem;
 }
 
-.mpc-range-slider .level {
-  margin-bottom: 0;
-}
-
+.mpc-range-slider .input,
 .mpc-dual-range-slider .input {
-  flex-basis: 75px;
-  min-width: 75px;
-}
-
-.mpc-range-slider .input {
-  width: 75px;
+  width: 100%;
+  min-width: 88px;
+  max-width: 120px;
 }
 
 .mpc-range-slider .slider {
-  padding: 0 0.75em;
-  margin-top: 0.25rem;
+  position: relative;
+  padding: 0.25rem 0.5rem 1.5rem;
+  margin-top: 0;
 }
 
-.mpc-range-slider .slider-track {
-  height: 1.5em;
+.mpc-range-slider .mpc-slider-root {
+  position: relative;
   display: flex;
-  justify-content: center;
-}
-
-.mpc-range-slider .slider-track-inner {
-  height: 5px;
+  align-items: center;
   width: 100%;
-  align-self: center;
+  height: 1.5rem;
+  touch-action: none;
+  user-select: none;
 }
 
-.mpc-range-slider .button.is-slider {
-  padding: 0;
-  height: 1.5em;
-  width: 1.5em;
+.mpc-range-slider .mpc-slider-track {
+  position: relative;
+  flex: 1;
+  height: 6px;
+  border-radius: 999px;
+  background: #d5d9e0;
 }
 
-.mpc-range-slider .button.is-slider > .inner-slider-button {
-  height: 1em;
-  width: 5px;
-  background-color: #ccc;
+.mpc-range-slider .mpc-slider-range {
+  position: absolute;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #4f8ef7, #3273dc);
 }
 
-.mpc-range-slider .button.is-slider.is-dragged > .inner-slider-button {
-  background-color: #3273dc;
+.mpc-range-slider .mpc-slider-thumb {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #3273dc;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(10, 10, 10, 0.18);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.mpc-range-slider .mpc-slider-thumb:hover {
+  transform: scale(1.04);
+}
+
+.mpc-range-slider .mpc-slider-thumb:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(50, 115, 220, 0.2);
+}
+
+.mpc-range-slider .mpc-slider-track > div {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
 }
 
 .mpc-range-slider .slider-tick-mark {
-  height: 0.4em;
   width: 1px;
-  margin-top: 7px !important;
+  height: 8px;
+  margin-top: 10px;
+  background: rgba(54, 54, 54, 0.28);
 }
 
 .mpc-range-slider .slider-tick-value {
   position: absolute;
-  top: 2em;
-  font-size: 0.8em;
-  transform: translate(-50%, 0);
+  top: 1.15rem;
+  left: 50%;
+  color: #7a7a7a;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  transform: translateX(-50%);
 }

@@ -8,12 +8,19 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
+import { FaCaretDown, FaCaretUp } from 'react-icons/fa';
+import { FaAngleDoubleLeft, FaAngleDoubleRight, FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import { Markdown } from '../Markdown';
 import { Tooltip } from '../Tooltip';
 import { Paginator } from '../Paginator';
 import { Column, ColumnFormat, ConditionalRowStyle } from '../SearchUI/types';
-import { formatColumnValue, getColumnsFromKeys, matchesConditionalStyle } from '../../../utils/table';
+import {
+  formatColumnValue,
+  getColumnsFromKeys,
+  getRowValueFromSelectorString,
+  matchesConditionalStyle,
+} from '../../../utils/table';
 import './DataTable.css';
 
 export interface DataTableProps {
@@ -59,6 +66,69 @@ const getInitialSorting = (props: DataTableProps): SortingState => {
 };
 
 const getRowKey = (row: any, index: number) => row?._index ?? row?.material_id ?? index;
+const toCssLength = (value?: string) => (value && value.trim().length > 0 ? value : undefined);
+const addCssLengths = (current: string | undefined, next: string | undefined) => {
+  if (!current) {
+    return next;
+  }
+  if (!next) {
+    return current;
+  }
+  return `calc(${current} + ${next})`;
+};
+
+const getColumnAlign = (column?: Column) => {
+  if (column?.align) {
+    return column.align;
+  }
+  if (column?.right) {
+    return 'right';
+  }
+  if (column?.center) {
+    return 'center';
+  }
+  return 'left';
+};
+
+const getFixedSide = (column?: Column): 'left' | 'right' | null => {
+  if (!column?.fixed) {
+    return null;
+  }
+  if (column.fixed === 'right') {
+    return 'right';
+  }
+  return 'left';
+};
+
+const getSortableColumnValue = (column: Column, row: any) => {
+  const rawValue = getRowValueFromSelectorString(column.selector, row);
+
+  if (rawValue == null) {
+    return '';
+  }
+
+  if (typeof rawValue === 'number') {
+    return rawValue;
+  }
+
+  if (typeof rawValue === 'boolean') {
+    return rawValue ? 1 : 0;
+  }
+
+  if (typeof rawValue === 'string') {
+    return rawValue.toLowerCase();
+  }
+
+  if (Array.isArray(rawValue)) {
+    return rawValue.join(',').toLowerCase();
+  }
+
+  if (typeof rawValue === 'object') {
+    return JSON.stringify(rawValue).toLowerCase();
+  }
+
+  return String(rawValue).toLowerCase();
+};
 
 const renderColumnHeader = (column: Column, disableRichColumnHeaders?: boolean) => {
   if (disableRichColumnHeaders) {
@@ -66,20 +136,34 @@ const renderColumnHeader = (column: Column, disableRichColumnHeaders?: boolean) 
   }
 
   return (
-    <div
-      className={clsx({
-        'column-header-right': column?.right,
-        'column-header-center': column?.center,
-        'column-header-left': !column?.right && !column?.center,
-        'tooltip-label': column?.tooltip,
-      })}
-      data-tooltip-id={column.selector}
+    <Tooltip
+      disable={!column.tooltip}
+      trigger={
+        <div
+          className={clsx({
+            'column-header-right': column?.right,
+            'column-header-center': column?.center,
+            'column-header-left': !column?.right && !column?.center,
+            'tooltip-label': column?.tooltip,
+          })}
+        >
+          <div>{column.title === '' ? '' : column.title}</div>
+          {column.units ? <div className="column-units">({column.units})</div> : null}
+        </div>
+      }
     >
-      <div>{column.title === '' ? '' : column.title}</div>
-      {column.units ? <div className="column-units">({column.units})</div> : null}
-      {column.tooltip ? <Tooltip id={column.selector}>{column.tooltip}</Tooltip> : null}
-    </div>
+      {column.tooltip}
+    </Tooltip>
   );
+};
+
+type ColumnMeta = Column & {
+  _resolvedWidth?: string;
+  _resolvedMinWidth?: string;
+  _resolvedMaxWidth?: string;
+  _resolvedAlign: 'left' | 'center' | 'right';
+  _fixedSide: 'left' | 'right' | null;
+  _stickyOffset?: string;
 };
 
 export const DataTable = ({
@@ -106,6 +190,7 @@ export const DataTable = ({
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,
   });
+  const [columnsMenuOpen, setColumnsMenuOpen] = useState(false);
 
   useEffect(() => {
     setColumnVisibility(Object.fromEntries(columnDefs.map((column) => [column.selector, !column.hidden])));
@@ -129,31 +214,152 @@ export const DataTable = ({
         width: '48px',
         excludeFromColumnsSelector: true,
       });
+    } else if (props.selectableRows) {
+      resolvedColumns.unshift({
+        title: '',
+        selector: '_isSelected',
+        width: '48px',
+        excludeFromColumnsSelector: true,
+      } as Column);
     }
 
-    return resolvedColumns.map((column) => ({
+    const columnMetas: ColumnMeta[] = resolvedColumns.map((column) => ({
+      ...column,
+      _resolvedWidth: toCssLength(column.width),
+      _resolvedMinWidth: toCssLength(column.minWidth),
+      _resolvedMaxWidth: toCssLength(column.maxWidth),
+      _resolvedAlign: getColumnAlign(column),
+      _fixedSide: getFixedSide(column),
+    }));
+
+    let leftOffset: string | undefined;
+    columnMetas.forEach((column) => {
+      if (column._fixedSide !== 'left') {
+        return;
+      }
+      column._stickyOffset = leftOffset ?? '0px';
+      leftOffset = addCssLengths(leftOffset, column._resolvedWidth ?? column._resolvedMinWidth ?? '48px');
+    });
+
+    let rightOffset: string | undefined;
+    [...columnMetas].reverse().forEach((column) => {
+      if (column._fixedSide !== 'right') {
+        return;
+      }
+      column._stickyOffset = rightOffset ?? '0px';
+      rightOffset = addCssLengths(rightOffset, column._resolvedWidth ?? column._resolvedMinWidth ?? '48px');
+    });
+
+    return columnMetas.map((column) => ({
       id: column.selector,
-      accessorFn: (row: any) => row,
+      accessorFn: (row: any) => getSortableColumnValue(column, row),
       enableSorting: column.sortable !== false && column.selector !== '_isSelected',
       size: column.width ? parseInt(column.width, 10) : undefined,
-      header: () => renderColumnHeader(column, props.disableRichColumnHeaders),
+      header: ({ table, column: tableColumn }: { table: any; column: any }) => {
+        if (column.selector === '_isSelected') {
+          if (props.singleSelectableRows) {
+            return <div className="selection-control" aria-hidden="true" />;
+          }
+
+          return (
+            <label className="selection-control">
+              <input
+                type="checkbox"
+                aria-label="Select all rows"
+                checked={table.getIsAllPageRowsSelected()}
+                ref={(input) => {
+                  if (input) {
+                    input.indeterminate = table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected();
+                  }
+                }}
+                onChange={table.getToggleAllPageRowsSelectedHandler()}
+                onClick={(event) => event.stopPropagation()}
+              />
+            </label>
+          );
+        }
+
+        const canSort = tableColumn.getCanSort();
+        const sortState = tableColumn.getIsSorted();
+        const sortIcon = canSort ? (
+          <span
+            className={clsx('column-sort-icon', {
+              'is-asc': sortState === 'asc',
+              'is-desc': sortState === 'desc',
+              'is-idle': !sortState,
+            })}
+            aria-hidden="true"
+          >
+            {sortState === 'asc' ? <FaCaretUp /> : <FaCaretDown />}
+          </span>
+        ) : null;
+
+        return (
+          <div
+            className={clsx('column-header-content', {
+              'is-sortable': canSort,
+              'is-sort-icon-left': column.sortIconPosition === 'left',
+            })}
+          >
+            {column.sortIconPosition === 'left' ? sortIcon : null}
+            <span className="column-header-label">
+              {renderColumnHeader(column, props.disableRichColumnHeaders)}
+            </span>
+            {column.sortIconPosition !== 'left' ? sortIcon : null}
+          </div>
+        );
+      },
       cell: ({ row }: { row: any }) => {
         if (column.formatType === ColumnFormat.RADIO) {
           return (
-            <input
-              type="radio"
-              checked={row.getIsSelected()}
-              onChange={() => row.toggleSelected()}
-              aria-label={`Select row ${row.id}`}
-            />
+            <label className="selection-control">
+              <input
+                type="radio"
+                checked={row.getIsSelected()}
+                onChange={() => row.toggleSelected()}
+                onClick={(event) => event.stopPropagation()}
+                aria-label={`Select row ${row.id}`}
+              />
+            </label>
           );
+        }
+
+        if (column.selector === '_isSelected') {
+          return (
+            <label className="selection-control">
+              <input
+                type="checkbox"
+                checked={row.getIsSelected()}
+                onChange={row.getToggleSelectedHandler()}
+                onClick={(event) => event.stopPropagation()}
+                aria-label={`Select row ${row.id}`}
+              />
+            </label>
+          );
+        }
+
+        if (column.render) {
+          return column.render(row.original, column);
         }
 
         return formatColumnValue(column, row.original);
       },
       meta: column,
+      sortingFn: (leftRow: any, rightRow: any) => {
+        const leftValue = getSortableColumnValue(column, leftRow.original);
+        const rightValue = getSortableColumnValue(column, rightRow.original);
+
+        if (typeof leftValue === 'number' && typeof rightValue === 'number') {
+          return leftValue === rightValue ? 0 : leftValue > rightValue ? 1 : -1;
+        }
+
+        return String(leftValue).localeCompare(String(rightValue), undefined, {
+          numeric: true,
+          sensitivity: 'base',
+        });
+      },
     }));
-  }, [columnDefs, props.singleSelectableRows]);
+  }, [columnDefs, props.disableRichColumnHeaders, props.selectableRows, props.singleSelectableRows]);
 
   const table = useReactTable({
     data,
@@ -177,9 +383,25 @@ export const DataTable = ({
   });
 
   const setPropsRef = useRef(setProps);
+  const columnsMenuRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     setPropsRef.current = setProps;
   }, [setProps]);
+
+  useEffect(() => {
+    if (!columnsMenuOpen) {
+      return;
+    }
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!columnsMenuRef.current?.contains(event.target as Node)) {
+        setColumnsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    return () => document.removeEventListener('mousedown', handlePointerDown);
+  }, [columnsMenuOpen]);
 
   useEffect(() => {
     if (!setPropsRef.current) {
@@ -191,7 +413,67 @@ export const DataTable = ({
   }, [data, rowSelection, table]);
 
   const visibleSelectorColumns = columnDefs.filter((column) => !column.excludeFromColumnsSelector);
-  const rows = props.pagination ? table.getRowModel().rows : table.getPrePaginationRowModel().rows;
+  const showPagination = !!props.pagination && data.length > DEFAULT_PAGE_SIZE;
+  const rows = showPagination ? table.getRowModel().rows : table.getPrePaginationRowModel().rows;
+  const currentPage = table.getState().pagination.pageIndex + 1;
+  const pageCount = showPagination ? table.getPageCount() || 1 : 1;
+  const pageStart = data.length === 0 ? 0 : table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1;
+  const pageEnd = showPagination ? Math.min(pageStart + table.getState().pagination.pageSize - 1, data.length) : data.length;
+  const handleRowsPerPageChange = (pageSize: number) => {
+    table.setPageSize(pageSize);
+    table.setPageIndex(0);
+  };
+  const allColumnsVisible = visibleSelectorColumns.every(
+    (column) => table.getColumn(column.selector)?.getIsVisible() ?? true
+  );
+  const toggleAllColumns = (checked: boolean) => {
+    visibleSelectorColumns.forEach((column) => table.getColumn(column.selector)?.toggleVisibility(checked));
+  };
+
+  const getColumnStyle = (column?: ColumnMeta) => {
+    if (!column) {
+      return undefined;
+    }
+
+    const style = {
+      width: column._resolvedWidth,
+      minWidth: column._resolvedMinWidth ?? column._resolvedWidth,
+      maxWidth: column._resolvedMaxWidth,
+      ...(column.style ?? {}),
+    } as CSSProperties;
+
+    if (column._fixedSide === 'left') {
+      style.position = 'sticky';
+      style.left = column._stickyOffset ?? '0px';
+      style.zIndex = 2;
+      style.background = '#fff';
+    } else if (column._fixedSide === 'right') {
+      style.position = 'sticky';
+      style.right = column._stickyOffset ?? '0px';
+      style.zIndex = 2;
+      style.background = '#fff';
+    }
+
+    return style;
+  };
+
+  const getHeaderStyle = (column?: ColumnMeta) => {
+    return {
+      ...getColumnStyle(column),
+      ...(column?.headerStyle ?? {}),
+    } as CSSProperties | undefined;
+  };
+
+  const handleHeaderSortToggle = (columnId: string, canSort: boolean) => {
+    if (!canSort) {
+      return;
+    }
+
+    setSorting((current) => {
+      const existing = current.find((item) => item.id === columnId);
+      return [{ id: columnId, desc: existing ? !existing.desc : true }];
+    });
+  };
 
   return (
     <div id={props.id} className={clsx('mpc-data-table', className)}>
@@ -201,10 +483,26 @@ export const DataTable = ({
             <div className={headerClassName}>
               {data.length} {data.length === 1 ? resultLabel : resultLabelPlural}
             </div>
-            <div className="mpc-data-table-columns">
-              <details>
-                <summary className="button is-small">Columns</summary>
+            <div className="mpc-data-table-columns" ref={columnsMenuRef}>
+              <button
+                type="button"
+                className="button mpc-data-table-columns-trigger"
+                aria-expanded={columnsMenuOpen}
+                onClick={() => setColumnsMenuOpen((open) => !open)}
+              >
+                <span>Columns</span>
+                <FaCaretDown aria-hidden="true" />
+              </button>
+              {columnsMenuOpen ? (
                 <div className="mpc-data-table-columns-menu">
+                  <label className="is-select-all">
+                    <input
+                      type="checkbox"
+                      checked={allColumnsVisible}
+                      onChange={(event) => toggleAllColumns(event.target.checked)}
+                    />
+                    <span>Select all</span>
+                  </label>
                   {visibleSelectorColumns.map((column) => (
                     <label key={column.selector}>
                       <input
@@ -216,7 +514,7 @@ export const DataTable = ({
                     </label>
                   ))}
                 </div>
-              </details>
+              ) : null}
             </div>
           </div>
         </div>
@@ -228,15 +526,19 @@ export const DataTable = ({
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
-                  const column = header.column.columnDef.meta as Column;
+                  const column = header.column.columnDef.meta as ColumnMeta;
                   return (
                     <th
                       key={header.id}
                       className={clsx({
-                        'is-right': column?.right,
-                        'is-center': column?.center,
+                        'selection-cell': header.column.id === '_isSelected',
+                        'is-right': column?._resolvedAlign === 'right',
+                        'is-center': column?._resolvedAlign === 'center',
+                        'is-fixed-left': column?._fixedSide === 'left',
+                        'is-fixed-right': column?._fixedSide === 'right',
                       })}
-                      onClick={header.column.getToggleSortingHandler()}
+                      style={getHeaderStyle(column)}
+                      onClick={() => handleHeaderSortToggle(header.column.id, header.column.getCanSort())}
                     >
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </th>
@@ -259,16 +561,23 @@ export const DataTable = ({
                   onClick={props.selectableRows ? () => row.toggleSelected() : undefined}
                 >
                   {row.getVisibleCells().map((cell) => {
-                    const column = cell.column.columnDef.meta as Column;
+                    const column = cell.column.columnDef.meta as ColumnMeta;
                     return (
                       <td
                         key={cell.id}
                         className={clsx({
-                          'is-right': column?.right,
-                          'is-center': column?.center,
+                          'selection-cell': cell.column.id === '_isSelected',
+                          'is-right': column?._resolvedAlign === 'right',
+                          'is-center': column?._resolvedAlign === 'center',
+                          'is-fixed-left': column?._fixedSide === 'left',
+                          'is-fixed-right': column?._fixedSide === 'right',
+                          'is-ellipsis': !!(column?._resolvedWidth || column?._resolvedMaxWidth || column?._resolvedMinWidth),
                         })}
+                        style={getColumnStyle(column)}
                       >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        <div className="mpc-data-table-cell-content">
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </div>
                       </td>
                     );
                   })}
@@ -279,27 +588,77 @@ export const DataTable = ({
         </table>
       </div>
 
-      {props.pagination ? props.paginationIsExpanded ? (
+      {showPagination ? props.paginationIsExpanded ? (
         <div className="mpc-data-table-pagination">
           <Paginator
             rowCount={data.length}
             rowsPerPage={table.getState().pagination.pageSize}
-            currentPage={table.getState().pagination.pageIndex + 1}
+            currentPage={currentPage}
             onChangePage={(page) => table.setPageIndex(page - 1)}
-            onChangeRowsPerPage={(pageSize) => table.setPageSize(pageSize)}
+            onChangeRowsPerPage={handleRowsPerPageChange}
           />
         </div>
       ) : (
-        <div className="mpc-data-table-pagination">
-          <button type="button" className="button is-small" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-            Previous
-          </button>
-          <span>
-            Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount() || 1}
-          </span>
-          <button type="button" className="button is-small" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-            Next
-          </button>
+        <div className="mpc-data-table-pagination mpc-data-table-pagination-compact">
+          <div className="mpc-data-table-pagination-summary">
+            <label className="is-size-7">
+              <span className="mr-2">Rows per page</span>
+              <div className="select is-small">
+                <select
+                  aria-label="Rows per page"
+                  value={table.getState().pagination.pageSize}
+                  onChange={(event) => handleRowsPerPageChange(Number(event.target.value))}
+                >
+                  {[10, 15, 30, 50, 75].map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </label>
+            <span className="is-size-7">
+              {pageStart}-{pageEnd} of {data.length}
+            </span>
+          </div>
+          <div className="mpc-data-table-pagination-actions">
+            <button
+              type="button"
+              className="button is-small is-ghost"
+              aria-label="First page"
+              onClick={() => table.setPageIndex(0)}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <FaAngleDoubleLeft />
+            </button>
+            <button
+              type="button"
+              className="button is-small is-ghost"
+              aria-label="Previous page"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <FaAngleLeft />
+            </button>
+            <button
+              type="button"
+              className="button is-small is-ghost"
+              aria-label="Next page"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              <FaAngleRight />
+            </button>
+            <button
+              type="button"
+              className="button is-small is-ghost"
+              aria-label="Last page"
+              onClick={() => table.setPageIndex(pageCount - 1)}
+              disabled={!table.getCanNextPage()}
+            >
+              <FaAngleDoubleRight />
+            </button>
+          </div>
         </div>
       ) : null}
 
