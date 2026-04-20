@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { type ReactNode } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 
 export interface DropdownProps {
   id?: string;
@@ -57,41 +57,43 @@ export const Dropdown = ({
               {renderIcon(triggerIcon)}
               {triggerLabel ? <span>{triggerLabel}</span> : null}
               {!isArrowless ? (
-                <span className="icon">{isUp ? <ChevronUp /> : <ChevronDown />}</span>
+                <span className="icon">{isUp ? <FaAngleUp /> : <FaAngleDown />}</span>
               ) : null}
             </button>
           </DropdownMenu.Trigger>
         </div>
         <DropdownMenu.Portal>
           <DropdownMenu.Content
-            className="dropdown-content"
+            className="dropdown-menu"
             align={isRight ? 'end' : 'start'}
             side={isUp ? 'top' : 'bottom'}
             sideOffset={4}
           >
-            {renderedItems.map((item, index) => {
-              const itemProps = closeOnSelection
-                ? undefined
-                : {
-                    onSelect: (event: Event) => {
-                      event.preventDefault();
-                    },
-                  };
+            <div className="dropdown-content">
+              {renderedItems.map((item, index) => {
+                const itemProps = closeOnSelection
+                  ? undefined
+                  : {
+                      onSelect: (event: Event) => {
+                        event.preventDefault();
+                      },
+                    };
 
-              if (typeof item === 'string' || typeof item === 'number') {
+                if (typeof item === 'string' || typeof item === 'number') {
+                  return (
+                    <DropdownMenu.Item key={index} className="dropdown-item" {...itemProps}>
+                      {item}
+                    </DropdownMenu.Item>
+                  );
+                }
+
                 return (
-                  <DropdownMenu.Item key={index} className="dropdown-item" {...itemProps}>
-                    {item}
+                  <DropdownMenu.Item key={index} asChild {...itemProps}>
+                    {item as React.ReactElement}
                   </DropdownMenu.Item>
                 );
-              }
-
-              return (
-                <DropdownMenu.Item key={index} asChild {...itemProps}>
-                  {item as React.ReactElement}
-                </DropdownMenu.Item>
-              );
-            })}
+              })}
+            </div>
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
       </div>

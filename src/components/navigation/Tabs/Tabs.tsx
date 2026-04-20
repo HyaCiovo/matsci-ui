@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import * as RadixTabs from '@radix-ui/react-tabs';
-import { type ReactNode, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 
 export interface TabsProps {
   id?: string;
@@ -26,9 +26,14 @@ export const Tabs = ({
   const [visitedTabs, setVisitedTabs] = useState(() => new Set([tabIndex]));
   const childArray = useMemo(() => (Array.isArray(children) ? children : [children]), [children]);
 
+  const setPropsRef = useRef(setProps);
   useEffect(() => {
-    setProps({ tabIndex: internalTabIndex });
-  }, [internalTabIndex, setProps]);
+    setPropsRef.current = setProps;
+  }, [setProps]);
+
+  useEffect(() => {
+    setPropsRef.current({ tabIndex: internalTabIndex });
+  }, [internalTabIndex]);
 
   useEffect(() => {
     setInternalTabIndex(tabIndex);
@@ -54,9 +59,9 @@ export const Tabs = ({
             {labels.map((label, index) => (
               <li key={`tab-${index}`} className={clsx({ 'is-active': internalTabIndex === index })}>
                 <RadixTabs.Trigger asChild value={String(index)}>
-                  <button type="button">
+                  <a onClick={(e) => e.preventDefault()}>
                     <span>{label}</span>
-                  </button>
+                  </a>
                 </RadixTabs.Trigger>
               </li>
             ))}

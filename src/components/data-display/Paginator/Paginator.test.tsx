@@ -19,10 +19,8 @@ describe('Paginator', () => {
     fireEvent.click(screen.getByRole('button', { name: /Previous/i }));
     expect(onChangePage).toHaveBeenCalledWith(2);
 
-    fireEvent.change(screen.getByTestId('mpc-jump-to-page-menu'), {
-      target: { value: '5' },
-    });
-    expect(onChangePage).toHaveBeenCalledWith(5);
+    fireEvent.click(screen.getByLabelText(/Page 4/i));
+    expect(onChangePage).toHaveBeenCalledWith(4);
 
     fireEvent.change(screen.getByTestId('results-per-page-menu'), {
       target: { value: '30' },

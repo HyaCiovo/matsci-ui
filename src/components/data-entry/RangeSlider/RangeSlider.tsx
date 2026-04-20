@@ -1,6 +1,6 @@
 import * as Slider from '@radix-ui/react-slider';
 import clsx from 'clsx';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDebounce } from '../../../utils/hooks';
 import './RangeSlider.css';
 
@@ -108,10 +108,18 @@ export const RangeSlider = ({
   const debouncedInputValue = useDebounce(inputValue, debounce);
   const tickMarks = useMemo(() => getTickMarks(ticks, domain, isLogScale), [domain, isLogScale, ticks]);
 
+  const setPropsRef = useRef(setProps);
+  const onChangeRef = useRef(onChange);
+
+  useEffect(() => {
+    setPropsRef.current = setProps;
+    onChangeRef.current = onChange;
+  }, [setProps, onChange]);
+
   const emitChange = (nextSliderValue: number) => {
     const rounded = Number(nextSliderValue.toFixed(decimals));
-    setProps?.({ value: rounded });
-    onChange?.([rounded]);
+    setPropsRef.current?.({ value: rounded });
+    onChangeRef.current?.([rounded]);
   };
 
   useEffect(() => {

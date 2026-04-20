@@ -1,6 +1,5 @@
-import React from 'react';
 import type { StoryFn } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
+import { fn } from '@storybook/test';
 import { MaterialsInput, MaterialsInputProps } from '../../components/data-entry/MaterialsInput';
 import {
   MaterialsInputType,
@@ -31,7 +30,7 @@ MultiType.args = {
     'Select elements to search for materials with **at least** these elements',
   errorMessage: 'Please enter a valid list of element symbols, chemical formula, or Material ID.',
   showSubmitButton: true,
-  onSubmit: action('onSubmit')
+  onSubmit: fn()
 };
 
 export const Elements = Template.bind({});

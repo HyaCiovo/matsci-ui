@@ -192,11 +192,11 @@ describe('MaterialsInput', () => {
       />
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Formula' }));
+    fireEvent.click(screen.getByText('Formula').closest('a')!);
     expect(screen.getByTestId('materials-input-search-input')).toHaveValue('LiFe');
     expect(handleInputTypeChange).toHaveBeenCalledWith(MaterialsInputType.FORMULA);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Only Elements' }));
+    fireEvent.click(screen.getByText('Only Elements').closest('a')!);
     expect(screen.getByTestId('materials-input-search-input')).toHaveValue('Li-Fe');
     expect(handleInputTypeChange).toHaveBeenCalledWith(MaterialsInputType.CHEMICAL_SYSTEM);
   });

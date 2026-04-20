@@ -8,7 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Markdown } from '../Markdown';
 import { Tooltip } from '../Tooltip';
 import { Paginator } from '../Paginator';
@@ -176,14 +176,19 @@ export const DataTable = ({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  const setPropsRef = useRef(setProps);
   useEffect(() => {
-    if (!setProps) {
+    setPropsRef.current = setProps;
+  }, [setProps]);
+
+  useEffect(() => {
+    if (!setPropsRef.current) {
       return;
     }
 
     const selected = table.getSelectedRowModel().rows.map((row) => row.original);
-    setProps({ data, selectedRows: selected });
-  }, [data, rowSelection, setProps, table]);
+    setPropsRef.current({ data, selectedRows: selected });
+  }, [data, rowSelection, table]);
 
   const visibleSelectorColumns = columnDefs.filter((column) => !column.excludeFromColumnsSelector);
   const rows = props.pagination ? table.getRowModel().rows : table.getPrePaginationRowModel().rows;

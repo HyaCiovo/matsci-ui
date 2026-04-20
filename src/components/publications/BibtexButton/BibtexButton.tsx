@@ -20,6 +20,7 @@ export const BibtexButton = ({ className = 'tag', target = '_blank', doi, url, .
     <a
       data-testid="bibtex-button"
       className={clsx('mpc-bibtex-button', className)}
+      style={{ backgroundColor: 'transparent' }}
       href={bibtexUrl}
       target={target}
       rel={target === '_blank' ? 'noreferrer' : undefined}

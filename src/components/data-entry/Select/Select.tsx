@@ -1,6 +1,6 @@
 import * as RadixSelect from '@radix-ui/react-select';
 import clsx from 'clsx';
-import { Check, ChevronDown, X } from 'lucide-react';
+import { FaAngleDown, FaCheck, FaTimes } from 'react-icons/fa';
 import './Select.css';
 
 export interface SelectOption {
@@ -57,7 +57,7 @@ export const Select = ({
               {selectedOption?.customAbbreviation ?? selectedOption?.label}
             </RadixSelect.Value>
             <RadixSelect.Icon>
-              <ChevronDown />
+              <FaAngleDown />
             </RadixSelect.Icon>
           </RadixSelect.Trigger>
           <RadixSelect.Portal>
@@ -71,7 +71,7 @@ export const Select = ({
                   >
                     <RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>
                     <RadixSelect.ItemIndicator style={{ marginLeft: 'auto' }}>
-                      <Check />
+                      <FaCheck />
                     </RadixSelect.ItemIndicator>
                   </RadixSelect.Item>
                 ))}
@@ -89,7 +89,7 @@ export const Select = ({
               setProps?.({ value: null });
             }}
           >
-            <X />
+            <FaTimes />
           </button>
         ) : null}
       </div>

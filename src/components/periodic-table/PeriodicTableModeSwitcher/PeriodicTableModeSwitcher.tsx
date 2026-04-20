@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { Asterisk } from 'lucide-react';
+import { FaAsterisk } from 'react-icons/fa';
 import { Markdown } from '../../data-display/Markdown';
 import { Tooltip } from '../../data-display/Tooltip';
 import { PeriodicTableFormulaButtons } from '../PeriodicTableFormulaButtons';
@@ -38,9 +38,9 @@ export const PeriodicTableModeSwitcher = ({
             <ul>
               {allowedModes.map((mode) => (
                 <li key={mode} className={clsx({ 'is-active': mode === props.mode })}>
-                  <button type="button" onClick={() => props.onSwitch(mode)}>
+                  <a onClick={() => props.onSwitch(mode)}>
                     <span>{PERIODIC_TABLE_MODE_LABELS[mode]}</span>
-                  </button>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -69,7 +69,7 @@ export const PeriodicTableModeSwitcher = ({
                   data-tooltip-id="element-wildcard-button"
                 >
                   <span className="mat-symbol">
-                    <Asterisk />
+                    <FaAsterisk />
                   </span>
                 </button>
                 <Tooltip id="element-wildcard-button" place="bottom">

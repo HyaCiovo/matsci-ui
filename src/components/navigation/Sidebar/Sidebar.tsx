@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
-import { ChartLine, Settings } from 'lucide-react';
+import { AiOutlineFund, AiOutlineSetting } from 'react-icons/ai';
 import './Sidebar.css';
 
 export interface SidebarProps {
@@ -33,14 +33,14 @@ const MAIN_APPS: SidebarApp[] = [
         id: 'battery-explore',
         icon: 'icon-fontastic-battery',
         name: 'Battery Explorer',
-        svg: <Settings />,
+        svg: <AiOutlineSetting />,
       },
     ],
   },
   {
     id: 'analzye',
     name: 'Analyze',
-    svg: <ChartLine />,
+    svg: <AiOutlineFund />,
     subApps: [
       { id: 'phase-diagram', icon: 'icon-fontastic-phase-diagram', name: 'Phase Diagram' },
       { id: 'pourbaix-diagram', icon: 'icon-fontastic-pourbaix-diagram', name: 'Pourbaix Diagram' },
@@ -66,7 +66,7 @@ const MAIN_APPS: SidebarApp[] = [
       },
     ],
   },
-  { id: 'apply', name: 'Apply', svg: <Settings />, subApps: [] },
+  { id: 'apply', name: 'Apply', svg: <AiOutlineSetting />, subApps: [] },
 ];
 
 const buildAppDictionary = (apps: SidebarApp[], parentId: string | null = null, acc: Record<string, SidebarApp> = {}) => {

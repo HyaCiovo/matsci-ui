@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Circle } from 'lucide-react';
+import { FaCircle } from 'react-icons/fa';
 import { Markdown } from '../../data-display/Markdown';
 import { Modal, ModalContextProvider, ModalTrigger } from '../../data-display/Modal';
 import { Bell } from './Bell';
@@ -117,7 +117,7 @@ export const NotificationDropdown = ({
               <ModalTrigger>
                 <a className={clsx('navbar-item', item.className)}>
                   {isMessageLevel && !unreadMessages.find((message) => message.id === item.id)?.isRead ? (
-                    <Circle className="notification-dot" />
+                    <FaCircle className="notification-dot" />
                   ) : null}
                   {item.label}
                 </a>

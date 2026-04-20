@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useState } from 'react';
-import { ChevronDown, Menu, X } from 'lucide-react';
+import { FaAngleDown, FaBars, FaTimes } from 'react-icons/fa';
 import { Link } from '../Link';
 import { NavbarDropdown } from '../NavbarDropdown';
 import { isUrl } from '../../../utils/navigation';
@@ -74,7 +74,7 @@ export const Navbar = ({ id, className, items = [], brandItem, children }: Navba
           className="navbar-burger"
           onClick={() => setActiveMobile(true)}
         >
-          <Menu />
+          <FaBars />
         </button>
       </div>
 
@@ -115,7 +115,7 @@ export const Navbar = ({ id, className, items = [], brandItem, children }: Navba
             className="navbar-burger"
             onClick={() => setActiveMobile(false)}
           >
-            <X />
+            <FaTimes />
           </button>
         </div>
 
@@ -128,8 +128,7 @@ export const Navbar = ({ id, className, items = [], brandItem, children }: Navba
             const open = !!mobileOpenGroups[item.label || String(index)];
             return (
               <div key={`navbar-mobile-item-${index}`} className={item.className}>
-                <button
-                  type="button"
+                <a
                   className="navbar-item navbar-item-toggle"
                   onClick={() =>
                     setMobileOpenGroups((current) => ({
@@ -142,8 +141,8 @@ export const Navbar = ({ id, className, items = [], brandItem, children }: Navba
                     <Icon icon={item.icon} />
                     {item.label}
                   </span>
-                  <ChevronDown />
-                </button>
+                  <FaAngleDown />
+                </a>
 
                 {open ? (
                   <div className="navbar-dropdown">

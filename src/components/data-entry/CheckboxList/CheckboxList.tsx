@@ -1,6 +1,3 @@
-import * as Checkbox from '@radix-ui/react-checkbox';
-import { Check } from 'lucide-react';
-
 export interface CheckboxOption {
   label: string;
   value: string | number;
@@ -19,20 +16,17 @@ export const CheckboxList = ({ options, value = [], onChange }: CheckboxListProp
         const checked = value.includes(option.value);
         return (
           <label key={String(option.value)} className="checkbox is-block mb-2">
-            <Checkbox.Root
+            <input
               className="mr-2"
+              type="checkbox"
               checked={checked}
-              onCheckedChange={(nextChecked) => {
-                const nextValues = nextChecked
+              onChange={(event) => {
+                const nextValues = event.target.checked
                   ? [...value, option.value]
                   : value.filter((item) => item !== option.value);
                 onChange?.(nextValues);
               }}
-            >
-              <Checkbox.Indicator>
-                <Check />
-              </Checkbox.Indicator>
-            </Checkbox.Root>
+            />
             {option.label}
           </label>
         );

@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { Bell as BellIcon } from 'lucide-react';
+import { FaBell } from 'react-icons/fa';
 
 interface BellProps {
   className?: string;
@@ -8,13 +8,30 @@ interface BellProps {
   badgeNumber?: string;
 }
 
-export const Bell = ({ className, showBadge, showNumber, badgeNumber }: BellProps) => (
-  <span className="notification-bell">
-    <BellIcon className={clsx('notification-bell-icon', className)} />
-    {showBadge ? (
-      <span className={clsx('notification-badge', { 'has-number': showNumber })}>
-        {showNumber ? badgeNumber : null}
+export const Bell = ({ className, showBadge, showNumber, badgeNumber }: BellProps) => {
+  if (showBadge) {
+    if (showNumber) {
+      return (
+        <span className="notification-badge fa-stack bell-icon">
+          <span className="fa-stack-2x has-badge-number" data-count={badgeNumber}>
+            <FaBell className={clsx('fa-stack-1x fa-inverse', className)} />
+          </span>
+        </span>
+      );
+    }
+
+    return (
+      <span className="notification-badge fa-stack bell-icon">
+        <span className="fa-stack-2x has-badge" data-count="0">
+          <FaBell className={clsx('fa-stack-1x fa-inverse', className)} />
+        </span>
       </span>
-    ) : null}
-  </span>
-);
+    );
+  }
+
+  return (
+    <span className="fa-stack bell-icon">
+      <FaBell className={clsx('fa-stack-2x fa-inverse', className)} />
+    </span>
+  );
+};

@@ -1,3 +1,6 @@
+import 'bulma/css/bulma.min.css';
+import './styles.less';
+
 export * from './components/data-display/ActiveFilterButtons';
 export * from './components/data-display/ArrayChips';
 export * from './components/data-display/ButtonBar';

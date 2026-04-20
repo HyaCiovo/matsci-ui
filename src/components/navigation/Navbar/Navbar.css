@@ -18,3 +18,7 @@
   position: fixed;
   transition: 0.5s;
 }
+
+.navbar .modal-background.is-hidden-by-opacity {
+  display: none;
+}

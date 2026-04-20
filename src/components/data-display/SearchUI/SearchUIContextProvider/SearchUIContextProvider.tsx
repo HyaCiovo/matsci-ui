@@ -470,19 +470,31 @@ export const SearchUIContextProvider = ({
     setResultsRef(nextResultsRef);
   }, []);
 
+  const isMountedRef = useRef(false);
+
   useEffect(() => {
+    if (isMountedRef.current) {
+      return;
+    }
+    isMountedRef.current = true;
+
     const shouldSearchOnMount = searchOnMount ?? Boolean(apiEndpoint);
     if (shouldSearchOnMount) {
       void submitSearch(initialQuery);
     }
   }, [apiEndpoint, initialQuery, searchOnMount, submitSearch]);
 
+  const setPropsRef = useRef(setProps);
   useEffect(() => {
-    setProps({
+    setPropsRef.current = setProps;
+  }, [setProps]);
+
+  useEffect(() => {
+    setPropsRef.current({
       results,
       selectedRows,
     });
-  }, [results, selectedRows, setProps]);
+  }, [results, selectedRows]);
 
   useEffect(() => {
     if (typeof window === 'undefined') {

@@ -1,10 +1,13 @@
 .mpc-open-access-button {
   vertical-align: bottom;
+  padding-left: 0;
+  padding-right: 0;
+  display: inline-block;
 }
 
 .mpc-open-access-button img {
-  height: 1.25rem;
-  width: auto;
+  max-height: 16px;
+  vertical-align: text-bottom;
 }
 
 .mpc-open-access-button > span > span {

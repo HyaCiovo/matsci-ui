@@ -31,7 +31,7 @@ describe('Navbar', () => {
     render(<Navbar brandItem={brandItem} items={items} />);
 
     fireEvent.click(screen.getByTestId('navbar-burger-open'));
-    fireEvent.click(screen.getByRole('button', { name: /More/i }));
+    fireEvent.click(screen.getAllByText('More')[1].closest('a')!);
 
     const mobileMenu = screen.getByTestId('navbar-mobile');
     expect(within(mobileMenu).getByText('About')).toBeInTheDocument();

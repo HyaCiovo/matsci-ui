@@ -1,35 +1,62 @@
-.notification-bell {
+.fa-stack {
+  display: inline-block;
+  height: 2em;
+  line-height: 2em;
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.75rem;
-  min-height: 1.75rem;
+  vertical-align: middle;
+  width: 2em;
 }
 
-.notification-bell-icon {
-  font-size: 1.25rem;
-}
-
-.notification-badge {
+.fa-stack-1x,
+.fa-stack-2x {
+  left: 0;
   position: absolute;
-  top: -0.2rem;
-  right: -0.25rem;
-  width: 0.6rem;
-  height: 0.6rem;
-  border-radius: 9999px;
-  background: #ff3860;
+  text-align: center;
+  width: 100%;
 }
 
-.notification-badge.has-number {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1rem;
-  height: 1rem;
-  padding: 0 0.2rem;
-  color: #fff;
-  font-size: 0.7rem;
+.fa-stack-1x {
+  line-height: inherit;
+}
+
+.fa-stack-2x {
+  font-size: 2em;
+}
+
+.fa-inverse {
+  color: inherit;
+}
+
+.bell-icon {
+  font-size: 0.5em;
+  width: 1em;
+}
+
+.has-badge[data-count]::after {
+  position: absolute;
+  right: 14%;
+  top: 22%;
+  content: "\2022";
+  font-size: 1.4em;
+  padding: 0.15em;
+  line-height: 0.75em;
+  color: #ff0000;
+}
+
+.has-badge-number[data-count]::after {
+  position: absolute;
+  right: 0;
+  top: 0;
+  content: attr(data-count);
+  font-size: 0.5em;
+  padding: 0.15em;
+  border-radius: 999%;
+  line-height: 0.75em;
+  color: white;
+  background: rgba(255, 0, 0, 0.85);
+  text-align: center;
+  min-width: 2em;
+  font-weight: bold;
 }
 
 .notification-dot {

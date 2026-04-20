@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { ArrowRight } from 'lucide-react';
+import { FaArrowRight } from 'react-icons/fa';
 import { DataBlock } from '../DataBlock';
 import { Formula } from '../Formula';
 import { Link } from '../../navigation/Link';
@@ -137,7 +137,7 @@ const formatReactionString = (reactionString?: string) => {
         {sides[0]?.map(renderToken)}
         <span>
           {' '}
-          <ArrowRight />{' '}
+          <FaArrowRight />{' '}
         </span>
         {sides[1]?.map(renderToken)}
       </div>

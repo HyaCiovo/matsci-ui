@@ -1,4 +1,4 @@
-import { Download } from 'lucide-react';
+import { FaDownload } from 'react-icons/fa';
 import { Formula } from '../Formula';
 import { Tooltip } from '../Tooltip';
 
@@ -37,7 +37,7 @@ export const ArrayChips = ({
 
         const content = (
           <>
-            {showDownloadIcon ? <Download className="mr-1" /> : null}
+            {showDownloadIcon ? <FaDownload className="mr-1" /> : null}
             {chipContent}
             {tooltipContent ? <Tooltip id={tooltipId}>{tooltipContent}</Tooltip> : null}
           </>

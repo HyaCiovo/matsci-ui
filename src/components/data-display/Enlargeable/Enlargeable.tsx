@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { type Dispatch, type ReactNode, type SetStateAction, useState } from 'react';
-import { Minimize2, Maximize2 } from 'lucide-react';
+import { FaCompress, FaExpand } from 'react-icons/fa';
 import './Enlargeable.css';
 
 export interface EnlargeableProps {
@@ -47,7 +47,7 @@ export const Enlargeable = ({
       >
         {!hideButton ? (
           <button className="button mpc-enlarge-button" onClick={() => setExpanded(!expanded)}>
-            {expanded ? <Minimize2 /> : <Maximize2 />}
+            {expanded ? <FaCompress /> : <FaExpand />}
           </button>
         ) : null}
         {children}

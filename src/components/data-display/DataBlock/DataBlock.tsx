@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { type ReactNode, useMemo, useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { FaCaretDown, FaCaretUp } from 'react-icons/fa';
 import { Tooltip } from '../Tooltip';
 import type { Column } from '../SearchUI/types';
 import { formatColumnValue, getColumnsFromKeys } from '../../../utils/table';
@@ -76,7 +76,7 @@ export const DataBlock = ({
               {isExpanded ? 'See less' : 'See more'}
             </button>
             <button type="button" aria-label={isExpanded ? 'Collapse section' : 'Expand section'} onClick={() => setIsExpanded((current) => !current)}>
-              {isExpanded ? <ChevronUp /> : <ChevronDown />}
+              {isExpanded ? <FaCaretUp /> : <FaCaretDown />}
             </button>
           </p>
         </div>

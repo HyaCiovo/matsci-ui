@@ -1,6 +1,6 @@
 import * as Slider from '@radix-ui/react-slider';
 import clsx from 'clsx';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDebounce } from '../../../utils/hooks';
 import './DualRangeSlider.css';
 
@@ -57,10 +57,18 @@ export const DualRangeSlider = ({
     ]);
   }, [maxDomain, minDomain, value, valueMax, valueMin]);
 
+  const setPropsRef = useRef(setProps);
+  const onChangeRef = useRef(onChange);
+
   useEffect(() => {
-    setProps?.({ value: debouncedValues, valueMin: debouncedValues[0], valueMax: debouncedValues[1] });
-    onChange?.(debouncedValues[0], debouncedValues[1]);
-  }, [debouncedValues, onChange, setProps]);
+    setPropsRef.current = setProps;
+    onChangeRef.current = onChange;
+  }, [setProps, onChange]);
+
+  useEffect(() => {
+    setPropsRef.current?.({ value: debouncedValues, valueMin: debouncedValues[0], valueMax: debouncedValues[1] });
+    onChangeRef.current?.(debouncedValues[0], debouncedValues[1]);
+  }, [debouncedValues]);
 
   const updateValue = (index: 0 | 1, nextRawValue: string) => {
     if (nextRawValue === '') {

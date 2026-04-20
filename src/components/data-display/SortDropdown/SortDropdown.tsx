@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { useEffect } from 'react';
-import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
+import { FaAngleDown, FaSort, FaSortDown, FaSortUp } from 'react-icons/fa';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 export interface DropdownItem {
   label: string;
@@ -66,30 +67,44 @@ export const SortDropdown = ({
         <button
           type="button"
           data-testid="sort-button"
-          className="button is-small"
+          className="mpc-sort-button button"
           onClick={() => setSortAscending(!sortAscending)}
           aria-label={sortAscending ? 'Sorted in ascending order' : 'Sorted in descending order'}
         >
-          <ArrowUpDown className="mr-1" />
-          {sortAscending ? <ArrowUp /> : <ArrowDown />}
+                  <FaSort className="mpc-bib-filter-sort-icon-bg" />
+          {sortAscending ? <FaSortUp /> : <FaSortDown />}
         </button>
       </div>
       <div className="control">
-        <label className="is-size-7">
-          <span className="mr-2">Sort: {selectedOption?.label ?? resolvedSortField}</span>
-          <select
-            data-testid="sort-field-select"
-            className="select"
-            value={resolvedSortField}
-            onChange={(event) => setSortField(event.target.value)}
-          >
-            {sortOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <DropdownMenu.Root modal={false}>
+          <div className="dropdown is-active is-right">
+            <div className="dropdown-trigger">
+              <DropdownMenu.Trigger asChild>
+                <button type="button" className="button">
+                  <span>Sort: {selectedOption?.label ?? resolvedSortField}</span>
+                  <span className="icon">
+                    <FaAngleDown />
+                  </span>
+                </button>
+              </DropdownMenu.Trigger>
+            </div>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content className="dropdown-menu" align="end" sideOffset={4}>
+                <div className="dropdown-content">
+                  {sortOptions.map((option) => (
+                    <DropdownMenu.Item
+                      key={option.value}
+                      className={clsx('dropdown-item', { 'is-active': option.value === resolvedSortField })}
+                      onSelect={() => setSortField(option.value)}
+                    >
+                      {option.label}
+                    </DropdownMenu.Item>
+                  ))}
+                </div>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </div>
+        </DropdownMenu.Root>
       </div>
     </div>
   );

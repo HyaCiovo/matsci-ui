@@ -16,7 +16,7 @@ describe('PeriodicTableModeSwitcher', () => {
     );
 
     expect(screen.getByRole('button', { name: '(' })).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'At Least Elements' }));
+    fireEvent.click(screen.getByText('At Least Elements'));
     expect(onSwitch).toHaveBeenCalledWith(PeriodicTableSelectionMode.ELEMENTS);
 
     fireEvent.click(screen.getByRole('button', { name: '(' }));

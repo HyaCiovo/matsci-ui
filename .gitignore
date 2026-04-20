@@ -1,6 +1,7 @@
 node_modules/*
 
 package-lock.json
+pnpm-lock.yaml
 
 storybook-static/*
 dist/*
@@ -9,3 +10,6 @@ dist/*
 .node-version
 .nvmrc
 .npmrc
+
+.storybook-home
+.trae

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { Grid2x2, Grid3x3, Table } from 'lucide-react';
+import { FaTable, FaThLarge } from 'react-icons/fa';
 import { ActiveFilterButtons } from '../../ActiveFilterButtons';
 import { SortDropdown } from '../../SortDropdown';
 import { useSearchUIContext } from '../SearchUIContextProvider';
@@ -120,7 +120,7 @@ export const SearchUIDataHeader = ({ exportDataButton }: SearchUIDataHeaderProps
                 onClick={() => setView(SearchUIViewType.TABLE)}
               >
                 <span className="icon is-small">
-                  <Table />
+                  <FaTable />
                 </span>
               </button>
             </div>
@@ -134,7 +134,7 @@ export const SearchUIDataHeader = ({ exportDataButton }: SearchUIDataHeaderProps
                   onClick={() => setView(SearchUIViewType.CARDS)}
                 >
                   <span className="icon is-small">
-                    <Grid2x2 />
+                    <FaThLarge />
                   </span>
                 </button>
               </div>
@@ -148,7 +148,7 @@ export const SearchUIDataHeader = ({ exportDataButton }: SearchUIDataHeaderProps
                 onClick={() => setView(SearchUIViewType.SYNTHESIS)}
               >
                 <span className="icon is-small">
-                  <Grid3x3 />
+                  <FaThLarge />
                 </span>
               </button>
             </div>

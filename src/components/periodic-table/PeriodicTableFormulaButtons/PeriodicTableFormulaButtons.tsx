@@ -1,4 +1,4 @@
-import { Asterisk } from 'lucide-react';
+import { FaAsterisk } from 'react-icons/fa';
 import { Tooltip } from '../../data-display/Tooltip';
 
 interface Props {
@@ -23,7 +23,7 @@ export const PeriodicTableFormulaButtons = ({ onClick, hideWildcardButton }: Pro
             data-tooltip-id="formula-wildcard-button"
           >
             <span className="mat-symbol">
-              <Asterisk />
+              <FaAsterisk />
             </span>
           </button>
           <Tooltip id="formula-wildcard-button" place="bottom">

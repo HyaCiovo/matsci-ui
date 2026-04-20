@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { type CSSProperties, type PropsWithChildren } from 'react';
-import { CircleX } from 'lucide-react';
+import { FaRegTimesCircle } from 'react-icons/fa';
 import { Tooltip } from '../../data-display/Tooltip';
 import './FilterField.css';
 
@@ -28,7 +28,7 @@ export const FilterField = ({ dois = [], ...props }: FilterFieldProps) => {
     >
       {props.label}
       {props.units ? <span className="mpc-units"> ({props.units})</span> : null}
-      {props.active ? <CircleX className="ml-2 filter-cancel-button" /> : null}
+      {props.active ? <FaRegTimesCircle className="ml-2 filter-cancel-button" /> : null}
       {props.tooltip && tooltipId ? <Tooltip id={tooltipId}>{props.tooltip}</Tooltip> : null}
     </span>
   );

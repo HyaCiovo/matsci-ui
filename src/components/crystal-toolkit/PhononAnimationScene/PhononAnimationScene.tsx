@@ -34,7 +34,7 @@ import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 import { USDZExporter } from 'three/examples/jsm/exporters/USDZExporter.js';
 import useResizeObserver from 'use-resize-observer';
 import { Enlargeable } from '../../data-display/Enlargeable';
-import { Camera, Settings, Minimize2, Maximize2, FileOutput, Undo2 } from 'lucide-react';
+import { FaCamera, FaCogs, FaCompress, FaExpand, FaFileExport, FaUndo } from 'react-icons/fa';
 import { ButtonBar } from '../../data-display/ButtonBar';
 import { Dropdown } from '../../navigation/Dropdown';
 import clsx from 'clsx';
@@ -595,7 +595,7 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
                  
                   data-tooltip-id={`expand-${tooltipId}`}
                 >
-                  {expanded ? <Minimize2 /> : <Maximize2 />}
+                  {expanded ? <FaCompress /> : <FaExpand />}
                   <Tooltip id={`expand-${tooltipId}`} place="left">
                     {expanded ? 'Exit full screen' : 'Full screen'}
                   </Tooltip>
@@ -608,7 +608,7 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
                  
                   data-tooltip-id={`settings-${tooltipId}`}
                 >
-                  <Settings />
+                  <FaCogs />
                   <Tooltip id={`settings-${tooltipId}`} place="left">
                     {showSettingsPanel ? 'Hide settings' : 'Show settings'}
                   </Tooltip>
@@ -633,7 +633,7 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
                  
                   data-tooltip-id={`position-${tooltipId}`}
                 >
-                  <Undo2 />
+                  <FaUndo />
                   <Tooltip id={`position-${tooltipId}`} place="left">
                     Return to original position
                   </Tooltip>
@@ -641,7 +641,7 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
               )}
               {props.showImageButton && (
                 <div onClick={() => hideTooltip()} data-tooltip-id={`image-${tooltipId}`}>
-                  <Dropdown triggerIcon={<Camera />} isArrowless isRight>
+                  <Dropdown triggerIcon={<FaCamera />} isArrowless isRight>
                     <p
                       key={`image-export-png`}
                       className="dropdown-item"
@@ -689,7 +689,7 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
               )}
               {props.showExportButton && (
                 <div onClick={() => hideTooltip()} data-tooltip-id={`export-${tooltipId}`}>
-                  <Dropdown triggerIcon={<FileOutput />} isArrowless isRight>
+                  <Dropdown triggerIcon={<FaFileExport />} isArrowless isRight>
                     {props.fileOptions?.map((option, i) => (
                       <p
                         key={`file-export-${i}`}
