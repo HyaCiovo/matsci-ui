@@ -20,7 +20,8 @@
 
 说明：
 
-- 当前两个仓库都没有可直接审阅的 `.github/workflows` 文件，因此 CI/CD 差异以现有脚本、`lefthook` 和 README 中保留的发布说明为准。
+- 旧仓库 `mp-react-components` 的对比基线以当前 `main` 分支为准。
+- 旧仓库存在可直接审阅的 GitHub Actions workflow；新仓库当前仓库树中未见对应 workflow 文件，因此 CI/CD 对比需区分“旧库已有自动化”与“新库当前更偏本地质量门禁”。
 - 本报告沿用“聚焦发布面”的约束，不对所有业务实验文件做逐行穷举，而是对发布契约、核心实现替换和迁移风险做逐文件说明。
 
 ## 2. 执行摘要
@@ -31,8 +32,8 @@
 - 打包现代化：从 Parcel 1 + Rollup 2 + Babel/Jest 生态切换为 Vite + Rollup 4 + SWC + Vitest。
 - 依赖升级：核心 UI 基座由多套历史 React 生态组件迁移到 Radix UI、TanStack Table 和原生 `fetch`。
 - 发布面扩展：根入口导出由约 57 个符号扩展到约 151 个，新增大量类型、工具函数和组合能力。
-- 样式策略变化：保留统一 CSS 交付，但取消预置 `dark.css` / `materials.css` 主题入口，改为 CSS Token 覆盖。
-- 兼容面调整：新包显式支持 React 17/18/19，但部分底层实现已替换，行为兼容不等于 DOM/样式完全兼容。
+- 样式策略现状：当前正式样式入口仍是统一打包 CSS；主题 token / preset 方案处于规划阶段，尚未形成稳定对外契约。
+- React 兼容面调整：旧库主线停留在 React 16 基线，不应视为支持 React 18 及以上；新包则显式支持 React 17/18/19。
 
 综合判断：
 
@@ -44,9 +45,9 @@
 
 | 维度 | 旧仓库 `mp-react-components` | 新仓库 `matsci-ui` | 影响等级 |
 | --- | --- | --- | --- |
-| 包名 | `@gnosys/mp-react-components` | `@hyacinth/matsci-ui` | 高 |
-| React peer | `^18 || ^19` | `^17 || ^18 || ^19` | 中 |
-| 产物导出 | `.`、`./package.json` | `.`、`./style.css` | 高 |
+| 包名 | `@materialsproject/mp-react-components` | `@hyacinth/matsci-ui` | 高 |
+| React 基线 | `react` / `react-dom` 依赖为 `^16.14.0`，不应视为支持 React 18+ | peer 显式支持 `^17 or ^18 or ^19` | 高 |
+| 产物导出 | `main: index.js`、`module: dist/index.es.js` | `.`、`./style.css` | 高 |
 | 样式接入 | 隐式/历史约定 | 显式 `@hyacinth/matsci-ui/style.css` | 高 |
 | 文档栈 | Storybook 6 + webpack5 | Storybook 10 + Vite | 高 |
 | 测试栈 | Jest 26 + ts-jest | Vitest 4 + jsdom | 中 |
@@ -63,9 +64,9 @@
 
 | 文件 | 旧文件与行号 | 新文件与行号 | 变化类型 | 影响说明 |
 | --- | --- | --- | --- | --- |
-| 包名与 exports | `mp-react-components/package.json:L2-L26` | `matsci-ui/package.json:L2-L27` | 变更 | 包名从 `@gnosys/mp-react-components` 更名为 `@hyacinth/matsci-ui`；新包删除 `./package.json` 子路径，新增 `./style.css` 子路径，消费方必须显式引入样式。 |
+| 包名与发布入口 | `mp-react-components/package.json:L2-L25` | `matsci-ui/package.json:L2-L27` | 变更 | 包名从 `@materialsproject/mp-react-components` 更名为 `@hyacinth/matsci-ui`；旧库使用 `main/module` 入口，新包额外显式公开 `./style.css` 子路径，消费方必须显式引入样式。 |
 | scripts | `mp-react-components/package.json:L29-L42` | `matsci-ui/package.json:L28-L38` | 变更 | 旧仓库保留 `start`、`build-prod`、`build-publish`、`deploy-storybook` 等混合脚本；新仓库收敛为 `build`、`storybook`、`build-storybook`、`test`、`typecheck`。 |
-| peerDependencies | `mp-react-components/package.json:L43-L46` | `matsci-ui/package.json:L39-L42` | 升级 | 新仓库将 React 兼容范围放宽到 17/18/19，适合更广的宿主项目，但仍需逐组件做真实宿主验证。 |
+| React 运行时基线 | `mp-react-components/package.json:L27-L75` | `matsci-ui/package.json:L39-L42` | 升级 | 旧仓库主依赖直接锁定 `react` / `react-dom` 为 `^16.14.0`，且测试栈依赖 `enzyme-adapter-react-16`，不应宣称支持 React 18 及以上；新仓库则显式支持 React 17/18/19。 |
 | 依赖栈 | `mp-react-components/package.json:L47-L170` | `matsci-ui/package.json:L43-L105` | 大幅变更 | 多个底层库被替换，属于迁移风险最大区域之一。 |
 
 ### 4.2 根入口与公共 API
@@ -89,7 +90,7 @@
 | 文件 | 旧文件与行号 | 新文件与行号 | 变化类型 | 影响说明 |
 | --- | --- | --- | --- | --- |
 | Storybook main | `mp-react-components/.storybook/main.js:L1-L35` | `matsci-ui/.storybook/main.ts:L1-L66` | 升级 | webpack5 Storybook 6 升级为 Vite Storybook 10，并加入代理、`react-docgen-typescript` 与 `@storybook/addon-vitest`。 |
-| Storybook preview | `mp-react-components/.storybook/preview.js:L1-L48` | `matsci-ui/.storybook/preview.tsx:L1-L119` | 大幅变更 | 新仓库支持中英文 toolbar 切换，并通过 `DocsContainer` 包裹让 MDX/Docs 页面实时切换语言。 |
+| Storybook preview | `mp-react-components/.storybook/preview.js:L1-L48` | `matsci-ui/.storybook/preview.ts:L1-L123` | 大幅变更 | 新仓库支持中英文 toolbar 切换，并通过 `DocsContainer` 包裹让 MDX/Docs 页面实时切换语言。 |
 | README 口径 | `mp-react-components/README.md:L1-L276` | `matsci-ui/README.md:L1-L389`、`README.zh-CN.md:L1-L389` | 重写 | 新仓库 README 不再以“本地 app 开发”和历史 Dash 互链为主，而是围绕功能、架构、安装、主题、测试、浏览器支持、迁移与版本策略组织。 |
 
 ### 4.5 测试、质量门禁与发布验证
@@ -98,7 +99,7 @@
 | --- | --- | --- | --- | --- |
 | 单测配置 | `mp-react-components/jest.config.js:L1-L30` | `matsci-ui/vitest.config.mts:L1-L11` | 替换 | 测试执行器从 Jest 切换为 Vitest，运行速度和 Vite 集成更好，但现有测试工具链和 mock 方式不同。 |
 | 本地门禁 | `mp-react-components/package.json:L166-L170` | `matsci-ui/lefthook.yml:L1-L12` | 变更 | 旧仓库仅 pre-commit 执行 `pretty-quick`；新仓库在 pre-push 额外执行 `typecheck` 与 `test`。 |
-| React 18 smoke | `mp-react-components/react18-smoke/package.json:L1-L22` | 无对应目录 | 删除 | 旧仓库保留独立消费验证应用；新仓库当前没有独立 smoke app，兼容性验证更依赖 Storybook、测试和真实宿主集成。 |
+| CI workflow | `mp-react-components/.github/workflows/*.yml` | 新仓库当前未见对应 workflow | 差异 | 旧仓库保留 `publish-npm`、`publish-npm-manual`、`jest_tests` 等 GitHub Actions；新仓库当前更依赖本地脚本与 `lefthook`。 |
 
 ### 4.6 网络层与实现替换
 
@@ -111,9 +112,9 @@
 
 | 文件 | 旧文件与行号 | 新文件与行号 | 变化类型 | 影响说明 |
 | --- | --- | --- | --- | --- |
-| 主题 Token | 旧仓库无统一 token 入口 | `matsci-ui/src/theme/tokens.css:L1-L24` | 新增 | 新仓库集中暴露颜色、圆角、阴影、字体等变量，适合消费端做轻量品牌化覆盖。 |
-| 主题预设文档 | 历史上保留多套样式预设规划 | `matsci-ui/docs/theming-and-style-presets.md:L1-L138` | 文档口径调整 | 当前真实发布面已取消 `dark.css` / `materials.css` 预设；如果旧项目直接依赖预置主题文件，需要改为 Token 覆盖。 |
-| 主题文件 | 旧方案/过渡方案中存在预置主题文件 | `matsci-ui/src/theme/themes/dark.css`、`materials.css` 已删除 | 删除 | 这是明确的破坏性变更。 |
+| 主题探索文件 | 旧仓库无统一主题抽象 | `matsci-ui/src/theme/tokens.css:L1-L24` | 新增 | 新仓库开始整理 token 与 preset 方向，但当前仍属探索性资产，不能视为稳定主题 API。 |
+| 主题规划文档 | 旧仓库无同类规划文档 | `matsci-ui/docs/theming-and-style-presets.md:L1-L138` | 新增 | 文档明确说明多套样式/主题能力仍在规划阶段，尚未正式应用到当前公开发布面。 |
+| 主题文件 | 新仓库不再发布 `dark.css`、`materials.css` | 无正式替代发布物 | 删除/未落地 | 旧项目如果依赖预置主题文件，需要自行保留旧方案或等待新仓库主题能力正式落地。 |
 
 ## 5. 新增、删除、变更、重命名清单
 
@@ -128,8 +129,6 @@
 ### 5.2 删除
 
 - 删除本地 app sandbox 主路径：`parcel demo/index.html` / `build-prod`。
-- 删除 `react18-smoke` 等独立发布后验证链路。
-- 删除主题预设文件 `dark.css` / `materials.css`。
 - 删除 `axios`、`rxjs`、`react-data-table-component`、`react-tooltip`、`react-json-view` 等历史依赖的核心地位。
 
 ### 5.3 变更
@@ -141,9 +140,9 @@
 
 ### 5.4 重命名
 
-- npm 包从 `@gnosys/mp-react-components` 更名为 `@hyacinth/matsci-ui`。
+- npm 包从 `@materialsproject/mp-react-components` 更名为 `@hyacinth/matsci-ui`。
 - 文档/Storybook 品牌名从 `MP React Components` 系列名称迁移为 `matsci-ui`。
-- 主题能力从“预置主题文件”迁移为“CSS Token 覆盖”。
+- 主题能力从“历史预置主题文件”转为“规划中的 token / preset 方案”，目前尚未正式应用。
 
 ## 6. 依赖升级与生态替换
 
@@ -186,12 +185,12 @@
 以下项应视为明确的 breaking changes 或高风险兼容点：
 
 1. 包名变化
-   - 旧：`@gnosys/mp-react-components`
+   - 旧：`@materialsproject/mp-react-components`
    - 新：`@hyacinth/matsci-ui`
 2. 样式入口变化
    - 新包要求显式引入 `@hyacinth/matsci-ui/style.css`。
-3. 主题预设删除
-   - `dark.css` / `materials.css` 不再发布。
+3. 主题预设删除且暂无正式替代
+   - `dark.css` / `materials.css` 不再发布，token / preset 方案仍处于规划阶段。
 4. `DataTable` 底层替换
    - 自定义测试选择器、分页交互和列格式化行为存在回归风险。
 5. `Tooltip` / `JsonView` 实现替换
@@ -203,8 +202,10 @@
 
 ### 9.1 React 兼容性
 
+- 旧仓库 `main` 分支的真实基线是 React 16：`package.json` 中 `react` / `react-dom` 为 `^16.14.0`，测试侧使用 `enzyme-adapter-react-16`。
+- 因此旧仓库不应被视为支持 React 18 及以上；如果业务当前已经在 React 18/19 宿主中运行旧库，也应视为“非官方、未验证兼容”。
 - 新仓库的 peerDependencies 已声明 React 17/18/19。
-- 这意味着“安装约束”更宽，但不等于“所有宿主在行为上无差异”。
+- 这意味着新库“安装约束”更宽，但不等于“所有宿主在行为上无差异”。
 - 高风险区域：Portal、Tooltip、Dialog、`useId` 替代逻辑、第三方动画/测量库、老旧测试环境。
 
 ### 9.2 浏览器与构建工具
@@ -215,7 +216,7 @@
 ### 9.3 样式兼容
 
 - 旧项目如果写了针对 `react-data-table-component`、`react-tooltip` 或旧 Bulma 结构的深层选择器，迁移后容易失效。
-- 旧项目如果通过引入预置主题文件实现换肤，需要迁移到 Token 覆盖。
+- 旧项目如果通过引入预置主题文件实现换肤，迁移到新仓库时暂时没有官方等价替代方案，需要自行维护样式覆盖。
 
 ## 10. 潜在风险点
 
@@ -223,7 +224,7 @@
 | --- | --- | --- |
 | DOM 结构变化 | `DataTable`、Tooltip、Radix 组件渲染出的 DOM 与旧库不同 | 迁移时优先修复 UI 测试和端到端选择器 |
 | 请求错误处理 | `axios` 错误对象与 `fetch` 的失败模型不同 | 检查调用方是否依赖 `error.response` 之类字段 |
-| 样式回归 | 删除主题预设 + 替换底层依赖后，局部 class 兼容性下降 | 建议逐页截图比对和视觉回归 |
+| 样式回归 | 历史主题文件已删除，而新主题方案仍未正式落地，局部 class 兼容性下降 | 建议逐页截图比对和视觉回归 |
 | Storybook addon 漂移 | Storybook 10 对 addon 版本一致性要求更高 | 固定 `@storybook/*` 版本组 |
 | 缺少 smoke app | 新仓库当前没有独立消费验证项目 | 迁移项目中尽快补真实宿主验证 |
 | 文档口径更新中 | 当前文档已升级，但实际消费样例仍需结合业务验证 | 以 README + Storybook + 本报告联合作为迁移依据 |
@@ -233,12 +234,12 @@
 | 优先级 | 事项 | 原因 |
 | --- | --- | --- |
 | P0 | 替换包名与样式入口 | 所有消费方都必须先完成，否则无法编译或样式缺失 |
-| P0 | 排查主题预设依赖 | 预置主题文件已删除，属于明确 breaking change |
+| P0 | 排查主题预设依赖 | 预置主题文件已删除，且新主题方案仍未正式应用 |
 | P1 | 验证 `DataTable` / SearchUI 页面 | 这是旧新实现差异最大的交互面 |
 | P1 | 验证 Tooltip / Modal / Drawer / Tabs | 依赖 Radix 后，浮层与焦点管理行为会变化 |
 | P1 | 验证 Crystal Toolkit 场景组件 | 历史 `Scene` 依赖需要重新确认 |
 | P2 | 对齐测试与截图回归 | 新旧 DOM 和 class 可能不同，但通常可渐进调整 |
-| P2 | 迁移局部自定义样式到 Token | 不是阻塞项，但长期维护收益高 |
+| P2 | 跟踪主题规划进展 | 当前 token / preset 仍非稳定 API，不建议过早绑定 |
 
 ## 12. 迁移工作量评估
 
@@ -256,7 +257,7 @@
 迁移前：
 
 ```tsx
-import { DataTable, SearchUIContainer } from '@gnosys/mp-react-components';
+import { DataTable, SearchUIContainer } from '@materialsproject/mp-react-components';
 ```
 
 迁移后：
@@ -273,28 +274,24 @@ import { DataTable, SearchUIContainer } from '@hyacinth/matsci-ui';
 迁移前：
 
 ```tsx
-import '@gnosys/mp-react-components/themes/dark.css';
+import '@materialsproject/mp-react-components/themes/dark.css';
 ```
 
 迁移后：
 
-```css
-:root {
-  --mpc-color-bg: #10131a;
-  --mpc-color-surface: #171b24;
-  --mpc-color-text: #f3f5f8;
-  --mpc-color-primary: #6da8ff;
-}
+```tsx
+import '@hyacinth/matsci-ui/style.css';
+// 新仓库当前没有正式发布 dark/materials 替代 preset
 ```
 
-影响说明：主题能力改为 Token 覆盖，视觉可迁移，但不能再直接依赖预制 CSS 文件名。
+影响说明：主题能力在新仓库中仍处于规划阶段，当前没有官方等价替代物；如果业务依赖旧主题文件，需要先保留自定义样式层。
 
 ### 13.3 Crystal Toolkit 场景入口
 
 迁移前：
 
 ```tsx
-import { Scene } from '@gnosys/mp-react-components';
+import { Scene } from '@materialsproject/mp-react-components';
 ```
 
 迁移后：

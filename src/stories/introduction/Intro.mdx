@@ -7,7 +7,7 @@ import { I18nText } from '../i18n/I18nText';
     docs: {
       description: {
         component:
-          'en-US: Overview of the matsci-ui component library, its architecture, usage model, design tokens, quality signals, and ecosystem. | zh-CN: matsci-ui 组件库总览，涵盖架构、使用方式、设计 Token、质量信号与生态定位。',
+          'en-US: Overview of the matsci-ui component library, its architecture, usage model, styling status, quality signals, and ecosystem. | zh-CN: matsci-ui 组件库总览，涵盖架构、使用方式、样式现状、质量信号与生态定位。',
       },
     },
     locale: 'en-US,zh-CN',
@@ -87,7 +87,7 @@ export function DemoModal() {
     <ul>
       <li>`src/components`: publishable component surface</li>
       <li>`src/stories`: Storybook stories and MDX guides</li>
-      <li>`src/theme`: CSS design tokens</li>
+      <li>`src/theme`: theme exploration files and token experiments</li>
       <li>`src/utils`: shared helpers such as HTTP and navigation utilities</li>
       <li>`.storybook`: Storybook runtime, locale toolbar, and API proxy setup</li>
     </ul>
@@ -96,7 +96,7 @@ export function DemoModal() {
     <ul>
       <li>`src/components`：组件库发布主体</li>
       <li>`src/stories`：Storybook stories 与 MDX 指南</li>
-      <li>`src/theme`：CSS 设计 Token</li>
+      <li>`src/theme`：主题探索文件与 Token 实验</li>
       <li>`src/utils`：HTTP、导航等共享工具</li>
       <li>`.storybook`：Storybook 运行时、语言切换器与 API 代理配置</li>
     </ul>
@@ -128,20 +128,12 @@ export function DemoModal() {
   }
 />
 
-## <I18nText en="Design Tokens" zh="设计 Token" />
+## <I18nText en="Styling Status" zh="样式现状" />
 
 <I18nText
-  en="The repository no longer publishes prebuilt dark or materials preset stylesheets. Theme customization is done by overriding CSS variables from `src/theme/tokens.css`."
-  zh="仓库已经不再发布预置的 dark 或 materials 主题样式。主题定制统一通过覆盖 `src/theme/tokens.css` 中的 CSS Variables 完成。"
+  en="The stable styling path today is the bundled `@hyacinth/matsci-ui/style.css`, which still assumes the Bulma-oriented styling model. Files such as `src/theme/tokens.css` describe a direction of travel, but they should be treated as planning assets rather than as a stable theming API."
+  zh="当前稳定可用的样式入口仍是打包后的 `@hyacinth/matsci-ui/style.css`，其内部依然建立在 Bulma 导向的样式体系上。像 `src/theme/tokens.css` 这样的文件更多是在描述未来方向，而不是已经稳定可用的主题 API。"
 />
-
-```css
-:root {
-  --mpc-color-primary: #0b6efd;
-  --mpc-color-surface: #fcfcff;
-  --mpc-border-radius: 8px;
-}
-```
 
 ## <I18nText en="Accessibility" zh="无障碍" />
 

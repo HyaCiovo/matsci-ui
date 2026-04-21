@@ -1,5 +1,7 @@
 # 多套样式 / 主题方案（Bulma ↔ Shadcn）
 
+本文档是**规划文档**，不是当前已正式应用到 `matsci-ui` 发布面的功能说明。当前仓库真正稳定可用的样式入口仍然只有 `@hyacinth/matsci-ui/style.css`，其内部仍以 Bulma 和组件级 CSS/Less 为主。下面讨论的 token、preset、Bulma ↔ Shadcn 兼容层都应视为后续演进方向，而不是现阶段的兼容承诺。
+
 本文档用于规划 `matsci-ui` 的“可主题化”和“可替换样式体系”能力。目标是让组件库在不牺牲可维护性的前提下，支持：
 
 - 一份默认样式（当前以 Bulma 为基础）
@@ -22,6 +24,12 @@
 - 存在针对 Bulma 类名的覆盖（例如 `.panel/.dropdown-item/.pagination-*` 等），强化了对 Bulma 结构类的依赖。
 
 因此，“只替换 Bulma CSS”为另一个体系（例如 shadcn）并不能自动工作：组件代码输出的 className 与 DOM 结构假设仍然是 Bulma 的语义体系。
+
+补充说明：
+
+- `src/theme/tokens.css` 当前可以视为探索性整理文件，而不是稳定的公开主题 API。
+- 当前没有正式发布 `dark.css`、`materials.css`、`shadcn.css` 等可切换预设文件。
+- README、迁移文档和 Storybook 中若提到主题方案，都应以“规划中”理解，而不是“已正式支持”。
 
 ## 术语
 

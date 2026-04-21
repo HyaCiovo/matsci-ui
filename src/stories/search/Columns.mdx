@@ -8,7 +8,7 @@ import { I18nText } from '../i18n/I18nText';
     docs: {
       description: {
         component:
-          'en-US: Column configuration for Search UI, DataTable, and DataBlock, including renderers, formatters, tokens, accessibility, and performance guidance. | zh-CN: Search UI、DataTable 与 DataBlock 的列配置说明，包含渲染、格式化、Token、无障碍与性能建议。',
+          'en-US: Column configuration for Search UI, DataTable, and DataBlock, including renderers, formatters, styling notes, accessibility, and performance guidance. | zh-CN: Search UI、DataTable 与 DataBlock 的列配置说明，包含渲染、格式化、样式说明、无障碍与性能建议。',
       },
     },
     locale: 'en-US,zh-CN',
@@ -115,11 +115,11 @@ import { I18nText } from '../i18n/I18nText';
   }
 />
 
-## <I18nText en="Design Tokens" zh="设计 Token" />
+## <I18nText en="Styling Notes" zh="样式说明" />
 
 <I18nText
-  en="Columns reuse the global table and surface tokens. In practice, `--mpc-color-text`, `--mpc-color-text-muted`, `--mpc-border-color`, and `--mpc-hover-bg` have the biggest visual impact."
-  zh="列渲染会复用全局表格与表面层 Token。实践中影响最大的通常是 `--mpc-color-text`、`--mpc-color-text-muted`、`--mpc-border-color` 与 `--mpc-hover-bg`。"
+  en="Column rendering currently follows the bundled table and surface styles that ship with `@hyacinth/matsci-ui/style.css`. Theme-token work exists in the repository, but it is still exploratory and should not yet be treated as a stable API."
+  zh="列表现当前遵循的是 `@hyacinth/matsci-ui/style.css` 中打包的表格与表面层样式。仓库里虽然有主题 Token 相关探索，但目前仍属试验阶段，不应视为稳定 API。"
 />
 
 ## <I18nText en="Accessibility" zh="无障碍" />

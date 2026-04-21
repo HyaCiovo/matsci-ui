@@ -28,17 +28,17 @@ import { I18nText } from '../i18n/I18nText';
 <I18nText
   en={
     <ol>
-      <li>Change the package import from `@gnosys/mp-react-components` to `@hyacinth/matsci-ui`.</li>
+      <li>Change the package import from `@materialsproject/mp-react-components` to `@hyacinth/matsci-ui`.</li>
       <li>Import `@hyacinth/matsci-ui/style.css` once at the application entry.</li>
-      <li>Replace any dependency on legacy theme preset files with CSS token overrides.</li>
+      <li>Audit any dependency on legacy theme preset files because the new repository does not yet provide an official replacement preset API.</li>
       <li>Re-test Search UI, `DataTable`, `Tooltip`, `JsonView`, and Crystal Toolkit flows.</li>
     </ol>
   }
   zh={
     <ol>
-      <li>把包导入从 `@gnosys/mp-react-components` 改为 `@hyacinth/matsci-ui`。</li>
+      <li>把包导入从 `@materialsproject/mp-react-components` 改为 `@hyacinth/matsci-ui`。</li>
       <li>在应用入口显式引入一次 `@hyacinth/matsci-ui/style.css`。</li>
-      <li>把对历史主题预设文件的依赖改为 CSS Token 覆盖。</li>
+      <li>排查对历史主题预设文件的依赖，因为新仓库目前还没有正式发布可替代的主题 preset API。</li>
       <li>重新回归 Search UI、`DataTable`、`Tooltip`、`JsonView` 与 Crystal Toolkit 相关页面。</li>
     </ol>
   }
@@ -53,7 +53,7 @@ import { I18nText } from '../i18n/I18nText';
       <li><b>Tooltip</b>: the implementation moved from `react-tooltip` to Radix Tooltip primitives.</li>
       <li><b>JsonView</b>: the implementation moved from `react-json-view` to `@microlink/react-json-view`.</li>
       <li><b>Network layer</b>: internal requests now use native `fetch` instead of `axios`.</li>
-      <li><b>Theming</b>: prebuilt `dark.css` and `materials.css` are no longer published.</li>
+      <li><b>Theming</b>: prebuilt `dark.css` and `materials.css` are no longer published, and the new token/preset direction is still in planning.</li>
     </ul>
   }
   zh={
@@ -62,7 +62,7 @@ import { I18nText } from '../i18n/I18nText';
       <li><b>Tooltip</b>：底层从 `react-tooltip` 切换为 Radix Tooltip。</li>
       <li><b>JsonView</b>：底层从 `react-json-view` 切换为 `@microlink/react-json-view`。</li>
       <li><b>网络层</b>：内部请求已从 `axios` 切换为原生 `fetch`。</li>
-      <li><b>主题方式</b>：预置的 `dark.css` 与 `materials.css` 已不再发布。</li>
+      <li><b>主题方式</b>：预置的 `dark.css` 与 `materials.css` 已不再发布，而且新的 token/preset 方案仍处于规划阶段。</li>
     </ul>
   }
 />
@@ -72,14 +72,16 @@ import { I18nText } from '../i18n/I18nText';
 <I18nText
   en={
     <ul>
-      <li>Peer dependencies now declare React 17, 18, and 19 support.</li>
+      <li>The legacy `main` branch is React 16 based and should not be treated as React 18+ compatible.</li>
+      <li>The new package declares React 17, 18, and 19 support.</li>
       <li>ESM-first packaging assumes a modern bundler and modern evergreen browsers.</li>
       <li>Behavioral compatibility is higher than DOM-structure compatibility. Snapshot and selector-based tests often need updates.</li>
     </ul>
   }
   zh={
     <ul>
-      <li>peerDependencies 当前显式声明支持 React 17、18 与 19。</li>
+      <li>旧仓库 `main` 分支以 React 16 为基线，不应视为兼容 React 18 及以上。</li>
+      <li>新包当前显式声明支持 React 17、18 与 19。</li>
       <li>ESM-first 的发布方式默认宿主使用现代 bundler 与现代浏览器。</li>
       <li>行为兼容通常高于 DOM 结构兼容；如果测试依赖旧 DOM 或 className，通常需要更新。</li>
     </ul>
@@ -95,15 +97,11 @@ import '@hyacinth/matsci-ui/style.css';
 import { DataTable, SearchUIContainer } from '@hyacinth/matsci-ui';
 ```
 
-<I18nText en="Theme migration from preset files to tokens:" zh="主题从预置文件迁移到 Token：" />
+<I18nText en="Theme migration status:" zh="主题迁移现状：" />
 
-```css
-:root {
-  --mpc-color-bg: #10131a;
-  --mpc-color-surface: #171b24;
-  --mpc-color-text: #f3f5f8;
-  --mpc-color-primary: #6da8ff;
-}
+```tsx
+import '@hyacinth/matsci-ui/style.css';
+// No officially published dark/materials replacement preset exists yet.
 ```
 
 <I18nText en="Crystal Toolkit migration preference:" zh="Crystal Toolkit 的推荐迁移方式：" />

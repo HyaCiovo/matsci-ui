@@ -128,21 +128,21 @@ export function DemoSearchUI() {
 
 <ArgTypes of={SearchUIContainer} />
 
-## <I18nText en="Design Tokens" zh="设计 Token" />
+## <I18nText en="Styling Notes" zh="样式说明" />
 
 <I18nText
   en={
     <ul>
-      <li>Search UI inherits the global token system from `src/theme/tokens.css`.</li>
-      <li>`--mpc-color-primary` affects active actions and progress states.</li>
-      <li>`--mpc-border-color` and `--mpc-hover-bg` affect table and filter affordances.</li>
+      <li>Search UI currently inherits the bundled Bulma-oriented styling and component CSS shipped in `@hyacinth/matsci-ui/style.css`.</li>
+      <li>`src/theme/tokens.css` exists as part of the repository's theme exploration, but it is not yet a stable consumer contract.</li>
+      <li>If a product needs visual customization today, prefer scoped application-level overrides and verify each Search UI state manually.</li>
     </ul>
   }
   zh={
     <ul>
-      <li>Search UI 复用 `src/theme/tokens.css` 中的全局 Token 体系。</li>
-      <li>`--mpc-color-primary` 会影响激活态操作和进度条颜色。</li>
-      <li>`--mpc-border-color` 与 `--mpc-hover-bg` 会影响表格和筛选器的视觉反馈。</li>
+      <li>Search UI 当前继承的是 `@hyacinth/matsci-ui/style.css` 中打包好的 Bulma 导向样式与组件 CSS。</li>
+      <li>`src/theme/tokens.css` 属于仓库中的主题探索内容，尚不是稳定的消费端契约。</li>
+      <li>如果业务今天就需要视觉定制，建议在应用侧做有边界的样式覆盖，并逐个 Search UI 状态人工验证。</li>
     </ul>
   }
 />
