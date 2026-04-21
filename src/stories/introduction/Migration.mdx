@@ -1,26 +1,75 @@
 import { Meta } from '@storybook/blocks';
+import { I18nText } from '../i18n/I18nText';
 
 <Meta title="Introduction/Migration (mp-react → matsci-ui)" />
 
-# Migration: mp-react-components → matsci-ui
+# <I18nText en="Migration: mp-react-components → matsci-ui" zh="迁移：mp-react-components → matsci-ui" />
 
-This page summarizes the key differences between the legacy `mp-react-components` package and this repository (`matsci-ui`).
+<I18nText
+  en="This page summarizes the key differences between the legacy `mp-react-components` package and this repository (`matsci-ui`)."
+  zh="本页总结了 legacy 包 `mp-react-components` 与当前仓库（`matsci-ui`）之间的关键差异。"
+/>
 
-## Quick Summary
+## <I18nText en="Quick Summary" zh="快速概览" />
 
-- **React baseline**
-  - Legacy: historically React 16/17-era ecosystem (many libraries and patterns from that time)
-  - New: React 18-first implementation
-- **Packaging**
-  - New package is **ESM-only** and publishes:
-    - JS: `dist/index.js`
-    - Types: `dist/index.d.ts`
-    - Styles: `dist/index.css` exposed as `@hyacinth/matsci-ui/style.css`
-- **Public exports**
-  - New is effectively a superset of legacy root exports.
-  - The only legacy root export not available from the new root is `Scene`.
+<I18nText
+  en={
+    <ul>
+      <li>
+        <b>React baseline</b>
+        <ul>
+          <li>Legacy: historically React 16/17-era ecosystem (many libraries and patterns from that time)</li>
+          <li>New: React 18-first implementation</li>
+        </ul>
+      </li>
+      <li>
+        <b>Packaging</b>
+        <ul>
+          <li>New package is ESM-only and publishes:</li>
+          <li>JS: dist/index.js</li>
+          <li>Types: dist/index.d.ts</li>
+          <li>Styles: dist/index.css exposed as @hyacinth/matsci-ui/style.css</li>
+        </ul>
+      </li>
+      <li>
+        <b>Public exports</b>
+        <ul>
+          <li>New is effectively a superset of legacy root exports.</li>
+          <li>The only legacy root export not available from the new root is Scene.</li>
+        </ul>
+      </li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li>
+        <b>React 基线</b>
+        <ul>
+          <li>Legacy：历史上主要面向 React 16/17 时代的生态与写法</li>
+          <li>New：以 React 18 为基线实现</li>
+        </ul>
+      </li>
+      <li>
+        <b>打包与发布</b>
+        <ul>
+          <li>新包为 ESM-only，发布产物包含：</li>
+          <li>JS：dist/index.js</li>
+          <li>类型：dist/index.d.ts</li>
+          <li>样式：dist/index.css，通过 @hyacinth/matsci-ui/style.css 暴露</li>
+        </ul>
+      </li>
+      <li>
+        <b>公共导出</b>
+        <ul>
+          <li>新包整体上是 legacy 根导出的超集。</li>
+          <li>legacy 根导出里新包根部不提供的只有 Scene。</li>
+        </ul>
+      </li>
+    </ul>
+  }
+/>
 
-## Breaking / High-Risk Changes
+## <I18nText en="Breaking / High-Risk Changes" zh="破坏性 / 高风险变更" />
 
 - **DataTable**
   - Legacy: `react-data-table-component`
@@ -34,7 +83,7 @@ This page summarizes the key differences between the legacy `mp-react-components
 
 ## Styles
 
-Import styles once in your app entry:
+<I18nText en="Import styles once in your app entry:" zh="在应用入口引入一次样式：" />
 
 ```ts
 import '@hyacinth/matsci-ui/style.css';
@@ -42,5 +91,21 @@ import '@hyacinth/matsci-ui/style.css';
 
 ## Detailed Diff
 
-For a more complete, repo-level comparison (exports, packaging notes, and migration advice), see:
-- `docs/component-diff-audit.md` in the repository root.
+<I18nText
+  en={
+    <>
+      For a more complete, repo-level comparison (exports, packaging notes, and migration advice), see:
+      <ul>
+        <li>docs/component-diff-audit.md in the repository root.</li>
+      </ul>
+    </>
+  }
+  zh={
+    <>
+      如需更完整的仓库级对比（导出、打包说明、迁移建议），可参考：
+      <ul>
+        <li>仓库根目录的 docs/component-diff-audit.md</li>
+      </ul>
+    </>
+  }
+/>

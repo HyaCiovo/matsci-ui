@@ -9,6 +9,8 @@ import { PeriodicTableMode } from '../../../data-entry/MaterialsInput/MaterialsI
 import { Select } from '../../../data-entry/Select';
 import { TextInput } from '../../../data-entry/TextInput';
 import { ThreeStateBooleanSelect } from '../../../data-entry/ThreeStateBooleanSelect';
+import { formatTemplate } from '../../../../text/formatTemplate';
+import { mergeTexts } from '../../../../text/mergeTexts';
 import {
   Accordion,
   AccordionContent,
@@ -22,7 +24,22 @@ import { type ActiveFilter, type Filter, type FilterGroup, FilterType } from '..
 
 interface SearchUIFiltersProps {
   className?: string;
+  texts?: Partial<SearchUIFiltersTexts>;
 }
+
+export interface SearchUIFiltersTexts {
+  title: string;
+  reset: string;
+  anyPlaceholder: string;
+  activeCountTemplate: string;
+}
+
+const DEFAULT_TEXTS: SearchUIFiltersTexts = {
+  title: 'Filters',
+  reset: 'Reset',
+  anyPlaceholder: 'Any',
+  activeCountTemplate: '{count} active',
+};
 
 const getActiveFilterByName = (name: string, activeFilters: ActiveFilter[]) => {
   return activeFilters.find((filter) => filter.name === name);
@@ -56,7 +73,8 @@ const getInitialOpenGroupNames = (groups: FilterGroup[]) => {
 
 const renderUnits = (units?: string) => (units ? <span className="is-size-7 has-text-weight-normal"> ({units})</span> : null);
 
-export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
+export const SearchUIFilters = ({ className, texts: textsProp }: SearchUIFiltersProps) => {
+  const texts = mergeTexts(DEFAULT_TEXTS, textsProp);
   const {
     filterGroups,
     activeFilters,
@@ -144,7 +162,7 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
           <Select
             options={filter.props?.options ?? []}
             value={queryValue ?? ''}
-            placeholder="Any"
+            placeholder={texts.anyPlaceholder}
             isClearable
             onChange={(option) => void setFilterValue(option ? option.value : null, queryParam)}
           />
@@ -179,9 +197,9 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
     <div className={clsx('panel', className)}>
       <div className="panel-heading">
         <div className="level is-mobile">
-          <span>Filters</span>
+          <span>{texts.title}</span>
           <button data-testid="search-ui-reset-button" className="button" onClick={() => void resetFilters()}>
-            Reset
+            {texts.reset}
           </button>
         </div>
       </div>
@@ -227,7 +245,9 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
                     <span className={clsx('is-size-5', { 'has-opacity-70': !isExpanded })}>
                       {group.name}
                       {groupState.activeFilterCount > 0 ? (
-                        <span className="tag is-link is-rounded ml-2">{groupState.activeFilterCount} active</span>
+                        <span className="tag is-link is-rounded ml-2">
+                          {formatTemplate(texts.activeCountTemplate, { count: groupState.activeFilterCount })}
+                        </span>
                       ) : null}
                     </span>
                   </AccordionTrigger>

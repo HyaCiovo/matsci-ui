@@ -1,8 +1,26 @@
 import { FaExclamationTriangle } from 'react-icons/fa';
 import { useSearchUIContext } from '../SearchUIContextProvider';
 import { searchUIViewsMap } from '../searchUIViewsMap';
+import { mergeTexts } from '../../../../text/mergeTexts';
 
-export const SearchUIDataView = () => {
+export interface SearchUIDataViewTexts {
+  errorTitle: string;
+  errorDescription: string;
+  emptyTitle: string;
+}
+
+export interface SearchUIDataViewProps {
+  texts?: Partial<SearchUIDataViewTexts>;
+}
+
+const DEFAULT_TEXTS: SearchUIDataViewTexts = {
+  errorTitle: 'There was an error with your search.',
+  errorDescription: 'You may have entered an invalid search value, or the API may be temporarily unavailable.',
+  emptyTitle: 'No records match your search criteria',
+};
+
+export const SearchUIDataView = ({ texts: textsProp }: SearchUIDataViewProps) => {
+  const texts = mergeTexts(DEFAULT_TEXTS, textsProp);
   const { error, results, view } = useSearchUIContext();
 
   if (error) {
@@ -10,9 +28,9 @@ export const SearchUIDataView = () => {
       <div className="react-data-table-message">
         <p>
           <FaExclamationTriangle />
-          There was an error with your search.
+          {texts.errorTitle}
         </p>
-        <p>You may have entered an invalid search value, or the API may be temporarily unavailable.</p>
+        <p>{texts.errorDescription}</p>
       </div>
     );
   }
@@ -20,7 +38,7 @@ export const SearchUIDataView = () => {
   if (!results || results.length === 0) {
     return (
       <div className="react-data-table-message">
-        <p>No records match your search criteria</p>
+        <p>{texts.emptyTitle}</p>
       </div>
     );
   }

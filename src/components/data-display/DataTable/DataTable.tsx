@@ -13,7 +13,7 @@ import { FaCaretDown, FaCaretUp } from 'react-icons/fa';
 import { FaAngleDoubleLeft, FaAngleDoubleRight, FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import { Markdown } from '../Markdown';
 import { Tooltip } from '../Tooltip';
-import { Paginator } from '../Paginator';
+import { Paginator, type PaginatorTexts } from '../Paginator';
 import { Checkbox } from '../../data-entry/Checkbox';
 import { Column, ColumnFormat, ConditionalRowStyle } from '../SearchUI/types';
 import {
@@ -22,6 +22,8 @@ import {
   getRowValueFromSelectorString,
   matchesConditionalStyle,
 } from '../../../utils/table';
+import { formatTemplate } from '../../../text/formatTemplate';
+import { mergeTexts } from '../../../text/mergeTexts';
 import './DataTable.css';
 
 export interface DataTableProps {
@@ -46,11 +48,41 @@ export interface DataTableProps {
   paginationIsExpanded?: boolean;
   footer?: React.ReactNode;
   disableRichColumnHeaders?: boolean;
+  texts?: Partial<DataTableTexts>;
 }
 
 const DEFAULT_PAGE_SIZE = 10;
 const EMPTY_ROWS: any[] = [];
 const EMPTY_STYLES: ConditionalRowStyle[] = [];
+
+export interface DataTableTexts {
+  columns: string;
+  selectAll: string;
+  ariaSelectAllRows: string;
+  ariaSelectRowTemplate: string;
+  rowsPerPage: string;
+  ariaRowsPerPage: string;
+  pageSummaryTemplate: string;
+  ariaFirstPage: string;
+  ariaPreviousPage: string;
+  ariaNextPage: string;
+  ariaLastPage: string;
+  paginator?: Partial<PaginatorTexts>;
+}
+
+const DEFAULT_TEXTS: DataTableTexts = {
+  columns: 'Columns',
+  selectAll: 'Select all',
+  ariaSelectAllRows: 'Select all rows',
+  ariaSelectRowTemplate: 'Select row {rowId}',
+  rowsPerPage: 'Rows per page',
+  ariaRowsPerPage: 'Rows per page',
+  pageSummaryTemplate: '{start}-{end} of {total}',
+  ariaFirstPage: 'First page',
+  ariaPreviousPage: 'Previous page',
+  ariaNextPage: 'Next page',
+  ariaLastPage: 'Last page',
+};
 
 const getInitialSorting = (props: DataTableProps): SortingState => {
   const sorting: SortingState = [];
@@ -177,8 +209,10 @@ export const DataTable = ({
   selectedRows,
   conditionalRowStyles,
   setProps,
+  texts: textsProp,
   ...props
 }: DataTableProps) => {
+  const texts = mergeTexts(DEFAULT_TEXTS, textsProp);
   const normalizedSelectedRows = selectedRows ?? EMPTY_ROWS;
   const normalizedConditionalRowStyles = conditionalRowStyles ?? EMPTY_STYLES;
   const columnDefs = useMemo(() => columns ?? getColumnsFromKeys(data[0]), [columns, data]);
@@ -265,7 +299,7 @@ export const DataTable = ({
           return (
             <label className="selection-control">
               <Checkbox
-                aria-label="Select all rows"
+                aria-label={texts.ariaSelectAllRows}
                 checked={
                   table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()
                     ? 'indeterminate'
@@ -322,7 +356,7 @@ export const DataTable = ({
                 checked={row.getIsSelected()}
                 onChange={() => row.toggleSelected()}
                 onClick={(event) => event.stopPropagation()}
-                aria-label={`Select row ${row.id}`}
+                aria-label={formatTemplate(texts.ariaSelectRowTemplate, { rowId: row.id })}
               />
             </label>
           );
@@ -340,7 +374,7 @@ export const DataTable = ({
                   row.toggleSelected(checked === true);
                 }}
                 onClick={(event) => event.stopPropagation()}
-                aria-label={`Select row ${row.id}`}
+                aria-label={formatTemplate(texts.ariaSelectRowTemplate, { rowId: row.id })}
               />
             </label>
           );
@@ -498,14 +532,14 @@ export const DataTable = ({
                 aria-expanded={columnsMenuOpen}
                 onClick={() => setColumnsMenuOpen((open) => !open)}
               >
-                <span>Columns</span>
+                <span>{texts.columns}</span>
                 <FaCaretDown aria-hidden="true" />
               </button>
               {columnsMenuOpen ? (
                 <div className="mpc-data-table-columns-menu">
                   <label className="is-select-all">
                     <Checkbox checked={allColumnsVisible} onCheckedChange={(checked) => toggleAllColumns(checked === true)} />
-                    <span>Select all</span>
+                    <span>{texts.selectAll}</span>
                   </label>
                   {visibleSelectorColumns.map((column) => (
                     <label key={column.selector}>
@@ -599,16 +633,17 @@ export const DataTable = ({
             currentPage={currentPage}
             onChangePage={(page) => table.setPageIndex(page - 1)}
             onChangeRowsPerPage={handleRowsPerPageChange}
+            texts={texts.paginator}
           />
         </div>
       ) : (
         <div className="mpc-data-table-pagination mpc-data-table-pagination-compact">
           <div className="mpc-data-table-pagination-summary">
             <label className="is-size-7">
-              <span className="mr-2">Rows per page</span>
+              <span className="mr-2">{texts.rowsPerPage}</span>
               <div className="select is-small">
                 <select
-                  aria-label="Rows per page"
+                  aria-label={texts.ariaRowsPerPage}
                   value={table.getState().pagination.pageSize}
                   onChange={(event) => handleRowsPerPageChange(Number(event.target.value))}
                 >
@@ -621,14 +656,18 @@ export const DataTable = ({
               </div>
             </label>
             <span className="is-size-7">
-              {pageStart}-{pageEnd} of {data.length}
+              {formatTemplate(texts.pageSummaryTemplate, {
+                start: pageStart,
+                end: pageEnd,
+                total: data.length,
+              })}
             </span>
           </div>
           <div className="mpc-data-table-pagination-actions">
             <button
               type="button"
               className="button is-small is-ghost"
-              aria-label="First page"
+              aria-label={texts.ariaFirstPage}
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
             >
@@ -637,7 +676,7 @@ export const DataTable = ({
             <button
               type="button"
               className="button is-small is-ghost"
-              aria-label="Previous page"
+              aria-label={texts.ariaPreviousPage}
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
@@ -646,7 +685,7 @@ export const DataTable = ({
             <button
               type="button"
               className="button is-small is-ghost"
-              aria-label="Next page"
+              aria-label={texts.ariaNextPage}
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
@@ -655,7 +694,7 @@ export const DataTable = ({
             <button
               type="button"
               className="button is-small is-ghost"
-              aria-label="Last page"
+              aria-label={texts.ariaLastPage}
               onClick={() => table.setPageIndex(pageCount - 1)}
               disabled={!table.getCanNextPage()}
             >

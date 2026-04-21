@@ -12,6 +12,9 @@ interface Props {
   hideWildcardButton?: boolean;
   chemicalSystemSelectHelpText?: string;
   elementsSelectHelpText?: string;
+  modeLabels?: Partial<Record<PeriodicTableSelectionMode, string>>;
+  wildcardTitle?: string;
+  wildcardTooltip?: string;
   onSwitch: (mode: PeriodicTableSelectionMode) => void;
   onFormulaButtonClick: (value: string) => void;
 }
@@ -28,8 +31,12 @@ export const PeriodicTableModeSwitcher = ({
     PeriodicTableSelectionMode.ELEMENTS,
     PeriodicTableSelectionMode.CHEMICAL_SYSTEM,
   ],
+  modeLabels,
+  wildcardTitle = 'Wildcard element',
+  wildcardTooltip = wildcardTitle,
   ...props
 }: Props) => {
+  const resolvedModeLabels = { ...PERIODIC_TABLE_MODE_LABELS, ...(modeLabels ?? {}) };
   return (
     <>
       <div data-testid="mpc-pt-mode-switcher" className="mpc-pt-mode-switcher first-span">
@@ -39,7 +46,7 @@ export const PeriodicTableModeSwitcher = ({
               {allowedModes.map((mode) => (
                 <li key={mode} className={clsx({ 'is-active': mode === props.mode })}>
                   <a onClick={() => props.onSwitch(mode)}>
-                    <span>{PERIODIC_TABLE_MODE_LABELS[mode]}</span>
+                    <span>{resolvedModeLabels[mode]}</span>
                   </a>
                 </li>
               ))}
@@ -66,7 +73,7 @@ export const PeriodicTableModeSwitcher = ({
                     type="button"
                     className="pt-wildcard-button mat-element has-tooltip-bottom"
                     onClick={() => props.onFormulaButtonClick('-*')}
-                    title="Wildcard element"
+                    title={wildcardTitle}
                   >
                     <span className="mat-symbol">
                       <FaAsterisk />
@@ -74,7 +81,7 @@ export const PeriodicTableModeSwitcher = ({
                   </button>
                 }
               >
-                  Wildcard element
+                {wildcardTooltip}
               </Tooltip>
             ) : null}
             <div className="pt-description">

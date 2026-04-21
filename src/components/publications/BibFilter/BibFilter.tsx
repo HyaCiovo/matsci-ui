@@ -16,6 +16,8 @@ export interface BibFilterProps {
   ascending?: boolean;
   resultClassName?: string;
   preventOpenAccessFetch?: boolean;
+  searchAriaLabel?: string;
+  sortOptions?: { label: string; value: string }[];
 }
 
 const normalizeSortValue = (value: any) => {
@@ -47,9 +49,15 @@ export const BibFilter = ({
   format = 'bibjson',
   sortField = 'year',
   ascending = false,
+  searchAriaLabel = 'publication search',
+  sortOptions = [
+    { label: 'Year', value: 'year' },
+    { label: 'Author', value: 'author' },
+    { label: 'Title', value: 'title' },
+  ],
   ...otherProps
 }: BibFilterProps) => {
-  const props = { format, sortField, ascending, ...otherProps };
+  const props = { format, sortField, ascending, searchAriaLabel, sortOptions, ...otherProps };
   const [searchValue, setSearchValue] = useState('');
   const [sortFieldState, setSortFieldState] = useState(props.sortField);
   const [sortAsc, setSortAsc] = useState(props.ascending);
@@ -77,17 +85,13 @@ export const BibFilter = ({
           className="mpc-bib-filter-input"
           role="searchbox"
           type="search"
-          aria-label="publication search"
+          aria-label={props.searchAriaLabel}
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
         />
         <SortDropdown
           sortValues={bibEntriesState}
-          sortOptions={[
-            { label: 'Year', value: 'year' },
-            { label: 'Author', value: 'author' },
-            { label: 'Title', value: 'title' },
-          ]}
+          sortOptions={props.sortOptions}
           sortField={sortFieldState}
           setSortField={setSortFieldState}
           sortAscending={sortAsc}

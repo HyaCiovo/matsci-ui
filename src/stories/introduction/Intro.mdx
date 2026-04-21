@@ -1,35 +1,66 @@
-import { Meta, ArgTypes } from '@storybook/blocks';
+import { Meta } from '@storybook/blocks';
+import { I18nText } from '../i18n/I18nText';
 
 <Meta title="Introduction/matsci-ui" />
 
-# matsci-ui
+# <I18nText en="matsci-ui" zh="matsci-ui" />
 
-This repository provides reusable React 18 UI components used by Materials Project surfaces. It is based on the legacy `mp-react-components` repository and modernizes the implementation for a React 18-first ecosystem.
+<I18nText
+  en="This repository provides reusable React 18 UI components used by Materials Project surfaces. It is based on the legacy `mp-react-components` repository and modernizes the implementation for a React 18-first ecosystem."
+  zh="这个仓库提供 Materials Project 相关产品所使用的一套可复用 React 18 UI 组件库。本仓库基于历史版本 `mp-react-components`，并将实现现代化以适配 React 18 生态。"
+/>
 
-Install:
+<I18nText en="Install:" zh="安装：" />
 
 `npm install @hyacinth/matsci-ui`
 
-Import styles once in your app entry:
+<I18nText en="Import styles once in your app entry:" zh="在应用入口引入一次样式：" />
 
 `import '@hyacinth/matsci-ui/style.css'`
 
-If you are migrating from the legacy package, start with **Migration (mp-react → matsci-ui)** for a diff overview.
+<I18nText
+  en="If you are migrating from the legacy package, start with **Migration (mp-react → matsci-ui)** for a diff overview."
+  zh="如果你正在从旧包迁移，建议从 **Migration (mp-react → matsci-ui)** 开始查看差异概览。"
+/>
 
-## Key Features
+## <I18nText en="Key Features" zh="主要特性" />
 
-- Interactive crystal structures using threejs
-- Input-linked periodic table for entering formulas and element lists
-- Complete search interface for dynamically filtering data from a REST API
-- A suite of components for fetching and rendering publications data in an easy and structured way
+<I18nText
+  en={
+    <>
+      <ul>
+        <li>Interactive crystal structures using threejs</li>
+        <li>Input-linked periodic table for entering formulas and element lists</li>
+        <li>Complete search interface for dynamically filtering data from a REST API</li>
+        <li>A suite of components for fetching and rendering publications data in an easy and structured way</li>
+      </ul>
+    </>
+  }
+  zh={
+    <>
+      <ul>
+        <li>基于 threejs 的交互式晶体结构可视化</li>
+        <li>与输入联动的周期表，用于输入化学式与元素列表</li>
+        <li>完整的搜索界面，用于对 REST API 返回数据进行动态筛选</li>
+        <li>一套用于获取并结构化展示出版物数据的组件</li>
+      </ul>
+    </>
+  }
+/>
 
-## Github
+## <I18nText en="Github" zh="相关仓库" />
 
-Original (legacy) repository: [mp-react-components](https://github.com/materialsproject/mp-react-components)
+<I18nText
+  en="Original (legacy) repository: [mp-react-components](https://github.com/materialsproject/mp-react-components)"
+  zh="原始（legacy）仓库： [mp-react-components](https://github.com/materialsproject/mp-react-components)"
+/>
 
-Dash Component Library: [dash-mp-components](https://github.com/materialsproject/dash-mp-components)
+<I18nText
+  en="Dash Component Library: [dash-mp-components](https://github.com/materialsproject/dash-mp-components)"
+  zh="Dash 组件库： [dash-mp-components](https://github.com/materialsproject/dash-mp-components)"
+/>
 
-## Contributors
+## <I18nText en="Contributors" zh="贡献者" />
 
 <a href="https://github.com/materialsproject/mp-react-components/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=materialsproject/mp-react-components" />

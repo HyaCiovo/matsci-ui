@@ -4,9 +4,16 @@ import { Tooltip } from '../../data-display/Tooltip';
 interface Props {
   onClick: (value: string) => void;
   hideWildcardButton?: boolean;
+  wildcardTitle?: string;
+  wildcardTooltip?: string;
 }
 
-export const PeriodicTableFormulaButtons = ({ onClick, hideWildcardButton }: Props) => {
+export const PeriodicTableFormulaButtons = ({
+  onClick,
+  hideWildcardButton,
+  wildcardTitle = 'Wildcard element',
+  wildcardTooltip = wildcardTitle,
+}: Props) => {
   const values = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(', ')'];
 
   return (
@@ -20,7 +27,7 @@ export const PeriodicTableFormulaButtons = ({ onClick, hideWildcardButton }: Pro
               type="button"
               className="pt-wildcard-button mat-element has-tooltip-bottom"
               onClick={() => onClick('*')}
-              title="Wildcard element"
+              title={wildcardTitle}
             >
               <span className="mat-symbol">
                 <FaAsterisk />
@@ -28,7 +35,7 @@ export const PeriodicTableFormulaButtons = ({ onClick, hideWildcardButton }: Pro
             </button>
           }
         >
-            Wildcard element
+          {wildcardTooltip}
         </Tooltip>
       ) : null}
       {values.map((value) => (

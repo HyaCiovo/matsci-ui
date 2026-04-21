@@ -7,16 +7,24 @@ import {
 import { categoryToClassName } from '../SelectableTable/selection-state';
 import { getPeriodicTableFilterValue } from '../SelectableTable/view-model';
 import {
-  FILTER_BY_CATEGORY,
-  FILTER_VALUE_MAPPER,
   FILTERS,
+  FILTER_VALUE_MAPPER,
   type TableFilterOption,
 } from './filter-definitions';
 import './TableFilter.less';
 
-const ALL_FILTER: TableFilterOption = {
-  name: 'All',
-  subGroups: [],
+export interface TableFilterTexts {
+  title: string;
+}
+
+export interface TableFilterProps {
+  texts?: Partial<TableFilterTexts>;
+  filters?: TableFilterOption[][];
+  valueMapper?: Record<string, string>;
+}
+
+const DEFAULT_TEXTS: TableFilterTexts = {
+  title: 'Filters',
 };
 
 const noopActions: PeriodicSelectionActions = {
@@ -49,25 +57,37 @@ const performFilter = (key: NonNullable<TableFilterOption['key']>, value: string
     return accumulator;
   }, {});
 
-export function TableFilter() {
+export function TableFilter({ texts: textsProp, filters: filtersProp, valueMapper }: TableFilterProps) {
+  const texts = { ...DEFAULT_TEXTS, ...(textsProp ?? {}) };
   const actions = useOptionalPeriodicSelectionActions() ?? noopActions;
+  const filters = filtersProp ?? FILTERS.categories;
+  const resolvedValueMapper = valueMapper ?? FILTER_VALUE_MAPPER;
+  const allFilter = filters[0]?.[0] ?? { name: 'All', subGroups: [] };
+  const filterByCategory = useMemo(() => {
+    return filters.reduce<Record<string, TableFilterOption[]>>((accumulator, group) => {
+      group.forEach((filter) => {
+        accumulator[String(filter.name)] = filter.subGroups;
+      });
+      return accumulator;
+    }, {});
+  }, [filters]);
   const [filter, setFilter] = useState<{
     topFilter: TableFilterOption;
     lowerFilter: TableFilterOption;
   }>({
-    topFilter: ALL_FILTER,
-    lowerFilter: ALL_FILTER,
+    topFilter: allFilter,
+    lowerFilter: allFilter,
   });
 
   const lowerFilters = useMemo(
-    () => FILTER_BY_CATEGORY[String(filter.topFilter.name)] ?? [],
-    [filter.topFilter.name]
+    () => filterByCategory[String(filter.topFilter.name)] ?? [],
+    [filter.topFilter.name, filterByCategory]
   );
 
   const handleTopFilterSelect = (nextTopFilter: TableFilterOption) => {
     setFilter({
       topFilter: nextTopFilter,
-      lowerFilter: ALL_FILTER,
+      lowerFilter: allFilter,
     });
 
     // Switching top-level groups should clear any previous sub-filter hiding.
@@ -86,17 +106,17 @@ export function TableFilter() {
       return;
     }
 
-    const mappedValue = FILTER_VALUE_MAPPER[String(nextLowerFilter.name)];
+    const mappedValue = resolvedValueMapper[String(nextLowerFilter.name)];
     const filterValue = mappedValue ?? nextLowerFilter.name;
     actions.setHiddenElements(performFilter(key, filterValue));
   };
 
   return (
     <div className="mat-table-filter">
-      <div className="left-side">Filters</div>
+      <div className="left-side">{texts.title}</div>
       <div className="right-side">
         <div className="filter-selector">
-          {FILTERS.categories.map((filterGroup, index) => (
+          {filters.map((filterGroup, index) => (
             <div key={`group-${index}`} className="filter-group">
               {filterGroup.map((option) => (
                 <div
@@ -133,7 +153,7 @@ export function TableFilter() {
                 }
               }}
               className={`current-filter-selector ${
-                option.name === filter.lowerFilter.name || filter.lowerFilter.name === 'All'
+                option.name === filter.lowerFilter.name || filter.lowerFilter.name === allFilter.name
                   ? 'selected'
                   : ''
               }`}

@@ -85,6 +85,36 @@ export function DemoSearchUI() {
 }
 ```
 
+## Text Customization
+
+This library avoids hard-coded UI strings by design. Most components expose either:
+- a `texts?: Partial<...>` prop (structured, component-scoped strings), or
+- dedicated props like `ariaLabel`, `placeholder`, `buttonLabel`, etc. for one-off overrides.
+
+This enables i18n and product-specific wording without introducing a global i18n runtime dependency.
+
+Example (override DataTable + Paginator copy):
+
+```tsx
+import { DataTable } from '@hyacinth/matsci-ui';
+
+<DataTable
+  data={data}
+  columns={columns}
+  texts={{
+    columns: '列',
+    selectAll: '全选',
+    rowsPerPage: '每页行数',
+    pageSummaryTemplate: '{start}-{end} / 共 {total}',
+    paginator: {
+      previous: '上一页',
+      next: '下一页',
+      jumpTo: '跳转到',
+    },
+  }}
+/>;
+```
+
 ## Public API
 
 - The package entry is [src/index.ts](./src/index.ts).

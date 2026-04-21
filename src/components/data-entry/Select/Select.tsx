@@ -18,6 +18,7 @@ export interface SelectProps {
   className?: string;
   onChange?: (option: SelectOption | null) => void;
   setProps?: (value: { value: SelectOption['value'] | null }) => void;
+  clearAriaLabel?: string;
 }
 
 const CLEAR_OPTION_VALUE = '__radix_clear_option__';
@@ -34,6 +35,7 @@ export const Select = ({
   className,
   onChange,
   setProps,
+  clearAriaLabel = 'Clear selection',
 }: SelectProps) => {
   const selectedOption = options.find((option) => option.value === value) ?? null;
   const internalValue = selectedOption ? getInternalOptionValue(selectedOption) : '';
@@ -83,7 +85,7 @@ export const Select = ({
           <button
             type="button"
             className="mpc-select-clear"
-            aria-label="Clear selection"
+            aria-label={clearAriaLabel}
             onClick={() => {
               onChange?.(null);
               setProps?.({ value: null });

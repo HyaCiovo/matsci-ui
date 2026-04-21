@@ -13,6 +13,8 @@ export interface NavbarProps {
   items: NavbarItem[];
   children?: React.ReactNode;
   brandItem: NavbarItem;
+  ariaLabel?: string;
+  brandAltFallback?: string;
 }
 
 const Icon = ({ icon }: { icon?: string }) =>
@@ -51,7 +53,15 @@ const InternalOrExternalLink = ({
   );
 };
 
-export const Navbar = ({ id, className, items = [], brandItem, children }: NavbarProps) => {
+export const Navbar = ({
+  id,
+  className,
+  items = [],
+  brandItem,
+  children,
+  ariaLabel = 'main navigation',
+  brandAltFallback = 'brand',
+}: NavbarProps) => {
   const [activeMobile, setActiveMobile] = useState(false);
   const [mobileOpenGroups, setMobileOpenGroups] = useState<Record<string, boolean>>({});
 
@@ -60,11 +70,11 @@ export const Navbar = ({ id, className, items = [], brandItem, children }: Navba
       id={id}
       className={clsx('navbar', className)}
       role="navigation"
-      aria-label="main navigation"
+      aria-label={ariaLabel}
     >
       <div className="navbar-brand">
         <Link className={clsx('navbar-item', brandItem.className)} href={brandItem.href || ''}>
-          {brandItem.image ? <img src={brandItem.image} alt={brandItem.label || 'brand'} /> : null}
+          {brandItem.image ? <img src={brandItem.image} alt={brandItem.label || brandAltFallback} /> : null}
           {!brandItem.image ? <Icon icon={brandItem.icon} /> : null}
           {brandItem.label}
         </Link>
@@ -105,7 +115,7 @@ export const Navbar = ({ id, className, items = [], brandItem, children }: Navba
       <div data-testid="navbar-mobile" className={clsx('navbar-mobile', { 'is-active': activeMobile })}>
         <div className="navbar-brand">
           <Link className={clsx('navbar-item', brandItem.className)} href={brandItem.href || ''}>
-            {brandItem.image ? <img src={brandItem.image} alt={brandItem.label || 'brand'} /> : null}
+            {brandItem.image ? <img src={brandItem.image} alt={brandItem.label || brandAltFallback} /> : null}
             {!brandItem.image ? <Icon icon={brandItem.icon} /> : null}
             {!brandItem.image && !brandItem.icon ? brandItem.label : null}
           </Link>

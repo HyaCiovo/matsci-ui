@@ -1,9 +1,39 @@
 import type { Preview } from '@storybook/react';
+import React from 'react';
 import 'bulma/css/bulma.css';
 import '../src/styles.less';
 import '../src/stories/stories.css';
+import { StorybookLocaleProvider, type StorybookLocale } from '../src/stories/i18n/LocaleProvider';
 
 const preview: Preview = {
+  globalTypes: {
+    locale: {
+      name: 'Language',
+      description: 'Storybook language',
+      defaultValue: 'en',
+      toolbar: {
+        icon: 'globe',
+        items: [
+          { value: 'en', title: 'English' },
+          { value: 'zh', title: '中文' },
+        ],
+        dynamicTitle: true,
+      },
+    },
+  },
+  decorators: [
+    (Story, context) => {
+      const locale = (context.globals.locale ?? 'en') as StorybookLocale;
+      if (typeof document !== 'undefined') {
+        document.documentElement.lang = locale;
+      }
+      return (
+        <StorybookLocaleProvider locale={locale}>
+          <Story />
+        </StorybookLocaleProvider>
+      );
+    },
+  ],
   parameters: {
     controls: { expanded: true, sort: 'alpha' },
     options: {
@@ -50,3 +80,4 @@ const preview: Preview = {
 };
 
 export default preview;
+

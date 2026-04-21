@@ -3,14 +3,34 @@ import { FaCaretDown } from 'react-icons/fa';
 import { ActiveFilterButtons } from '../../ActiveFilterButtons';
 import { Checkbox } from '../../../data-entry/Checkbox';
 import { useSearchUIContext } from '../SearchUIContextProvider';
+import { formatTemplate } from '../../../../text/formatTemplate';
+import { mergeTexts } from '../../../../text/mergeTexts';
 
 export interface SearchUIDataHeaderProps {
   exportDataButton?: React.ReactNode;
+  texts?: Partial<SearchUIDataHeaderTexts>;
 }
+
+export interface SearchUIDataHeaderTexts {
+  loadingTitleTemplate: string;
+  allTitleTemplate: string;
+  showingTemplate: string;
+  columns: string;
+  selectAll: string;
+}
+
+const DEFAULT_TEXTS: SearchUIDataHeaderTexts = {
+  loadingTitleTemplate: 'Loading {label}...',
+  allTitleTemplate: 'All {total} {label}',
+  showingTemplate: 'Showing {lower}-{upper}',
+  columns: 'Columns',
+  selectAll: 'Select all',
+};
 
 const pluralize = (label: string, count: number) => (count === 1 ? label : `${label}s`);
 
-export const SearchUIDataHeader = ({ exportDataButton }: SearchUIDataHeaderProps) => {
+export const SearchUIDataHeader = ({ exportDataButton, texts: textsProp }: SearchUIDataHeaderProps) => {
+  const texts = mergeTexts(DEFAULT_TEXTS, textsProp);
   const {
     activeFilters,
     columns,
@@ -38,11 +58,14 @@ export const SearchUIDataHeader = ({ exportDataButton }: SearchUIDataHeaderProps
 
   const title = useMemo(() => {
     if (loading) {
-      return `Loading ${pluralize(resultLabel, 2)}...`;
+      return formatTemplate(texts.loadingTitleTemplate, { label: pluralize(resultLabel, 2) });
     }
 
-    return `All ${totalResults.toLocaleString()} ${pluralize(resultLabel, totalResults)}`;
-  }, [loading, resultLabel, totalResults]);
+    return formatTemplate(texts.allTitleTemplate, {
+      total: totalResults.toLocaleString(),
+      label: pluralize(resultLabel, totalResults),
+    });
+  }, [loading, resultLabel, texts.allTitleTemplate, texts.loadingTitleTemplate, totalResults]);
 
   useEffect(() => {
     setResultsRef(ref);
@@ -78,7 +101,12 @@ export const SearchUIDataHeader = ({ exportDataButton }: SearchUIDataHeaderProps
           <p data-testid="data-table-title" className="title is-5">
             {title}
           </p>
-          <p className="subtitle is-7">Showing {lowerBound.toLocaleString()}-{upperBound.toLocaleString()}</p>
+          <p className="subtitle is-7">
+            {formatTemplate(texts.showingTemplate, {
+              lower: lowerBound.toLocaleString(),
+              upper: upperBound.toLocaleString(),
+            })}
+          </p>
         </div>
         <div className="mpc-search-ui-data-header-controls">
           <div className="mpc-data-table-columns" ref={columnsMenuRef}>
@@ -88,14 +116,14 @@ export const SearchUIDataHeader = ({ exportDataButton }: SearchUIDataHeaderProps
               aria-expanded={columnsMenuOpen}
               onClick={() => setColumnsMenuOpen((open) => !open)}
             >
-              <span>Columns</span>
+              <span>{texts.columns}</span>
               <FaCaretDown aria-hidden="true" />
             </button>
             {columnsMenuOpen ? (
               <div className="mpc-data-table-columns-menu">
                 <label className="is-select-all">
                   <Checkbox checked={allColumnsVisible} onCheckedChange={(checked) => toggleAllColumns(checked === true)} />
-                  <span>Select all</span>
+                  <span>{texts.selectAll}</span>
                 </label>
                 {visibleSelectorColumns.map((column) => (
                   <label key={column.selector}>

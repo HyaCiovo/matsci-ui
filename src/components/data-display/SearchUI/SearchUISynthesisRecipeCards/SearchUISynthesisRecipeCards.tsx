@@ -2,14 +2,30 @@ import { useMemo } from 'react';
 import { Paginator } from '../../Paginator';
 import { SynthesisRecipeCard } from '../../SynthesisRecipeCard';
 import { useSearchUIContext } from '../SearchUIContextProvider';
+import { formatTemplate } from '../../../../text/formatTemplate';
+import { mergeTexts } from '../../../../text/mergeTexts';
 
-const getCardTitle = (result: Record<string, any>) =>
-  result.title ?? result.formula_pretty ?? result.material_id ?? result.doi ?? 'Synthesis Result';
+export interface SearchUISynthesisRecipeCardsTexts {
+  defaultCardTitle: string;
+  pageSummaryTemplate: string;
+  resultsPerPage: string;
+}
+
+export interface SearchUISynthesisRecipeCardsProps {
+  texts?: Partial<SearchUISynthesisRecipeCardsTexts>;
+}
+
+const DEFAULT_TEXTS: SearchUISynthesisRecipeCardsTexts = {
+  defaultCardTitle: 'Synthesis Result',
+  pageSummaryTemplate: 'Page {page} of {totalPages}',
+  resultsPerPage: 'Results per page',
+};
 
 const getCardSubtitle = (result: Record<string, any>) =>
   result.doi ?? result.material_id ?? result.authors?.join?.(', ') ?? result.journal ?? null;
 
-export const SearchUISynthesisRecipeCards = () => {
+export const SearchUISynthesisRecipeCards = ({ texts: textsProp }: SearchUISynthesisRecipeCardsProps) => {
+  const texts = mergeTexts(DEFAULT_TEXTS, textsProp);
   const {
     defaultLimit,
     defaultSkip,
@@ -34,10 +50,10 @@ export const SearchUISynthesisRecipeCards = () => {
     <div data-testid="mpc-synthesis-recipe-cards" className="mpc-synthesis-recipe-cards">
       <div className="is-flex is-justify-content-space-between is-align-items-center mb-4">
         <div className="is-size-7">
-          Page {currentPage} of {totalPages}
+          {formatTemplate(texts.pageSummaryTemplate, { page: currentPage, totalPages })}
         </div>
         <label className="is-size-7">
-          <span className="mr-2">Results per page</span>
+          <span className="mr-2">{texts.resultsPerPage}</span>
           <select
             data-testid="search-ui-synthesis-results-per-page"
             value={currentLimit}
@@ -58,7 +74,8 @@ export const SearchUISynthesisRecipeCards = () => {
             return <SynthesisRecipeCard key={`${result.doi ?? 'recipe'}-${index}`} data={result} />;
           }
 
-          const title = getCardTitle(result);
+          const title =
+            result.title ?? result.formula_pretty ?? result.material_id ?? result.doi ?? texts.defaultCardTitle;
           const subtitle = getCardSubtitle(result);
           return (
             <article key={`${title}-${index}`} className="box">

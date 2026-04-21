@@ -99,6 +99,7 @@ export interface SelectableTableProps {
   detailedElement?: string | null;
   onDetailedElementChange?: (element: string | null, detail: MatElement | null) => void;
   children?: React.ReactNode;
+  unavailableElementTitle?: string;
 }
 
 function SelectableTableView({
@@ -112,6 +113,7 @@ function SelectableTableView({
   onTableStateChange,
   forwardOuterChange = true,
   children,
+  unavailableElementTitle,
 }: Omit<
   SelectableTableProps,
   | 'enabledElements'
@@ -211,6 +213,7 @@ function SelectableTableView({
             hidden={hidden}
             interactionDisabled={interactionDisabled}
             defaultDisabled={defaultDisabled}
+            unavailableTitle={unavailableElementTitle}
             lastAction={lastAction}
             onToggle={actions.toggleEnabledElement}
             onHoverDetail={actions.setDetailedElement}
@@ -239,6 +242,7 @@ export function SelectableTable({
   detailedElement,
   onDetailedElementChange,
   children,
+  unavailableElementTitle,
 }: SelectableTableProps) {
   const externalContext = useOptionalPeriodicSelectionContext();
   const tableView = (
@@ -253,6 +257,7 @@ export function SelectableTable({
       onTableStateChange={onTableStateChange}
       forwardOuterChange={forwardOuterChange}
       onDetailedElementChange={onDetailedElementChange}
+      unavailableElementTitle={unavailableElementTitle}
     >
       {children}
     </SelectableTableView>

@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { FaAngleDown, FaSort, FaSortDown, FaSortUp } from 'react-icons/fa';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import '../../navigation/Dropdown/Dropdown.css';
+import { formatTemplate } from '../../../text/formatTemplate';
+import { mergeTexts } from '../../../text/mergeTexts';
 
 export interface DropdownItem {
   label: string;
@@ -20,7 +22,20 @@ export interface SortDropdownProps {
   sortAscending?: boolean;
   setSortAscending: (value: any) => any;
   sortFn?: (field: string, asc: boolean) => any;
+  texts?: Partial<SortDropdownTexts>;
 }
+
+export interface SortDropdownTexts {
+  ariaLabelSortedAscending: string;
+  ariaLabelSortedDescending: string;
+  sortLabelTemplate: string;
+}
+
+const DEFAULT_TEXTS: SortDropdownTexts = {
+  ariaLabelSortedAscending: 'Sorted in ascending order',
+  ariaLabelSortedDescending: 'Sorted in descending order',
+  sortLabelTemplate: 'Sort: {label}',
+};
 
 const defaultSort = (field: string, asc: boolean) => (a: any, b: any) => {
   const valueA = a?.[field];
@@ -49,7 +64,9 @@ export const SortDropdown = ({
   sortAscending = false,
   setSortAscending,
   sortFn = defaultSort,
+  texts: textsProp,
 }: SortDropdownProps) => {
+  const texts = mergeTexts(DEFAULT_TEXTS, textsProp);
   const [open, setOpen] = useState(false);
   const resolvedSortField = sortField ?? sortOptions[0]?.value ?? '';
   const selectedOption = sortOptions.find((option) => option.value === resolvedSortField);
@@ -71,9 +88,9 @@ export const SortDropdown = ({
           data-testid="sort-button"
           className="mpc-sort-button button"
           onClick={() => setSortAscending(!sortAscending)}
-          aria-label={sortAscending ? 'Sorted in ascending order' : 'Sorted in descending order'}
+          aria-label={sortAscending ? texts.ariaLabelSortedAscending : texts.ariaLabelSortedDescending}
         >
-                  <FaSort className="mpc-bib-filter-sort-icon-bg" />
+          <FaSort className="mpc-bib-filter-sort-icon-bg" />
           {sortAscending ? <FaSortUp /> : <FaSortDown />}
         </button>
       </div>
@@ -83,7 +100,11 @@ export const SortDropdown = ({
             <div className="dropdown-trigger">
               <DropdownMenu.Trigger asChild>
                 <button type="button" className="button">
-                  <span>Sort: {selectedOption?.label ?? resolvedSortField}</span>
+                  <span>
+                    {formatTemplate(texts.sortLabelTemplate, {
+                      label: selectedOption?.label ?? resolvedSortField,
+                    })}
+                  </span>
                   <span className="icon">
                     <FaAngleDown />
                   </span>

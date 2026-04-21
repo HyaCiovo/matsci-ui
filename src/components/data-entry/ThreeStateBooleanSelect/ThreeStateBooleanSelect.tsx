@@ -6,6 +6,8 @@ export interface ThreeStateBooleanSelectProps {
   className?: string;
   onChange?: (value: boolean | null) => void;
   setProps?: (value: { value: boolean | null }) => void;
+  anyLabel?: string;
+  anyPlaceholder?: string;
 }
 
 export const ThreeStateBooleanSelect = ({
@@ -14,15 +16,17 @@ export const ThreeStateBooleanSelect = ({
   className,
   onChange,
   setProps,
+  anyLabel = 'Any',
+  anyPlaceholder = anyLabel,
 }: ThreeStateBooleanSelectProps) => {
-  const threeOptions: SelectOption[] = [...options, { label: 'Any', value: '' }];
+  const threeOptions: SelectOption[] = [...options, { label: anyLabel, value: '' }];
 
   return (
     <Select
       className={className}
       options={threeOptions}
       value={value === null || value === undefined ? '' : value}
-      placeholder="Any"
+      placeholder={anyPlaceholder}
       onChange={(option) => {
         if (!option || option.value === '') {
           onChange?.(null);

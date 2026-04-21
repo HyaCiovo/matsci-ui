@@ -5,29 +5,68 @@ import { Formula } from '../Formula';
 import { Link } from '../../navigation/Link';
 import { validateFormula } from '../../data-entry/MaterialsInput/utils';
 import { ColumnFormat, type Column } from '../SearchUI/types';
+import { formatTemplate } from '../../../text/formatTemplate';
+import { mergeTexts } from '../../../text/mergeTexts';
 import './SynthesisRecipeCard.css';
 
 export interface SynthesisRecipeCardProps {
   id?: string;
   className?: string;
   data: any;
+  texts?: Partial<SynthesisRecipeCardTexts>;
 }
+
+export interface SynthesisRecipeCardTexts {
+  extractedFrom: string;
+  iconTooltip: string;
+  betweenTemplate: string;
+  aboveTemplate: string;
+  belowTemplate: string;
+  atTemplate: string;
+  forTemplate: string;
+  inTemplate: string;
+  usingTemplate: string;
+  withTemplate: string;
+}
+
+const DEFAULT_TEXTS: SynthesisRecipeCardTexts = {
+  extractedFrom: 'Extracted from',
+  iconTooltip: 'Synthesis Recipe',
+  betweenTemplate: 'between {min} and {max} {units}',
+  aboveTemplate: 'above {min} {units}',
+  belowTemplate: 'below {max} {units}',
+  atTemplate: 'at {value}',
+  forTemplate: 'for {value}',
+  inTemplate: 'in {value}',
+  usingTemplate: 'using {value}',
+  withTemplate: 'with {value}',
+};
 
 const isFormulaLike = (value: string) => Boolean(value) && /[A-Z][a-z]?\d*/.test(value.replace(/\s/g, ''));
 
-const renderValues = (value: any): string | null => {
+const renderValues = (value: any, texts: SynthesisRecipeCardTexts): string | null => {
   if (value !== null && value !== undefined) {
     if (Array.isArray(value.values)) {
       return `${value.values.map((item: any) => `${item}`).join(', ')} ${value.units ?? ''}`.trim();
     }
     if (value.min_value !== null && value.max_value !== null) {
-      return `between ${value.min_value} and ${value.max_value} ${value.units ?? ''}`.trim();
+      return formatTemplate(texts.betweenTemplate, {
+        min: value.min_value,
+        max: value.max_value,
+        units: value.units ?? '',
+      }).trim();
     }
     if (value.min_value !== null) {
-      return `above ${value.min_value} ${value.units ?? ''}`.trim();
+      return formatTemplate(texts.aboveTemplate, {
+        min: value.min_value,
+        units: value.units ?? '',
+      }).trim();
     }
     if (value.max_value !== null) {
-      return `below ${value.max_value} ${value.units ?? ''}`.trim();
+      return formatTemplate(texts.belowTemplate, {
+        max: value.max_value,
+        units: value.units ?? '',
+      }).trim();
     }
   }
   return null;
@@ -35,7 +74,7 @@ const renderValues = (value: any): string | null => {
 
 const renderArray = (value: any) => (Array.isArray(value) && value.length > 0 ? value.join(', ') : null);
 
-const getConditionsString = (conditions: any) => {
+const getConditionsString = (conditions: any, texts: SynthesisRecipeCardTexts) => {
   const values: string[] = [];
 
   if (typeof conditions !== 'object' || !conditions) {
@@ -43,26 +82,26 @@ const getConditionsString = (conditions: any) => {
   }
 
   (conditions.heating_temperature || [])
-    .map((item: any) => renderValues(item))
-    .map((item: string | null) => (item ? `at ${item}` : null))
+    .map((item: any) => renderValues(item, texts))
+    .map((item: string | null) => (item ? formatTemplate(texts.atTemplate, { value: item }) : null))
     .filter(Boolean)
     .forEach((item: string) => values.push(item));
 
   (conditions.heating_time || [])
-    .map((item: any) => renderValues(item))
-    .map((item: string | null) => (item ? `for ${item}` : null))
+    .map((item: any) => renderValues(item, texts))
+    .map((item: string | null) => (item ? formatTemplate(texts.forTemplate, { value: item }) : null))
     .filter(Boolean)
     .forEach((item: string) => values.push(item));
 
   const heatingAtmosphere = renderArray(conditions.heating_atmosphere);
   if (heatingAtmosphere) {
-    values.push(`in ${heatingAtmosphere}`);
+    values.push(formatTemplate(texts.inTemplate, { value: heatingAtmosphere }));
   }
   if (conditions.mixing_device) {
-    values.push(`using ${conditions.mixing_device}`);
+    values.push(formatTemplate(texts.usingTemplate, { value: conditions.mixing_device }));
   }
   if (conditions.mixing_media) {
-    values.push(`with ${conditions.mixing_media}`);
+    values.push(formatTemplate(texts.withTemplate, { value: conditions.mixing_media }));
   }
 
   return values.join(', ');
@@ -200,7 +239,8 @@ const getColumns = (): Column[] => [
   },
 ];
 
-export const SynthesisRecipeCard = ({ id, className, data }: SynthesisRecipeCardProps) => {
+export const SynthesisRecipeCard = ({ id, className, data, texts: textsProp }: SynthesisRecipeCardProps) => {
+  const texts = mergeTexts(DEFAULT_TEXTS, textsProp);
   const doiUrl = data?.doi?.startsWith('http') ? data.doi : `https://doi.org/${data?.doi}`;
 
   return (
@@ -222,19 +262,22 @@ export const SynthesisRecipeCard = ({ id, className, data }: SynthesisRecipeCard
           />
         ),
         reactionString: formatReactionString(data.reaction_string),
-        synthesisProcedures: data.operations.map((operation: any, index: number) => `${index + 1}. ${operation.token} ${getConditionsString(operation.conditions)}`),
+        synthesisProcedures: data.operations.map(
+          (operation: any, index: number) =>
+            `${index + 1}. ${operation.token} ${getConditionsString(operation.conditions, texts)}`
+        ),
       }}
       columns={getColumns()}
       footer={
         <div>
-          <i>Extracted from</i>{' '}
+          <i>{texts.extractedFrom}</i>{' '}
           <Link href={doiUrl} target="_blank">
             {data.doi}
           </Link>
         </div>
       }
       iconClassName="icon-fontastic-synthesis"
-      iconTooltip="Synthesis Recipe"
+      iconTooltip={texts.iconTooltip}
     />
   );
 };

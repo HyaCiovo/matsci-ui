@@ -10,14 +10,16 @@ export interface CrossrefCardProps {
   crossrefEntry?: any;
   identifier?: string;
   errorMessage?: string;
+  loadingMessage?: string;
   preventOpenAccessFetch?: boolean;
 }
 
 export const CrossrefCard = ({
   errorMessage = 'Could not find reference',
+  loadingMessage = 'Loading...',
   ...otherProps
 }: CrossrefCardProps) => {
-  const props = { errorMessage, ...otherProps };
+  const props = { errorMessage, loadingMessage, ...otherProps };
   const [crossref, setCrossref] = useState(props.crossrefEntry);
   const [failedRequest, setFailedRequest] = useState(false);
   const didFetchRef = useRef(false);
@@ -50,7 +52,7 @@ export const CrossrefCard = ({
   if (!crossref) {
     return (
       <div id={props.id} className={clsx(props.className)}>
-        {failedRequest ? props.errorMessage : 'Loading...'}
+        {failedRequest ? props.errorMessage : props.loadingMessage}
       </div>
     );
   }
@@ -70,4 +72,3 @@ export const CrossrefCard = ({
     />
   );
 };
-

@@ -60,6 +60,7 @@ export * from './components/crystal-toolkit/CrystalToolkitScene';
 export * from './components/crystal-toolkit/Download';
 export * from './components/crystal-toolkit/PhononAnimationScene';
 export * from './components/crystal-toolkit/ReactGraphComponent';
+export { default as Scene } from './components/crystal-toolkit/scene/Scene';
 export * from './components/periodic-table/PeriodicTableFormulaButtons';
 export * from './components/periodic-table/PeriodicTableModeSwitcher';
 export * from './components/periodic-table/PeriodicTablePluginWrapper';

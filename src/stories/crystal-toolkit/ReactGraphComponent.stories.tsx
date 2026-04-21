@@ -1,8 +1,6 @@
 import React from 'react';
 import type { StoryFn } from '@storybook/react';
-import ReactGraphComponent, {
-  ReactGraphComponentProps,
-} from '../../components/crystal-toolkit/ReactGraphComponent/ReactGraphComponent';
+import ReactGraphComponent, { type ReactGraphComponentProps } from '../../components/crystal-toolkit/graph.component';
 import { DEFAULT_OPTIONS, GRAPH } from '../constants';
 
 export default {

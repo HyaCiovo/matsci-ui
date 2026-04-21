@@ -4,6 +4,7 @@ import { type ReactNode, useState } from 'react';
 import { FaAngleDown } from 'react-icons/fa';
 import { downloadAs, type DownloadType } from '../../../utils/download';
 import '../../navigation/Dropdown/Dropdown.css';
+import { mergeTexts } from '../../../text/mergeTexts';
 
 export interface DownloadDropdownProps {
   id?: string;
@@ -14,17 +15,35 @@ export interface DownloadDropdownProps {
   filename?: string;
   tooltip?: string;
   children?: ReactNode;
+  texts?: Partial<DownloadDropdownTexts>;
 }
+
+export interface DownloadDropdownTexts {
+  defaultFilename: string;
+  buttonLabel: string;
+  json: string;
+  csv: string;
+}
+
+const DEFAULT_TEXTS: DownloadDropdownTexts = {
+  defaultFilename: 'export',
+  buttonLabel: 'Download',
+  json: 'JSON',
+  csv: 'CSV',
+};
 
 export const DownloadDropdown = ({
   id,
   className,
   buttonClassName,
   data,
-  filename = 'export',
+  filename: filenameProp,
   tooltip,
   children,
+  texts: textsProp,
 }: DownloadDropdownProps) => {
+  const texts = mergeTexts(DEFAULT_TEXTS, textsProp);
+  const filename = filenameProp ?? texts.defaultFilename;
   const [open, setOpen] = useState(false);
 
   const handleDownload = (type: DownloadType) => {
@@ -38,7 +57,7 @@ export const DownloadDropdown = ({
       className={clsx('button', buttonClassName)}
       title={tooltip}
     >
-      <span>{children ?? 'Download'}</span>
+      <span>{children ?? texts.buttonLabel}</span>
       <span className="icon">
         <FaAngleDown />
       </span>
@@ -65,10 +84,10 @@ export const DownloadDropdown = ({
         >
           <div className="mpc-dropdown-content dropdown-content">
             <DropdownMenu.Item className="dropdown-item" onSelect={() => handleDownload('json')}>
-              JSON
+              {texts.json}
             </DropdownMenu.Item>
             <DropdownMenu.Item className="dropdown-item" onSelect={() => handleDownload('csv')}>
-              CSV
+              {texts.csv}
             </DropdownMenu.Item>
           </div>
         </DropdownMenu.Content>

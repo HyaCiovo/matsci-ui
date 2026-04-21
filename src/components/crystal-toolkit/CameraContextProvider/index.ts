@@ -1,2 +1,2 @@
-export * from './CameraContextProvider';
-export * from './camera-reducer';
+export { CameraContextProvider, CameraContext } from './CameraContextProvider';
+export type { ICameraContext } from './CameraContextProvider';

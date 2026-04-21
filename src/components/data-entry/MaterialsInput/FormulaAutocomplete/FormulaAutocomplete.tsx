@@ -17,6 +17,7 @@ interface Props {
   onChange?: (value: string) => void;
   onSubmit?: (event: React.FormEvent | React.MouseEvent, value?: string) => void;
   setError?: (value: string | null) => void;
+  suggestedLabel?: string;
 }
 
 export const FormulaAutocomplete = ({
@@ -28,6 +29,7 @@ export const FormulaAutocomplete = ({
   onChange,
   onSubmit,
   setError,
+  suggestedLabel = 'Suggested formulas',
 }: Props) => {
   const [isVisible, setIsVisible] = useState(false);
   const [formulaSuggestions, setFormulaSuggestions] = useState<FormulaSuggestion[]>([]);
@@ -83,7 +85,7 @@ export const FormulaAutocomplete = ({
       aria-hidden
     >
       <div data-testid="materials-input-autocomplete-menu-items" className="dropdown-content">
-        <p className="autocomplete-label">Suggested formulas</p>
+        <p className="autocomplete-label">{suggestedLabel}</p>
         {formulaSuggestions.map((suggestion, index) => (
           <a
             key={`${suggestion.formula_pretty}-${index}`}

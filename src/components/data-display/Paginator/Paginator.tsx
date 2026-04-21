@@ -1,6 +1,8 @@
 import clsx from 'clsx';
 import { Dropdown } from '../../navigation/Dropdown';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { formatTemplate } from '../../../text/formatTemplate';
+import { mergeTexts } from '../../../text/mergeTexts';
 import './Paginator.css';
 
 export interface PaginatorProps {
@@ -11,9 +13,29 @@ export interface PaginatorProps {
   currentPage: number;
   isTop?: boolean;
   className?: string;
+  texts?: Partial<PaginatorTexts>;
+}
+
+export interface PaginatorTexts {
+  jumpTo: string;
+  rowsPerPageTemplate: string;
+  ariaLabelPagination: string;
+  previous: string;
+  next: string;
+  ariaLabelGoToPageTemplate: string;
+  ariaLabelPageTemplate: string;
 }
 
 const RESULTS_PER_PAGE_OPTIONS = [10, 15, 30, 50, 75];
+const DEFAULT_TEXTS: PaginatorTexts = {
+  jumpTo: 'Jump to',
+  rowsPerPageTemplate: '{rowsPerPage} / page',
+  ariaLabelPagination: 'pagination',
+  previous: 'Previous',
+  next: 'Next',
+  ariaLabelGoToPageTemplate: 'Go to page {page}',
+  ariaLabelPageTemplate: 'Page {page}',
+};
 
 const getPageCount = (rowCount: number, rowsPerPage: number) => {
   if (!rowsPerPage || rowCount <= 0) {
@@ -47,7 +69,9 @@ export const Paginator = ({
   currentPage,
   isTop = false,
   className,
+  texts: textsProp,
 }: PaginatorProps) => {
+  const texts = mergeTexts(DEFAULT_TEXTS, textsProp);
   const pageCount = getPageCount(rowCount, rowsPerPage);
   const visiblePages = getVisiblePages(currentPage, pageCount);
   const resultsPerPageOptions = [10, 15, 30, 50, 75];
@@ -58,7 +82,7 @@ export const Paginator = ({
       <div className="mpc-paginator-controls">
         <Dropdown
           className="mpc-paginator-dropdown"
-          triggerLabel="Jump to"
+          triggerLabel={texts.jumpTo}
           triggerClassName="button is-small"
           isUp={!isTop}
         >
@@ -76,7 +100,7 @@ export const Paginator = ({
         {onChangeRowsPerPage ? (
           <Dropdown
             className="mpc-paginator-dropdown"
-            triggerLabel={`${rowsPerPage} / page`}
+            triggerLabel={formatTemplate(texts.rowsPerPageTemplate, { rowsPerPage })}
             triggerClassName="button is-small"
             isUp={!isTop}
           >
@@ -94,7 +118,11 @@ export const Paginator = ({
         ) : null}
       </div>
 
-      <nav className="pagination is-small is-centered" role="navigation" aria-label="pagination">
+      <nav
+        className="pagination is-small is-centered"
+        role="navigation"
+        aria-label={texts.ariaLabelPagination}
+      >
         <button
           className="pagination-previous"
           disabled={currentPage === 1}
@@ -102,7 +130,7 @@ export const Paginator = ({
           onClick={() => currentPage > 1 && onChangePage(currentPage - 1)}
         >
           <FaArrowLeft />
-          <span className="ml-1 is-hidden-touch">Previous</span>
+          <span className="ml-1 is-hidden-touch">{texts.previous}</span>
         </button>
         <button
           className="pagination-next"
@@ -110,7 +138,7 @@ export const Paginator = ({
           aria-hidden={currentPage === pageCount}
           onClick={() => currentPage < pageCount && onChangePage(currentPage + 1)}
         >
-          <span className="mr-1 is-hidden-touch">Next</span>
+          <span className="mr-1 is-hidden-touch">{texts.next}</span>
           <FaArrowRight />
         </button>
         <ul className="pagination-list">
@@ -118,7 +146,11 @@ export const Paginator = ({
             <li key={page}>
               <a
                 className={clsx('pagination-link', { 'is-current': page === currentPage })}
-                aria-label={page === currentPage ? `Go to page ${page}` : `Page ${page}`}
+                aria-label={
+                  page === currentPage
+                    ? formatTemplate(texts.ariaLabelGoToPageTemplate, { page })
+                    : formatTemplate(texts.ariaLabelPageTemplate, { page })
+                }
                 onClick={() => onChangePage(page)}
               >
                 {page.toLocaleString()}

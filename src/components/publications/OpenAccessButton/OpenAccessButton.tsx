@@ -2,6 +2,7 @@ import axios from 'axios';
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { Tooltip } from '../../data-display/Tooltip';
+import { mergeTexts } from '../../../text/mergeTexts';
 import openAccessButtonLogo from './oabColorPng';
 import './OpenAccessButton.css';
 
@@ -12,7 +13,18 @@ export interface OpenAccessButtonProps {
   url?: string;
   target?: string;
   compact?: boolean;
+  texts?: Partial<OpenAccessButtonTexts>;
 }
+
+export interface OpenAccessButtonTexts {
+  label: string;
+  tooltip: string;
+}
+
+const DEFAULT_TEXTS: OpenAccessButtonTexts = {
+  label: 'Open Access',
+  tooltip: 'Open Access',
+};
 
 export const OpenAccessButton = ({
   className = 'tag',
@@ -21,7 +33,9 @@ export const OpenAccessButton = ({
   url: urlProp,
   compact = false,
   id,
+  texts: textsProp,
 }: OpenAccessButtonProps) => {
+  const texts = mergeTexts(DEFAULT_TEXTS, textsProp);
   const [openAccessUrl, setOpenAccessUrl] = useState<string | undefined>(urlProp);
   const [cannotFetchOpenAccessUrl, setCannotFetchOpenAccessUrl] = useState(() => !doi);
   const didFetchRef = useRef(false);
@@ -76,11 +90,11 @@ export const OpenAccessButton = ({
           className={clsx('mpc-open-access-button', className)}
         >
           {openAccessUrl ? <img src={openAccessButtonLogo} /> : <div className="loader mpc-open-access-loader" />}
-          {!compact ? <span className="ml-1">Open Access</span> : null}
+          {!compact ? <span className="ml-1">{texts.label}</span> : null}
         </a>
       }
     >
-      Open Access
+      {texts.tooltip}
     </Tooltip>
   );
 };

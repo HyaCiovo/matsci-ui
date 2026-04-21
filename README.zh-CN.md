@@ -83,6 +83,36 @@ export function DemoSearchUI() {
 }
 ```
 
+## 文案定制（Text 填充方案）
+
+本组件库尽量避免在组件内部写死 UI 文案。大多数组件会提供两类可覆写入口：
+- `texts?: Partial<...>`：按组件维度组织的一组文案字段（推荐）
+- `ariaLabel` / `placeholder` / `buttonLabel` 等单独 props：用于覆盖个别文案
+
+这样可以在不引入全局 i18n 运行时依赖的情况下，按需实现中英文切换/产品级文案定制。
+
+示例（覆盖 DataTable + Paginator 文案）：
+
+```tsx
+import { DataTable } from '@hyacinth/matsci-ui';
+
+<DataTable
+  data={data}
+  columns={columns}
+  texts={{
+    columns: '列',
+    selectAll: '全选',
+    rowsPerPage: '每页行数',
+    pageSummaryTemplate: '{start}-{end} / 共 {total}',
+    paginator: {
+      previous: '上一页',
+      next: '下一页',
+      jumpTo: '跳转到',
+    },
+  }}
+/>;
+```
+
 ## 公共导出
 
 - 包根导出入口见 [src/index.ts](./src/index.ts)。

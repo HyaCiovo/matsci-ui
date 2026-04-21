@@ -14,6 +14,7 @@ interface PeriodicTableElementButtonProps {
   hidden: boolean;
   interactionDisabled: boolean;
   defaultDisabled: boolean;
+  unavailableTitle?: string;
   lastAction?: SelectableTableLastAction;
   onToggle: (element: string) => void;
   onHoverDetail: (element: string | null) => void;
@@ -29,6 +30,7 @@ function PeriodicTableElementButtonImpl({
   hidden,
   interactionDisabled,
   defaultDisabled,
+  unavailableTitle = 'Unavailable in current table',
   lastAction,
   onToggle,
   onHoverDetail,
@@ -77,7 +79,7 @@ function PeriodicTableElementButtonImpl({
       }}
       data-last-action={lastAction?.element === element ? lastAction.type : undefined}
       aria-disabled={disabled}
-      title={defaultDisabled ? 'Unavailable in current table' : undefined}
+      title={defaultDisabled ? unavailableTitle : undefined}
     >
       {detail ? (
         <>

@@ -1,1 +1,1 @@
-export * from './Download';
+export { Download } from './Download';
