@@ -14,9 +14,6 @@ function resolveStorybookLocale({
   globals?: Record<string, unknown>;
   locationSearch?: string;
 }): StorybookLocale {
-  const fromGlobals = globals?.sbLocale ?? globals?.locale;
-  if (fromGlobals === 'en' || fromGlobals === 'zh') return fromGlobals;
-
   if (typeof locationSearch === 'string') {
     const globalsParam = new URLSearchParams(locationSearch).get('globals') ?? '';
     for (const item of globalsParam.split(';')) {
@@ -24,6 +21,9 @@ function resolveStorybookLocale({
       if ((k === 'sbLocale' || k === 'locale') && (v === 'en' || v === 'zh')) return v;
     }
   }
+
+  const fromGlobals = globals?.sbLocale ?? globals?.locale;
+  if (fromGlobals === 'en' || fromGlobals === 'zh') return fromGlobals;
 
   return 'en';
 }
@@ -47,7 +47,10 @@ const preview: Preview = {
   decorators: [
     (Story, context) => {
       const globals = context.globals as Record<string, unknown>;
-      const locale = resolveStorybookLocale({ globals });
+      const locale = resolveStorybookLocale({
+        globals,
+        locationSearch: typeof window === 'undefined' ? undefined : window.location.search,
+      });
       if (typeof document !== 'undefined') {
         document.documentElement.lang = locale;
       }

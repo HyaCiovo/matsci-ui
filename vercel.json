@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/mp-api/:path*",
+      "destination": "https://api.materialsproject.org/:path*"
+    },
+    {
+      "source": "/mp-contribs-api/:path*",
+      "destination": "https://contribs-api.materialsproject.org/:path*"
+    },
+    {
+      "source": "/matscholar-api/:path*",
+      "destination": "https://www.matscholar.com/:path*"
+    }
+  ]
+}
