@@ -1,5 +1,5 @@
 import React from 'react';
-import type { StoryFn } from '@storybook/react';
+import type { StoryFn } from '@storybook/react-vite';
 import { OpenAccessButton } from '../../components/publications/OpenAccessButton';
 import { OpenAccessButtonProps } from '../../components/publications/OpenAccessButton/OpenAccessButton';
 

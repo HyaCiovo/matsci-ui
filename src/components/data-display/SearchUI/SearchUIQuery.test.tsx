@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { SearchUIContainer } from './SearchUIContainer';
 import { useSearchUIContext } from './SearchUIContextProvider';
@@ -81,12 +80,6 @@ const QueryProbe = () => {
 
 describe('SearchUI query utilities', () => {
   beforeAll(() => {
-    class ResizeObserverMock {
-      observe() {}
-      unobserve() {}
-      disconnect() {}
-    }
-    vi.stubGlobal('ResizeObserver', ResizeObserverMock);
     Object.defineProperty(HTMLElement.prototype, 'hasPointerCapture', {
       configurable: true,
       value: () => false,
@@ -99,10 +92,6 @@ describe('SearchUI query utilities', () => {
       configurable: true,
       value: () => undefined,
     });
-  });
-
-  afterAll(() => {
-    vi.unstubAllGlobals();
   });
 
   afterEach(() => {
@@ -245,13 +234,17 @@ describe('SearchUI query utilities', () => {
   });
 
   it('uses legacy request params, fields key, and total key when submitting a search', async () => {
-    const getSpy = vi.spyOn(axios, 'get').mockResolvedValue({
-      data: {
+    const mockedFetch = globalThis.fetch as unknown as ReturnType<typeof vi.fn>;
+    mockedFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      json: async () => ({
         data: [{ material_id: 'mp-149' }],
         meta: {
           custom_total: 42,
         },
-      },
+      }),
     });
 
     render(
@@ -272,22 +265,17 @@ describe('SearchUI query utilities', () => {
     fireEvent.click(screen.getByTestId('run-search'));
 
     await waitFor(() => {
-      expect(getSpy).toHaveBeenCalled();
+      expect(mockedFetch).toHaveBeenCalled();
     });
 
-    const requestConfig = getSpy.mock.calls[0]?.[1];
-    const serializedParams =
-      typeof requestConfig?.paramsSerializer === 'function'
-        ? requestConfig.paramsSerializer(requestConfig.params)
-        : '';
-    expect(requestConfig?.params).toMatchObject({
-      _sort_fields: ['material_id'],
-      _limit: 15,
-      _skip: 0,
-      project: 'materials',
-      _fields: ['material_id', 'formula_pretty'],
-    });
-    expect(serializedParams).toContain('_fields=material_id%2Cformula_pretty');
+    const url = String(mockedFetch.mock.calls[0]?.[0] ?? '');
+    const parsed = new URL(url);
+    expect(parsed.origin + parsed.pathname).toBe('https://example.com/materials');
+    expect(parsed.searchParams.get('_limit')).toBe('15');
+    expect(parsed.searchParams.get('_skip')).toBe('0');
+    expect(parsed.searchParams.get('project')).toBe('materials');
+    expect(parsed.searchParams.get('_sort_fields')).toBe('material_id');
+    expect(parsed.searchParams.get('_fields')).toBe('material_id,formula_pretty');
 
     await waitFor(() => {
       expect(screen.getByTestId('query-probe')).toHaveTextContent('"_sort_fields"');

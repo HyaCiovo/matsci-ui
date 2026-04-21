@@ -1,5 +1,5 @@
 import React from 'react';
-import type { StoryFn } from '@storybook/react';
+import type { StoryFn } from '@storybook/react-vite';
 import { DataBlock } from '../../components/data-display/DataBlock';
 import { DataBlockProps } from '../../components/data-display/DataBlock/DataBlock';
 import { Column } from '../../components/data-display/SearchUI/types';

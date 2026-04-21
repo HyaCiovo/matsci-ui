@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { StoryFn } from '@storybook/react';
+import type { StoryFn } from '@storybook/react-vite';
 import { ThreeStateBooleanSelect } from '../../components/data-entry/ThreeStateBooleanSelect';
 import { ThreeStateBooleanSelectProps } from '../../components/data-entry/ThreeStateBooleanSelect/ThreeStateBooleanSelect';
 

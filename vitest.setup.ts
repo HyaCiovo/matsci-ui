@@ -7,3 +7,5 @@ class ResizeObserverMock {
 }
 
 vi.stubGlobal('ResizeObserver', ResizeObserverMock);
+
+vi.stubGlobal('fetch', vi.fn());

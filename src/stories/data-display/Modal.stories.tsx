@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { StoryFn } from '@storybook/react';
+import type { StoryFn } from '@storybook/react-vite';
 import { Modal, ModalContextProvider, ModalTrigger } from '../../components/data-display/Modal';
 import { ModalContextProviderProps } from '../../components/data-display/Modal/ModalContextProvider';
 

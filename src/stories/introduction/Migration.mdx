@@ -1,111 +1,188 @@
-import { Meta } from '@storybook/blocks';
+import { Meta } from '@storybook/addon-docs/blocks';
 import { I18nText } from '../i18n/I18nText';
 
-<Meta title="Introduction/Migration (mp-react → matsci-ui)" />
+<Meta
+  title="Introduction/Migration (mp-react → matsci-ui)"
+  parameters={{
+    docs: {
+      description: {
+        component:
+          'en-US: Migration guide from mp-react-components to matsci-ui, including breaking changes, compatibility notes, priority, and examples. | zh-CN: 从 mp-react-components 迁移到 matsci-ui 的指南，包含破坏性变更、兼容性说明、优先级与示例。',
+      },
+    },
+    locale: 'en-US,zh-CN',
+    group: 'Introduction',
+    status: 'stable',
+  }}
+/>
 
 # <I18nText en="Migration: mp-react-components → matsci-ui" zh="迁移：mp-react-components → matsci-ui" />
 
 <I18nText
-  en="This page summarizes the key differences between the legacy `mp-react-components` package and this repository (`matsci-ui`)."
-  zh="本页总结了 legacy 包 `mp-react-components` 与当前仓库（`matsci-ui`）之间的关键差异。"
+  en="`matsci-ui` is not a package rename of `mp-react-components`. It is a modernized component-library release surface with new packaging, new docs infrastructure, and several implementation replacements."
+  zh="`matsci-ui` 不是对 `mp-react-components` 的简单改名，而是一次围绕发布面、文档体系和底层实现的现代化重构。"
 />
 
-## <I18nText en="Quick Summary" zh="快速概览" />
+## <I18nText en="What Changes First" zh="优先变化项" />
+
+<I18nText
+  en={
+    <ol>
+      <li>Change the package import from `@gnosys/mp-react-components` to `@hyacinth/matsci-ui`.</li>
+      <li>Import `@hyacinth/matsci-ui/style.css` once at the application entry.</li>
+      <li>Replace any dependency on legacy theme preset files with CSS token overrides.</li>
+      <li>Re-test Search UI, `DataTable`, `Tooltip`, `JsonView`, and Crystal Toolkit flows.</li>
+    </ol>
+  }
+  zh={
+    <ol>
+      <li>把包导入从 `@gnosys/mp-react-components` 改为 `@hyacinth/matsci-ui`。</li>
+      <li>在应用入口显式引入一次 `@hyacinth/matsci-ui/style.css`。</li>
+      <li>把对历史主题预设文件的依赖改为 CSS Token 覆盖。</li>
+      <li>重新回归 Search UI、`DataTable`、`Tooltip`、`JsonView` 与 Crystal Toolkit 相关页面。</li>
+    </ol>
+  }
+/>
+
+## <I18nText en="High-Risk Changes" zh="高风险变更" />
 
 <I18nText
   en={
     <ul>
-      <li>
-        <b>React baseline</b>
-        <ul>
-          <li>Legacy: historically React 16/17-era ecosystem (many libraries and patterns from that time)</li>
-          <li>New: React 18-first implementation</li>
-        </ul>
-      </li>
-      <li>
-        <b>Packaging</b>
-        <ul>
-          <li>New package is ESM-only and publishes:</li>
-          <li>JS: dist/index.js</li>
-          <li>Types: dist/index.d.ts</li>
-          <li>Styles: dist/index.css exposed as @hyacinth/matsci-ui/style.css</li>
-        </ul>
-      </li>
-      <li>
-        <b>Public exports</b>
-        <ul>
-          <li>New is effectively a superset of legacy root exports.</li>
-          <li>The only legacy root export not available from the new root is Scene.</li>
-        </ul>
-      </li>
+      <li><b>DataTable</b>: the implementation moved from `react-data-table-component` to `@tanstack/react-table`.</li>
+      <li><b>Tooltip</b>: the implementation moved from `react-tooltip` to Radix Tooltip primitives.</li>
+      <li><b>JsonView</b>: the implementation moved from `react-json-view` to `@microlink/react-json-view`.</li>
+      <li><b>Network layer</b>: internal requests now use native `fetch` instead of `axios`.</li>
+      <li><b>Theming</b>: prebuilt `dark.css` and `materials.css` are no longer published.</li>
     </ul>
   }
   zh={
     <ul>
-      <li>
-        <b>React 基线</b>
-        <ul>
-          <li>Legacy：历史上主要面向 React 16/17 时代的生态与写法</li>
-          <li>New：以 React 18 为基线实现</li>
-        </ul>
-      </li>
-      <li>
-        <b>打包与发布</b>
-        <ul>
-          <li>新包为 ESM-only，发布产物包含：</li>
-          <li>JS：dist/index.js</li>
-          <li>类型：dist/index.d.ts</li>
-          <li>样式：dist/index.css，通过 @hyacinth/matsci-ui/style.css 暴露</li>
-        </ul>
-      </li>
-      <li>
-        <b>公共导出</b>
-        <ul>
-          <li>新包整体上是 legacy 根导出的超集。</li>
-          <li>legacy 根导出里新包根部不提供的只有 Scene。</li>
-        </ul>
-      </li>
+      <li><b>DataTable</b>：底层从 `react-data-table-component` 切换为 `@tanstack/react-table`。</li>
+      <li><b>Tooltip</b>：底层从 `react-tooltip` 切换为 Radix Tooltip。</li>
+      <li><b>JsonView</b>：底层从 `react-json-view` 切换为 `@microlink/react-json-view`。</li>
+      <li><b>网络层</b>：内部请求已从 `axios` 切换为原生 `fetch`。</li>
+      <li><b>主题方式</b>：预置的 `dark.css` 与 `materials.css` 已不再发布。</li>
     </ul>
   }
 />
 
-## <I18nText en="Breaking / High-Risk Changes" zh="破坏性 / 高风险变更" />
+## <I18nText en="Compatibility Notes" zh="兼容性说明" />
 
-- **DataTable**
-  - Legacy: `react-data-table-component`
-  - New: `@tanstack/react-table`
-- **Tooltip**
-  - Legacy: `react-tooltip`
-  - New: Radix Tooltip-based implementation
-- **JsonView**
-  - Legacy: `react-json-view`
-  - New: `@microlink/react-json-view`
+<I18nText
+  en={
+    <ul>
+      <li>Peer dependencies now declare React 17, 18, and 19 support.</li>
+      <li>ESM-first packaging assumes a modern bundler and modern evergreen browsers.</li>
+      <li>Behavioral compatibility is higher than DOM-structure compatibility. Snapshot and selector-based tests often need updates.</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li>peerDependencies 当前显式声明支持 React 17、18 与 19。</li>
+      <li>ESM-first 的发布方式默认宿主使用现代 bundler 与现代浏览器。</li>
+      <li>行为兼容通常高于 DOM 结构兼容；如果测试依赖旧 DOM 或 className，通常需要更新。</li>
+    </ul>
+  }
+/>
 
-## Styles
+## <I18nText en="Migration Examples" zh="迁移示例" />
 
-<I18nText en="Import styles once in your app entry:" zh="在应用入口引入一次样式：" />
+<I18nText en="Package and style import:" zh="包名与样式入口：" />
 
-```ts
+```tsx
 import '@hyacinth/matsci-ui/style.css';
+import { DataTable, SearchUIContainer } from '@hyacinth/matsci-ui';
 ```
 
-## Detailed Diff
+<I18nText en="Theme migration from preset files to tokens:" zh="主题从预置文件迁移到 Token：" />
+
+```css
+:root {
+  --mpc-color-bg: #10131a;
+  --mpc-color-surface: #171b24;
+  --mpc-color-text: #f3f5f8;
+  --mpc-color-primary: #6da8ff;
+}
+```
+
+<I18nText en="Crystal Toolkit migration preference:" zh="Crystal Toolkit 的推荐迁移方式：" />
+
+```tsx
+import { CrystalToolkitScene } from '@hyacinth/matsci-ui';
+```
+
+## <I18nText en="Priority and Effort" zh="优先级与工作量" />
 
 <I18nText
   en={
-    <>
-      For a more complete, repo-level comparison (exports, packaging notes, and migration advice), see:
-      <ul>
-        <li>docs/component-diff-audit.md in the repository root.</li>
-      </ul>
-    </>
+    <table>
+      <thead>
+        <tr>
+          <th>Priority</th>
+          <th>Area</th>
+          <th>Expected effort</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>P0</td>
+          <td>Package rename, style import, theme preset removal</td>
+          <td>Low to medium</td>
+        </tr>
+        <tr>
+          <td>P1</td>
+          <td>Search UI, DataTable, Tooltip, JsonView</td>
+          <td>Medium to high</td>
+        </tr>
+        <tr>
+          <td>P2</td>
+          <td>Visual regression and selector updates</td>
+          <td>Medium</td>
+        </tr>
+      </tbody>
+    </table>
   }
   zh={
-    <>
-      如需更完整的仓库级对比（导出、打包说明、迁移建议），可参考：
-      <ul>
-        <li>仓库根目录的 docs/component-diff-audit.md</li>
-      </ul>
-    </>
+    <table>
+      <thead>
+        <tr>
+          <th>优先级</th>
+          <th>范围</th>
+          <th>预估工作量</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>P0</td>
+          <td>包名替换、样式引入、主题预设清理</td>
+          <td>低到中</td>
+        </tr>
+        <tr>
+          <td>P1</td>
+          <td>Search UI、DataTable、Tooltip、JsonView</td>
+          <td>中到高</td>
+        </tr>
+        <tr>
+          <td>P2</td>
+          <td>视觉回归与测试选择器修复</td>
+          <td>中</td>
+        </tr>
+      </tbody>
+    </table>
   }
+/>
+
+## <I18nText en="Detailed Report" zh="详细报告" />
+
+<I18nText
+  en={<a href="https://github.com/HyaCiovo/matsci-ui/blob/main/docs/repo-diff-report.md">Open the full repository diff report</a>}
+  zh={<a href="https://github.com/HyaCiovo/matsci-ui/blob/main/docs/repo-diff-report.md">查看完整仓库差异报告</a>}
+/>
+
+---
+
+<I18nText
+  en={<a href="https://github.com/HyaCiovo/matsci-ui/edit/main/src/stories/introduction/Migration.mdx">Edit this page</a>}
+  zh={<a href="https://github.com/HyaCiovo/matsci-ui/edit/main/src/stories/introduction/Migration.mdx">编辑此页</a>}
 />

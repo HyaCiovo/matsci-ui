@@ -1,72 +1,49 @@
-import { Meta, ArgTypes } from '@storybook/blocks';
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
 import { ColumnInterface } from '../type-components';
+import { I18nText } from '../i18n/I18nText';
 
-<Meta title="Search UI/Columns" />
+<Meta
+  title="Search UI/Columns"
+  parameters={{
+    docs: {
+      description: {
+        component:
+          'en-US: Column configuration for Search UI, DataTable, and DataBlock, including renderers, formatters, tokens, accessibility, and performance guidance. | zh-CN: Search UI、DataTable 与 DataBlock 的列配置说明，包含渲染、格式化、Token、无障碍与性能建议。',
+      },
+    },
+    locale: 'en-US,zh-CN',
+    group: 'Search UI',
+    status: 'stable',
+  }}
+/>
 
-# Columns
+# <I18nText en="Columns" zh="列配置" />
 
-The `SearchUIContainer` component requires a `columns` prop that defines a list of columns to query for along with options for how to render each column.
-This same API is used for the `columns` props in the `DataTable` and `DataBlock` components.
-Below are all the options available in a column definition object.
+<I18nText
+  en="The `columns` prop defines which fields should be queried, how each field should be rendered, and which fields participate in sorting, visibility, or rich header behavior. The same shape is reused by `SearchUIContainer`, `DataTable`, and `DataBlock`."
+  zh="`columns` 用来定义要查询哪些字段、每个字段如何渲染，以及哪些字段参与排序、显示控制或富头部展示。`SearchUIContainer`、`DataTable` 与 `DataBlock` 共享这一套结构。"
+/>
 
 <ArgTypes of={ColumnInterface} />
 
-## Example
+## <I18nText en="Example" zh="示例" />
 
 ```js
 [
-  {
-    title: 'Synthesizable',
-    selector: 'theoretical',
-    formatType: 'BOOLEAN_CLASS',
-    formatOptions: {
-      truthyClass: '',
-      falsyClass: 'fas fa-star'
-    },
-    cellTooltip: 'Experimentally observed',
-    hideName: true,
-    width: '30px'
-  },
   {
     title: 'Material ID',
     selector: 'material_id',
     formatType: 'LINK',
     formatOptions: {
-      baseUrl: '/materials/'
+      baseUrl: '/materials/',
     },
-    minWidth: '130px'
+    minWidth: '130px',
   },
   {
     title: 'Formula',
     selector: 'formula_pretty',
     formatType: 'FORMULA',
-    minWidth: '130px'
-  },
-  {
-    title: 'Crystal System',
-    selector: 'symmetry.crystal_system'
-  },
-  {
-    title: 'Space Group Symbol',
-    selector: 'symmetry.symbol',
-    formatType: 'SPACEGROUP_SYMBOL',
-    tooltip: 'The space group symbol for the lattice'
-  },
-  {
-    title: 'Volume',
-    selector: 'volume',
-    formatType: 'FIXED_DECIMAL',
-    formatOptions: {
-      decimals: 2
-    },
-    units: '\u00c5\u00b3',
-    omit: true,
-    right: true
-  },
-  {
-    title: 'Sites',
-    selector: 'nsites',
-    right: true
+    minWidth: '130px',
   },
   {
     title: 'Energy Above Hull',
@@ -74,22 +51,11 @@ Below are all the options available in a column definition object.
     formatType: 'FIXED_DECIMAL',
     formatOptions: {
       decimals: 2,
-      abbreviateNearZero: true
+      abbreviateNearZero: true,
     },
     units: 'meV/atom',
     conversionFactor: 1000,
-    right: true
-  },
-  {
-    title: 'Formation Energy',
-    selector: 'formation_energy_per_atom',
-    formatType: 'SIGNIFICANT_FIGURES',
-    formatOptions: {
-      sigFigs: 3
-    },
-    units: 'eV/atom',
-    omit: true,
-    right: true
+    right: true,
   },
   {
     title: 'Predicted Stable',
@@ -97,79 +63,106 @@ Below are all the options available in a column definition object.
     formatType: 'BOOLEAN',
     formatOptions: {
       truthyLabel: 'yes',
-      falsyLabel: 'no'
+      falsyLabel: 'no',
     },
-    omit: true,
-    right: false
-  }
+  },
 ];
 ```
 
-## Column Formats
+## <I18nText en="Common Patterns" zh="常见模式" />
 
-Below are all the available options for a column's `formatType`. Some types must be used in conjunction with
-a `formatOptions` object that includes properties specific to that format type. Where necessary, those options are also described.
+<I18nText
+  en={
+    <ul>
+      <li>Use `selector` for plain field access such as `material_id` or nested access such as `symmetry.symbol`.</li>
+      <li>Use `formatType` plus `formatOptions` when the cell needs domain-specific rendering.</li>
+      <li>Use `render` only when built-in formats are insufficient and you need full control.</li>
+      <li>Use `hidden`, `omit`, and `excludeFromColumnsSelector` to control presentation without losing query semantics.</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li>用 `selector` 指定普通字段访问，如 `material_id`，或嵌套字段访问，如 `symmetry.symbol`。</li>
+      <li>当单元格需要领域格式化时，使用 `formatType` 与 `formatOptions`。</li>
+      <li>只有在内置格式不足时再使用 `render`，以获得完全控制权。</li>
+      <li>使用 `hidden`、`omit`、`excludeFromColumnsSelector` 控制展示层，而不破坏查询语义。</li>
+    </ul>
+  }
+/>
 
-### **BOOLEAN**
+## <I18nText en="Frequently Used Format Types" zh="常用格式类型" />
 
-Convert boolean values to custom labels.
+<I18nText
+  en={
+    <ul>
+      <li><b>`FORMULA`</b>: render chemical formulas with domain-aware formatting</li>
+      <li><b>`LINK`</b>: render labels as URLs or build URLs from `baseUrl`</li>
+      <li><b>`FIXED_DECIMAL`</b>: round numeric values to a configured decimal count</li>
+      <li><b>`SIGNIFICANT_FIGURES`</b>: keep scientific precision consistent across rows</li>
+      <li><b>`BOOLEAN`</b> and <b>`BOOLEAN_CLASS`</b>: map boolean values to labels or icon classes</li>
+      <li><b>`SPACEGROUP_SYMBOL`</b> and <b>`POINTGROUP`</b>: render crystallographic symbols with unicode-aware formatting</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li><b>`FORMULA`</b>：以化学式友好的方式渲染材料配方</li>
+      <li><b>`LINK`</b>：直接渲染 URL，或基于 `baseUrl` 拼接跳转地址</li>
+      <li><b>`FIXED_DECIMAL`</b>：按固定小数位数渲染数值</li>
+      <li><b>`SIGNIFICANT_FIGURES`</b>：按有效数字保持科学数据的一致展示</li>
+      <li><b>`BOOLEAN`</b> 与 <b>`BOOLEAN_CLASS`</b>：把布尔值映射为文案或图标 class</li>
+      <li><b>`SPACEGROUP_SYMBOL`</b> 与 <b>`POINTGROUP`</b>：按晶体学语义渲染群符号</li>
+    </ul>
+  }
+/>
 
-| formatOption | Description                             |
-| ------------ | --------------------------------------- |
-| truthyLabel  | text to show when cell value is `true`  |
-| falsyLabel   | text to show when cell value is `false` |
+## <I18nText en="Design Tokens" zh="设计 Token" />
 
-### **BOOLEAN_CLASS**
+<I18nText
+  en="Columns reuse the global table and surface tokens. In practice, `--mpc-color-text`, `--mpc-color-text-muted`, `--mpc-border-color`, and `--mpc-hover-bg` have the biggest visual impact."
+  zh="列渲染会复用全局表格与表面层 Token。实践中影响最大的通常是 `--mpc-color-text`、`--mpc-color-text-muted`、`--mpc-border-color` 与 `--mpc-hover-bg`。"
+/>
 
-Convert boolean values to cells with custom class names. This can be used to conditionally render icons inside a cell.
+## <I18nText en="Accessibility" zh="无障碍" />
 
-| formatOption | Description                                  |
-| ------------ | -------------------------------------------- |
-| truthyClass  | class name to use when cell value is `true`  |
-| falsyClass   | class name to use when cell value is `false` |
+<I18nText
+  en={
+    <ul>
+      <li>Prefer explicit text labels over icon-only cell content.</li>
+      <li>When you use `render`, keep links and buttons keyboard reachable and provide `aria-label` values when the visible text is ambiguous.</li>
+      <li>Do not rely on color alone when a column communicates state.</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li>优先使用可读文本，而不是纯图标单元格。</li>
+      <li>如果使用 `render` 自定义渲染，请保证链接和按钮可键盘聚焦，并在文案不够明确时补 `aria-label`。</li>
+      <li>当列表达状态时，不要只依赖颜色差异。</li>
+    </ul>
+  }
+/>
 
-### **FIXED_DECIMAL**
+## <I18nText en="Performance" zh="性能" />
 
-Round values to the nearest specified decimal place (defaults to 2 if no `formatOptions` is supplied).
+<I18nText
+  en={
+    <ul>
+      <li>Keep `columns` reference-stable in app code to reduce unnecessary re-computation.</li>
+      <li>Prefer built-in `formatType` handling over heavy custom `render` trees.</li>
+      <li>Avoid rendering large nested React subtrees in every cell when server-side pagination is available.</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li>在业务代码中保持 `columns` 引用稳定，减少不必要的重复计算。</li>
+      <li>能用内置 `formatType` 时，优先不要写过重的自定义 `render`。</li>
+      <li>如果服务端分页可用，不要在每个单元格里渲染庞大的嵌套 React 子树。</li>
+    </ul>
+  }
+/>
 
-| formatOption | Description                           |
-| ------------ | ------------------------------------- |
-| decimals     | number of decimals to round values to |
+---
 
-### **FORMULA**
-
-Render values as chemical formulas.
-
-No formatOptions
-
-### **LINK**
-
-Turn cell values into links. This format can be used in two different ways. If the raw data in this property is a full URL,
-you can specifiy a different property to use as the link label. You can also use this format to append the raw data value to
-a specified `baseUrl`. Doing so will render the raw data value as the link label and use the `baseUrl` + value as the link's destination.
-
-| formatOption       | Description                                                                                         |
-| ------------------ | --------------------------------------------------------------------------------------------------- |
-| baseUrl            | the base URL that will be prepended to the cell's raw value to create the link's destination        |
-| linkLabelisFormula | if true, the link label will render as a formatted chemical formula                                 |
-| linkLabelKey       | the property key to use as the link's label (omit this to render the raw column value as the label) |
-
-### **POINTGROUP**
-
-Map point group strings to unicode and render as unicode.
-
-No formatOptions
-
-### **SIGNIFICANT_FIGURES**
-
-Round values to the specified number of significant figures (defaults to 5 if no `formatOptions` is supplied).
-
-| formatOption | Description                                      |
-| ------------ | ------------------------------------------------ |
-| sigFigs      | number of significant figures to round values to |
-
-### **SPACEGROUP_SYMBOL**
-
-Map space group symbols to unicode and render as unicode.
-
-No formatOptions
+<I18nText
+  en={<a href="https://github.com/HyaCiovo/matsci-ui/edit/main/src/stories/search/Columns.mdx">Edit this page</a>}
+  zh={<a href="https://github.com/HyaCiovo/matsci-ui/edit/main/src/stories/search/Columns.mdx">编辑此页</a>}
+/>

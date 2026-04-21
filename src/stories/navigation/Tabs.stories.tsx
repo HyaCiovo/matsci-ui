@@ -1,5 +1,5 @@
 import React from 'react';
-import type { StoryFn } from '@storybook/react';
+import type { StoryFn } from '@storybook/react-vite';
 import { Tabs } from '../../components/navigation/Tabs';
 import { TabsProps } from '../../components/navigation/Tabs/Tabs';
 

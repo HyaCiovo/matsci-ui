@@ -106,13 +106,24 @@
 .mpc-search-ui .mpc-search-ui-data-header-content {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  flex-flow: nowrap;
-  gap: 0.5rem;
+  flex-flow: wrap;
 }
 
 .mpc-search-ui .mpc-search-ui-data-header {
   min-height: 4.5rem;
+}
+
+.mpc-search-ui .progress-container {
+  position: relative;
+  flex-grow: 1;
+  margin: 0 1em;
+}
+
+.mpc-search-ui .progress {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .mpc-search-ui .mpc-search-ui-data-header-controls {

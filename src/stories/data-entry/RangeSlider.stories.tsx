@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { StoryFn } from '@storybook/react';
+import type { StoryFn } from '@storybook/react-vite';
 import { RangeSlider } from '../../components/data-entry/RangeSlider';
 import { RangeSliderProps } from '../../components/data-entry/RangeSlider/RangeSlider';
 

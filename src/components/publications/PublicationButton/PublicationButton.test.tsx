@@ -1,10 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import axios from 'axios';
 import { PublicationButton } from './PublicationButton';
-
-vi.mock('axios', () => ({
-  default: { get: vi.fn() },
-}));
 
 describe('PublicationButton', () => {
   it('renders a doi link when doi is provided', () => {
@@ -13,17 +8,25 @@ describe('PublicationButton', () => {
   });
 
   it('fetches a journal/year label when children are not provided', async () => {
-    const mockedAxios = axios as unknown as { get: ReturnType<typeof vi.fn> };
-    mockedAxios.get.mockResolvedValueOnce({
-      data: {
+    const mockedFetch = globalThis.fetch as unknown as ReturnType<typeof vi.fn>;
+    mockedFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      json: async () => ({
         message: {
           'container-title': ['Test Journal'],
           created: { 'date-parts': [[2020]] },
           URL: 'https://doi.org/10.1234/example',
         },
-      },
+      }),
     });
-    mockedAxios.get.mockResolvedValueOnce({ data: 'Test Journal (2020). http://example.com' });
+    mockedFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      text: async () => 'Test Journal (2020). http://example.com',
+    });
 
     render(<PublicationButton doi="10.1234/example" showTooltip />);
 
@@ -33,8 +36,13 @@ describe('PublicationButton', () => {
   });
 
   it('does not fetch crossref metadata when children are provided', async () => {
-    const mockedAxios = axios as unknown as { get: ReturnType<typeof vi.fn> };
-    mockedAxios.get.mockResolvedValueOnce({ data: 'Test citation.' });
+    const mockedFetch = globalThis.fetch as unknown as ReturnType<typeof vi.fn>;
+    mockedFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      text: async () => 'Test citation.',
+    });
 
     render(
       <PublicationButton doi="10.1234/example" showTooltip>

@@ -58,7 +58,6 @@
 
 - `@hyacinth/matsci-ui/style.css`（默认 Bulma preset）
 - `@hyacinth/matsci-ui/presets/shadcn.css`（shadcn-look preset）
-- `@hyacinth/matsci-ui/themes/*.css`（主题变量覆盖，例如 dark/materials）
 
 ### 使用方式（示意）
 
@@ -73,12 +72,6 @@ import '@hyacinth/matsci-ui/style.css';
 import '@hyacinth/matsci-ui/presets/shadcn.css';
 ```
 
-主题切换（token 覆盖）：
-
-```ts
-import '@hyacinth/matsci-ui/themes/dark.css';
-document.documentElement.dataset.mpcTheme = 'dark';
-```
 
 ### 优点
 

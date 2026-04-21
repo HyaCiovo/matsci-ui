@@ -1,5 +1,5 @@
-import type { StoryFn } from '@storybook/react';
-import { fn } from '@storybook/test';
+import type { StoryFn } from '@storybook/react-vite';
+import { fn } from 'storybook/test';
 import { MaterialsInput, MaterialsInputProps } from '../../components/data-entry/MaterialsInput';
 import {
   MaterialsInputType,

@@ -8,10 +8,13 @@ import dts from 'rollup-plugin-dts';
 const require = createRequire(import.meta.url);
 const pkg = require('./package.json');
 
-const external = [
+const externalPackages = [
   ...Object.keys(pkg.peerDependencies || {}),
   ...Object.keys(pkg.dependencies || {}),
 ];
+
+const isExternal = (id) =>
+  externalPackages.some((packageName) => id === packageName || id.startsWith(`${packageName}/`));
 
 export default [
   {
@@ -21,7 +24,7 @@ export default [
       format: 'esm',
       sourcemap: true,
     },
-    external,
+    external: isExternal,
     plugins: [
       resolve({ extensions: ['.ts', '.tsx', '.js', '.jsx'] }),
       commonjs(),

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { StoryFn } from '@storybook/react';
+import type { StoryFn } from '@storybook/react-vite';
 import { JsonView } from '../../components/data-display/JsonView';
 import type { JsonViewProps } from '../../components/data-display/JsonView/JsonView';
 

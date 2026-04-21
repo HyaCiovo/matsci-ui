@@ -1,16 +1,36 @@
-node_modules
-
+# Dependencies & lockfiles
+node_modules/
 package-lock.json
 pnpm-lock.yaml
+yarn.lock
 
-storybook-static/*
-dist
-.storybook-home/*
+# Build outputs
+dist/
+storybook-static/
+coverage/
+*.tsbuildinfo
 
+# Storybook local workspace
+.storybook-home/
+
+# Environment & local config
+.env
+.env.local
+.env.*.local
 .node-version
 .npmrc
 
-.storybook-home
-.trae
+# Editor & local tooling
+.trae/
+.vscode/
+.idea/
 
-.env.local
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store

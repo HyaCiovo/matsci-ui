@@ -1,39 +1,127 @@
-import { Meta, ArgTypes } from '@storybook/blocks';
-import { ConditionalRowStyleInterface } from '../type-components';
+import { Meta } from '@storybook/addon-docs/blocks';
+import { I18nText } from '../i18n/I18nText';
 
-<Meta title="Search UI/Search Bar Input Types" />
+<Meta
+  title="Search UI/Search Bar Input Types"
+  parameters={{
+    docs: {
+      description: {
+        component:
+          'en-US: Configure SearchUISearchBar input type detection and field mapping with bilingual guidance, examples, and migration notes. | zh-CN: 配置 SearchUISearchBar 的输入类型识别与字段映射，并补充双语说明、示例与迁移提示。',
+      },
+    },
+    locale: 'en-US,zh-CN',
+    group: 'Search UI',
+    status: 'stable',
+  }}
+/>
 
-# Search Bar Input Types
+# <I18nText en="Search Bar Input Types" zh="搜索栏输入类型" />
 
-The `SearchUISearchBar` component accepts a prop called `allowedInputTypesMap` to control which kinds of inputs
-should be allowed in the search bar and map the different input types to filter fields in the API being queried.
-The search bar can handle multiple input types and thus can query different fields depending on the input type
-that is detected. This prop determines which API fields to use when a certain input type is detected. Note that
-this mapping is 1-to-1, i.e. you can only query one field per input type.
+<I18nText
+  en="`SearchUISearchBar` accepts `allowedInputTypesMap` to decide which input categories are allowed and which API field each category should target. The mapping is one input type to one field."
+  zh="`SearchUISearchBar` 通过 `allowedInputTypesMap` 决定允许哪些输入类别，以及每种输入类别最终映射到哪个 API 字段。当前映射关系是“一种输入类型对应一个字段”。"
+/>
 
-In the object you supply to this prop, the top-level keys are the allowed input types. Those keys should be assigned to objects with
-only one property: `field`. The `field` property should be the name of the filter field used in the API.
+## <I18nText en="Supported Keys" zh="支持的键名" />
 
-The possible input types (keys) are:
+<I18nText
+  en={
+    <ul>
+      <li>`formula`: exact formula or wildcard formula inputs</li>
+      <li>`elements`: comma-separated or chemistry-aware element entry</li>
+      <li>`mpid`: Materials Project IDs such as `mp-149`</li>
+      <li>`smiles`: SMILES-like chemistry strings when enabled by the product</li>
+      <li>`text`: generic plain-text fallback</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li>`formula`：精确化学式或带通配符的化学式输入</li>
+      <li>`elements`：逗号分隔或化学语义感知的元素输入</li>
+      <li>`mpid`：如 `mp-149` 这样的 Materials Project ID</li>
+      <li>`smiles`：产品开启时可用的 SMILES 类化学字符串</li>
+      <li>`text`：通用文本回退类型</li>
+    </ul>
+  }
+/>
 
-- formula
-- elements
-- mpid
-- smiles
-- text
-
-## Example
+## <I18nText en="Example" zh="示例" />
 
 ```js
 {
   formula: {
-    field: 'formula'
+    field: 'formula',
   },
   elements: {
-    field: 'elements'
+    field: 'elements',
   },
   mpid: {
-    field: 'material_ids'
-  }
+    field: 'material_ids',
+  },
 }
 ```
+
+## <I18nText en="Usage Guidance" zh="使用建议" />
+
+<I18nText
+  en={
+    <ul>
+      <li>Only enable the input types that the current backend and product flow can actually interpret.</li>
+      <li>Keep the field mapping aligned with your `filterGroups` so the search bar and the side filters do not fight each other.</li>
+      <li>Use explicit labels around the search bar when multiple input grammars are enabled.</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li>只开启当前后端和产品流程真正能理解的输入类型。</li>
+      <li>让字段映射与 `filterGroups` 保持一致，避免搜索栏和侧边筛选器互相冲突。</li>
+      <li>当你同时开启多种输入语法时，请在搜索栏附近提供明确说明标签。</li>
+    </ul>
+  }
+/>
+
+## <I18nText en="Accessibility" zh="无障碍" />
+
+<I18nText
+  en={
+    <ul>
+      <li>Use visible labels and placeholders that explain which input syntaxes are supported.</li>
+      <li>Keep autocomplete suggestions keyboard navigable.</li>
+      <li>Avoid relying only on color or placeholder text to teach valid input grammar.</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li>通过可见标签和 placeholder 明确说明支持的输入语法。</li>
+      <li>保证自动完成建议列表可通过键盘操作。</li>
+      <li>不要只依赖颜色或 placeholder 来解释合法输入格式。</li>
+    </ul>
+  }
+/>
+
+## <I18nText en="Performance" zh="性能" />
+
+<I18nText
+  en={
+    <ul>
+      <li>Keep the allowed type map stable across renders.</li>
+      <li>When autocomplete is enabled, avoid aggressive request frequencies and prefer debouncing.</li>
+      <li>Prefer field mappings that match indexed backend fields.</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li>让允许的输入类型映射在多次渲染之间保持稳定。</li>
+      <li>如果启用了自动完成，请避免过高请求频率，并优先使用防抖。</li>
+      <li>优先把输入类型映射到后端已经建立索引的字段。</li>
+    </ul>
+  }
+/>
+
+---
+
+<I18nText
+  en={<a href="https://github.com/HyaCiovo/matsci-ui/edit/main/src/stories/search/SearchBarInputTypes.mdx">Edit this page</a>}
+  zh={<a href="https://github.com/HyaCiovo/matsci-ui/edit/main/src/stories/search/SearchBarInputTypes.mdx">编辑此页</a>}
+/>

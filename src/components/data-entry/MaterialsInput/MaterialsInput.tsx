@@ -7,7 +7,6 @@ import {
   type MouseEvent,
   useCallback,
   useEffect,
-  useId,
   useMemo,
   useRef,
   useState,
@@ -92,6 +91,16 @@ const normalizeElementsFromValue = (type: MaterialsInputType | null, value: stri
   }
 
   return [];
+};
+
+let __matsciIdCounter = 0;
+const useStableId = (prefix: string) => {
+  const idRef = useRef<string>();
+  if (!idRef.current) {
+    __matsciIdCounter += 1;
+    idRef.current = `${prefix}-${__matsciIdCounter}`;
+  }
+  return idRef.current;
 };
 
 const renderPeriodicTableValue = (mode: PeriodicTableSelectionMode, elements: string[]) => {
@@ -217,9 +226,10 @@ export const MaterialsInput = ({
   );
   const panelInteractionRef = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const errorTooltipId = useId();
-  const helpTooltipId = useId();
-  const periodicToggleTooltipId = useId();
+  const baseId = props.id ?? useStableId('materials-input');
+  const errorTooltipId = `${baseId}-error-tooltip`;
+  const helpTooltipId = `${baseId}-help-tooltip`;
+  const periodicToggleTooltipId = `${baseId}-periodic-toggle-tooltip`;
   const debounceTimeoutRef = useRef<number>();
 
   const hasPeriodicTable = periodicTableMode !== PeriodicTableMode.NONE && !props.hidePeriodicTable;

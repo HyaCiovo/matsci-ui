@@ -1,4 +1,3 @@
-import axios from 'axios';
 import {
   createContext,
   type PropsWithChildren,
@@ -28,6 +27,7 @@ import {
   serializeSearchQuery,
 } from '../utils';
 import { getRowValueFromSelectorString } from '../../../../utils/table';
+import { fetchJson, type QueryParams, serializeQueryParams } from '../../../../utils/http';
 
 interface SearchUIContextProviderProps extends PropsWithChildren {
   id?: string;
@@ -84,24 +84,7 @@ const getTotalResultsFromResponse = (data: any, results: any[], totalKey: string
   data?.count ??
   results.length;
 
-const serializeAxiosParams = (params: Record<string, any>) => {
-  const searchParams = new URLSearchParams();
-
-  Object.entries(params).forEach(([key, value]) => {
-    if (value === undefined || value === null || value === '') {
-      return;
-    }
-
-    if (Array.isArray(value)) {
-      searchParams.set(key, value.filter((item) => item !== undefined && item !== null && item !== '').join(','));
-      return;
-    }
-
-    searchParams.set(key, String(value));
-  });
-
-  return searchParams.toString();
-};
+const serializeSearchParams = (params: QueryParams) => serializeQueryParams(params);
 
 const extractMatscholarMaterialIds = (data: any) => {
   const results = Array.isArray(data?.results) ? data.results : Array.isArray(data?.data?.results) ? data.data.results : [];
@@ -234,12 +217,10 @@ export const SearchUIContextProvider = ({
           const materialIds =
             cachedMaterialIds ??
             extractMatscholarMaterialIds(
-              (
-                await axios.get(matscholarEndpoint, {
-                  params: { q: freeTextQuery },
-                  paramsSerializer: serializeAxiosParams,
-                })
-              ).data
+              await fetchJson<any>(matscholarEndpoint, {
+                params: { q: freeTextQuery },
+                paramsSerializer: serializeSearchParams,
+              })
             );
 
           if (!cachedMaterialIds) {
@@ -260,29 +241,29 @@ export const SearchUIContextProvider = ({
           }
 
           const { q: _query, [skipKey]: _skip, ...apiParams } = processedQuery;
-          const response = await axios.get(apiEndpoint, {
+          const response = await fetchJson<any>(apiEndpoint, {
             params: {
               ...apiParams,
               material_ids: materialIdChunk,
             },
-            paramsSerializer: serializeAxiosParams,
+            paramsSerializer: serializeSearchParams,
             headers: apiKey ? { 'X-Api-Key': apiKey } : undefined,
           });
-          const nextResults = getResultsFromResponse(response.data);
+          const nextResults = getResultsFromResponse(response);
           setResults(nextResults);
           setTotalResults(materialIds.length);
           setError(null);
           return;
         }
 
-        const response = await axios.get(apiEndpoint, {
+        const response = await fetchJson<any>(apiEndpoint, {
           params: processedQuery,
-          paramsSerializer: serializeAxiosParams,
+          paramsSerializer: serializeSearchParams,
           headers: apiKey ? { 'X-Api-Key': apiKey } : undefined,
         });
-        const nextResults = getResultsFromResponse(response.data);
+        const nextResults = getResultsFromResponse(response);
         setResults(nextResults);
-        setTotalResults(getTotalResultsFromResponse(response.data, nextResults, totalKey));
+        setTotalResults(getTotalResultsFromResponse(response, nextResults, totalKey));
       } catch (caughtError) {
         setResults([]);
         setTotalResults(0);

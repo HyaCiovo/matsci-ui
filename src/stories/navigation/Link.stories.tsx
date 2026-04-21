@@ -1,5 +1,5 @@
 import React from 'react';
-import type { StoryFn } from '@storybook/react';
+import type { StoryFn } from '@storybook/react-vite';
 import { Link } from '../../components/navigation/Link';
 import { LinkProps } from '../../components/navigation/Link/Link';
 

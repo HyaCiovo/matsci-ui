@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { StoryFn } from '@storybook/react';
+import type { StoryFn } from '@storybook/react-vite';
 import { Select } from '../../components/data-entry/Select';
 import { SelectProps } from '../../components/data-entry/Select/Select';
 

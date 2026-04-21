@@ -1,5 +1,5 @@
 import React from 'react';
-import type { StoryFn } from '@storybook/react';
+import type { StoryFn } from '@storybook/react-vite';
 import { PublicationButton } from '../../components/publications/PublicationButton';
 import { PublicationButtonProps } from '../../components/publications/PublicationButton/PublicationButton';
 

@@ -1,7 +1,7 @@
-import axios from 'axios';
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { BibCard } from '../BibCard';
+import { fetchJson } from '../../../utils/http';
 
 export interface CrossrefCardProps {
   id?: string;
@@ -37,11 +37,12 @@ export const CrossrefCard = ({
     }
 
     const controller = new AbortController();
-    axios
-      .get(`https://api.crossref.org/works/${props.identifier}`, { signal: controller.signal })
+    fetchJson<{ message?: any }>(`https://api.crossref.org/works/${props.identifier}`, {
+      signal: controller.signal,
+    })
       .then((result) => {
-        if (result.data?.message) {
-          setCrossref(result.data.message);
+        if (result.message) {
+          setCrossref(result.message);
         }
       })
       .catch(() => setFailedRequest(true));

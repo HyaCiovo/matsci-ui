@@ -23,31 +23,23 @@ export const SearchUIDataView = ({ texts: textsProp }: SearchUIDataViewProps) =>
   const texts = mergeTexts(DEFAULT_TEXTS, textsProp);
   const { error, results, view } = useSearchUIContext();
 
-  if (error) {
-    return (
-      <div className="react-data-table-message">
-        <p>
-          <FaExclamationTriangle />
-          {texts.errorTitle}
-        </p>
-        <p>{texts.errorDescription}</p>
-      </div>
-    );
-  }
-
-  if (!results || results.length === 0) {
-    return (
-      <div className="react-data-table-message">
-        <p>{texts.emptyTitle}</p>
-      </div>
-    );
-  }
-
-  const SearchUIViewComponent = searchUIViewsMap[view] ?? searchUIViewsMap.table;
-
   return (
     <div className="mpc-search-ui-data-view">
-      {SearchUIViewComponent ? <SearchUIViewComponent /> : null}
+      {error ? (
+        <div className="react-data-table-message">
+          <p>
+            <FaExclamationTriangle /> {texts.errorTitle}
+          </p>
+          <p>{texts.errorDescription}</p>
+        </div>
+      ) : !results || results.length === 0 ? (
+        <div className="react-data-table-message">
+          <p>{texts.emptyTitle}</p>
+        </div>
+      ) : (() => {
+          const SearchUIViewComponent = searchUIViewsMap[view] ?? searchUIViewsMap.table;
+          return SearchUIViewComponent ? <SearchUIViewComponent /> : null;
+        })()}
     </div>
   );
 };

@@ -1,23 +1,38 @@
-import { Meta, ArgTypes } from '@storybook/blocks';
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
 import { FilterGroupInterface, FilterInterface } from '../type-components';
+import { I18nText } from '../i18n/I18nText';
 
-<Meta title="Search UI/Filters" />
+<Meta
+  title="Search UI/Filters"
+  parameters={{
+    docs: {
+      description: {
+        component:
+          'en-US: Define Search UI filter groups, filter objects, supported filter types, and practical guidance for accessibility and performance. | zh-CN: 定义 Search UI 的筛选组、筛选器对象、支持的筛选类型，以及无障碍和性能实践建议。',
+      },
+    },
+    locale: 'en-US,zh-CN',
+    group: 'Search UI',
+    status: 'stable',
+  }}
+/>
 
-# Filters
+# <I18nText en="Filters" zh="筛选器" />
 
-The `SearchUIContainer` component requires a `filterGroups` prop that defines the filter groups and filters that
-should render alongside the results table and allow dynamic query building.
-Below are all the options available for both `filterGroup` and `filter` objects.
+<I18nText
+  en="`filterGroups` describes the structured filters that appear beside the result area. Each group contains one or more filters, and each filter maps user interaction to one or more query parameters."
+  zh="`filterGroups` 用来描述结果区旁边出现的结构化筛选器。每个分组包含一个或多个 filter，而每个 filter 会把用户交互映射到一个或多个查询参数。"
+/>
 
-## Filter Group
+## <I18nText en="Filter Group API" zh="筛选组 API" />
 
 <ArgTypes of={FilterGroupInterface} />
 
-## Filter
+## <I18nText en="Filter API" zh="筛选器 API" />
 
 <ArgTypes of={FilterInterface} />
 
-## Example
+## <I18nText en="Example" zh="示例" />
 
 ```js
 [
@@ -26,459 +41,120 @@ Below are all the options available for both `filterGroup` and `filter` objects.
     expanded: false,
     filters: [
       {
-        name: 'Material ID',
-        params: ['material_ids'],
-        overrides: [
-          'elements',
-          'formula',
-          'chemsys',
-          'exclude_elements',
-          'nelements_min',
-          'nelements_max'
-        ],
-        isSearchBarField: true,
-        tooltip: 'Find materials with a specific Material ID, e.g. "mp-10152"',
-        type: 'MATERIALS_INPUT',
-        props: {
-          type: 'mpid',
-          periodicTableMode: 'none',
-          errorMessage: 'Please enter a valid material ID (e.g. mp-394).'
-        }
-      },
-      {
         name: 'Formula',
         params: ['formula'],
-        overrides: [
-          'material_ids',
-          'elements',
-          'chemsys',
-          'exclude_elements',
-          'nelements_min',
-          'nelements_max'
-        ],
         isSearchBarField: true,
-        tooltip:
-          'Enter a chemical formula to find materials that have this exact formula. Use the "*" symbol to specify a wildcard element.',
+        tooltip: 'Find records by exact formula or wildcard formula',
         type: 'MATERIALS_INPUT',
         props: {
           type: 'formula',
           periodicTableMode: 'none',
-          errorMessage: 'Please enter a valid chemical formula (e.g. CeZn5).',
-          helpItems: [
-            {
-              label: 'Formula Examples'
-            },
-            {
-              label: null,
-              examples: ['Li3Fe', 'Eu2SiCl2O3', 'LiFe*2*', 'Si*']
-            }
-          ]
-        }
-      },
-      {
-        name: 'Chemical System',
-        params: ['chemsys'],
-        overrides: [
-          'material_ids',
-          'elements',
-          'formula',
-          'exclude_elements',
-          'nelements_min',
-          'nelements_max'
-        ],
-        isSearchBarField: true,
-        tooltip:
-          'Enter a " - " separated list of element symbols (e.g. "Ga-N") to find materials within that chemical space (i.e. materials that contain only these elements).',
-        type: 'MATERIALS_INPUT',
-        props: {
-          type: 'chemical_system',
-          periodicTableMode: 'none',
-          errorMessage: 'Please enter a valid chemical system (e.g. Ce-Zn).',
-          helpItems: [
-            {
-              label: 'Formula Examples'
-            },
-            {
-              label: null,
-              examples: ['Li-Fe', 'Eu-Si-Cl-O', 'Li-Fe-*-*', 'Si-*']
-            }
-          ]
-        }
-      },
-      {
-        name: 'Include Elements',
-        params: ['elements'],
-        overrides: ['material_ids', 'formula', 'chemsys'],
-        isSearchBarField: true,
-        tooltip:
-          'Enter a " , " separated list of element symbols to find materials that contain at least these elements (e.g. "Ga,N").',
-        type: 'MATERIALS_INPUT',
-        props: {
-          type: 'elements',
-          periodicTableMode: 'none',
-          errorMessage: 'Please enter a valid list of element symbols separated by a comma.',
-          helpItems: [
-            {
-              label: 'Elements Examples'
-            },
-            {
-              label: null,
-              examples: ['Li,Fe', 'Al,Ge,O']
-            }
-          ]
-        }
-      },
-      {
-        name: 'Exclude Elements',
-        params: ['exclude_elements'],
-        overrides: ['material_ids', 'formula', 'chemsys'],
-        tooltip:
-          'Enter a " , " or " - " separated list of element symbols to find materials that do not contain certain elements in their formula.',
-        type: 'MATERIALS_INPUT',
-        props: {
-          type: 'elements',
-          periodicTableMode: 'none',
-          hideChemSys: true,
-          errorMessage:
-            'Please enter a valid list of element symbols separated by a comma (e.g. Ce, Zn).',
-          helpItems: [
-            {
-              label: 'Exclude Elements Examples'
-            },
-            {
-              label: null,
-              examples: ['Li,Fe', 'Si,O,H']
-            }
-          ]
-        }
+        },
       },
       {
         name: 'Number of Elements',
         params: ['nelements_min', 'nelements_max'],
-        overrides: ['material_ids', 'formula', 'chemsys'],
         type: 'SLIDER',
         props: {
           domain: [1, 20],
-          step: 1
-        }
-      }
-    ]
+          step: 1,
+        },
+      },
+    ],
   },
   {
     name: 'Thermodynamics',
-    expanded: false,
     filters: [
       {
         name: 'Energy Above Hull',
         params: ['energy_above_hull_min', 'energy_above_hull_max'],
-        type: 'SLIDER',
         units: 'eV/atom',
+        type: 'SLIDER',
         props: {
           domain: [0, 1],
-          step: 0.01
-        }
+          step: 0.01,
+        },
       },
-      {
-        name: 'Formation Energy',
-        params: ['formation_energy_per_atom_min', 'formation_energy_per_atom_max'],
-        type: 'SLIDER',
-        units: 'eV/atom',
-        props: {
-          domain: [-10, 6],
-          step: 0.1
-        }
-      },
-      {
-        name: 'Is Stable',
-        params: ['is_stable'],
-        tooltip:
-          'Materials with an energy above hull equal to 0 are flagged as stable. All other materials are flagged as not stable.',
-        type: 'THREE_STATE_BOOLEAN_SELECT',
-        props: {
-          options: [
-            {
-              label: 'Yes',
-              value: true
-            },
-            {
-              label: 'No',
-              value: false
-            }
-          ]
-        }
-      },
-      {
-        name: 'Experimentally Observed',
-        params: ['theoretical'],
-        tooltip:
-          'Materials that match an entry in the ICSD are considered experimentally observed or synthesizable.',
-        type: 'THREE_STATE_BOOLEAN_SELECT',
-        props: {
-          options: [
-            {
-              label: 'Yes',
-              value: false
-            },
-            {
-              label: 'No',
-              value: true
-            }
-          ]
-        }
-      }
-    ]
+    ],
   },
-  {
-    name: 'Structural Properties',
-    expanded: false,
-    filters: [
-      {
-        name: 'Volume',
-        params: ['volume_min', 'volume_max'],
-        tooltip: 'Total volume of the structure',
-        units: '\u00c5\u00b3',
-        type: 'SLIDER',
-        props: {
-          domain: [5, 19407],
-          step: 1
-        }
-      },
-      {
-        name: 'Density',
-        params: ['density_min', 'density_max'],
-        units: 'g/cm\u00b3',
-        type: 'SLIDER',
-        props: {
-          domain: [0, 25],
-          step: 0.1
-        }
-      },
-      {
-        name: 'Number of Sites',
-        params: ['nsites_min', 'nsites_max'],
-        type: 'SLIDER',
-        props: {
-          domain: [1, 360],
-          step: 1
-        }
-      }
-    ]
-  },
-  {
-    name: 'Symmetry',
-    expanded: false,
-    filters: [
-      {
-        name: 'Spacegroup Symbol',
-        params: ['spacegroup_symbol'],
-        tooltip: 'The standard short symbol for the spacegroup.',
-        type: 'SELECT_SPACEGROUP_SYMBOL'
-      },
-      {
-        name: 'Spacegroup International Number',
-        params: ['spacegroup_number'],
-        tooltip: 'The international number for the spacegroup.',
-        type: 'SELECT_SPACEGROUP_NUMBER'
-      },
-      {
-        name: 'Crystal System',
-        params: ['crystal_system'],
-        tooltip: 'The crystal system for the lattice',
-        type: 'SELECT_CRYSTAL_SYSTEM'
-      }
-    ]
-  },
-  {
-    name: 'Calculated Properties',
-    expanded: false,
-    filters: [
-      {
-        name: 'Available Properties',
-        params: ['has_props'],
-        type: 'CHECKBOX_LIST',
-        props: {
-          options: [
-            { value: 'dos', label: 'Density of States' },
-            { value: 'bandstructure', label: 'Band Structure' },
-            { value: 'magnetism', label: 'Magnetism' },
-            { value: 'elasticity', label: 'Elasticity' },
-            { value: 'surface_properties', label: 'Surfaces' },
-            { value: 'piezoelectric', label: 'Piezoelectric' },
-            { value: 'dielectric', label: 'Dielectric' },
-            { value: 'charge_density', label: 'Charge Density' },
-            { value: 'eos', label: 'Equations of State' },
-            { value: 'grain_boundaries', label: 'Grain Boundaries' }
-          ]
-        }
-      }
-    ]
-  },
-  {
-    name: 'Electronic Structure',
-    expanded: false,
-    filters: [
-      {
-        name: 'Band Gap',
-        params: ['band_gap_min', 'band_gap_max'],
-        type: 'SLIDER',
-        units: 'eV',
-        props: {
-          domain: [0, 20],
-          step: 0.1
-        }
-      },
-      {
-        name: 'Is Gap Direct',
-        params: ['is_gap_direct'],
-        tooltip: 'Whether a band gap is direct or not.',
-        type: 'THREE_STATE_BOOLEAN_SELECT',
-        props: {
-          options: [
-            {
-              label: 'Yes',
-              value: true
-            },
-            {
-              label: 'No',
-              value: false
-            }
-          ]
-        }
-      },
-      {
-        name: 'Is Metal',
-        params: ['is_metal'],
-        tooltip: 'Whether the material is considered a metal.',
-        type: 'THREE_STATE_BOOLEAN_SELECT',
-        props: {
-          options: [
-            {
-              label: 'Yes',
-              value: true
-            },
-            {
-              label: 'No',
-              value: false
-            }
-          ]
-        }
-      }
-    ]
-  },
-  {
-    name: 'Magnetism',
-    expanded: false,
-    filters: [
-      {
-        name: 'Magnetic Ordering',
-        params: ['ordering'],
-        tooltip: 'Magnetic ordering of the calculation',
-        type: 'SELECT',
-        props: {
-          options: [
-            {
-              label: 'Ferromagnetic',
-              value: 'FM'
-            },
-            {
-              label: 'Non-magnetic',
-              value: 'NM'
-            },
-            {
-              label: 'Ferrimagnetic',
-              value: 'FiM'
-            },
-            {
-              label: 'Antiferromagnetic',
-              value: 'AFM'
-            },
-            {
-              label: 'Unknown',
-              value: 'Unknown'
-            }
-          ]
-        }
-      },
-      {
-        name: 'Total Magnetization',
-        params: ['total_magnetization_min', 'total_magnetization_max'],
-        type: 'SLIDER',
-        tooltip: 'Total number of unpaired electrons per unit cell',
-        props: {
-          domain: [0, 325],
-          step: 1
-        }
-      }
-    ]
-  }
 ];
 ```
 
-## Filter Types
+## <I18nText en="Supported Filter Types" zh="支持的筛选类型" />
 
-Below are all the available options for a filter's `type`. Some filter types accept or require options to be specified
-via the `props` object on the filter. The options for each filter are also described below.
+<I18nText
+  en={
+    <ul>
+      <li>`MATERIALS_INPUT`: chemistry-aware input for formulae, material IDs, chemical systems, and elements</li>
+      <li>`SLIDER`: min/max value range mapped to two params</li>
+      <li>`SELECT`: explicit option selection</li>
+      <li>`THREE_STATE_BOOLEAN_SELECT`: true / false / unset state</li>
+      <li>`CHECKBOX_LIST`: multi-select values serialized into a list-like query value</li>
+      <li>`TEXT_INPUT`: free-form string entry</li>
+      <li>`SELECT_SPACEGROUP_SYMBOL`, `SELECT_SPACEGROUP_NUMBER`, `SELECT_CRYSTAL_SYSTEM`, `SELECT_POINTGROUP`: domain-derived option sets</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li>`MATERIALS_INPUT`：面向化学式、材料 ID、化学系统和元素列表的领域输入控件</li>
+      <li>`SLIDER`：映射到两个参数的最小值/最大值范围筛选</li>
+      <li>`SELECT`：显式下拉选项选择</li>
+      <li>`THREE_STATE_BOOLEAN_SELECT`：真 / 假 / 未设置三态选择</li>
+      <li>`CHECKBOX_LIST`：多选值并序列化为列表式查询参数</li>
+      <li>`TEXT_INPUT`：自由文本输入</li>
+      <li>`SELECT_SPACEGROUP_SYMBOL`、`SELECT_SPACEGROUP_NUMBER`、`SELECT_CRYSTAL_SYSTEM`、`SELECT_POINTGROUP`：由领域常量派生选项</li>
+    </ul>
+  }
+/>
 
-### **CHECKBOX_LIST**
+## <I18nText en="Design Tokens" zh="设计 Token" />
 
-Select values from a list of checkboxes to add to a specific query param.
-Each checked value is added to a list that is used as the value for the specified query param.
+<I18nText
+  en="Filter groups inherit global token values for surfaces, borders, and hover feedback. `--mpc-color-primary`, `--mpc-border-color`, `--mpc-border-color-hover`, and `--mpc-hover-bg` are the most visible knobs."
+  zh="筛选面板会继承全局表面层、边框与悬浮反馈相关的 Token，其中最明显的开关通常是 `--mpc-color-primary`、`--mpc-border-color`、`--mpc-border-color-hover` 与 `--mpc-hover-bg`。"
+/>
 
-See `CheckboxList` component for props.
+## <I18nText en="Accessibility" zh="无障碍" />
 
-### **MATERIALS_INPUT**
+<I18nText
+  en={
+    <ul>
+      <li>Group headers expose disclosure semantics via `aria-expanded` and `aria-controls`.</li>
+      <li>Tooltips should supplement, not replace, visible labels.</li>
+      <li>When a filter drives a critical business rule, keep the label explicit and concise.</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li>分组标题通过 `aria-expanded` 与 `aria-controls` 暴露折叠/展开语义。</li>
+      <li>tooltip 适合作为补充信息，而不应替代可见标签本身。</li>
+      <li>当筛选器承载关键业务规则时，请保持标签明确且简洁。</li>
+    </ul>
+  }
+/>
 
-Text input that is designed for entering a list of elements, formula, material ID, or SMILES string.
+## <I18nText en="Performance" zh="性能" />
 
-See `MaterialsInput` component for props.
+<I18nText
+  en={
+    <ul>
+      <li>Keep filter configs static or memoized so the container can preserve internal state efficiently.</li>
+      <li>Avoid large checkbox lists when the backend supports autocomplete or text search.</li>
+      <li>Use `debounce` on the container when free-form filters are likely to trigger frequent requests.</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li>尽量让筛选配置保持静态或做 memo 化，方便容器稳定维护内部状态。</li>
+      <li>如果后端支持自动完成或文本搜索，不要轻易堆叠非常长的复选列表。</li>
+      <li>当自由输入筛选器可能频繁触发请求时，可在容器上设置 `debounce`。</li>
+    </ul>
+  }
+/>
 
-### **SELECT**
+---
 
-Dropdown menu for selecting filter value from a specific list of options.
-
-See `Select` component for props.
-
-### **SELECT_CRYSTAL_SYSTEM**
-
-Dropdown menu that automatically fills its options with all possible crystal systems.
-
-Does not accept any props.
-
-### **SELECT_POINTGROUP**
-
-Dropdown menu that automatically fills its options with all possible point groups.
-
-Does not accept any props.
-
-### **SELECT_SPACEGROUP_NUMBER**
-
-Dropdown menu that automatically fills its options with all possible space group numbers.
-
-Does not accept any props.
-
-### **SELECT_SPACEGROUP_SYMBOL**
-
-Dropdown menu that automatically fills its options with all possible space group symbols in their international standard mode.
-
-Does not accept any props.
-
-### **SLIDER**
-
-Slider for setting a min and max value. This filter assumes that the min and max values are set in two separate
-query parameters. The `params` for a filter with type `SLIDER` should have two values: the query parameter for the min value and
-the query parameter for the max value.
-
-See `DualRangeSlider` component for props.
-
-### **TEXT_INPUT**
-
-Simple text input that allows any text to be entered as the filter value. If the API supports query options like
-`__contains` or `__exact`, these should be included within the parameter name in the `params` field for the filter.
-
-Does not accept any props.
-
-### **THREE_STATE_BOOLEAN_SELECT**
-
-A select component that handles values that can be true, false, or undefined.
-
-See `ThreeStateBooleanSelect` component for props.
+<I18nText
+  en={<a href="https://github.com/HyaCiovo/matsci-ui/edit/main/src/stories/search/FilterGroups.mdx">Edit this page</a>}
+  zh={<a href="https://github.com/HyaCiovo/matsci-ui/edit/main/src/stories/search/FilterGroups.mdx">编辑此页</a>}
+/>

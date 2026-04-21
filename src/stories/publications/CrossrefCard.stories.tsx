@@ -1,5 +1,5 @@
 import React from 'react';
-import type { StoryFn } from '@storybook/react';
+import type { StoryFn } from '@storybook/react-vite';
 import { CrossrefCard } from '../../components/publications/CrossrefCard';
 import { CrossrefCardProps } from '../../components/publications/CrossrefCard/CrossrefCard';
 

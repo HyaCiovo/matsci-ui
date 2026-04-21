@@ -1,10 +1,10 @@
-import axios from 'axios';
 import clsx from 'clsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FaBook } from 'react-icons/fa';
 import { Tooltip } from '../../data-display/Tooltip';
 import './PublicationButton.css';
 import { getJournalAndYear } from '../../../utils/publications';
+import { fetchJson, fetchText } from '../../../utils/http';
 
 export interface PublicationButtonProps {
   id?: string;
@@ -57,40 +57,36 @@ export const PublicationButton = ({
     const controller = new AbortController();
 
     if (!children) {
-      const request = axios.get(`https://api.crossref.org/works/${doi}`, { signal: controller.signal }) as any;
-      if (request && typeof request.then === 'function') {
-        request.then((result: any) => {
-          if (result.data?.message) {
+      fetchJson<{ message?: any }>(`https://api.crossref.org/works/${doi}`, { signal: controller.signal })
+        .then((result) => {
+          if (result.message) {
             let journal: string | undefined;
             let year: string | undefined;
-            if (Array.isArray(result.data.message['container-title'])) {
-              journal = result.data.message['container-title'].join(', ');
+            if (Array.isArray(result.message['container-title'])) {
+              journal = result.message['container-title'].join(', ');
             }
-            if (result.data.message?.created?.['date-parts']?.[0]?.[0]) {
-              year = result.data.message.created['date-parts'][0][0];
+            if (result.message?.created?.['date-parts']?.[0]?.[0]) {
+              year = result.message.created['date-parts'][0][0];
             }
             setLinkLabel(getJournalAndYear(journal, year) || 'Publication');
-            if (!url && result.data.message.URL) {
-              setUrl(result.data.message.URL);
+            if (!url && result.message.URL) {
+              setUrl(result.message.URL);
             }
           }
-        }).catch(() => undefined);
-      }
+        })
+        .catch(() => undefined);
     }
 
     if (showTooltip) {
-      const tooltipRequest = axios.get(`https://api.crossref.org/works/${doi}/transform/text/x-bibliography`, {
-          signal: controller.signal,
-          responseType: 'text',
-        }) as any;
-      if (tooltipRequest && typeof tooltipRequest.then === 'function') {
-        tooltipRequest.then((result: any) => {
-          const text = typeof result.data === 'string' ? result.data : String(result.data ?? '');
+      fetchText(`https://api.crossref.org/works/${doi}/transform/text/x-bibliography`, {
+        signal: controller.signal,
+      })
+        .then((text) => {
           const urlIndex = text.indexOf('. http');
           const trimmed = urlIndex > -1 ? text.slice(0, urlIndex + 1) : text;
           setTooltipText(trimmed);
-        }).catch(() => undefined);
-      }
+        })
+        .catch(() => undefined);
     }
 
     return () => controller.abort();

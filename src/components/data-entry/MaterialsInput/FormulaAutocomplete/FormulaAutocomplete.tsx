@@ -1,8 +1,8 @@
-import axios from 'axios';
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { Formula } from '../../../data-display/Formula';
 import { MaterialsInputType, validateFormula } from '../utils';
+import { fetchJson } from '../../../../utils/http';
 
 interface FormulaSuggestion {
   formula_pretty: string;
@@ -52,15 +52,14 @@ export const FormulaAutocomplete = ({
     const controller = new AbortController();
     const cleanValue = value.replace(/\(|\)/g, '');
 
-    axios
-      .get(apiEndpoint, {
-        params: { formula: cleanValue },
-        headers: apiKey ? { 'X-Api-Key': apiKey } : undefined,
-        signal: controller.signal,
-      })
+    fetchJson<{ data?: FormulaSuggestion[] }>(apiEndpoint, {
+      params: { formula: cleanValue },
+      headers: apiKey ? { 'X-Api-Key': apiKey } : undefined,
+      signal: controller.signal,
+    })
       .then((result) => {
         if (requestId === requestIdRef.current) {
-          setFormulaSuggestions(result.data?.data ?? []);
+          setFormulaSuggestions(result.data ?? []);
         }
       })
       .catch(() => {

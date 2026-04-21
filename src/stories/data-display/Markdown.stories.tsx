@@ -1,5 +1,5 @@
 import React from 'react';
-import type { StoryFn } from '@storybook/react';
+import type { StoryFn } from '@storybook/react-vite';
 import { Markdown } from '../../components/data-display/Markdown';
 import { MarkdownProps } from '../../components/data-display/Markdown/Markdown';
 

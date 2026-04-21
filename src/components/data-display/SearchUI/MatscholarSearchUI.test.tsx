@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MatscholarSearchUIContainer } from './SearchUIContainer';
 import { useSearchUIContext } from './SearchUIContextProvider';
@@ -27,22 +26,29 @@ describe('MatscholarSearchUI compatibility', () => {
   });
 
   it('resolves q queries through matscholar and then queries materials with material_ids chunks', async () => {
-    const getSpy = vi.spyOn(axios, 'get').mockImplementation(async (url, config) => {
-      if (url === 'https://example.com/matscholar') {
+    const mockedFetch = globalThis.fetch as unknown as ReturnType<typeof vi.fn>;
+    mockedFetch.mockImplementation(async (input: any) => {
+      const url = String(input);
+      if (url.startsWith('https://example.com/matscholar')) {
         return {
-          data: {
+          ok: true,
+          status: 200,
+          statusText: 'OK',
+          json: async () => ({
             results: [
               { material_id: ['mp-149', 'mp-13'] },
               { material_id: ['mp-225'] },
             ],
-          },
+          }),
         };
       }
-
       return {
-        data: {
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        json: async () => ({
           data: [{ material_id: 'mp-149' }, { material_id: 'mp-13' }],
-        },
+        }),
       };
     });
 
@@ -62,21 +68,22 @@ describe('MatscholarSearchUI compatibility', () => {
     fireEvent.click(screen.getByTestId('matscholar-run-search'));
 
     await waitFor(() => {
-      expect(getSpy).toHaveBeenCalledTimes(2);
+      expect(mockedFetch).toHaveBeenCalledTimes(2);
     });
 
-    expect(getSpy.mock.calls[0]?.[0]).toBe('https://example.com/matscholar');
-    expect(getSpy.mock.calls[0]?.[1]).toMatchObject({
-      params: { q: 'thermoelectric' },
-    });
-    expect(getSpy.mock.calls[1]?.[0]).toBe('https://example.com/materials');
-    expect(getSpy.mock.calls[1]?.[1]?.params).toMatchObject({
-      _limit: 2,
-      _sort_fields: ['material_id'],
-      _fields: ['material_id'],
-      material_ids: ['mp-149', 'mp-13'],
-    });
-    expect(getSpy.mock.calls[1]?.[1]?.params).not.toHaveProperty('_skip');
+    const firstUrl = String(mockedFetch.mock.calls[0]?.[0] ?? '');
+    const firstParsed = new URL(firstUrl);
+    expect(firstParsed.origin + firstParsed.pathname).toBe('https://example.com/matscholar');
+    expect(firstParsed.searchParams.get('q')).toBe('thermoelectric');
+
+    const secondUrl = String(mockedFetch.mock.calls[1]?.[0] ?? '');
+    const secondParsed = new URL(secondUrl);
+    expect(secondParsed.origin + secondParsed.pathname).toBe('https://example.com/materials');
+    expect(secondParsed.searchParams.get('_limit')).toBe('2');
+    expect(secondParsed.searchParams.get('_fields')).toBe('material_id');
+    expect(secondParsed.searchParams.get('_sort_fields')).toBe('material_id');
+    expect(secondParsed.searchParams.get('material_ids')).toBe('mp-149,mp-13');
+    expect(secondParsed.searchParams.get('_skip')).toBeNull();
 
     await waitFor(() => {
       expect(screen.getByTestId('matscholar-total-results')).toHaveTextContent('3');
@@ -85,15 +92,15 @@ describe('MatscholarSearchUI compatibility', () => {
     fireEvent.click(screen.getByTestId('matscholar-page-two'));
 
     await waitFor(() => {
-      expect(getSpy).toHaveBeenCalledTimes(3);
+      expect(mockedFetch).toHaveBeenCalledTimes(3);
     });
 
-    expect(getSpy.mock.calls[2]?.[0]).toBe('https://example.com/materials');
-    expect(getSpy.mock.calls[2]?.[1]?.params).toMatchObject({
-      _limit: 2,
-      _sort_fields: ['material_id'],
-      _fields: ['material_id'],
-      material_ids: ['mp-225'],
-    });
+    const thirdUrl = String(mockedFetch.mock.calls[2]?.[0] ?? '');
+    const thirdParsed = new URL(thirdUrl);
+    expect(thirdParsed.origin + thirdParsed.pathname).toBe('https://example.com/materials');
+    expect(thirdParsed.searchParams.get('_limit')).toBe('2');
+    expect(thirdParsed.searchParams.get('_fields')).toBe('material_id');
+    expect(thirdParsed.searchParams.get('_sort_fields')).toBe('material_id');
+    expect(thirdParsed.searchParams.get('material_ids')).toBe('mp-225');
   });
 });

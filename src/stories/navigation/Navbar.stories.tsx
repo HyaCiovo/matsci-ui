@@ -1,5 +1,5 @@
 import React from 'react';
-import type { StoryFn } from '@storybook/react';
+import type { StoryFn } from '@storybook/react-vite';
 import { Navbar } from '../../components/navigation/Navbar';
 import { NavbarProps } from '../../components/navigation/Navbar/Navbar';
 

@@ -1,10 +1,10 @@
-import axios from 'axios';
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { Tooltip } from '../../data-display/Tooltip';
 import { mergeTexts } from '../../../text/mergeTexts';
 import openAccessButtonLogo from './oabColorPng';
 import './OpenAccessButton.css';
+import { fetchJson } from '../../../utils/http';
 
 export interface OpenAccessButtonProps {
   id?: string;
@@ -55,15 +55,12 @@ export const OpenAccessButton = ({
     }
 
     const controller = new AbortController();
-    const request = axios.get(`https://bg.api.oa.works/find?id=${doi}`, { signal: controller.signal }) as any;
-    if (!request || typeof request.then !== 'function') {
-      return () => controller.abort();
-    }
-
-    request
-      .then((result: any) => {
-        if (result.data?.url) {
-          setOpenAccessUrl(result.data.url);
+    fetchJson<{ url?: string }>(`https://bg.api.oa.works/find?id=${encodeURIComponent(doi)}`, {
+      signal: controller.signal,
+    })
+      .then((result) => {
+        if (result.url) {
+          setOpenAccessUrl(result.url);
         } else {
           setCannotFetchOpenAccessUrl(true);
         }

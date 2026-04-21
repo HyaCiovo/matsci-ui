@@ -1,5 +1,5 @@
 import React from 'react';
-import type { StoryFn } from '@storybook/react';
+import type { StoryFn } from '@storybook/react-vite';
 import columns from '../constants/columns.json';
 import filterGroups from '../constants/filterGroups.json';
 import matscholarFilterGroups from '../constants/matscholarFilterGroups.json';

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { StoryFn } from '@storybook/react';
+import type { StoryFn } from '@storybook/react-vite';
 import { BibjsonCard } from '../../components/publications/BibjsonCard';
 import { BibjsonCardProps } from '../../components/publications/BibjsonCard/BibjsonCard';
 

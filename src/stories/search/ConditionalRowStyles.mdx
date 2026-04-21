@@ -1,26 +1,108 @@
-import { Meta, ArgTypes } from '@storybook/blocks';
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
 import { ConditionalRowStyleInterface } from '../type-components';
+import { I18nText } from '../i18n/I18nText';
 
-<Meta title="Search UI/Conditional Row Styles" />
+<Meta
+  title="Search UI/Conditional Row Styles"
+  parameters={{
+    docs: {
+      description: {
+        component:
+          'en-US: Define row-level conditional styling for Search UI results with condition operators, accessibility guidance, and performance considerations. | zh-CN: 为 Search UI 结果定义条件行样式，包含条件运算、无障碍建议与性能注意事项。',
+      },
+    },
+    locale: 'en-US,zh-CN',
+    group: 'Search UI',
+    status: 'stable',
+  }}
+/>
 
-# Conditional Row Styles
+# <I18nText en="Conditional Row Styles" zh="条件行样式" />
 
-The `SearchUI` component accepts an optional `conditionalRowStyles` prop that can define
-conditions when some rows should be styled differently. This prop accepts a list of objects
-with the following properties:
+<I18nText
+  en="Use `conditionalRowStyles` when search results need lightweight, data-driven emphasis such as highlighting unstable rows, recently updated rows, or rows that require user review."
+  zh="当搜索结果需要基于数据做轻量强调时，可以使用 `conditionalRowStyles`，例如高亮不稳定材料、近期更新记录或需要人工复核的行。"
+/>
 
 <ArgTypes of={ConditionalRowStyleInterface} />
 
-## Example
+## <I18nText en="Example" zh="示例" />
 
 ```js
 [
   {
-    selector: 'myProperty',
-    value: true,
+    selector: 'energy_above_hull',
+    value: 0.05,
+    condition: 'gt',
     style: {
-      backgroundColor: '#ddd'
-    }
-  }
+      backgroundColor: '#fff6d6',
+    },
+  },
 ];
 ```
+
+## <I18nText en="How It Works" zh="工作方式" />
+
+<I18nText
+  en={
+    <ul>
+      <li>`selector` points to the data field to inspect.</li>
+      <li>`condition` supports `lt`, `gt`, and `eq`.</li>
+      <li>`value` is the threshold or comparison target.</li>
+      <li>`style` is applied inline when the condition matches.</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li>`selector` 指向需要读取的数据字段。</li>
+      <li>`condition` 当前支持 `lt`、`gt` 与 `eq`。</li>
+      <li>`value` 是阈值或比较目标。</li>
+      <li>`style` 会在条件命中时以内联样式形式应用到该行。</li>
+    </ul>
+  }
+/>
+
+## <I18nText en="Accessibility" zh="无障碍" />
+
+<I18nText
+  en={
+    <ul>
+      <li>Do not communicate critical meaning through background color alone.</li>
+      <li>Pair visual emphasis with a column badge, text label, or tooltip when the row state matters.</li>
+      <li>Maintain sufficient contrast between highlighted rows and surrounding text.</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li>不要只通过背景色传达关键语义。</li>
+      <li>如果行状态很重要，请配合列徽标、文本标记或提示信息一起表达。</li>
+      <li>确保高亮行与文本之间仍有足够对比度。</li>
+    </ul>
+  }
+/>
+
+## <I18nText en="Performance" zh="性能" />
+
+<I18nText
+  en={
+    <ul>
+      <li>Keep condition definitions small and static when possible.</li>
+      <li>Avoid generating a new `style` object for every render in app code.</li>
+      <li>For large datasets, prefer server-side filtering so the highlighted subset stays manageable.</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li>尽量让条件定义保持精简且静态。</li>
+      <li>避免在业务渲染过程中为每次 render 动态创建新的 `style` 对象。</li>
+      <li>面对大数据量时，优先使用服务端筛选，让需要高亮的结果子集保持可控。</li>
+    </ul>
+  }
+/>
+
+---
+
+<I18nText
+  en={<a href="https://github.com/HyaCiovo/matsci-ui/edit/main/src/stories/search/ConditionalRowStyles.mdx">Edit this page</a>}
+  zh={<a href="https://github.com/HyaCiovo/matsci-ui/edit/main/src/stories/search/ConditionalRowStyles.mdx">编辑此页</a>}
+/>

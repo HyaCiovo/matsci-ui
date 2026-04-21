@@ -1,5 +1,5 @@
 import React from 'react';
-import type { StoryFn } from '@storybook/react';
+import type { StoryFn } from '@storybook/react-vite';
 import { Formula } from '../../components/data-display/Formula';
 import { FormulaProps } from '../../components/data-display/Formula/Formula';
 

@@ -1,10 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import axios from 'axios';
 import { CrossrefCard } from './CrossrefCard';
-
-vi.mock('axios', () => ({
-  default: { get: vi.fn() },
-}));
 
 describe('CrossrefCard', () => {
   it('renders a BibCard when a crossref entry is provided', () => {
@@ -25,9 +20,12 @@ describe('CrossrefCard', () => {
   });
 
   it('fetches a crossref entry when identifier is provided', async () => {
-    const mockedAxios = axios as unknown as { get: ReturnType<typeof vi.fn> };
-    mockedAxios.get.mockResolvedValueOnce({
-      data: { message: { title: ['Fetched'], DOI: '10.1234/example' } },
+    const mockedFetch = globalThis.fetch as unknown as ReturnType<typeof vi.fn>;
+    mockedFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      json: async () => ({ message: { title: ['Fetched'], DOI: '10.1234/example' } }),
     });
 
     render(<CrossrefCard identifier="10.1234/example" />);
@@ -37,4 +35,3 @@ describe('CrossrefCard', () => {
     });
   });
 });
-

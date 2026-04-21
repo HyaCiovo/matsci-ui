@@ -1,5 +1,5 @@
 import React from 'react';
-import type { StoryFn } from '@storybook/react';
+import type { StoryFn } from '@storybook/react-vite';
 import { Tooltip } from '../../components/data-display/Tooltip';
 import { TooltipProps } from '../../components/data-display/Tooltip/Tooltip';
 

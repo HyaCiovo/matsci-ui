@@ -1,10 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import axios from 'axios';
 import { OpenAccessButton } from './OpenAccessButton';
-
-vi.mock('axios', () => ({
-  default: { get: vi.fn() },
-}));
 
 describe('OpenAccessButton', () => {
   it('renders nothing when neither doi nor url is provided', () => {
@@ -18,8 +13,13 @@ describe('OpenAccessButton', () => {
   });
 
   it('fetches an open access url when only doi is provided', async () => {
-    const mockedAxios = axios as unknown as { get: ReturnType<typeof vi.fn> };
-    mockedAxios.get.mockResolvedValueOnce({ data: { url: 'https://example.com/file.pdf' } });
+    const mockedFetch = globalThis.fetch as unknown as ReturnType<typeof vi.fn>;
+    mockedFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      json: async () => ({ url: 'https://example.com/file.pdf' }),
+    });
 
     render(<OpenAccessButton doi="10.1234/example" />);
 
@@ -28,4 +28,3 @@ describe('OpenAccessButton', () => {
     });
   });
 });
-

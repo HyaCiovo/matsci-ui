@@ -108,6 +108,9 @@ export const SearchUIDataHeader = ({ exportDataButton, texts: textsProp }: Searc
             })}
           </p>
         </div>
+        <div className="progress-container">
+          {loading ? <progress className="progress is-small is-primary" max={100} /> : null}
+        </div>
         <div className="mpc-search-ui-data-header-controls">
           <div className="mpc-data-table-columns" ref={columnsMenuRef}>
             <button

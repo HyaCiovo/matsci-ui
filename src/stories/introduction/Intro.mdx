@@ -1,67 +1,210 @@
-import { Meta } from '@storybook/blocks';
+import { Meta } from '@storybook/addon-docs/blocks';
 import { I18nText } from '../i18n/I18nText';
 
-<Meta title="Introduction/matsci-ui" />
+<Meta
+  title="Introduction/matsci-ui"
+  parameters={{
+    docs: {
+      description: {
+        component:
+          'en-US: Overview of the matsci-ui component library, its architecture, usage model, design tokens, quality signals, and ecosystem. | zh-CN: matsci-ui 组件库总览，涵盖架构、使用方式、设计 Token、质量信号与生态定位。',
+      },
+    },
+    locale: 'en-US,zh-CN',
+    group: 'Introduction',
+    status: 'stable',
+  }}
+/>
 
 # <I18nText en="matsci-ui" zh="matsci-ui" />
 
 <I18nText
-  en="This repository provides reusable React 18 UI components used by Materials Project surfaces. It is based on the legacy `mp-react-components` repository and modernizes the implementation for a React 18-first ecosystem."
-  zh="这个仓库提供 Materials Project 相关产品所使用的一套可复用 React 18 UI 组件库。本仓库基于历史版本 `mp-react-components`，并将实现现代化以适配 React 18 生态。"
+  en="`@hyacinth/matsci-ui` is a React component library for materials science products. It modernizes the legacy `mp-react-components` codebase into an npm-first, ESM-first, type-safe package with Storybook 10 documentation and Vitest-based tests."
+  zh="`@hyacinth/matsci-ui` 是一个面向材料科学产品的 React 组件库。它将历史 `mp-react-components` 仓库收敛为 npm-first、ESM-first、类型安全的现代包，并以 Storybook 10 和 Vitest 作为文档与测试基线。"
 />
 
-<I18nText en="Install:" zh="安装：" />
-
-`npm install @hyacinth/matsci-ui`
-
-<I18nText en="Import styles once in your app entry:" zh="在应用入口引入一次样式：" />
-
-`import '@hyacinth/matsci-ui/style.css'`
-
-<I18nText
-  en="If you are migrating from the legacy package, start with **Migration (mp-react → matsci-ui)** for a diff overview."
-  zh="如果你正在从旧包迁移，建议从 **Migration (mp-react → matsci-ui)** 开始查看差异概览。"
-/>
-
-## <I18nText en="Key Features" zh="主要特性" />
+## <I18nText en="Project Positioning" zh="项目定位" />
 
 <I18nText
   en={
-    <>
-      <ul>
-        <li>Interactive crystal structures using threejs</li>
-        <li>Input-linked periodic table for entering formulas and element lists</li>
-        <li>Complete search interface for dynamically filtering data from a REST API</li>
-        <li>A suite of components for fetching and rendering publications data in an easy and structured way</li>
-      </ul>
-    </>
+    <ul>
+      <li>Reusable UI building blocks for materials science applications</li>
+      <li>Composable Search UI primitives for REST-backed datasets</li>
+      <li>Periodic-table-driven data entry and formula parsing</li>
+      <li>Publication helpers and Crystal Toolkit visualization components</li>
+      <li>Storybook as the primary interactive documentation surface</li>
+    </ul>
   }
   zh={
-    <>
-      <ul>
-        <li>基于 threejs 的交互式晶体结构可视化</li>
-        <li>与输入联动的周期表，用于输入化学式与元素列表</li>
-        <li>完整的搜索界面，用于对 REST API 返回数据进行动态筛选</li>
-        <li>一套用于获取并结构化展示出版物数据的组件</li>
-      </ul>
-    </>
+    <ul>
+      <li>面向材料科学产品的可复用 UI 组件</li>
+      <li>面向 REST 数据集的可组合 Search UI 基础能力</li>
+      <li>以周期表为核心的数据录入与化学式解析组件</li>
+      <li>文献辅助组件与 Crystal Toolkit 可视化组件</li>
+      <li>以 Storybook 作为主要交互式文档入口</li>
+    </ul>
   }
 />
 
-## <I18nText en="Github" zh="相关仓库" />
+## <I18nText en="Quick Start" zh="快速开始" />
 
 <I18nText
-  en="Original (legacy) repository: [mp-react-components](https://github.com/materialsproject/mp-react-components)"
-  zh="原始（legacy）仓库： [mp-react-components](https://github.com/materialsproject/mp-react-components)"
+  en="Install the package, import the bundled stylesheet once, and then use named imports for the components you need."
+  zh="安装依赖后，在应用入口只引入一次打包样式，然后按需导入所需组件即可。"
 />
+
+```bash
+npm install @hyacinth/matsci-ui
+```
+
+```tsx
+import '@hyacinth/matsci-ui/style.css';
+import { Modal, ModalContextProvider, ModalTrigger } from '@hyacinth/matsci-ui';
+
+export function DemoModal() {
+  return (
+    <ModalContextProvider>
+      <ModalTrigger>
+        <button type="button">Open</button>
+      </ModalTrigger>
+      <Modal>
+        <div className="box">Hello from matsci-ui</div>
+      </Modal>
+    </ModalContextProvider>
+  );
+}
+```
 
 <I18nText
-  en="Dash Component Library: [dash-mp-components](https://github.com/materialsproject/dash-mp-components)"
-  zh="Dash 组件库： [dash-mp-components](https://github.com/materialsproject/dash-mp-components)"
+  en="React peer compatibility is declared as `^17.0.0 || ^18.0.0 || ^19.0.0`."
+  zh="当前 peerDependencies 已声明兼容 `^17.0.0 || ^18.0.0 || ^19.0.0`。"
 />
 
-## <I18nText en="Contributors" zh="贡献者" />
+## <I18nText en="Architecture" zh="架构概览" />
 
-<a href="https://github.com/materialsproject/mp-react-components/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=materialsproject/mp-react-components" />
-</a>
+<I18nText
+  en={
+    <ul>
+      <li>`src/components`: publishable component surface</li>
+      <li>`src/stories`: Storybook stories and MDX guides</li>
+      <li>`src/theme`: CSS design tokens</li>
+      <li>`src/utils`: shared helpers such as HTTP and navigation utilities</li>
+      <li>`.storybook`: Storybook runtime, locale toolbar, and API proxy setup</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li>`src/components`：组件库发布主体</li>
+      <li>`src/stories`：Storybook stories 与 MDX 指南</li>
+      <li>`src/theme`：CSS 设计 Token</li>
+      <li>`src/utils`：HTTP、导航等共享工具</li>
+      <li>`.storybook`：Storybook 运行时、语言切换器与 API 代理配置</li>
+    </ul>
+  }
+/>
+
+## <I18nText en="Component Families" zh="组件家族" />
+
+<I18nText
+  en={
+    <ul>
+      <li><b>Search UI</b>: container, search bar, filters, header, table, grid, cards, and synthesis views</li>
+      <li><b>Data Entry</b>: `MaterialsInput`, sliders, selects, switches, and checkbox-based controls</li>
+      <li><b>Data Display</b>: `DataTable`, `DataBlock`, `Markdown`, `JsonView`, `Tooltip`, `Modal`, `Drawer`, `Paginator`</li>
+      <li><b>Navigation</b>: `Dropdown`, `Navbar`, `Scrollspy`, `Tabs`, `Sidebar`, `Accordion`, `Link`</li>
+      <li><b>Publications</b>: `BibCard`, `BibFilter`, `BibjsonCard`, `CrossrefCard`, `OpenAccessButton`, `PublicationButton`</li>
+      <li><b>Crystal Toolkit</b>: `CrystalToolkitScene`, `CrystalToolkitAnimationScene`, `PhononAnimationScene`, `ReactGraphComponent`</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li><b>Search UI</b>：容器、搜索栏、筛选器、头部、表格、网格、卡片与合成配方视图</li>
+      <li><b>Data Entry</b>：`MaterialsInput`、滑块、选择器、开关和多种布尔/复选控件</li>
+      <li><b>Data Display</b>：`DataTable`、`DataBlock`、`Markdown`、`JsonView`、`Tooltip`、`Modal`、`Drawer`、`Paginator`</li>
+      <li><b>Navigation</b>：`Dropdown`、`Navbar`、`Scrollspy`、`Tabs`、`Sidebar`、`Accordion`、`Link`</li>
+      <li><b>Publications</b>：`BibCard`、`BibFilter`、`BibjsonCard`、`CrossrefCard`、`OpenAccessButton`、`PublicationButton`</li>
+      <li><b>Crystal Toolkit</b>：`CrystalToolkitScene`、`CrystalToolkitAnimationScene`、`PhononAnimationScene`、`ReactGraphComponent`</li>
+    </ul>
+  }
+/>
+
+## <I18nText en="Design Tokens" zh="设计 Token" />
+
+<I18nText
+  en="The repository no longer publishes prebuilt dark or materials preset stylesheets. Theme customization is done by overriding CSS variables from `src/theme/tokens.css`."
+  zh="仓库已经不再发布预置的 dark 或 materials 主题样式。主题定制统一通过覆盖 `src/theme/tokens.css` 中的 CSS Variables 完成。"
+/>
+
+```css
+:root {
+  --mpc-color-primary: #0b6efd;
+  --mpc-color-surface: #fcfcff;
+  --mpc-border-radius: 8px;
+}
+```
+
+## <I18nText en="Accessibility" zh="无障碍" />
+
+<I18nText
+  en={
+    <ul>
+      <li>Dialogs, tooltips, dropdowns, tabs, and checkboxes are built on Radix primitives.</li>
+      <li>Search UI and table controls expose `aria-*` labels and keyboard-friendly interaction paths.</li>
+      <li>Consumer-facing copy is usually customizable through `texts` objects or explicit label props.</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li>对话框、提示、下拉、Tabs、Checkbox 等基础交互基于 Radix primitives。</li>
+      <li>Search UI 和表格控件提供 `aria-*` 文案与键盘友好的交互路径。</li>
+      <li>面向用户的文案通常可以通过 `texts` 对象或显式 label props 覆盖。</li>
+    </ul>
+  }
+/>
+
+## <I18nText en="Performance and Quality" zh="性能与质量" />
+
+<I18nText
+  en={
+    <ul>
+      <li>`SearchUI` supports `searchOnMount={false}` for expensive endpoints.</li>
+      <li>`DataTable` is backed by TanStack Table and memoized helpers.</li>
+      <li>The current repository README records 60 test files and 157 passing tests.</li>
+      <li>Quality gates include TypeScript, `oxlint`, Vitest, and `lefthook` pre-push checks.</li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li>`SearchUI` 支持 `searchOnMount={false}`，适合高成本接口。</li>
+      <li>`DataTable` 基于 TanStack Table，并使用 memo 化辅助逻辑。</li>
+      <li>当前 README 记录了 60 个测试文件和 157 条通过用例。</li>
+      <li>质量门禁包括 TypeScript、`oxlint`、Vitest 与 `lefthook` 的 pre-push 检查。</li>
+    </ul>
+  }
+/>
+
+## <I18nText en="Related Docs" zh="相关文档" />
+
+<I18nText
+  en={
+    <ul>
+      <li><a href="https://github.com/HyaCiovo/matsci-ui/blob/main/README.md">README (English)</a></li>
+      <li><a href="https://github.com/HyaCiovo/matsci-ui/blob/main/README.zh-CN.md">README (Chinese)</a></li>
+      <li><a href="https://github.com/HyaCiovo/matsci-ui/blob/main/docs/repo-diff-report.md">Repository diff report</a></li>
+    </ul>
+  }
+  zh={
+    <ul>
+      <li><a href="https://github.com/HyaCiovo/matsci-ui/blob/main/README.md">README（英文）</a></li>
+      <li><a href="https://github.com/HyaCiovo/matsci-ui/blob/main/README.zh-CN.md">README（中文）</a></li>
+      <li><a href="https://github.com/HyaCiovo/matsci-ui/blob/main/docs/repo-diff-report.md">仓库差异报告</a></li>
+    </ul>
+  }
+/>
+
+---
+
+<I18nText
+  en={<a href="https://github.com/HyaCiovo/matsci-ui/edit/main/src/stories/introduction/Intro.mdx">Edit this page</a>}
+  zh={<a href="https://github.com/HyaCiovo/matsci-ui/edit/main/src/stories/introduction/Intro.mdx">编辑此页</a>}
+/>

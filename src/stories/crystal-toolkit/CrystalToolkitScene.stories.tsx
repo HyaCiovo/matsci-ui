@@ -12,7 +12,7 @@ import { CameraContextProvider } from '../../components/crystal-toolkit/CameraCo
 import { ScenePosition } from '../../components/crystal-toolkit/scene/inset-helper';
 import { AnimationStyle, Renderer } from '../../components/crystal-toolkit/scene/constants';
 import { bezierScene } from '../../components/crystal-toolkit/scene/bezier-scene';
-import type { StoryFn } from '@storybook/react';
+import type { StoryFn } from '@storybook/react-vite';
 
 export default {
   component: CrystalToolkitScene,
