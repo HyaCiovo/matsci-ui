@@ -8,7 +8,6 @@ dist
 .storybook-home/*
 
 .node-version
-.nvmrc
 .npmrc
 
 .storybook-home
