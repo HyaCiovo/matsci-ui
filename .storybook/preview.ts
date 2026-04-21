@@ -7,6 +7,21 @@ import '../src/styles.less';
 import '../src/stories/stories.css';
 import { StorybookLocaleProvider, type StorybookLocale } from '../src/stories/i18n/LocaleProvider';
 
+function getStorybookLocationSearch() {
+  if (typeof window === 'undefined') return undefined;
+
+  try {
+    const parentSearch = window.parent?.location?.search;
+    if (typeof parentSearch === 'string' && parentSearch.length > 0) {
+      return parentSearch;
+    }
+  } catch {
+    // Fall back to the iframe location if parent access is not available.
+  }
+
+  return window.location.search;
+}
+
 function resolveStorybookLocale({
   globals,
   locationSearch,
@@ -49,7 +64,7 @@ const preview: Preview = {
       const globals = context.globals as Record<string, unknown>;
       const locale = resolveStorybookLocale({
         globals,
-        locationSearch: typeof window === 'undefined' ? undefined : window.location.search,
+        locationSearch: getStorybookLocationSearch(),
       });
       if (typeof document !== 'undefined') {
         document.documentElement.lang = locale;
@@ -68,7 +83,7 @@ const preview: Preview = {
         const globals = (props.context as unknown as { globals?: Record<string, unknown> }).globals;
         const locale = resolveStorybookLocale({
           globals,
-          locationSearch: typeof window === 'undefined' ? undefined : window.location.search,
+          locationSearch: getStorybookLocationSearch(),
         });
 
         return createElement(

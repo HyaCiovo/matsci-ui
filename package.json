@@ -27,7 +27,7 @@
   ],
   "scripts": {
     "build": "node scripts/clean-dist.mjs && rollup -c",
-    "build-storybook": "HOME=$PWD/.storybook-home storybook build --disable-telemetry",
+    "build-storybook": "HOME=$PWD/.storybook-home storybook build --disable-telemetry && node scripts/prepare-storybook-vercel.mjs",
     "dev": "vite",
     "format": "oxlint --fix src",
     "lint": "oxlint src",
