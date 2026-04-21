@@ -1,7 +1,7 @@
 {
-  "name": "@hyacinth/mp-react-components",
-  "version": "0.1.0",
-  "description": "Next generation Materials Project React components based on React 18 and Radix UI",
+  "name": "@hyacinth/mp-react-components-next",
+  "version": "0.0.1",
+  "description": "mp-react-components-next: Next generation Materials Project React components based on React 18 and Radix UI",
   "author": "hyacinth",
   "type": "module",
   "main": "dist/index.js",
@@ -11,7 +11,9 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./style.css": "./dist/index.css"
+    "./style.css": "./dist/index.css",
+    "./themes/dark.css": "./dist/themes/dark.css",
+    "./themes/materials.css": "./dist/themes/materials.css"
   },
   "sideEffects": [
     "**/*.css",
@@ -22,7 +24,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/clean-dist.mjs && rollup -c",
+    "build": "node scripts/clean-dist.mjs && rollup -c && node scripts/copy-css-themes.mjs",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "lint": "oxlint src",
@@ -77,10 +79,10 @@
     "@rollup/plugin-swc": "^0.3.1",
     "@storybook/addon-essentials": "^8.6.18",
     "@storybook/addon-interactions": "^8.6.18",
-    "@storybook/addon-links": "^10.3.5",
+    "@storybook/addon-links": "^8.6.18",
     "@storybook/blocks": "^8.6.18",
-    "@storybook/react": "^10.3.5",
-    "@storybook/react-vite": "^10.3.5",
+    "@storybook/react": "^8.6.18",
+    "@storybook/react-vite": "^8.6.18",
     "@storybook/test": "^8.6.18",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^15.0.7",
@@ -95,12 +97,12 @@
     "less": "^4.6.4",
     "oxlint": "^0.2.18",
     "react": "^18.3.1",
+    "react-docgen-typescript": "^2.2.2",
     "react-dom": "^18.3.1",
     "rollup": "^4.60.1",
     "rollup-plugin-dts": "^6.4.0",
     "rollup-plugin-postcss": "^4.0.2",
-    "react-docgen-typescript": "^2.2.2",
-    "storybook": "^10.3.5",
+    "storybook": "^8.6.18",
     "typescript": "^5.9.3",
     "vite": "^6.4.2",
     "vitest": "^4.1.4"

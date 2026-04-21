@@ -1,0 +1,14 @@
+:root[data-mpc-theme='materials'],
+.mpc-theme-materials {
+  --mpc-color-bg: #f3f3f3;
+  --mpc-color-surface: #ffffff;
+  --mpc-color-text: #0a0a0a;
+  --mpc-color-text-muted: #4a4a4a;
+
+  --mpc-color-primary: #1d4ed8;
+  --mpc-color-info: #2563eb;
+  --mpc-color-success: #16a34a;
+  --mpc-color-danger: #dc2626;
+  --mpc-color-warning: #d97706;
+}
+

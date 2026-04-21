@@ -1,3 +1,4 @@
+import './theme/tokens.css';
 import 'bulma/css/bulma.min.css';
 import './styles.less';
 

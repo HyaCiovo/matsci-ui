@@ -1,13 +1,13 @@
-# mp-react18-components
+# mp-react-components-next
 
-中文文档。英文文档见 [README.md](./README.md)。`mp-react-components` vs `mp-react18-components` 的差异说明见 [component-diff-audit.md](./docs/component-diff-audit.md)。
+中文文档。英文文档见 [README.md](./README.md)。`mp-react-components` vs `mp-react-components-next` 的差异说明见 [component-diff-audit.md](./docs/component-diff-audit.md)。
 
-`@hyacinth/mp-react18-components` 是面向 Materials Project UI 的 React 18 组件库，提供 Bulma 风格的基础组件与一组可复用业务组件（Search UI、周期表、文献、Crystal Toolkit 等）。
+`@hyacinth/mp-react-components-next` 是面向 Materials Project UI 的 React 18 组件库，提供 Bulma 风格的基础组件与一组可复用业务组件（Search UI、周期表、文献、Crystal Toolkit 等）。本仓库基于原仓库 `mp-react-components` 演进而来：https://github.com/materialsproject/mp-react-components
 
 ## 安装
 
 ```bash
-npm i @hyacinth/mp-react18-components
+npm i @hyacinth/mp-react-components-next
 ```
 
 peerDependencies：
@@ -18,13 +18,32 @@ peerDependencies：
 本包会发布一个打包后的样式文件，建议在应用入口只引入一次：
 
 ```ts
-import '@hyacinth/mp-react18-components/style.css';
+import '@hyacinth/mp-react-components-next/style.css';
+```
+
+## 主题定制
+
+本组件库通过 CSS 变量支持主题定制。
+
+你可以任选其一：
+- 全局主题：在根节点设置 `data-mpc-theme`
+- 局部主题：在某个容器上挂主题 class
+
+示例（深色主题）：
+
+```ts
+import '@hyacinth/mp-react-components-next/style.css';
+import '@hyacinth/mp-react-components-next/themes/dark.css';
+```
+
+```ts
+document.documentElement.dataset.mpcTheme = 'dark';
 ```
 
 ## 使用示例
 
 ```tsx
-import { Modal, ModalContextProvider, ModalTrigger } from '@hyacinth/mp-react18-components';
+import { Modal, ModalContextProvider, ModalTrigger } from '@hyacinth/mp-react-components-next';
 
 export function DemoModal() {
   return (
@@ -41,7 +60,7 @@ export function DemoModal() {
 ```
 
 ```tsx
-import { SearchUIContainer, SearchUISearchBar, SearchUIDataTable } from '@hyacinth/mp-react18-components';
+import { SearchUIContainer, SearchUISearchBar, SearchUIDataTable } from '@hyacinth/mp-react-components-next';
 
 const columns = [
   { title: 'Material ID', selector: 'material_id' },
@@ -86,4 +105,4 @@ Storybook 说明：
 
 - 仅发布 ESM（`exports.import` → `dist/index.js`）
 - 类型声明：`dist/index.d.ts`
-- 样式：`dist/index.css`，通过 `@hyacinth/mp-react18-components/style.css` 暴露
+- 样式：`dist/index.css`，通过 `@hyacinth/mp-react-components-next/style.css` 暴露

@@ -1,13 +1,13 @@
-# mp-react18-components
+# mp-react-components-next
 
-English documentation. For Chinese, see [README.zh-CN.md](./README.zh-CN.md). For `mp-react-components` vs `mp-react18-components` comparison, see [component-diff-audit.md](./docs/component-diff-audit.md).
+English documentation. For Chinese, see [README.zh-CN.md](./README.zh-CN.md). For `mp-react-components` vs `mp-react-components-next` comparison, see [component-diff-audit.md](./docs/component-diff-audit.md).
 
-`@hyacinth/mp-react18-components` is a React 18 component library used by Materials Project UI surfaces. It ships Bulma-based styling plus reusable building blocks (Search UI, periodic table, publications, crystal toolkit, etc).
+`@hyacinth/mp-react-components-next` is a React 18 component library used by Materials Project UI surfaces. It ships Bulma-based styling plus reusable building blocks (Search UI, periodic table, publications, crystal toolkit, etc). It is based on the original `mp-react-components` repository: https://github.com/materialsproject/mp-react-components
 
 ## Install
 
 ```bash
-npm i @hyacinth/mp-react18-components
+npm i @hyacinth/mp-react-components-next
 ```
 
 Peer dependencies:
@@ -18,13 +18,34 @@ Peer dependencies:
 The package publishes a bundled stylesheet. Import it once in your app entry:
 
 ```ts
-import '@hyacinth/mp-react18-components/style.css';
+import '@hyacinth/mp-react-components-next/style.css';
+```
+
+## Themes
+
+This library supports theme customization via CSS variables.
+
+Pick one approach:
+- Global theme: set `data-mpc-theme` on the document root.
+- Scoped theme: wrap your app with a theme class.
+
+See [theming-and-style-presets.md](./docs/theming-and-style-presets.md) for the multi-preset plan (Bulma ↔ shadcn).
+
+Example (dark theme):
+
+```ts
+import '@hyacinth/mp-react-components-next/style.css';
+import '@hyacinth/mp-react-components-next/themes/dark.css';
+```
+
+```ts
+document.documentElement.dataset.mpcTheme = 'dark';
 ```
 
 ## Usage
 
 ```tsx
-import { Modal, ModalContextProvider, ModalTrigger } from '@hyacinth/mp-react18-components';
+import { Modal, ModalContextProvider, ModalTrigger } from '@hyacinth/mp-react-components-next';
 
 export function DemoModal() {
   return (
@@ -41,7 +62,7 @@ export function DemoModal() {
 ```
 
 ```tsx
-import { SearchUIContainer, SearchUISearchBar, SearchUIDataTable } from '@hyacinth/mp-react18-components';
+import { SearchUIContainer, SearchUISearchBar, SearchUIDataTable } from '@hyacinth/mp-react-components-next';
 
 const columns = [
   { title: 'Material ID', selector: 'material_id' },
@@ -86,4 +107,4 @@ Storybook notes:
 
 - ESM-only output (`exports.import` → `dist/index.js`)
 - Types: `dist/index.d.ts`
-- Styles: `dist/index.css` exposed as `@hyacinth/mp-react18-components/style.css`
+- Styles: `dist/index.css` exposed as `@hyacinth/mp-react-components-next/style.css`
