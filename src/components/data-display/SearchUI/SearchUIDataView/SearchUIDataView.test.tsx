@@ -79,7 +79,7 @@ describe('SearchUIDataView', () => {
     });
   });
 
-  it('switches between table and synthesis views from the header', async () => {
+  it('renders the legacy header controls without view switching buttons', async () => {
     render(
       <SearchUIContainer
         columns={columns}
@@ -96,22 +96,8 @@ describe('SearchUIDataView', () => {
     );
 
     expect(screen.getByRole('link', { name: 'mp-149' })).toBeInTheDocument();
-    expect(screen.getByTestId('search-ui-view-table')).toHaveAttribute('aria-pressed', 'true');
-
-    fireEvent.click(screen.getByTestId('search-ui-view-synthesis'));
-
-    await waitFor(() => {
-      expect(screen.getByTestId('mpc-synthesis-recipe-cards')).toBeInTheDocument();
-      expect(screen.getByTestId('search-ui-view-synthesis')).toHaveAttribute('aria-pressed', 'true');
-      expect(screen.queryByText('Columns')).not.toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('search-ui-view-table'));
-
-    await waitFor(() => {
-      expect(screen.getByRole('link', { name: 'mp-149' })).toBeInTheDocument();
-      expect(screen.getByTestId('search-ui-view-table')).toHaveAttribute('aria-pressed', 'true');
-      expect(screen.getByText('Columns')).toBeInTheDocument();
-    });
+    expect(screen.getByText('Columns')).toBeInTheDocument();
+    expect(screen.queryByTestId('search-ui-view-table')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('search-ui-view-synthesis')).not.toBeInTheDocument();
   });
 });

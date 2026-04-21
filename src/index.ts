@@ -43,6 +43,7 @@ export * from './components/data-entry/Switch';
 export * from './components/data-entry/TextInput';
 export * from './components/data-entry/ThreeStateBooleanSelect';
 export * from './components/navigation/Dropdown';
+export * from './components/navigation/Accordion';
 export * from './components/navigation/Link';
 export * from './components/navigation/Navbar';
 export * from './components/navigation/NavbarDropdown';

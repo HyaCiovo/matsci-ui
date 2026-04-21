@@ -80,10 +80,29 @@
   border-top: 1px solid #ddd;
 }
 
-.mpc-data-block-expandable .Collapsible__contentOuter {
+.mpc-data-block-body {
   min-height: 2.5rem;
   position: relative;
   margin-bottom: 0.5rem;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    max-height 350ms ease,
+    opacity 350ms ease,
+    transform 350ms ease;
+}
+
+.mpc-data-block-body.is-collapsed {
+  max-height: 3.25rem;
+  opacity: 0.98;
+  transform: translateY(-1px);
+}
+
+.mpc-data-block-body.is-expanded {
+  max-height: 40rem;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .mpc-data-block-expandable .mpc-data-block-item:not(:last-child) {
@@ -96,12 +115,30 @@
   width: 100%;
   bottom: 0;
   background: linear-gradient(rgba(255, 255, 255, 0), #fff);
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 350ms ease;
 }
 
 .mpc-data-block-caret {
   font-size: 1.5rem;
   float: right;
   cursor: pointer;
+}
+
+.mpc-data-block-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+}
+
+.mpc-data-block-trigger a {
+  color: #3273dc;
+}
+
+.mpc-data-block-trigger a:hover {
+  color: #363636;
 }
 
 .mpc-data-block-icon-container {

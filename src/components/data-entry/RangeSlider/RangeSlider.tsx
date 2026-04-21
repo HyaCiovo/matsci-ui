@@ -116,16 +116,23 @@ export const RangeSlider = ({
     onChangeRef.current = onChange;
   }, [setProps, onChange]);
 
+  const lastReportedValue = useRef<number>();
+
   const emitChange = (nextSliderValue: number) => {
     const rounded = Number(nextSliderValue.toFixed(decimals));
+    lastReportedValue.current = rounded;
     setPropsRef.current?.({ value: rounded });
     onChangeRef.current?.([rounded]);
   };
 
   useEffect(() => {
+    if (Number(value) === lastReportedValue.current) {
+      return;
+    }
     const nextSliderValue = clamp(Number(value), domain[0], domain[1]);
     setSliderValue(nextSliderValue);
     setInputValue(getDisplayValue(nextSliderValue, isLogScale));
+    lastReportedValue.current = nextSliderValue;
   }, [domain, isLogScale, value]);
 
   useEffect(() => {
@@ -143,7 +150,7 @@ export const RangeSlider = ({
     <div id={id} className={clsx('mpc-range-slider', className, { 'no-ticks': !tickMarks })}>
       <input
         data-testid="range-slider-input"
-        className="input is-small"
+        className="input is-small mpc-range-number-input"
         style={styleInput}
         type="number"
         value={inputValue}

@@ -49,12 +49,25 @@ export const DualRangeSlider = ({
     onPropsChange?.({ domain, step });
   }, [domain, onPropsChange, step]);
 
+  const lastReportedValues = useRef<[number, number]>([
+    clamp(initialValues[0] ?? minDomain, minDomain, maxDomain),
+    clamp(initialValues[1] ?? maxDomain, minDomain, maxDomain),
+  ]);
+
   useEffect(() => {
     const next = value ?? [valueMin ?? minDomain, valueMax ?? maxDomain];
-    setValues([
+    const clampedNext: [number, number] = [
       clamp(next[0] ?? minDomain, minDomain, maxDomain),
       clamp(next[1] ?? maxDomain, minDomain, maxDomain),
-    ]);
+    ];
+    if (
+      clampedNext[0] === lastReportedValues.current[0] &&
+      clampedNext[1] === lastReportedValues.current[1]
+    ) {
+      return;
+    }
+    setValues(clampedNext);
+    lastReportedValues.current = clampedNext;
   }, [maxDomain, minDomain, value, valueMax, valueMin]);
 
   const setPropsRef = useRef(setProps);
@@ -66,6 +79,7 @@ export const DualRangeSlider = ({
   }, [setProps, onChange]);
 
   useEffect(() => {
+    lastReportedValues.current = debouncedValues;
     setPropsRef.current?.({ value: debouncedValues, valueMin: debouncedValues[0], valueMax: debouncedValues[1] });
     onChangeRef.current?.(debouncedValues[0], debouncedValues[1]);
   }, [debouncedValues]);
@@ -87,10 +101,10 @@ export const DualRangeSlider = ({
 
   return (
     <div className={clsx('mpc-dual-range-slider', className)}>
-      <div className="field has-addons mb-4">
-        <div className="control is-expanded">
+      <div className="mpc-dual-range-slider-inputs">
+        <div className="mpc-dual-range-slider-input is-min">
           <input
-            className="input"
+            className="input mpc-range-number-input"
             type="number"
             value={values[0]}
             min={minDomain}
@@ -100,9 +114,9 @@ export const DualRangeSlider = ({
             onChange={(event) => updateValue(0, event.target.value)}
           />
         </div>
-        <div className="control is-expanded">
+        <div className="mpc-dual-range-slider-input is-max">
           <input
-            className="input"
+            className="input mpc-range-number-input"
             type="number"
             value={values[1]}
             min={minDomain}

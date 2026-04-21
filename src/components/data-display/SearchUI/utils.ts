@@ -263,8 +263,15 @@ export const parseSearchQuery = (
   return parsed;
 };
 
-export const serializeSearchQuery = (query: Record<string, any>, defaultQuery: Record<string, any>) => {
-  const params = new URLSearchParams();
+export const serializeSearchQuery = (
+  query: Record<string, any>,
+  defaultQuery: Record<string, any>,
+  existingSearch: string = ''
+) => {
+  const params = new URLSearchParams(existingSearch);
+
+  const allKnownKeys = new Set([...Object.keys(query), ...Object.keys(defaultQuery)]);
+  allKnownKeys.forEach((key) => params.delete(key));
 
   Object.keys(query).forEach((key) => {
     const value = query[key];

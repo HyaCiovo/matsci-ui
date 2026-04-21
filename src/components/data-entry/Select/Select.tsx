@@ -56,7 +56,7 @@ export const Select = ({
             <RadixSelect.Value placeholder={placeholder}>
               {selectedOption?.customAbbreviation ?? selectedOption?.label}
             </RadixSelect.Value>
-            <RadixSelect.Icon>
+            <RadixSelect.Icon className="mpc-select-icon">
               <FaAngleDown />
             </RadixSelect.Icon>
           </RadixSelect.Trigger>

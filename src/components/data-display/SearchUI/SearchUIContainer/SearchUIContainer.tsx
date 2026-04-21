@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import type { SearchUIContainerProps } from '../types';
 import { SearchUIContextProvider } from '../SearchUIContextProvider';
+import './SearchUIContainer.css';
 
 export const SearchUIContainer = ({
   id,

@@ -114,6 +114,25 @@ describe('MaterialsInput', () => {
     expect(input).toHaveValue('Li-Fe');
   });
 
+  it('keeps help and clear controls in filter mode without submit button', () => {
+    render(
+      <MaterialsInput
+        value="Li-Fe"
+        type={MaterialsInputType.CHEMICAL_SYSTEM}
+        allowedInputTypes={[MaterialsInputType.CHEMICAL_SYSTEM]}
+        helpItems={[{ label: 'Examples' }, { label: null, examples: ['Li-Fe'] }]}
+        showSubmitButton={false}
+      />
+    );
+
+    expect(screen.getByTestId('materials-input-help-button')).toBeInTheDocument();
+    expect(screen.getByTestId('materials-input-clear')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('materials-input-clear'));
+
+    expect(screen.getByTestId('materials-input-search-input')).toHaveValue('');
+  });
+
   it('submits the latest input immediately even when debounce is enabled', () => {
     vi.useFakeTimers();
     const handleChange = vi.fn();

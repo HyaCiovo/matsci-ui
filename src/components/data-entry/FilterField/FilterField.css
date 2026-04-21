@@ -1,6 +1,49 @@
 .mpc-filter-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
+}
+
+.mpc-filter-label .mpc-filter-label-row {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+
+.mpc-filter-label .tooltip-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  vertical-align: middle;
+}
+
+.mpc-filter-label .tooltip-label.is-active {
+  color: #3273dc;
+}
+
+.mpc-filter-label .mpc-filter-reset-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #4a4a4a;
+  cursor: pointer;
+}
+
+.mpc-filter-label .mpc-filter-reset-button:hover {
+  color: #3273dc;
+}
+
+.mpc-filter-label .filter-cancel-button {
+  flex: 0 0 auto;
+  vertical-align: middle;
 }
 
 .mpc-units {

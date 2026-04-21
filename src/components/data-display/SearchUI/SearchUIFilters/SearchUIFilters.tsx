@@ -9,6 +9,13 @@ import { PeriodicTableMode } from '../../../data-entry/MaterialsInput/MaterialsI
 import { Select } from '../../../data-entry/Select';
 import { TextInput } from '../../../data-entry/TextInput';
 import { ThreeStateBooleanSelect } from '../../../data-entry/ThreeStateBooleanSelect';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionHeader,
+  AccordionItem,
+  AccordionTrigger,
+} from '../../../navigation/Accordion';
 import { Tooltip } from '../../Tooltip';
 import { useSearchUIContext } from '../SearchUIContextProvider';
 import { type ActiveFilter, type Filter, type FilterGroup, FilterType } from '../types';
@@ -26,17 +33,25 @@ const getActiveFilterCount = (group: FilterGroup, activeFilters: ActiveFilter[])
   return group.filters.filter((filter) => !filter.hidden && activeIds.includes(filter.name)).length;
 };
 
-const getGroupsByName = (groups: FilterGroup[], activeFilters: ActiveFilter[]) => {
+const getGroupMetaByName = (groups: FilterGroup[], activeFilters: ActiveFilter[]) => {
   return Object.fromEntries(
     groups.map((group) => [
       group.name,
       {
         ...group,
-        expanded: group.expanded === true || group.alwaysExpanded === true,
         activeFilterCount: getActiveFilterCount(group, activeFilters),
       },
     ])
   );
+};
+
+const getAlwaysExpandedGroups = (groups: FilterGroup[]) =>
+  groups.filter((group) => group.alwaysExpanded).map((group) => group.name);
+
+const getInitialOpenGroupNames = (groups: FilterGroup[]) => {
+  const alwaysExpanded = getAlwaysExpandedGroups(groups);
+  const firstExpandedGroup = groups.find((group) => !group.alwaysExpanded && group.expanded)?.name;
+  return firstExpandedGroup ? [...alwaysExpanded, firstExpandedGroup] : alwaysExpanded;
 };
 
 const renderUnits = (units?: string) => (units ? <span className="is-size-7 has-text-weight-normal"> ({units})</span> : null);
@@ -54,27 +69,27 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
     apiKey,
     debounce,
   } = useSearchUIContext();
-  const [groupsByName, setGroupsByName] = useState(() => getGroupsByName(filterGroups, activeFilters));
+  const [openGroupNames, setOpenGroupNames] = useState(() => getInitialOpenGroupNames(filterGroups));
+  const groupMetaByName = useMemo(
+    () => getGroupMetaByName(filterGroups, activeFilters),
+    [activeFilters, filterGroups]
+  );
+  const alwaysExpandedGroups = useMemo(() => getAlwaysExpandedGroups(filterGroups), [filterGroups]);
 
   useEffect(() => {
-    setGroupsByName(getGroupsByName(filterGroups, activeFilters));
-  }, [activeFilters, filterGroups]);
+    setOpenGroupNames((current) => {
+      const availableGroupNames = new Set(filterGroups.map((group) => group.name));
+      const currentOpen = current.filter((name) => availableGroupNames.has(name));
+      const currentCollapsible = currentOpen.filter((name) => !alwaysExpandedGroups.includes(name));
 
-  const toggleGroup = (groupName: string) => {
-    setGroupsByName((current) => {
-      const next = { ...current };
-      Object.keys(next).forEach((name) => {
-        if (next[name].alwaysExpanded) {
-          next[name].expanded = true;
-        } else if (name === groupName) {
-          next[name].expanded = !next[name].expanded;
-        } else {
-          next[name].expanded = false;
-        }
-      });
-      return next;
+      if (currentCollapsible.length > 0) {
+        return [...alwaysExpandedGroups, currentCollapsible[0]];
+      }
+
+      const firstExpandedGroup = filterGroups.find((group) => !group.alwaysExpanded && group.expanded)?.name;
+      return firstExpandedGroup ? [...alwaysExpandedGroups, firstExpandedGroup] : alwaysExpandedGroups;
     });
-  };
+  }, [alwaysExpandedGroups, filterGroups]);
 
   const resetFilter = async (filter: Filter) => {
     const activeFilter = getActiveFilterByName(filter.name, activeFilters);
@@ -158,6 +173,7 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
   };
 
   const renderedGroups = useMemo(() => filterGroups, [filterGroups]);
+  const openGroupNameSet = useMemo(() => new Set(openGroupNames), [openGroupNames]);
 
   return (
     <div className={clsx('panel', className)}>
@@ -170,65 +186,82 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
         </div>
       </div>
       <div data-testid="panel-block-container" className="panel-block-container">
-        {renderedGroups.map((group, index) => {
-          const groupState = groupsByName[group.name];
+        <Accordion
+          type="multiple"
+          value={openGroupNames}
+          onValueChange={(nextValues) => {
+            const nextCollapsible = nextValues.filter((name) => !alwaysExpandedGroups.includes(name));
+            const previousCollapsible = openGroupNames.filter((name) => !alwaysExpandedGroups.includes(name));
+            const newlyOpened = nextCollapsible.find((name) => !previousCollapsible.includes(name));
+            const nextOpenCollapsible = newlyOpened ?? nextCollapsible[nextCollapsible.length - 1];
+            setOpenGroupNames(nextOpenCollapsible ? [...alwaysExpandedGroups, nextOpenCollapsible] : alwaysExpandedGroups);
+          }}
+          className="mpc-search-ui-filter-accordion"
+        >
+          {renderedGroups.map((group, index) => {
+            const groupState = groupMetaByName[group.name];
           if (!groupState) {
             return null;
           }
 
+          const isExpanded = openGroupNameSet.has(group.name);
+
           return (
-            <div
+            <AccordionItem
               key={group.name}
-              className={clsx('panel-block', { 'is-active': groupState.expanded })}
+              value={group.name}
+              className={clsx('panel-block', { 'is-active': isExpanded })}
             >
               <div className="control">
-                <h3 className="panel-block-title">
-                  <button
+                <AccordionHeader className="panel-block-title">
+                  <AccordionTrigger
                     className="button is-fullwidth"
-                    aria-expanded={groupState.expanded}
+                    disabled={group.alwaysExpanded}
+                    aria-expanded={isExpanded}
                     aria-controls={`filter-group-${index}`}
                     id={`filter-group-button-${index}`}
-                    type="button"
-                    onMouseDown={() => toggleGroup(group.name)}
                   >
                     <span className="mr-4">
-                      {groupState.alwaysExpanded ? null : groupState.expanded ? <FaCaretDown className="filter-group-caret" /> : <FaCaretRight className="filter-group-caret" />}
+                      {group.alwaysExpanded ? null : isExpanded ? <FaCaretDown className="filter-group-caret" /> : <FaCaretRight className="filter-group-caret" />}
                     </span>
-                    <span className={clsx('is-size-5', { 'has-opacity-70': !groupState.expanded })}>
+                    <span className={clsx('is-size-5', { 'has-opacity-70': !isExpanded })}>
                       {group.name}
                       {groupState.activeFilterCount > 0 ? (
                         <span className="tag is-link is-rounded ml-2">{groupState.activeFilterCount} active</span>
                       ) : null}
                     </span>
-                  </button>
-                </h3>
-                <div
+                  </AccordionTrigger>
+                </AccordionHeader>
+                <AccordionContent
                   id={`filter-group-${index}`}
-                  className={clsx('panel-block-children', { 'is-hidden': !groupState.expanded })}
+                  role="region"
+                  aria-labelledby={`filter-group-button-${index}`}
+                  forceMount
+                  className={clsx('panel-block-children', { 'is-hidden': !isExpanded })}
                 >
-                  <div aria-hidden={!groupState.expanded}>
+                  <div aria-hidden={!isExpanded}>
                     {group.filters.map((filter) =>
                       filter.hidden ? null : (
-                        <div className="mb-4" key={filter.name}>
-                          <FilterField
-                            id={filter.name.replace(/\s+/g, '-')}
-                            label={filter.name}
-                            units={filter.units}
-                            tooltip={filter.tooltip}
-                            active={!!getActiveFilterByName(filter.name, activeFilters)}
-                            resetFilter={() => void resetFilter(filter)}
-                          >
-                            {renderFilter(filter)}
-                          </FilterField>
-                        </div>
+                        <FilterField
+                          key={filter.name}
+                          id={filter.name.replace(/\s+/g, '-')}
+                          label={filter.name}
+                          units={filter.units}
+                          tooltip={filter.tooltip}
+                          active={!!getActiveFilterByName(filter.name, activeFilters)}
+                          resetFilter={() => void resetFilter(filter)}
+                        >
+                          {renderFilter(filter)}
+                        </FilterField>
                       )
                     )}
                   </div>
-                </div>
+                </AccordionContent>
               </div>
-            </div>
+            </AccordionItem>
           );
-        })}
+          })}
+        </Accordion>
       </div>
     </div>
   );

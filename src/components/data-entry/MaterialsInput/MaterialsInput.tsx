@@ -1,10 +1,11 @@
 import clsx from 'clsx';
 import {
-  useCallback,
   type ChangeEvent,
   type FocusEvent,
   type FormEvent,
+  type KeyboardEvent,
   type MouseEvent,
+  useCallback,
   useEffect,
   useId,
   useMemo,
@@ -345,6 +346,14 @@ export const MaterialsInput = ({
     ]
   );
 
+  const lastReportedValue = useRef(props.value);
+
+  const reportChange = useCallback((valueToReport: string) => {
+    lastReportedValue.current = valueToReport;
+    callbackPropsRef.current.onChange(valueToReport);
+    callbackPropsRef.current.onPropsChange?.(callbackPropsRef.current);
+  }, []);
+
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const nextValue = event.target.value;
     if (!nextValue) {
@@ -357,6 +366,43 @@ export const MaterialsInput = ({
     }
 
     applyValidatedValue(nextValue);
+  };
+
+  const clearInputValue = useCallback(() => {
+    setError(null);
+    setErrorTipStayActive(false);
+    setInputValue('');
+    setPreviousValidValue('');
+    setMaxElementsReached(false);
+    setSelectedElements([]);
+    setShowAutocomplete(false);
+    setShowInputHelp(Boolean(props.helpItems));
+  }, [props.helpItems]);
+
+  const handleInputFocus = () => {
+    setErrorTipStayActive(false);
+    setIsFocused(true);
+    if (periodicTableMode === PeriodicTableMode.FOCUS) {
+      setShowPeriodicTable(true);
+    }
+  };
+
+  const handleInputBlur = (_event: FocusEvent<HTMLInputElement>) => {
+    setIsFocused(false);
+    if (!panelInteractionRef.current && periodicTableMode === PeriodicTableMode.FOCUS) {
+      setShowPeriodicTable(false);
+    } else if (panelInteractionRef.current && periodicTableMode === PeriodicTableMode.FOCUS) {
+      window.setTimeout(() => {
+        inputRef.current?.focus();
+      });
+    }
+    panelInteractionRef.current = false;
+  };
+
+  const handleInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Tab' && periodicTableMode === PeriodicTableMode.FOCUS) {
+      setShowPeriodicTable(false);
+    }
   };
 
   const convertSelectionToInputType = (
@@ -430,29 +476,36 @@ export const MaterialsInput = ({
     props.onSubmit?.(event, submittedValue ?? inputValue);
   };
 
+  const callbackPropsRef = useRef(callbackProps);
+  useEffect(() => {
+    callbackPropsRef.current = callbackProps;
+  }, [callbackProps]);
+
   useEffect(() => {
     window.clearTimeout(debounceTimeoutRef.current);
     debounceTimeoutRef.current = window.setTimeout(() => {
-      if (!error) {
-        callbackProps.onChange(inputValue);
-        callbackProps.onPropsChange?.(callbackProps);
+      if (!error && inputValue !== lastReportedValue.current) {
+        reportChange(inputValue);
       }
     }, callbackProps.debounce);
 
     return () => window.clearTimeout(debounceTimeoutRef.current);
-  }, [callbackProps, error, inputValue]);
+  }, [callbackProps.debounce, error, inputValue, reportChange]);
 
   useEffect(() => {
-    callbackProps.setProps?.({
-      ...callbackProps,
+    callbackPropsRef.current.setProps?.({
+      ...callbackPropsRef.current,
       submitButtonClicks,
     });
-  }, [callbackProps, submitButtonClicks]);
+  }, [submitButtonClicks]);
 
   useEffect(() => {
-    setInputValue(props.value);
-    setPreviousValidValue(props.value);
-    setMaxElementsReached(isMaxSelectionValue(props.type, props.value, props.maxElementSelectable));
+    if (props.value !== lastReportedValue.current) {
+      setInputValue(props.value);
+      setPreviousValidValue(props.value);
+      setMaxElementsReached(isMaxSelectionValue(props.type, props.value, props.maxElementSelectable));
+      lastReportedValue.current = props.value;
+    }
   }, [props.maxElementSelectable, props.type, props.value]);
 
   useEffect(() => {
@@ -525,29 +578,10 @@ export const MaterialsInput = ({
             inputClassName={props.inputClassName}
             placeholder={props.placeholder}
             onInputChange={handleInputChange}
-            onFocus={() => {
-              setErrorTipStayActive(false);
-              setIsFocused(true);
-              if (periodicTableMode === PeriodicTableMode.FOCUS) {
-                setShowPeriodicTable(true);
-              }
-            }}
-            onBlur={(event: FocusEvent<HTMLInputElement>) => {
-              setIsFocused(false);
-              if (!panelInteractionRef.current && periodicTableMode === PeriodicTableMode.FOCUS) {
-                setShowPeriodicTable(false);
-              } else if (panelInteractionRef.current && periodicTableMode === PeriodicTableMode.FOCUS) {
-                window.setTimeout(() => {
-                  inputRef.current?.focus();
-                });
-              }
-              panelInteractionRef.current = false;
-            }}
-            onKeyDown={(event) => {
-              if (event.key === 'Tab' && periodicTableMode === PeriodicTableMode.FOCUS) {
-                setShowPeriodicTable(false);
-              }
-            }}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            onKeyDown={handleInputKeyDown}
+            onClearInput={clearInputValue}
             autocompleteFormulaUrl={props.autocompleteFormulaUrl}
             autocompleteApiKey={props.autocompleteApiKey}
             showAutocomplete={showAutocomplete}
@@ -590,15 +624,29 @@ export const MaterialsInput = ({
           inputClassName={props.inputClassName}
           placeholder={props.placeholder}
           onInputChange={handleInputChange}
-          onFocus={() => undefined}
-          onBlur={() => undefined}
-          onKeyDown={() => undefined}
-          onAutocompleteChange={() => undefined}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
+          onKeyDown={handleInputKeyDown}
+          onClearInput={clearInputValue}
+          autocompleteFormulaUrl={props.autocompleteFormulaUrl}
+          autocompleteApiKey={props.autocompleteApiKey}
+          showAutocomplete={showAutocomplete}
+          helpItems={props.helpItems}
+          showInputHelp={showInputHelp}
+          onHelpChange={(nextValue) => {
+            applyValidatedValue(nextValue);
+            setShowInputHelp(false);
+          }}
+          onHelpToggle={() => setShowInputHelp((current) => !current)}
+          error={error}
+          errorTipStayActive={errorTipStayActive}
+          onErrorMouseOver={() => setErrorTipStayActive(false)}
+          onAutocompleteChange={(nextValue) => {
+            inputRef.current?.blur();
+            applyValidatedValue(nextValue);
+          }}
           setError={setError}
-          onHelpChange={() => undefined}
-          onHelpToggle={() => undefined}
           helpTooltipId={helpTooltipId}
-          onErrorMouseOver={() => undefined}
           errorTooltipId={errorTooltipId}
           periodicTableMode={periodicTableMode}
           hasPeriodicTable={hasPeriodicTable}

@@ -1,0 +1,45 @@
+.mpc-accordion-item {
+  border: 0;
+}
+
+.mpc-accordion-header {
+  margin: 0;
+}
+
+.mpc-accordion-trigger {
+  width: 100%;
+}
+
+.mpc-accordion-content {
+  overflow: hidden;
+}
+
+.mpc-accordion-content[data-state='open'] {
+  animation: mpc-accordion-slide-down 160ms ease-out;
+}
+
+.mpc-accordion-content[data-state='closed'] {
+  animation: mpc-accordion-slide-up 160ms ease-out;
+}
+
+.mpc-accordion-content-inner {
+  min-width: 0;
+}
+
+@keyframes mpc-accordion-slide-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes mpc-accordion-slide-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}

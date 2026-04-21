@@ -55,11 +55,14 @@ describe('DataBlock', () => {
       />
     );
 
-    expect(screen.queryByText('Silicon entry')).not.toBeInTheDocument();
+    expect(screen.getByText('Silicon entry')).toBeInTheDocument();
+    expect(screen.getByTestId('data-block-bottom-section')).toHaveClass('is-collapsed');
     fireEvent.click(screen.getByText('See more'));
     expect(screen.getByText('Silicon entry')).toBeInTheDocument();
+    expect(screen.getByTestId('data-block-bottom-section')).toHaveClass('is-expanded');
     fireEvent.click(screen.getByText('See less'));
-    expect(screen.queryByText('Silicon entry')).not.toBeInTheDocument();
+    expect(screen.getByText('Silicon entry')).toBeInTheDocument();
+    expect(screen.getByTestId('data-block-bottom-section')).toHaveClass('is-collapsed');
   });
 
   it('supports old array download link options in datablock arrays', () => {

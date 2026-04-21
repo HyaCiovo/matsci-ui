@@ -501,9 +501,11 @@ export const SearchUIContextProvider = ({
       return;
     }
 
-    const nextSearch = serializeSearchQuery(query, normalizedDefaultQuery);
+    const nextSearch = serializeSearchQuery(query, normalizedDefaultQuery, window.location.search);
     const nextUrl = `${window.location.pathname}${nextSearch}${window.location.hash}`;
-    window.history.replaceState({}, '', nextUrl);
+    if (window.location.search !== nextSearch) {
+      window.history.replaceState({}, '', nextUrl);
+    }
   }, [normalizedDefaultQuery, query]);
 
   useEffect(() => {

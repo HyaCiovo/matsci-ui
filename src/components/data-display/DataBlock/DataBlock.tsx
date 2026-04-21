@@ -76,14 +76,41 @@ export const DataBlock = ({
 
       {bottomColumns.length > 0 ? (
         <div className="mpc-data-block-expandable">
-          {isExpanded ? <div className="mpc-data-block-body">{bottomColumns.map((column) => renderColumn(column))}</div> : null}
+          <div
+            data-testid="data-block-bottom-section"
+            className={clsx('mpc-data-block-body', {
+              'is-expanded': isExpanded,
+              'is-collapsed': !isExpanded,
+            })}
+          >
+            {!isExpanded ? <div className="mpc-data-block-fade" /> : null}
+            {bottomColumns.map((column) => renderColumn(column))}
+          </div>
           <p className="mpc-data-block-trigger">
-            <button type="button" onClick={() => setIsExpanded((current) => !current)}>
+            <a
+              href="#"
+              onClick={(event) => {
+                event.preventDefault();
+                setIsExpanded((current) => !current);
+              }}
+            >
               {isExpanded ? 'See less' : 'See more'}
-            </button>
-            <button type="button" aria-label={isExpanded ? 'Collapse section' : 'Expand section'} onClick={() => setIsExpanded((current) => !current)}>
+            </a>
+            <span
+              className="mpc-data-block-caret"
+              role="button"
+              tabIndex={0}
+              aria-label={isExpanded ? 'Collapse section' : 'Expand section'}
+              onClick={() => setIsExpanded((current) => !current)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  setIsExpanded((current) => !current);
+                }
+              }}
+            >
               {isExpanded ? <FaCaretUp /> : <FaCaretDown />}
-            </button>
+            </span>
           </p>
         </div>
       ) : null}

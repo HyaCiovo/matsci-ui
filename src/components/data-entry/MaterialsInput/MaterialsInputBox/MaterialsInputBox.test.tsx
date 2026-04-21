@@ -7,6 +7,7 @@ describe('MaterialsInputBox', () => {
   it('renders the integrated controls and delegates interactions', () => {
     const onTypeChange = vi.fn();
     const onInputChange = vi.fn();
+    const onClearInput = vi.fn();
     const onHelpToggle = vi.fn();
     const onPeriodicToggle = vi.fn();
 
@@ -24,6 +25,7 @@ describe('MaterialsInputBox', () => {
         onFocus={() => undefined}
         onBlur={() => undefined}
         onKeyDown={() => undefined}
+        onClearInput={onClearInput}
         onAutocompleteChange={() => undefined}
         setError={() => undefined}
         helpItems={[{ label: 'Examples' }]}
@@ -55,6 +57,9 @@ describe('MaterialsInputBox', () => {
       target: { value: 'Li-Fe-Co' },
     });
     expect(onInputChange).toHaveBeenCalled();
+
+    fireEvent.click(screen.getByTestId('materials-input-clear'));
+    expect(onClearInput).toHaveBeenCalled();
 
     fireEvent.click(screen.getByTestId('materials-input-help-button'));
     expect(onHelpToggle).toHaveBeenCalled();

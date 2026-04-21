@@ -236,4 +236,51 @@ describe('SearchUIFilters', () => {
 
     expect(screen.getByTestId('search-ui-query')).toHaveTextContent('"keyword":"oxide"');
   });
+
+  it('expands one accordion group at a time and closes sibling groups', () => {
+    const accordionGroups: FilterGroup[] = [
+      {
+        name: 'Composition',
+        expanded: true,
+        filters: [
+          {
+            name: 'Material ID',
+            type: FilterType.MATERIALS_INPUT,
+            params: ['material_ids'],
+            props: { type: 'mpid' },
+          },
+        ],
+      },
+      {
+        name: 'Thermodynamics',
+        filters: [
+          {
+            name: 'Crystal System',
+            type: FilterType.SELECT,
+            params: ['crystal_system'],
+            props: {
+              options: [{ label: 'Cubic', value: 'cubic' }],
+            },
+          },
+        ],
+      },
+    ];
+
+    render(
+      <SearchUIContainer filterGroups={accordionGroups}>
+        <SearchUIFilters />
+      </SearchUIContainer>
+    );
+
+    const compositionButton = screen.getByRole('button', { name: /Composition/i });
+    const thermodynamicsButton = screen.getByRole('button', { name: /Thermodynamics/i });
+
+    expect(compositionButton).toHaveAttribute('aria-expanded', 'true');
+    expect(thermodynamicsButton).toHaveAttribute('aria-expanded', 'false');
+
+    fireEvent.click(thermodynamicsButton);
+
+    expect(compositionButton).toHaveAttribute('aria-expanded', 'false');
+    expect(thermodynamicsButton).toHaveAttribute('aria-expanded', 'true');
+  });
 });

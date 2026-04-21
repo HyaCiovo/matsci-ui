@@ -8,8 +8,7 @@ import {
 
 export default {
   component: MaterialsInput,
-  title: 'Data-Entry/MaterialsInput',
-  parameters: { actions: { argTypesRegex: '^on.*' } }
+  title: 'Data-Entry/MaterialsInput'
 };
 
 const Template: StoryFn<MaterialsInputProps> = (args) => <MaterialsInput {...args} />;
@@ -29,6 +28,9 @@ MultiType.args = {
   elementsSelectHelpText:
     'Select elements to search for materials with **at least** these elements',
   errorMessage: 'Please enter a valid list of element symbols, chemical formula, or Material ID.',
+  onChange: fn(),
+  onInputTypeChange: fn(),
+  onPropsChange: fn(),
   showSubmitButton: true,
   onSubmit: fn()
 };
@@ -87,10 +89,9 @@ export const FormulaWithoutSubmit = Template.bind({});
 FormulaWithoutSubmit.args = {
   ...FormulaWithLabel.args,
   showSubmitButton: false,
+  onSubmit: undefined,
   type: 'formula' as MaterialsInputType
 };
-/** Need to ignore onSubmit action or else it won't be considered undefined */
-FormulaWithoutSubmit.parameters = { actions: { argTypesRegex: '^(?!onSubmit)on.*' } };
 
 export const FormulaWithAutocomplete = Template.bind({});
 FormulaWithAutocomplete.args = {
