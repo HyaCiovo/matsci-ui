@@ -1,7 +1,7 @@
 {
-  "name": "@hyacinth/mp-react-components-next",
+  "name": "@hyacinth/matsci-ui",
   "version": "0.0.1",
-  "description": "mp-react-components-next: Next generation Materials Project React components based on React 18 and Radix UI",
+  "description": "matsci-ui: React component library for materials science research, based on React 18 and Radix UI",
   "author": "hyacinth",
   "type": "module",
   "main": "dist/index.js",

@@ -1,6 +1,6 @@
 # 多套样式 / 主题方案（Bulma ↔ Shadcn）
 
-本文档用于规划 `mp-react-components-next` 的“可主题化”和“可替换样式体系”能力。目标是让组件库在不牺牲可维护性的前提下，支持：
+本文档用于规划 `matsci-ui` 的“可主题化”和“可替换样式体系”能力。目标是让组件库在不牺牲可维护性的前提下，支持：
 
 - 一份默认样式（当前以 Bulma 为基础）
 - 至少一份替代样式（例如 shadcn 风格）
@@ -56,27 +56,27 @@
 
 ### 产物形式（建议）
 
-- `@hyacinth/mp-react-components-next/style.css`（默认 Bulma preset）
-- `@hyacinth/mp-react-components-next/presets/shadcn.css`（shadcn-look preset）
-- `@hyacinth/mp-react-components-next/themes/*.css`（主题变量覆盖，例如 dark/materials）
+- `@hyacinth/matsci-ui/style.css`（默认 Bulma preset）
+- `@hyacinth/matsci-ui/presets/shadcn.css`（shadcn-look preset）
+- `@hyacinth/matsci-ui/themes/*.css`（主题变量覆盖，例如 dark/materials）
 
 ### 使用方式（示意）
 
 ```ts
-import '@hyacinth/mp-react-components-next/style.css';
+import '@hyacinth/matsci-ui/style.css';
 ```
 
 切换为 shadcn-look：
 
 ```ts
-import '@hyacinth/mp-react-components-next/style.css';
-import '@hyacinth/mp-react-components-next/presets/shadcn.css';
+import '@hyacinth/matsci-ui/style.css';
+import '@hyacinth/matsci-ui/presets/shadcn.css';
 ```
 
 主题切换（token 覆盖）：
 
 ```ts
-import '@hyacinth/mp-react-components-next/themes/dark.css';
+import '@hyacinth/matsci-ui/themes/dark.css';
 document.documentElement.dataset.mpcTheme = 'dark';
 ```
 
@@ -143,4 +143,3 @@ document.documentElement.dataset.mpcTheme = 'dark';
 - **Bulma 与 shadcn 的“范式差异”**：shadcn 并不是一个“替换 Bulma 文件”的框架；需要兼容层或去 Bulma 化才能成立。
 - **CSS 优先级与覆盖**：兼容层需要控制 selector 优先级，避免出现难以解释的覆盖冲突。
 - **全局样式污染**：当前体系以全局 CSS 为主，建议逐步收敛到 `mpc-*` 前缀与可控作用域（例如 `.mpc-theme` 容器）。
-

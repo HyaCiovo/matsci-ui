@@ -10,7 +10,7 @@ const preview: Preview = {
       storySort: {
         order: [
           'Introduction',
-          ['MP React Components', 'Usage with Dash'],
+          ['matsci-ui', 'Usage with Dash'],
           'Search UI',
           [
             'Building a Search UI',

@@ -1,13 +1,13 @@
-# mp-react-components-next
+# matsci-ui
 
-中文文档。英文文档见 [README.md](./README.md)。`mp-react-components` vs `mp-react-components-next` 的差异说明见 [component-diff-audit.md](./docs/component-diff-audit.md)。
+中文文档。英文文档见 [README.md](./README.md)。`mp-react-components` vs `matsci-ui` 的差异说明见 [component-diff-audit.md](./docs/component-diff-audit.md)。
 
-`@hyacinth/mp-react-components-next` 是面向 Materials Project UI 的 React 18 组件库，提供 Bulma 风格的基础组件与一组可复用业务组件（Search UI、周期表、文献、Crystal Toolkit 等）。本仓库基于原仓库 `mp-react-components` 演进而来：https://github.com/materialsproject/mp-react-components
+`@hyacinth/matsci-ui` 是面向材料科学学术研究的 React 18 组件库，提供 Bulma 风格的基础组件与一组可复用业务组件（Search UI、周期表、文献、Crystal Toolkit 等）。本仓库基于原仓库 `mp-react-components` 演进而来：https://github.com/materialsproject/mp-react-components
 
 ## 安装
 
 ```bash
-npm i @hyacinth/mp-react-components-next
+npm i @hyacinth/matsci-ui
 ```
 
 peerDependencies：
@@ -18,7 +18,7 @@ peerDependencies：
 本包会发布一个打包后的样式文件，建议在应用入口只引入一次：
 
 ```ts
-import '@hyacinth/mp-react-components-next/style.css';
+import '@hyacinth/matsci-ui/style.css';
 ```
 
 ## 主题定制
@@ -32,8 +32,8 @@ import '@hyacinth/mp-react-components-next/style.css';
 示例（深色主题）：
 
 ```ts
-import '@hyacinth/mp-react-components-next/style.css';
-import '@hyacinth/mp-react-components-next/themes/dark.css';
+import '@hyacinth/matsci-ui/style.css';
+import '@hyacinth/matsci-ui/themes/dark.css';
 ```
 
 ```ts
@@ -43,7 +43,7 @@ document.documentElement.dataset.mpcTheme = 'dark';
 ## 使用示例
 
 ```tsx
-import { Modal, ModalContextProvider, ModalTrigger } from '@hyacinth/mp-react-components-next';
+import { Modal, ModalContextProvider, ModalTrigger } from '@hyacinth/matsci-ui';
 
 export function DemoModal() {
   return (
@@ -60,7 +60,7 @@ export function DemoModal() {
 ```
 
 ```tsx
-import { SearchUIContainer, SearchUISearchBar, SearchUIDataTable } from '@hyacinth/mp-react-components-next';
+import { SearchUIContainer, SearchUISearchBar, SearchUIDataTable } from '@hyacinth/matsci-ui';
 
 const columns = [
   { title: 'Material ID', selector: 'material_id' },
@@ -105,4 +105,4 @@ Storybook 说明：
 
 - 仅发布 ESM（`exports.import` → `dist/index.js`）
 - 类型声明：`dist/index.d.ts`
-- 样式：`dist/index.css`，通过 `@hyacinth/mp-react-components-next/style.css` 暴露
+- 样式：`dist/index.css`，通过 `@hyacinth/matsci-ui/style.css` 暴露

@@ -1,10 +1,10 @@
 import { Meta } from '@storybook/blocks';
 
-<Meta title="Introduction/Migration (mp-react → mp-react-components-next)" />
+<Meta title="Introduction/Migration (mp-react → matsci-ui)" />
 
-# Migration: mp-react-components → mp-react-components-next
+# Migration: mp-react-components → matsci-ui
 
-This page summarizes the key differences between the legacy `mp-react-components` package and this repository (`mp-react-components-next`).
+This page summarizes the key differences between the legacy `mp-react-components` package and this repository (`matsci-ui`).
 
 ## Quick Summary
 
@@ -15,7 +15,7 @@ This page summarizes the key differences between the legacy `mp-react-components
   - New package is **ESM-only** and publishes:
     - JS: `dist/index.js`
     - Types: `dist/index.d.ts`
-    - Styles: `dist/index.css` exposed as `@hyacinth/mp-react-components-next/style.css`
+    - Styles: `dist/index.css` exposed as `@hyacinth/matsci-ui/style.css`
 - **Public exports**
   - New is effectively a superset of legacy root exports.
   - The only legacy root export not available from the new root is `Scene`.
@@ -37,7 +37,7 @@ This page summarizes the key differences between the legacy `mp-react-components
 Import styles once in your app entry:
 
 ```ts
-import '@hyacinth/mp-react-components-next/style.css';
+import '@hyacinth/matsci-ui/style.css';
 ```
 
 ## Detailed Diff

@@ -1,13 +1,13 @@
-# mp-react-components vs mp-react-components-next
+# mp-react-components vs matsci-ui
 
-本文件用于快速回答“旧库 mp-react-components 与新库 mp-react-components-next 差在哪”。定位是“迁移/集成决策文档”，不是逐行代码 diff。
+本文件用于快速回答“旧库 mp-react-components 与新库 matsci-ui 差在哪”。定位是“迁移/集成决策文档”，不是逐行代码 diff。
 
 更新时间：2026-04-21
 
 ## 对比口径
 
 - 旧库（mp-react-components）：以 `src/index.ts` 的 `export { ... }` 作为公开 API。
-- 新库（mp-react-components-next）：以 `npm run build` 后的 `dist/index.d.ts` 的 `export { ... }` 作为公开 API。
+- 新库（matsci-ui）：以 `npm run build` 后的 `dist/index.d.ts` 的 `export { ... }` 作为公开 API。
 
 > 说明：新库源码入口在 `src/index.ts`，但它使用了 `export * from ...` 的 barrel 方式；用 `dist/index.d.ts` 更贴近“实际发布到 npm 的导出面”。
 
@@ -53,7 +53,7 @@
 ### 样式交付
 
 - 新库推荐使用：
--  - `import '@hyacinth/mp-react-components-next/style.css'`
+-  - `import '@hyacinth/matsci-ui/style.css'`
   - 该 CSS 由 Bulma + 本库 CSS/Less 统一打包输出。
 
 ## 组件实现替换（常见迁移坑）
