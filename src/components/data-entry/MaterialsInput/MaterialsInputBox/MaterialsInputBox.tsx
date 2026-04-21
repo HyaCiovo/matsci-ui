@@ -1,11 +1,12 @@
 import clsx from 'clsx';
 import type { FocusEvent, FormEvent, KeyboardEvent, MouseEvent, MutableRefObject } from 'react';
-import { FaAngleDown, FaExclamationTriangle, FaQuestionCircle, FaTimes } from 'react-icons/fa';
+import { FaExclamationTriangle, FaQuestionCircle } from 'react-icons/fa';
 import { Tooltip } from '../../../data-display/Tooltip';
 import { FormulaAutocomplete } from '../FormulaAutocomplete';
 import { InputHelp, type InputHelpItem } from '../InputHelp';
 import type { MaterialsInputType } from '../utils';
 import type { PeriodicTableMode } from '../MaterialsInput';
+import { Dropdown } from '../../../navigation/Dropdown';
 
 const PeriodicTableIcon = ({ active }: { active: boolean }) => (
   <svg
@@ -153,7 +154,6 @@ interface MaterialsInputBoxProps {
   onFocus: () => void;
   onBlur: (event: FocusEvent<HTMLInputElement>) => void;
   onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => void;
-  onClearInput: () => void;
   autocompleteFormulaUrl?: string;
   autocompleteApiKey?: string;
   showAutocomplete?: boolean;
@@ -195,7 +195,6 @@ export const MaterialsInputBox = ({
   onFocus,
   onBlur,
   onKeyDown,
-  onClearInput,
   autocompleteFormulaUrl,
   autocompleteApiKey,
   showAutocomplete,
@@ -227,9 +226,7 @@ export const MaterialsInputBox = ({
         <input
           ref={inputRef}
           data-testid="materials-input-search-input"
-          className={clsx('input', inputClassName, {
-            'has-inline-actions': !!inputValue,
-          })}
+          className={clsx('input', inputClassName)}
           type="search"
           autoComplete="off"
           value={inputValue}
@@ -239,18 +236,6 @@ export const MaterialsInputBox = ({
           onBlur={onBlur}
           onKeyDown={onKeyDown}
         />
-        {inputValue ? (
-          <button
-            type="button"
-            className="mpc-materials-input-clear"
-            data-testid="materials-input-clear"
-            aria-label="Clear input"
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={onClearInput}
-          >
-            <FaTimes />
-          </button>
-        ) : null}
       </div>
 
       {autocompleteFormulaUrl ? (
@@ -335,27 +320,19 @@ export const MaterialsInputBox = ({
       ) : null}
 
       {showTypeDropdown ? (
-        <div className="control dropdown is-active" data-testid="mpc-chemsys-dropdown">
-          <div className="dropdown-trigger">
-            <label className="button">
-              <span>{typeDropdownValue}</span>
-              <span className="icon">
-                <FaAngleDown />
-              </span>
-              <select
-                aria-label="Input type"
-                style={{ position: 'absolute', inset: 0, opacity: 0 }}
-                value={typeDropdownValue}
-                onChange={(event) => onTypeChange(event.target.value)}
+        <div className="control" data-testid="mpc-chemsys-dropdown">
+          <Dropdown triggerLabel={typeDropdownValue} triggerClassName="button">
+            {typeDropdownOptions.map((option) => (
+              <button
+                key={option}
+                type="button"
+                className={clsx('dropdown-item', { 'is-active': option === typeDropdownValue })}
+                onClick={() => onTypeChange(option)}
               >
-                {typeDropdownOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
+                {option}
+              </button>
+            ))}
+          </Dropdown>
         </div>
       ) : null}
 

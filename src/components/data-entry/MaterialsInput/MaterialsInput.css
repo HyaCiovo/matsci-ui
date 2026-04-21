@@ -54,35 +54,6 @@
   position: relative;
 }
 
-.mpc-materials-input .input.has-inline-actions {
-  padding-right: 2.25rem;
-}
-
-.mpc-materials-input .mpc-materials-input-clear {
-  position: absolute;
-  top: 50%;
-  right: 0.625rem;
-  transform: translateY(-50%);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.25rem;
-  height: 1.25rem;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  outline: none;
-  background: transparent;
-  color: #3273dc;
-  cursor: pointer;
-  z-index: 10;
-  box-sizing: border-box;
-}
-
-.mpc-materials-input .mpc-materials-input-clear:hover {
-  color: #1f4fc9;
-}
-
 .mpc-materials-input .control [data-tooltip] {
   border-left: none;
 }
@@ -122,7 +93,7 @@
 
 .mpc-materials-input .mpc-materials-input-toggle-icon {
   display: block;
-  width: 3.5rem;
+  width: 3rem;
   height: auto;
   flex-shrink: 0;
   color: #000;

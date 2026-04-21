@@ -296,7 +296,7 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
   const hasSettingsPanel = settingsPanel && settingsPanel.length > 0;
   const bottomPanel = React.Children.map(props.children, (child, i) => (i === 1 ? child : null));
   const hasBottomPanel = bottomPanel && bottomPanel.length > 0;
-  const tooltipId = uuidv4();
+  const tooltipId = useRef(uuidv4()).current;
 
   /**
    * Handle saving image to png
@@ -580,6 +580,7 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
                   place="left"
                   trigger={
                     <button
+                      data-tooltip-id={`settings-${tooltipId}`}
                       className="button"
                       onClick={() => setShowSettingsPanel(!showSettingsPanel)}
                     >
@@ -674,7 +675,7 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
                 <Tooltip
                   place="left"
                   trigger={
-                    <div onClick={() => hideTooltip()}>
+                    <div data-tooltip-id={`export-${tooltipId}`} onClick={() => hideTooltip()}>
                       <Dropdown triggerIcon={<FaFileExport />} isArrowless isRight>
                         {props.fileOptions?.map((option, i) => (
                           <p
@@ -703,7 +704,7 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
               'is-hidden': !showSettingsPanel
             })}
           >
-            <ModalCloseButton onClick={() => setShowSettingsPanel(false)} />
+            <ModalCloseButton className="delete" onClick={() => setShowSettingsPanel(false)} />
             {settingsPanel}
           </div>
         )}

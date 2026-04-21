@@ -7,7 +7,6 @@ describe('MaterialsInputBox', () => {
   it('renders the integrated controls and delegates interactions', () => {
     const onTypeChange = vi.fn();
     const onInputChange = vi.fn();
-    const onClearInput = vi.fn();
     const onHelpToggle = vi.fn();
     const onPeriodicToggle = vi.fn();
 
@@ -25,7 +24,6 @@ describe('MaterialsInputBox', () => {
         onFocus={() => undefined}
         onBlur={() => undefined}
         onKeyDown={() => undefined}
-        onClearInput={onClearInput}
         onAutocompleteChange={() => undefined}
         setError={() => undefined}
         helpItems={[{ label: 'Examples' }]}
@@ -48,9 +46,8 @@ describe('MaterialsInputBox', () => {
 
     expect(screen.getByTestId('materials-input-search-input')).toHaveValue('Li-Fe');
 
-    fireEvent.change(screen.getByLabelText('Input type'), {
-      target: { value: 'At Least' },
-    });
+    fireEvent.click(screen.getByRole('button', { name: 'Only' }));
+    fireEvent.click(screen.getByRole('button', { name: 'At Least' }));
     expect(onTypeChange).toHaveBeenCalledWith('At Least');
 
     fireEvent.change(screen.getByTestId('materials-input-search-input'), {
@@ -58,8 +55,7 @@ describe('MaterialsInputBox', () => {
     });
     expect(onInputChange).toHaveBeenCalled();
 
-    fireEvent.click(screen.getByTestId('materials-input-clear'));
-    expect(onClearInput).toHaveBeenCalled();
+    expect(screen.queryByTestId('materials-input-clear')).toBeNull();
 
     fireEvent.click(screen.getByTestId('materials-input-help-button'));
     expect(onHelpToggle).toHaveBeenCalled();

@@ -69,7 +69,7 @@ function PeriodicTableElementButtonImpl({
           onToggle(element);
         }
       }}
-      onMouseOver={() => {
+      onMouseEnter={() => {
         onHoverDetail(detail?.symbol ?? null);
       }}
       onFocus={() => {

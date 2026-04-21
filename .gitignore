@@ -1,10 +1,10 @@
-node_modules/*
+node_modules
 
 package-lock.json
 pnpm-lock.yaml
 
 storybook-static/*
-dist/*
+dist
 .storybook-home/*
 
 .node-version

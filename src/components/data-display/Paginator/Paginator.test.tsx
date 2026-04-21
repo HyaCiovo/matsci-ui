@@ -22,6 +22,7 @@ describe('Paginator', () => {
     fireEvent.click(screen.getByLabelText(/Page 4/i));
     expect(onChangePage).toHaveBeenCalledWith(4);
 
+    fireEvent.click(screen.getByRole('button', { name: '10 / page' }));
     fireEvent.click(screen.getByRole('button', { name: '30' }));
     expect(onChangeRowsPerPage).toHaveBeenCalledWith(30);
   });

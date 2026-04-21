@@ -361,26 +361,18 @@ export const MaterialsInput = ({
     const nextValue = event.target.value;
     if (!nextValue) {
       setError(null);
+      setErrorTipStayActive(false);
       setInputValue('');
       setPreviousValidValue('');
       setMaxElementsReached(false);
       setSelectedElements([]);
+      setShowAutocomplete(false);
+      setShowInputHelp(Boolean(props.helpItems));
       return;
     }
 
     applyValidatedValue(nextValue);
   };
-
-  const clearInputValue = useCallback(() => {
-    setError(null);
-    setErrorTipStayActive(false);
-    setInputValue('');
-    setPreviousValidValue('');
-    setMaxElementsReached(false);
-    setSelectedElements([]);
-    setShowAutocomplete(false);
-    setShowInputHelp(Boolean(props.helpItems));
-  }, [props.helpItems]);
 
   const handleInputFocus = () => {
     setErrorTipStayActive(false);
@@ -440,8 +432,15 @@ export const MaterialsInput = ({
   const handleTableStateChange = useCallback(
     (nextState: SelectableTableSelectionChange | string[]) => {
       const nextElements = Array.isArray(nextState) ? nextState : nextState.enabledElements;
-      const nextValue = renderPeriodicTableValue(selectionMode, nextElements);
-      console.log("handleTableStateChange", { nextState, nextElements, nextValue });
+      const wildcards = inputValue.match(/\*/g) ?? [];
+      const elementsForRender =
+        selectionMode === PeriodicTableSelectionMode.ELEMENTS ||
+        selectionMode === PeriodicTableSelectionMode.CHEMICAL_SYSTEM
+          ? wildcards.length > 0
+            ? [...nextElements, ...wildcards]
+            : nextElements
+          : nextElements;
+      const nextValue = renderPeriodicTableValue(selectionMode, elementsForRender);
 
       setSelectedElements((current) => (areElementListsEqual(current, nextElements) ? current : nextElements));
       setInputValue((current) => (current === nextValue ? current : nextValue));
@@ -449,7 +448,7 @@ export const MaterialsInput = ({
       setMaxElementsReached(isMaxSelectionValue(inputType, nextValue, props.maxElementSelectable));
       setError(null);
     },
-    [inputType, props.maxElementSelectable, selectionMode]
+    [inputType, inputValue, props.maxElementSelectable, selectionMode]
   );
 
   const getNextInputTypeForSelectionMode = (mode: PeriodicTableSelectionMode) => {
@@ -585,7 +584,6 @@ export const MaterialsInput = ({
             onFocus={handleInputFocus}
             onBlur={handleInputBlur}
             onKeyDown={handleInputKeyDown}
-            onClearInput={clearInputValue}
             autocompleteFormulaUrl={props.autocompleteFormulaUrl}
             autocompleteApiKey={props.autocompleteApiKey}
             showAutocomplete={showAutocomplete}
@@ -631,7 +629,6 @@ export const MaterialsInput = ({
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
           onKeyDown={handleInputKeyDown}
-          onClearInput={clearInputValue}
           autocompleteFormulaUrl={props.autocompleteFormulaUrl}
           autocompleteApiKey={props.autocompleteApiKey}
           showAutocomplete={showAutocomplete}

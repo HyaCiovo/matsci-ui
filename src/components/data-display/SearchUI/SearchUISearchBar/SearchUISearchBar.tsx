@@ -103,7 +103,7 @@ export const SearchUISearchBar = ({
   elementsSelectHelpText,
   helpItems,
   hidePeriodicTable,
-  showTypeDropdown = true,
+  showTypeDropdown = false,
   showSubmitButton = true,
   hideWildcardButton,
   label,

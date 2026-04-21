@@ -33,9 +33,8 @@ describe('MaterialsInput', () => {
       />
     );
 
-    fireEvent.change(screen.getByLabelText('Input type'), {
-      target: { value: 'Only' },
-    });
+    fireEvent.click(screen.getByRole('button', { name: 'At least' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Only' }));
 
     expect(screen.getByTestId('materials-input-search-input')).toHaveValue('Li-Fe-*-*');
   });
@@ -126,9 +125,11 @@ describe('MaterialsInput', () => {
     );
 
     expect(screen.getByTestId('materials-input-help-button')).toBeInTheDocument();
-    expect(screen.getByTestId('materials-input-clear')).toBeInTheDocument();
+    expect(screen.queryByTestId('materials-input-clear')).toBeNull();
 
-    fireEvent.click(screen.getByTestId('materials-input-clear'));
+    fireEvent.change(screen.getByTestId('materials-input-search-input'), {
+      target: { value: '' },
+    });
 
     expect(screen.getByTestId('materials-input-search-input')).toHaveValue('');
   });
