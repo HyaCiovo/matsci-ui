@@ -16,18 +16,11 @@ const external = [
 export default [
   {
     input: 'src/index.ts',
-    output: [
-      {
-        file: pkg.main,
-        format: 'cjs',
-        sourcemap: true,
-      },
-      {
-        file: pkg.module,
-        format: 'esm',
-        sourcemap: true,
-      },
-    ],
+    output: {
+      file: pkg.main,
+      format: 'esm',
+      sourcemap: true,
+    },
     external,
     plugins: [
       resolve({ extensions: ['.ts', '.tsx', '.js', '.jsx'] }),

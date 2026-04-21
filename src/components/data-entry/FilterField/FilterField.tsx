@@ -17,43 +17,36 @@ export interface FilterFieldProps extends PropsWithChildren {
 }
 
 export const FilterField = ({ dois = [], ...props }: FilterFieldProps) => {
+  const cancelButton = props.active ? (
+    <span className="filter-cancel-icon-wrap">
+      <FaRegTimesCircle className="filter-cancel-button" />
+    </span>
+  ) : null;
   const innerLabel = (
-    <Tooltip
-      disable={!props.tooltip}
-      trigger={
-        <span
-          className={clsx({
-            'tooltip-label': props.tooltip,
-            'is-active': props.active,
-          })}
-        >
-          {props.label}
-          {props.units ? <span className="mpc-units"> ({props.units})</span> : null}
-        </span>
-      }
-    >
-      {props.tooltip}
-    </Tooltip>
+    <>
+      {props.label}
+      {props.units ? <span className="mpc-units"> ({props.units})</span> : null}
+      {cancelButton}
+    </>
   );
+  const trigger = props.active && props.resetFilter ? (
+    <a
+      onClick={() => {
+        props.resetFilter?.(props.id);
+      }}
+    >
+      <span className={clsx({ 'tooltip-label': props.tooltip })}>{innerLabel}</span>
+    </a>
+  ) : (
+    <span className={clsx({ 'tooltip-label': props.tooltip })}>{innerLabel}</span>
+  );
+  const labelNode = props.tooltip ? <Tooltip trigger={trigger}>{props.tooltip}</Tooltip> : trigger;
 
   return (
     <div id={props.id} className={clsx('mpc-filter-field', props.className)}>
       {props.label ? (
         <div className="mpc-filter-label" style={props.styleLabel}>
-          <span className={clsx('mpc-filter-label-row', { 'is-active': props.active })}>{innerLabel}</span>
-          {props.active && props.resetFilter ? (
-            <button
-              type="button"
-              className="mpc-filter-reset-button"
-              aria-label={`Clear ${props.label ?? 'filter'}`}
-              onMouseDown={(e) => {
-                e.preventDefault(); // Prevent focus loss from input if any
-                props.resetFilter?.(props.id);
-              }}
-            >
-              <FaRegTimesCircle className="filter-cancel-button" />
-            </button>
-          ) : null}
+          {labelNode}
           {dois.map((doi) => (
             <span key={doi} className="tag ml-2">
               {doi}

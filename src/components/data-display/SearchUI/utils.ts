@@ -257,6 +257,9 @@ export const parseSearchQuery = (
 
   params.forEach((rawValue, key) => {
     const filter = getFilterForParam(key, filterGroups);
+    if (!filter && defaultQuery[key] === undefined && key !== '_inputType') {
+      return;
+    }
     parsed[key] = decodeValue(rawValue, filter, defaultQuery[key]);
   });
 

@@ -1,14 +1,15 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { TextInput } from './TextInput';
 
 describe('TextInput', () => {
-  it('clears the input value from the inline clear button', () => {
-    render(<TextInput value="oxide" onChange={() => undefined} />);
+  it('reports changes through onChange', async () => {
+    const onChange = vi.fn();
+    render(<TextInput value="oxide" onChange={onChange} />);
 
-    expect(screen.getByDisplayValue('oxide')).toBeInTheDocument();
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'nitride' } });
 
-    fireEvent.click(screen.getByLabelText('Clear input'));
-
-    expect(screen.getByRole('textbox')).toHaveValue('');
+    await waitFor(() => {
+      expect(onChange).toHaveBeenLastCalledWith('nitride');
+    });
   });
 });

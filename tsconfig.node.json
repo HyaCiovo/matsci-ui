@@ -7,5 +7,5 @@
     "allowSyntheticDefaultImports": true,
     "strict": true
   },
-  "include": ["vite.config.ts", "vitest.config.ts", "rollup.config.mjs", "tsup.config.ts"]
+  "include": ["vite.config.mts", "vitest.config.mts", "rollup.config.mjs"]
 }

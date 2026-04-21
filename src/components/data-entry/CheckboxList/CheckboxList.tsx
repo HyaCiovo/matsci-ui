@@ -1,3 +1,5 @@
+import { Checkbox } from '../Checkbox';
+
 export interface CheckboxOption {
   label: string;
   value: string | number;
@@ -5,30 +7,33 @@ export interface CheckboxOption {
 
 export interface CheckboxListProps {
   options: CheckboxOption[];
+  values?: Array<string | number>;
   value?: Array<string | number>;
   onChange?: (values: Array<string | number>) => void;
 }
 
-export const CheckboxList = ({ options, value = [], onChange }: CheckboxListProps) => {
+export const CheckboxList = ({ options, values, value, onChange }: CheckboxListProps) => {
+  const resolvedValues = value ?? values ?? [];
   return (
-    <div className="mpc-checkbox-list">
-      {options.map((option) => {
-        const checked = value.includes(option.value);
+    <div className="checkbox-list">
+      {options.map((option, index) => {
+        const checked = resolvedValues.includes(option.value);
         return (
-          <label key={String(option.value)} className="checkbox is-block mb-2">
-            <input
-              className="mr-2"
-              type="checkbox"
-              checked={checked}
-              onChange={(event) => {
-                const nextValues = event.target.checked
-                  ? [...value, option.value]
-                  : value.filter((item) => item !== option.value);
-                onChange?.(nextValues);
-              }}
-            />
-            {option.label}
-          </label>
+          <div key={String(option.value) || String(index)}>
+            <label className="checkbox">
+              <Checkbox
+                checked={checked}
+                onCheckedChange={(nextChecked) => {
+                  const nextValues =
+                    nextChecked === true
+                      ? [...resolvedValues, option.value]
+                      : resolvedValues.filter((item) => item !== option.value);
+                  onChange?.(nextValues);
+                }}
+              />
+              {option.label}
+            </label>
+          </div>
         );
       })}
     </div>

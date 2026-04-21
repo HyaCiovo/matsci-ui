@@ -5,7 +5,6 @@
  *
  */
 
-import { Subject, Subscription } from 'rxjs';
 import { ExportType } from './constants';
 
 export interface DownloadRequestEvent {
@@ -13,12 +12,23 @@ export interface DownloadRequestEvent {
   filetype: ExportType;
 }
 
-const eventBus: Subject<DownloadRequestEvent> = new Subject<DownloadRequestEvent>();
+export interface Subscription {
+  unsubscribe: () => void;
+}
+
+const listeners = new Set<(event: DownloadRequestEvent) => void>();
 
 export function triggerDownloadRequest(downloadRequest: DownloadRequestEvent) {
-  eventBus.next(downloadRequest);
+  listeners.forEach((listener) => {
+    listener(downloadRequest);
+  });
 }
 
 export function subscribe(cb: (event: DownloadRequestEvent) => void): Subscription {
-  return eventBus.asObservable().subscribe((event) => cb(event));
+  listeners.add(cb);
+  return {
+    unsubscribe: () => {
+      listeners.delete(cb);
+    },
+  };
 }

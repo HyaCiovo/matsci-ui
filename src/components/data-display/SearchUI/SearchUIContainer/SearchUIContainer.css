@@ -72,6 +72,11 @@
   background: none;
 }
 
+.mpc-search-ui .panel-block-title > .button > .is-size-5 {
+  display: inline-flex;
+  align-items: center;
+}
+
 .mpc-search-ui .panel-block.is-active .panel-block-title {
   transform: translate(-4px, 0);
 }
@@ -192,7 +197,7 @@
   font-weight: 700;
 }
 
-.mpc-search-ui .mpc-data-table-columns-menu input[type='checkbox'] {
+.mpc-search-ui .mpc-data-table-columns-menu .mpc-checkbox-root {
   width: 1rem;
   height: 1rem;
   flex: 0 0 auto;

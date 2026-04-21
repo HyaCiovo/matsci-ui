@@ -14,6 +14,7 @@ import { FaAngleDoubleLeft, FaAngleDoubleRight, FaAngleLeft, FaAngleRight } from
 import { Markdown } from '../Markdown';
 import { Tooltip } from '../Tooltip';
 import { Paginator } from '../Paginator';
+import { Checkbox } from '../../data-entry/Checkbox';
 import { Column, ColumnFormat, ConditionalRowStyle } from '../SearchUI/types';
 import {
   formatColumnValue,
@@ -263,16 +264,19 @@ export const DataTable = ({
 
           return (
             <label className="selection-control">
-              <input
-                type="checkbox"
+              <Checkbox
                 aria-label="Select all rows"
-                checked={table.getIsAllPageRowsSelected()}
-                ref={(input) => {
-                  if (input) {
-                    input.indeterminate = table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected();
+                checked={
+                  table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()
+                    ? 'indeterminate'
+                    : table.getIsAllPageRowsSelected()
+                }
+                onCheckedChange={(checked) => {
+                  if (checked === 'indeterminate') {
+                    return;
                   }
+                  table.toggleAllPageRowsSelected(checked === true);
                 }}
-                onChange={table.getToggleAllPageRowsSelectedHandler()}
                 onClick={(event) => event.stopPropagation()}
               />
             </label>
@@ -327,10 +331,14 @@ export const DataTable = ({
         if (column.selector === '_isSelected') {
           return (
             <label className="selection-control">
-              <input
-                type="checkbox"
+              <Checkbox
                 checked={row.getIsSelected()}
-                onChange={row.getToggleSelectedHandler()}
+                onCheckedChange={(checked) => {
+                  if (checked === 'indeterminate') {
+                    return;
+                  }
+                  row.toggleSelected(checked === true);
+                }}
                 onClick={(event) => event.stopPropagation()}
                 aria-label={`Select row ${row.id}`}
               />
@@ -496,19 +504,14 @@ export const DataTable = ({
               {columnsMenuOpen ? (
                 <div className="mpc-data-table-columns-menu">
                   <label className="is-select-all">
-                    <input
-                      type="checkbox"
-                      checked={allColumnsVisible}
-                      onChange={(event) => toggleAllColumns(event.target.checked)}
-                    />
+                    <Checkbox checked={allColumnsVisible} onCheckedChange={(checked) => toggleAllColumns(checked === true)} />
                     <span>Select all</span>
                   </label>
                   {visibleSelectorColumns.map((column) => (
                     <label key={column.selector}>
-                      <input
-                        type="checkbox"
+                      <Checkbox
                         checked={table.getColumn(column.selector)?.getIsVisible() ?? true}
-                        onChange={(event) => table.getColumn(column.selector)?.toggleVisibility(event.target.checked)}
+                        onCheckedChange={(checked) => table.getColumn(column.selector)?.toggleVisibility(checked === true)}
                       />
                       <span>{column.title}</span>
                     </label>

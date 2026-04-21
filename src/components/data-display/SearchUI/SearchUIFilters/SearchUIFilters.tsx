@@ -109,7 +109,7 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
             value={queryValue ?? ''}
             placeholder={filter.props?.placeholder}
             debounceTime={filter.props?.debounce ?? debounce}
-            onChange={(value) => void setFilterValue(value, queryParam, filter.overrides)}
+            onChange={(value) => void setFilterValue(value, queryParam)}
           />
         );
       case FilterType.MATERIALS_INPUT:
@@ -122,7 +122,7 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
             periodicTableMode={PeriodicTableMode.NONE}
             autocompleteFormulaUrl={autocompleteFormulaUrl}
             autocompleteApiKey={apiKey}
-            onChange={(value) => void setFilterValue(value, queryParam, filter.overrides)}
+            onChange={(value) => void setFilterValue(value, queryParam)}
           />
         );
       case FilterType.SLIDER:
@@ -132,7 +132,7 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
             step={filter.props?.step ?? 1}
             valueMin={query[filter.params[0]] ?? filter.props?.domain?.[0] ?? 0}
             valueMax={query[filter.params[1]] ?? filter.props?.domain?.[1] ?? 100}
-            onChange={(min, max) => void setFilterValues([min, max], filter.params, filter.overrides)}
+            onChange={(min, max) => void setFilterValues([min, max], filter.params)}
           />
         );
       case FilterType.SELECT:
@@ -146,7 +146,7 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
             value={queryValue ?? ''}
             placeholder="Any"
             isClearable
-            onChange={(option) => void setFilterValue(option?.value || null, queryParam, filter.overrides)}
+            onChange={(option) => void setFilterValue(option ? option.value : null, queryParam)}
           />
         );
       case FilterType.THREE_STATE_BOOLEAN_SELECT:
@@ -154,7 +154,7 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
           <ThreeStateBooleanSelect
             options={filter.props?.options ?? []}
             value={queryValue ?? null}
-            onChange={(value) => void setFilterValue(value, queryParam, filter.overrides)}
+            onChange={(value) => void setFilterValue(value, queryParam)}
           />
         );
       case FilterType.CHECKBOX_LIST: {
@@ -163,7 +163,7 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
           <CheckboxList
             options={filter.props?.options ?? []}
             value={values}
-            onChange={(nextValues) => void setFilterValue(nextValues, queryParam, filter.overrides)}
+            onChange={(nextValues) => void setFilterValue(nextValues, queryParam)}
           />
         );
       }
@@ -236,26 +236,27 @@ export const SearchUIFilters = ({ className }: SearchUIFiltersProps) => {
                   id={`filter-group-${index}`}
                   role="region"
                   aria-labelledby={`filter-group-button-${index}`}
-                  forceMount
                   className={clsx('panel-block-children', { 'is-hidden': !isExpanded })}
                 >
-                  <div aria-hidden={!isExpanded}>
-                    {group.filters.map((filter) =>
-                      filter.hidden ? null : (
-                        <FilterField
-                          key={filter.name}
-                          id={filter.name.replace(/\s+/g, '-')}
-                          label={filter.name}
-                          units={filter.units}
-                          tooltip={filter.tooltip}
-                          active={!!getActiveFilterByName(filter.name, activeFilters)}
-                          resetFilter={() => void resetFilter(filter)}
-                        >
-                          {renderFilter(filter)}
-                        </FilterField>
-                      )
-                    )}
-                  </div>
+                  {isExpanded ? (
+                    <div aria-hidden={!isExpanded}>
+                      {group.filters.map((filter) =>
+                        filter.hidden ? null : (
+                          <FilterField
+                            key={filter.name}
+                            id={filter.name.replace(/\s+/g, '-')}
+                            label={filter.name}
+                            units={filter.units}
+                            tooltip={filter.tooltip}
+                            active={!!getActiveFilterByName(filter.name, activeFilters)}
+                            resetFilter={() => void resetFilter(filter)}
+                          >
+                            {renderFilter(filter)}
+                          </FilterField>
+                        )
+                      )}
+                    </div>
+                  ) : null}
                 </AccordionContent>
               </div>
             </AccordionItem>

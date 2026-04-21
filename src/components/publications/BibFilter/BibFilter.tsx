@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { useMemo, useState } from 'react';
 import { SortDropdown } from '../../data-display/SortDropdown';
+import { Input } from '../../data-entry/Input';
 import { BibjsonCard } from '../BibjsonCard';
 import { CrossrefCard } from '../CrossrefCard';
 import './BibFilter.css';
@@ -72,8 +73,8 @@ export const BibFilter = ({
   return (
     <div id={props.id} data-testid="bibjson-filter" className={clsx('mpc-bib-filter', props.className)}>
       <div className="mpc-bib-filter-controls">
-        <input
-          className="mpc-bib-filter-input input"
+        <Input
+          className="mpc-bib-filter-input"
           role="searchbox"
           type="search"
           aria-label="publication search"

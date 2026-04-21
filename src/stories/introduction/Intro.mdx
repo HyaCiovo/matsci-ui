@@ -1,19 +1,20 @@
 import { Meta, ArgTypes } from '@storybook/blocks';
 
-<Meta title="Introduction/MP React Components" />
+<Meta title="Introduction/mp-react18-components" />
 
-# MP React Components
+# mp-react18-components
 
-The MP React Components library is a suite of JavaScript components designed for displaying and interacting with materials science data.
-These components provide the building blocks for the interactive parts of the Materials Project website.
+This repository provides reusable React 18 UI components used by Materials Project surfaces.
 
-`npm install @materialsproject/mp-react-components`
+Install:
 
-The components in this library are designed to be ported to [plotly Dash](https://dash.plotly.com/). These documentation pages display code
-in React, but usage in Dash is almost identical. Checkout the **Usage with Dash** page to understand how to translate React code to Dash code.
-You can install the dash version of this library using pip.
+`npm install @hyacinth/mp-react18-components`
 
-`pip install dash-mp-components`
+Import styles once in your app entry:
+
+`import '@hyacinth/mp-react18-components/style.css'`
+
+If you are migrating from the legacy package, start with **Migration (mp-react vs mp-react18)** for a diff overview.
 
 ## Key Features
 
@@ -24,7 +25,7 @@ You can install the dash version of this library using pip.
 
 ## Github
 
-React Component Library: [mp-react-components](https://github.com/materialsproject/mp-react-components)
+Legacy React Component Library: [mp-react-components](https://github.com/materialsproject/mp-react-components)
 
 Dash Component Library: [dash-mp-components](https://github.com/materialsproject/dash-mp-components)
 

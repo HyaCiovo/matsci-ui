@@ -2,6 +2,7 @@ import * as Slider from '@radix-ui/react-slider';
 import clsx from 'clsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDebounce } from '../../../utils/hooks';
+import { Input } from '../Input';
 import './RangeSlider.css';
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
@@ -110,6 +111,7 @@ export const RangeSlider = ({
 
   const setPropsRef = useRef(setProps);
   const onChangeRef = useRef(onChange);
+  const hasEmittedChangeRef = useRef(false);
 
   useEffect(() => {
     setPropsRef.current = setProps;
@@ -143,14 +145,18 @@ export const RangeSlider = ({
 
     setSliderValue(nextSliderValue);
     setInputValue(getDisplayValue(nextSliderValue, isLogScale));
+    if (!hasEmittedChangeRef.current) {
+      hasEmittedChangeRef.current = true;
+      return;
+    }
     emitChange(nextSliderValue);
   }, [debouncedInputValue]);
 
   return (
     <div id={id} className={clsx('mpc-range-slider', className, { 'no-ticks': !tickMarks })}>
-      <input
+      <Input
         data-testid="range-slider-input"
-        className="input is-small mpc-range-number-input"
+        className="is-small mpc-range-number-input"
         style={styleInput}
         type="number"
         value={inputValue}

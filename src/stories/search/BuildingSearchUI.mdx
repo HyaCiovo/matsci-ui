@@ -10,6 +10,11 @@ The top-level component used to build a search UI is the `SearchUIContainer`. Th
 across the components within the container. It is also the component to which you should pass the configuration props to. These props
 set global options as well as UI components like filters and columns.
 
+## Notes
+
+- Some stories require `VITE_MP_API_KEY` for authenticated API access.
+- For expensive endpoints, prefer `searchOnMount={false}` and trigger searching explicitly.
+
 ## Inner Components
 
 Any component can be included inside of a `SearchUIContainer` but there are some existing components that are designed to

@@ -2,6 +2,7 @@ import * as Slider from '@radix-ui/react-slider';
 import clsx from 'clsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDebounce } from '../../../utils/hooks';
+import { Input } from '../Input';
 import './DualRangeSlider.css';
 
 export interface DualRangeSliderProps {
@@ -72,6 +73,7 @@ export const DualRangeSlider = ({
 
   const setPropsRef = useRef(setProps);
   const onChangeRef = useRef(onChange);
+  const hasEmittedChangeRef = useRef(false);
 
   useEffect(() => {
     setPropsRef.current = setProps;
@@ -81,6 +83,10 @@ export const DualRangeSlider = ({
   useEffect(() => {
     lastReportedValues.current = debouncedValues;
     setPropsRef.current?.({ value: debouncedValues, valueMin: debouncedValues[0], valueMax: debouncedValues[1] });
+    if (!hasEmittedChangeRef.current) {
+      hasEmittedChangeRef.current = true;
+      return;
+    }
     onChangeRef.current?.(debouncedValues[0], debouncedValues[1]);
   }, [debouncedValues]);
 
@@ -103,8 +109,8 @@ export const DualRangeSlider = ({
     <div className={clsx('mpc-dual-range-slider', className)}>
       <div className="mpc-dual-range-slider-inputs">
         <div className="mpc-dual-range-slider-input is-min">
-          <input
-            className="input mpc-range-number-input"
+          <Input
+            className="mpc-range-number-input"
             type="number"
             value={values[0]}
             min={minDomain}
@@ -115,8 +121,8 @@ export const DualRangeSlider = ({
           />
         </div>
         <div className="mpc-dual-range-slider-input is-max">
-          <input
-            className="input mpc-range-number-input"
+          <Input
+            className="mpc-range-number-input"
             type="number"
             value={values[1]}
             min={minDomain}

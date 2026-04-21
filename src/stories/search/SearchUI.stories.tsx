@@ -28,8 +28,8 @@ export const FullyFeatured: StoryFn<SearchUIContainerProps> = (args) => (
     resultLabel="material"
     columns={columns as Column[]}
     filterGroups={filterGroups as FilterGroup[]}
-    apiEndpoint="https://api.materialsproject.org/summary/"
-    autocompleteFormulaUrl="https://api.materialsproject.org/materials/formula_autocomplete/"
+    apiEndpoint="/mp-api/summary/"
+    autocompleteFormulaUrl="/mp-api/materials/formula_autocomplete/"
     apiKey={STORYBOOK_API_KEY}
   >
     <SearchUISearchBar
@@ -75,7 +75,7 @@ export const WithMPContribsData: StoryFn<SearchUIContainerProps> = (args) => (
     resultLabel="contribution"
     columns={mofColumns as Column[]}
     filterGroups={mofFilterGroups as FilterGroup[]}
-    apiEndpoint="https://contribs-api.materialsproject.org/contributions/"
+    apiEndpoint="/mp-contribs-api/contributions/"
     apiKey={STORYBOOK_API_KEY}
     apiEndpointParams={{ project: 'qmof' }}
     sortKey="_sort"
@@ -128,10 +128,10 @@ export const MatscholarAlpha: StoryFn<SearchUIContainerProps> = (args) => (
     resultLabel="material"
     columns={columns as Column[]}
     filterGroups={matscholarFilterGroups as FilterGroup[]}
-    apiEndpoint="https://api.materialsproject.org/summary/"
-    autocompleteFormulaUrl="https://api.materialsproject.org/materials/formula_autocomplete/"
+    apiEndpoint="/mp-api/summary/"
+    autocompleteFormulaUrl="/mp-api/materials/formula_autocomplete/"
     apiKey={STORYBOOK_API_KEY}
-    matscholarEndpoint="https://www.matscholar.com/api/search/materials/"
+    matscholarEndpoint="/matscholar-api/api/search/materials/"
   >
     <p className="has-text-centered">
       Alpha version of Matscholar search integration with Materials Explorer

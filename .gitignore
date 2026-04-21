@@ -13,3 +13,5 @@ dist
 
 .storybook-home
 .trae
+
+.env.local

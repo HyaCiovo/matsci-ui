@@ -1,4 +1,4 @@
-import { type MouseEvent } from 'react';
+import { type MouseEvent, useEffect, useRef } from 'react';
 import {
   type InputHelpItem,
   MaterialsInput,
@@ -125,6 +125,32 @@ export const SearchUISearchBar = ({
     ? mapInputTypeToField(currentInputType, resolvedAllowedInputTypesMap)
     : undefined;
   const shouldHidePeriodicTable = hidePeriodicTable || activeFilters.length > 0;
+  const didHydrateFromUrlRef = useRef(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    if (didHydrateFromUrlRef.current) {
+      return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const nextQueryFromUrl: Record<string, any> = {};
+    allowedFields.forEach((field) => {
+      const rawValue = params.get(field);
+      if (rawValue !== null && !hasSearchValue(query[field])) {
+        nextQueryFromUrl[field] = rawValue;
+      }
+    });
+
+    if (Object.keys(nextQueryFromUrl).length === 0) {
+      return;
+    }
+
+    didHydrateFromUrlRef.current = true;
+    setQuery({ ...query, ...nextQueryFromUrl });
+  }, [allowedFields, query, setQuery]);
 
   const handleSubmit = async (event: React.FormEvent | MouseEvent, value?: string) => {
     const targetField = currentInputType

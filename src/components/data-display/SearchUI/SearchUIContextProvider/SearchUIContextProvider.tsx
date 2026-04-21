@@ -323,20 +323,25 @@ export const SearchUIContextProvider = ({
   const setFilterValue = useCallback(
     async (value: any, param: string, overrides: string[] = []) => {
       const nextQuery = { ...query, [param]: value };
-      overrides.forEach((override) => {
-        delete nextQuery[override];
-      });
+      const filterIsActivating = isNotEmpty(value);
+      if (filterIsActivating) {
+        overrides.forEach((override) => {
+          delete nextQuery[override];
+        });
+      }
       if (!isNotEmpty(value)) {
         delete nextQuery[param];
       }
+      delete nextQuery[skipKey];
       await applyQuery(nextQuery);
     },
-    [applyQuery, query]
+    [applyQuery, query, skipKey]
   );
 
   const setFilterValues = useCallback(
     async (values: any[], params: string[], overrides: string[] = []) => {
       const nextQuery = { ...query };
+      const filterIsActivating = values.some((v) => isNotEmpty(v));
       params.forEach((param, index) => {
         const value = values[index];
         if (isNotEmpty(value)) {
@@ -345,12 +350,15 @@ export const SearchUIContextProvider = ({
           delete nextQuery[param];
         }
       });
-      overrides.forEach((override) => {
-        delete nextQuery[override];
-      });
+      if (filterIsActivating) {
+        overrides.forEach((override) => {
+          delete nextQuery[override];
+        });
+      }
+      delete nextQuery[skipKey];
       await applyQuery(nextQuery);
     },
-    [applyQuery, query]
+    [applyQuery, query, skipKey]
   );
 
   const removeFilters = useCallback(
@@ -359,9 +367,10 @@ export const SearchUIContextProvider = ({
       params.forEach((param) => {
         delete nextQuery[param];
       });
+      delete nextQuery[skipKey];
       await applyQuery(nextQuery);
     },
-    [applyQuery, query]
+    [applyQuery, query, skipKey]
   );
 
   const resetFilters = useCallback(async () => {

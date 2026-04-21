@@ -1,0 +1,46 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Introduction/Migration (mp-react vs mp-react18)" />
+
+# Migration: mp-react-components → mp-react18-components
+
+This page summarizes the key differences between the legacy `mp-react-components` package and this repository (`mp-react18-components`).
+
+## Quick Summary
+
+- **React baseline**
+  - Legacy: historically React 16/17-era ecosystem (many libraries and patterns from that time)
+  - New: React 18-first implementation
+- **Packaging**
+  - New package is **ESM-only** and publishes:
+    - JS: `dist/index.js`
+    - Types: `dist/index.d.ts`
+    - Styles: `dist/index.css` exposed as `@hyacinth/mp-react18-components/style.css`
+- **Public exports**
+  - New is effectively a superset of legacy root exports.
+  - The only legacy root export not available from the new root is `Scene`.
+
+## Breaking / High-Risk Changes
+
+- **DataTable**
+  - Legacy: `react-data-table-component`
+  - New: `@tanstack/react-table`
+- **Tooltip**
+  - Legacy: `react-tooltip`
+  - New: Radix Tooltip-based implementation
+- **JsonView**
+  - Legacy: `react-json-view`
+  - New: `@microlink/react-json-view`
+
+## Styles
+
+Import styles once in your app entry:
+
+```ts
+import '@hyacinth/mp-react18-components/style.css';
+```
+
+## Detailed Diff
+
+For a more complete, repo-level comparison (exports, packaging notes, and migration advice), see:
+- `docs/component-diff-audit.md` in the repository root.

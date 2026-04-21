@@ -137,8 +137,6 @@ const getConvertedValueForInputType = (
 ) => {
   const { elements, elementsPlusWildcards } = getSelectionTokens(currentInputType, currentInputValue);
 
-  console.log("getConvertedValueForInputType", { newSelection, currentInputType, currentInputValue, elements, elementsPlusWildcards });
-
   if (newSelection === MaterialsInputType.CHEMICAL_SYSTEM) {
     if (elementsPlusWildcards.length > 1) {
       return arrayToDelimitedString(elementsPlusWildcards, /-/);
@@ -295,7 +293,6 @@ export const MaterialsInput = ({
 
   const syncInputState = useCallback(
     (nextValue: string, nextType: MaterialsInputType = inputType) => {
-      console.log("syncInputState", { nextValue, nextType });
       setError(null);
       setInputValue(nextValue);
       setSelectedElements(normalizeElementsFromValue(nextType, nextValue));
@@ -320,6 +317,9 @@ export const MaterialsInput = ({
       }
 
       if (nextValue && (!parsedValue || !validLength)) {
+        // Keep showing what the user typed (e.g. partial mp-id like "mp-"),
+        // but mark as invalid until it becomes a valid value.
+        setInputValue(nextValue);
         setError(props.errorMessage);
         return false;
       }

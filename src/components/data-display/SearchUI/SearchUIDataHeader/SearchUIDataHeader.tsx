@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FaCaretDown } from 'react-icons/fa';
 import { ActiveFilterButtons } from '../../ActiveFilterButtons';
+import { Checkbox } from '../../../data-entry/Checkbox';
 import { useSearchUIContext } from '../SearchUIContextProvider';
 
 export interface SearchUIDataHeaderProps {
@@ -93,19 +94,18 @@ export const SearchUIDataHeader = ({ exportDataButton }: SearchUIDataHeaderProps
             {columnsMenuOpen ? (
               <div className="mpc-data-table-columns-menu">
                 <label className="is-select-all">
-                  <input type="checkbox" checked={allColumnsVisible} onChange={(event) => toggleAllColumns(event.target.checked)} />
+                  <Checkbox checked={allColumnsVisible} onCheckedChange={(checked) => toggleAllColumns(checked === true)} />
                   <span>Select all</span>
                 </label>
                 {visibleSelectorColumns.map((column) => (
                   <label key={column.selector}>
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       checked={!column.hidden}
-                      onChange={(event) =>
+                      onCheckedChange={(checked) =>
                         setColumns(
                           columns.map((candidate) =>
                             candidate.selector === column.selector
-                              ? { ...candidate, hidden: !event.target.checked }
+                              ? { ...candidate, hidden: !(checked === true) }
                               : candidate
                           )
                         )
