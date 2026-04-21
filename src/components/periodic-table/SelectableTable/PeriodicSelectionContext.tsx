@@ -193,6 +193,7 @@ export function PeriodicSelectionProvider({
       }
 
       setChangeOrigin('action');
+      console.log("setChangeOrigin('action') in toggleElement", element);
       setForwardOuterChangeState(true);
       setEnabledRecord((current) => {
         const enabled = !!current[element];
@@ -241,7 +242,11 @@ export function PeriodicSelectionProvider({
       setEnabledElements: (nextEnabledElements) => {
         setChangeOrigin('action');
         setLastAction(undefined);
-        setEnabledRecord({ ...nextEnabledElements });
+        setEnabledRecord((current) => {
+          const next = { ...nextEnabledElements };
+          console.log("setChangeOrigin('action') in setEnabledElements", Object.keys(current), "->", next);
+          return next;
+        });
       },
       setDisabledElements: (nextDisabledElements) => {
         setChangeOrigin('action');

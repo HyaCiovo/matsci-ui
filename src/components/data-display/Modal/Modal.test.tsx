@@ -19,7 +19,7 @@ describe('Modal', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Open Modal' }));
     expect(screen.getByText('Modal content')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByLabelText('Close modal'));
+    fireEvent.click(screen.getByLabelText('close'));
     expect(screen.queryByText('Modal content')).not.toBeInTheDocument();
   });
 
@@ -33,6 +33,6 @@ describe('Modal', () => {
     );
 
     expect(screen.getByText('Forced action modal')).toBeInTheDocument();
-    expect(screen.queryByLabelText('Close modal')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('close')).not.toBeInTheDocument();
   });
 });

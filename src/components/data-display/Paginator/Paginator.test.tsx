@@ -22,9 +22,7 @@ describe('Paginator', () => {
     fireEvent.click(screen.getByLabelText(/Page 4/i));
     expect(onChangePage).toHaveBeenCalledWith(4);
 
-    fireEvent.change(screen.getByTestId('results-per-page-menu'), {
-      target: { value: '30' },
-    });
+    fireEvent.click(screen.getByRole('button', { name: '30' }));
     expect(onChangeRowsPerPage).toHaveBeenCalledWith(30);
   });
 });

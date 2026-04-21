@@ -137,6 +137,8 @@ const getConvertedValueForInputType = (
 ) => {
   const { elements, elementsPlusWildcards } = getSelectionTokens(currentInputType, currentInputValue);
 
+  console.log("getConvertedValueForInputType", { newSelection, currentInputType, currentInputValue, elements, elementsPlusWildcards });
+
   if (newSelection === MaterialsInputType.CHEMICAL_SYSTEM) {
     if (elementsPlusWildcards.length > 1) {
       return arrayToDelimitedString(elementsPlusWildcards, /-/);
@@ -293,6 +295,7 @@ export const MaterialsInput = ({
 
   const syncInputState = useCallback(
     (nextValue: string, nextType: MaterialsInputType = inputType) => {
+      console.log("syncInputState", { nextValue, nextType });
       setError(null);
       setInputValue(nextValue);
       setSelectedElements(normalizeElementsFromValue(nextType, nextValue));
@@ -438,6 +441,7 @@ export const MaterialsInput = ({
     (nextState: SelectableTableSelectionChange | string[]) => {
       const nextElements = Array.isArray(nextState) ? nextState : nextState.enabledElements;
       const nextValue = renderPeriodicTableValue(selectionMode, nextElements);
+      console.log("handleTableStateChange", { nextState, nextElements, nextValue });
 
       setSelectedElements((current) => (areElementListsEqual(current, nextElements) ? current : nextElements));
       setInputValue((current) => (current === nextValue ? current : nextValue));
