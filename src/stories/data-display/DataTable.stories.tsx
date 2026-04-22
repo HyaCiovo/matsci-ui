@@ -1,16 +1,15 @@
-import React from 'react';
-import type { StoryFn } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { Column } from '../../components/data-display/SearchUI/types';
 import { DataTable } from '../../components/data-display/DataTable';
-import { DataTableProps } from '../../components/data-display/DataTable/DataTable';
 import materialsRecords from '../constants/materialsRecords.json';
 
-export default {
+const meta = {
   component: DataTable,
   title: 'Data-Display/DataTable'
-};
+} satisfies Meta<typeof DataTable>;
 
-const Template: StoryFn<React.PropsWithChildren<DataTableProps>> = (args) => <DataTable {...args} />;
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 const columns = [
   {
@@ -56,63 +55,71 @@ const columns = [
   }
 ] as Column[];
 
-export const Basic = Template.bind({});
-Basic.args = {
-  disableRichColumnHeaders: true,
-  data: materialsRecords,
-  columns: columns
-};
-
-export const WithPagination = Template.bind({});
-WithPagination.args = {
-  ...Basic.args,
-  columns: [...columns],
-  pagination: true
-};
-
-export const WithExpandedPagination = Template.bind({});
-WithExpandedPagination.args = {
-  ...WithPagination.args,
-  columns: [...columns],
-  paginationIsExpanded: true
-};
-
-export const WithHeader = Template.bind({});
-WithHeader.args = {
-  ...WithPagination.args,
-  columns: [...columns],
-  hasHeader: true,
-  resultLabel: 'material'
-};
-
-export const WithoutColumnDefinitions = Template.bind({});
-WithoutColumnDefinitions.args = {
-  disableRichColumnHeaders: true,
-  data: materialsRecords,
-  pagination: true
-};
-const descriptionWithOutColumnDefinitions = `
-  You can generate a table without directly supplying column definitions. 
-  In this case, the columns will be inferred from the properties in the first object in the data array.
-`;
-WithoutColumnDefinitions.parameters = {
-  docs: {
-    description: { story: descriptionWithOutColumnDefinitions }
+export const Basic: Story = {
+  args: {
+    disableRichColumnHeaders: true,
+    data: materialsRecords,
+    columns: columns
   }
 };
 
-export const WithSelectableRows = Template.bind({});
-WithSelectableRows.args = {
-  ...WithPagination.args,
-  columns: [...columns],
-  selectableRows: true
+export const WithPagination: Story = {
+  args: {
+    ...Basic.args,
+    columns: [...columns],
+    pagination: true
+  }
 };
 
-export const WithSingleSelectableRows = Template.bind({});
-WithSingleSelectableRows.args = {
-  ...WithPagination.args,
-  columns: [...columns],
-  hasHeader: true,
-  selectableRows: true,
-  singleSelectableRows: true
+export const WithExpandedPagination: Story = {
+  args: {
+    ...WithPagination.args,
+    columns: [...columns],
+    paginationIsExpanded: true
+  }
+};
+
+export const WithHeader: Story = {
+  args: {
+    ...WithPagination.args,
+    columns: [...columns],
+    hasHeader: true,
+    resultLabel: 'material'
+  }
+};
+
+export const WithoutColumnDefinitions: Story = {
+  args: {
+    disableRichColumnHeaders: true,
+    data: materialsRecords,
+    pagination: true
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: `
+  You can generate a table without directly supplying column definitions.
+  In this case, the columns will be inferred from the properties in the first object in the data array.
+`
+      }
+    }
+  }
+};
+
+export const WithSelectableRows: Story = {
+  args: {
+    ...WithPagination.args,
+    columns: [...columns],
+    selectableRows: true
+  }
+};
+
+export const WithSingleSelectableRows: Story = {
+  args: {
+    ...WithPagination.args,
+    columns: [...columns],
+    hasHeader: true,
+    selectableRows: true,
+    singleSelectableRows: true
+  }
 };

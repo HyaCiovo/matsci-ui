@@ -1,5 +1,4 @@
-import React from 'react';
-import type { StoryFn } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import {
   SelectableTable,
   SelectableTableProps,
@@ -7,19 +6,21 @@ import {
 import { PeriodicContext } from '../../components/periodic-table/SelectableTable/PeriodicSelectionContext';
 import { TableLayout } from '../../components/periodic-table/SelectableTable/types';
 
-export default {
+const meta = {
   component: SelectableTable,
   title: 'Data-Entry/PeriodicTable'
-};
+} satisfies Meta<typeof SelectableTable>;
 
-const Template: StoryFn<React.PropsWithChildren<SelectableTableProps>> = (args) => (
-  <PeriodicContext>
-    <SelectableTable {...args} />
-  </PeriodicContext>
-);
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Basic = Template.bind({});
-Basic.args = {
-  forceTableLayout: TableLayout.MINI,
-  className: 'max-750'
+export const Basic: Story = {
+  render: () => (
+    <PeriodicContext>
+      <SelectableTable
+        forceTableLayout={TableLayout.MINI}
+        className="max-750"
+      />
+    </PeriodicContext>
+  )
 };

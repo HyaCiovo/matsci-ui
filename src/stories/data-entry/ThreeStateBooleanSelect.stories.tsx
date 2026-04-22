@@ -1,28 +1,27 @@
-import React, { useState } from 'react';
-import type { StoryFn } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ThreeStateBooleanSelect } from '../../components/data-entry/ThreeStateBooleanSelect';
 import { ThreeStateBooleanSelectProps } from '../../components/data-entry/ThreeStateBooleanSelect/ThreeStateBooleanSelect';
 
-export default {
+const meta = {
   component: ThreeStateBooleanSelect,
   title: 'Data-Entry/ThreeStateBooleanSelect'
-};
+} satisfies Meta<typeof ThreeStateBooleanSelect>;
 
-const Template: StoryFn<React.PropsWithChildren<ThreeStateBooleanSelectProps>> = (args) => (
-  <ThreeStateBooleanSelect {...args} />
-);
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Basic = Template.bind({});
-Basic.args = {
-  value: true,
-  options: [
-    {
-      label: 'Yes',
-      value: true
-    },
-    {
-      label: 'No',
-      value: false
-    }
-  ]
+export const Basic: Story = {
+  args: {
+    value: true,
+    options: [
+      {
+        label: 'Yes',
+        value: true
+      },
+      {
+        label: 'No',
+        value: false
+      }
+    ]
+  }
 };

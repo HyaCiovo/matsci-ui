@@ -1,32 +1,32 @@
-import React, { useState } from 'react';
-import type { StoryFn } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { DualRangeSlider } from '../../components/data-entry/DualRangeSlider';
-import { DualRangeSliderProps } from '../../components/data-entry/DualRangeSlider/DualRangeSlider';
 
-export default {
+const meta = {
   component: DualRangeSlider,
   title: 'Data-Entry/DualRangeSlider'
+} satisfies Meta<typeof DualRangeSlider>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Basic: Story = {
+  args: {
+    domain: [0, 100],
+    step: 1,
+    value: [10, 50]
+  }
 };
 
-const Template: StoryFn<React.PropsWithChildren<DualRangeSliderProps>> = (args) => (
-  <DualRangeSlider {...args} />
-);
-
-export const Basic = Template.bind({});
-Basic.args = {
-  domain: [0, 100],
-  step: 1,
-  value: [10, 50]
+export const WithoutDebounce: Story = {
+  args: {
+    ...Basic.args,
+    debounce: 0
+  }
 };
 
-export const WithoutDebounce = Template.bind({});
-WithoutDebounce.args = {
-  ...Basic.args,
-  debounce: 0
-};
-
-export const WithMoreTicks = Template.bind({});
-WithMoreTicks.args = {
-  ...Basic.args,
-  step: 10
+export const WithMoreTicks: Story = {
+  args: {
+    ...Basic.args,
+    step: 10
+  }
 };

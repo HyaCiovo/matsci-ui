@@ -1,67 +1,68 @@
-import React from 'react';
-import type { StoryFn } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { Navbar } from '../../components/navigation/Navbar';
 import { NavbarProps } from '../../components/navigation/Navbar/Navbar';
 
-export default {
+const meta = {
   component: Navbar,
   title: 'Navigation/Navbar'
-};
+} satisfies Meta<typeof Navbar>;
 
-const Template: StoryFn<React.PropsWithChildren<NavbarProps>> = (args) => <Navbar {...args} />;
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Basic = Template.bind({});
-Basic.args = {
-  brandItem: {
-    label: 'MP React',
-    href: '/materials'
-  },
-  items: [
-    {
-      label: 'Materials',
+export const Basic: Story = {
+  args: {
+    brandItem: {
+      label: 'MP React',
       href: '/materials'
     },
-    {
-      label: 'Molecules',
-      href: '/molecules'
-    },
-    {
-      label: 'Batteries',
-      href: '/batteries'
-    },
-    {
-      label: 'Synthesis',
-      href: '/synthesis'
-    },
-    {
-      label: 'Catalysts',
-      href: '/catalysts'
-    },
-    {
-      label: 'More',
-      isRight: true,
-      items: [
-        {
-          label: 'Other Pages',
-          isMenuLabel: true
-        },
-        {
-          label: 'Publications',
-          href: '/publications'
-        },
-        {
-          label: 'Contributions',
-          href: '/contribs'
-        },
-        {
-          label: 'Crystal Structure',
-          href: '/crystal'
-        },
-        {
-          label: 'Sandbox',
-          href: '/sandbox'
-        }
-      ]
-    }
-  ]
+    items: [
+      {
+        label: 'Materials',
+        href: '/materials'
+      },
+      {
+        label: 'Molecules',
+        href: '/molecules'
+      },
+      {
+        label: 'Batteries',
+        href: '/batteries'
+      },
+      {
+        label: 'Synthesis',
+        href: '/synthesis'
+      },
+      {
+        label: 'Catalysts',
+        href: '/catalysts'
+      },
+      {
+        label: 'More',
+        isRight: true,
+        items: [
+          {
+            label: 'Other Pages',
+            isMenuLabel: true
+          },
+          {
+            label: 'Publications',
+            href: '/publications'
+          },
+          {
+            label: 'Contributions',
+            href: '/contribs'
+          },
+          {
+            label: 'Crystal Structure',
+            href: '/crystal'
+          },
+          {
+            label: 'Sandbox',
+            href: '/sandbox'
+          }
+        ]
+      }
+    ]
+  }
 };

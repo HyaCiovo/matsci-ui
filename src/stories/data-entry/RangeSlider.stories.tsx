@@ -1,41 +1,42 @@
-import React, { useState } from 'react';
-import type { StoryFn } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { RangeSlider } from '../../components/data-entry/RangeSlider';
-import { RangeSliderProps } from '../../components/data-entry/RangeSlider/RangeSlider';
 
-export default {
+const meta = {
   component: RangeSlider,
   title: 'Data-Entry/RangeSlider'
+} satisfies Meta<typeof RangeSlider>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Basic: Story = {
+  args: {
+    domain: [0, 100],
+    step: 1,
+    value: 10
+  }
 };
 
-const Template: StoryFn<React.PropsWithChildren<RangeSliderProps>> = (args) => (
-  <RangeSlider {...args} />
-);
-
-export const Basic = Template.bind({});
-Basic.args = {
-  domain: [0, 100],
-  step: 1,
-  value: 10
+export const WithoutDebounce: Story = {
+  args: {
+    ...Basic.args,
+    debounce: 0
+  }
 };
 
-export const WithoutDebounce = Template.bind({});
-WithoutDebounce.args = {
-  ...Basic.args,
-  debounce: 0
+export const WithTicksOnLimitsOnly: Story = {
+  args: {
+    ...Basic.args,
+    ticks: 2
+  }
 };
 
-export const WithTicksOnLimitsOnly = Template.bind({});
-WithTicksOnLimitsOnly.args = {
-  ...Basic.args,
-  ticks: 2
-};
-
-export const WithLogScale = Template.bind({});
-WithLogScale.args = {
-  ...Basic.args,
-  domain: [-2, 3],
-  value: -1,
-  step: 0.01,
-  isLogScale: true
+export const WithLogScale: Story = {
+  args: {
+    ...Basic.args,
+    domain: [-2, 3],
+    value: -1,
+    step: 0.01,
+    isLogScale: true
+  }
 };

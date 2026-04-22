@@ -1,44 +1,50 @@
-import React from 'react';
-import type { StoryFn } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { Dropdown } from '../../components/navigation/Dropdown';
 import { DropdownProps } from '../../components/navigation/Dropdown/Dropdown';
 
-export default {
+const meta = {
   component: Dropdown,
   title: 'Navigation/Dropdown'
+} satisfies Meta<typeof Dropdown>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Basic: Story = {
+  args: {
+    items: ['One', 'Two', 'Three'],
+    triggerLabel: 'Items'
+  }
 };
 
-const Template: StoryFn<React.PropsWithChildren<DropdownProps>> = (args) => <Dropdown {...args} />;
-
-export const Basic = Template.bind({});
-Basic.args = {
-  items: ['One', 'Two', 'Three'],
-  triggerLabel: 'Items'
+export const ChildrenAsItems: Story = {
+  render: () => (
+    <Dropdown triggerLabel="Buttons">
+      <div className="button is-primary mb-1">One</div>
+      <div className="button is-warning mb-1">Two</div>
+      <div className="button is-danger">Three</div>
+    </Dropdown>
+  )
 };
 
-export const ChildrenAsItems: StoryFn<React.PropsWithChildren<DropdownProps>> = (args) => (
-  <Dropdown triggerLabel="Buttons">
-    <div className="button is-primary mb-1">One</div>
-    <div className="button is-warning mb-1">Two</div>
-    <div className="button is-danger">Three</div>
-  </Dropdown>
-);
-
-export const IsUp = Template.bind({});
-IsUp.args = {
-  ...Basic.args,
-  isUp: true,
-  className: 'mt-10'
+export const IsUp: Story = {
+  args: {
+    ...Basic.args,
+    isUp: true,
+    className: 'mt-10'
+  }
 };
 
-export const IsArrowless = Template.bind({});
-IsArrowless.args = {
-  ...Basic.args,
-  isArrowless: true
+export const IsArrowless: Story = {
+  args: {
+    ...Basic.args,
+    isArrowless: true
+  }
 };
 
-export const StaysOpenOnSelection = Template.bind({});
-StaysOpenOnSelection.args = {
-  ...Basic.args,
-  closeOnSelection: false
+export const StaysOpenOnSelection: Story = {
+  args: {
+    ...Basic.args,
+    closeOnSelection: false
+  }
 };

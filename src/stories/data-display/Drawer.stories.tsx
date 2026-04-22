@@ -1,25 +1,23 @@
-import React, { useState } from 'react';
-import type { StoryFn } from '@storybook/react-vite';
-import { Modal, ModalContextProvider, ModalTrigger } from '../../components/data-display/Modal';
-import { ModalContextProviderProps } from '../../components/data-display/Modal/ModalContextProvider';
+import type { Meta, StoryObj } from '@storybook/react';
 import { DrawerContextProvider } from '../../components/data-display/Drawer/DrawerContextProvider';
 import { DrawerTrigger } from '../../components/data-display/Drawer/DrawerTrigger';
-import { Drawer, type DrawerProps } from '../../components/data-display/Drawer';
+import { Drawer } from '../../components/data-display/Drawer';
 
-export default {
+const meta = {
   component: Drawer,
   title: 'Data-Display/Drawer'
-};
+} satisfies Meta<typeof Drawer>;
 
-export const Basic: StoryFn<React.PropsWithChildren<DrawerProps>> = (args) => {
-  const { id: _id, children: _children, ...drawerArgs } = args;
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-  return (
+export const Basic: Story = {
+  render: () => (
     <DrawerContextProvider>
       <DrawerTrigger forDrawerId="drawer-1">
         <button className="button">Drawer 1</button>
       </DrawerTrigger>
-      <Drawer id="drawer-1" {...drawerArgs}>
+      <Drawer id="drawer-1" position="right" duration={500}>
         <h2>Drawer Content</h2>
         <ul>
           <li>1</li>
@@ -29,18 +27,11 @@ export const Basic: StoryFn<React.PropsWithChildren<DrawerProps>> = (args) => {
         </ul>
       </Drawer>
     </DrawerContextProvider>
-  );
+  )
 };
 
-Basic.args = {
-  position: 'right',
-  duration: 500
-};
-
-export const WithTwoDifferentDrawers: StoryFn<React.PropsWithChildren<ModalContextProviderProps>> = (
-  args
-) => {
-  return (
+export const WithTwoDifferentDrawers: Story = {
+  render: () => (
     <DrawerContextProvider>
       <DrawerTrigger forDrawerId="drawer-1">
         <button className="button mr-2">Drawer 1</button>
@@ -62,17 +53,19 @@ export const WithTwoDifferentDrawers: StoryFn<React.PropsWithChildren<ModalConte
         <p>Here is its content.</p>
       </Drawer>
     </DrawerContextProvider>
-  );
+  )
 };
 
-export const BottomDrawer: StoryFn<React.PropsWithChildren<ModalContextProviderProps>> = () => (
-  <DrawerContextProvider>
-    <DrawerTrigger forDrawerId="drawer-bottom">
-      <button className="button">Bottom Drawer</button>
-    </DrawerTrigger>
-    <Drawer id="drawer-bottom" position="bottom">
-      <h2>Bottom Drawer</h2>
-      <p>Slides in from the bottom.</p>
-    </Drawer>
-  </DrawerContextProvider>
-);
+export const BottomDrawer: Story = {
+  render: () => (
+    <DrawerContextProvider>
+      <DrawerTrigger forDrawerId="drawer-bottom">
+        <button className="button">Bottom Drawer</button>
+      </DrawerTrigger>
+      <Drawer id="drawer-bottom" position="bottom">
+        <h2>Bottom Drawer</h2>
+        <p>Slides in from the bottom.</p>
+      </Drawer>
+    </DrawerContextProvider>
+  )
+};

@@ -1,26 +1,28 @@
-import React from 'react';
-import type { StoryFn } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { Formula } from '../../components/data-display/Formula';
-import { FormulaProps } from '../../components/data-display/Formula/Formula';
 
-export default {
+const meta = {
   component: Formula,
   title: 'Data-Display/Formula'
+} satisfies Meta<typeof Formula>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Basic: Story = {
+  args: {
+    children: 'MnO2'
+  }
 };
 
-const Template: StoryFn<React.PropsWithChildren<FormulaProps>> = (args) => <Formula {...args} />;
-
-export const Basic = Template.bind({});
-Basic.args = {
-  children: 'MnO2'
+export const WithDecimals: Story = {
+  args: {
+    children: 'Ba0.98La0.02SnO3'
+  }
 };
 
-export const WithDecimals = Template.bind({});
-WithDecimals.args = {
-  children: 'Ba0.98La0.02SnO3'
-};
-
-export const WithVariableRanges = Template.bind({});
-WithVariableRanges.args = {
-  children: 'Ba1-xEuxSi2O2N2'
+export const WithVariableRanges: Story = {
+  args: {
+    children: 'Ba1-xEuxSi2O2N2'
+  }
 };

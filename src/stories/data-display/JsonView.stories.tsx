@@ -1,16 +1,16 @@
-import React from 'react';
-import type { StoryFn } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { JsonView } from '../../components/data-display/JsonView';
-import type { JsonViewProps } from '../../components/data-display/JsonView/JsonView';
 
-export default {
+const meta = {
   component: JsonView,
   title: 'Data-Display/JsonView'
-};
+} satisfies Meta<typeof JsonView>;
 
-const Template: StoryFn<React.PropsWithChildren<JsonViewProps>> = (args) => <JsonView {...args} />;
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Basic = Template.bind({});
-Basic.args = {
-  src: { a: { b: { c: { d: '12' } } } }
+export const Basic: Story = {
+  args: {
+    src: { a: { b: { c: { d: '12' } } } }
+  }
 };

@@ -454,8 +454,7 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
       return;
     }
 
-    //FIXME(chab) we have to much calls to renderScene
-    !!props.data && scene.current!.addToScene(props.data, true);
+    !!props.data && scene.current!.addToScene(props.data, false);
     scene.current!.toggleVisibility(props.toggleVisibility as any);
   }, [props.data]);
   useEffect(

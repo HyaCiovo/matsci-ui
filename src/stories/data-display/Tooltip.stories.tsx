@@ -1,27 +1,26 @@
-import React from 'react';
-import type { StoryFn } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { Tooltip } from '../../components/data-display/Tooltip';
-import { TooltipProps } from '../../components/data-display/Tooltip/Tooltip';
 
-export default {
+const meta = {
   component: Tooltip,
   title: 'Data-Display/Tooltip'
-};
+} satisfies Meta<typeof Tooltip>;
 
-const Template: StoryFn<React.PropsWithChildren<TooltipProps>> = (args) => (
-  <Tooltip
-    {...args}
-    trigger={
-      <button className="button" type="button">
-        Tooltip Trigger
-      </button>
-    }
-  />
-);
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Basic = Template.bind({});
-Basic.args = {
-  id: 'Tooltip 1',
-  delayShow: 0,
-  children: 'This is a tooltip'
+export const Basic: Story = {
+  render: () => (
+    <Tooltip
+      id="Tooltip 1"
+      delayShow={0}
+      trigger={
+        <button className="button" type="button">
+          Tooltip Trigger
+        </button>
+      }
+    >
+      This is a tooltip
+    </Tooltip>
+  )
 };

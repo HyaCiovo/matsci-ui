@@ -94,7 +94,7 @@ export class InsetHelper {
   }
 
   public updateViewportsize(size: number, padding: number) {
-    if (!size || !padding) {
+    if (size == null || padding == null) {
       console.warn('fallback to default settings when resizing');
       return;
     }

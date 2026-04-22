@@ -7,7 +7,6 @@ import {
   CameraAxis,
   Control,
   defaults,
-  ExportType,
   Renderer,
   ThreePosition
 } from './constants';
@@ -22,8 +21,6 @@ import {
   moveAndUnprojectPoint,
   ObjectRegistry
 } from '../utils';
-// @ts-ignore
-//import img from './glass.png';
 import { OutlineEffect } from 'three/examples/jsm/effects/OutlineEffect.js';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
 import { SceneJsonObject } from './simple-scene';
@@ -584,6 +581,9 @@ export default class Scene {
     const extent = box.max.sub(box.min);
     let length = extent.length() * 2;
 
+    rootObject.position.sub(center);
+    rootObject.updateMatrixWorld(true);
+
     if (this.settings.zoomToFit2D) {
       length = extent.x > extent.y ? extent.x * 2 : extent.y * 2;
     }
@@ -592,34 +592,40 @@ export default class Scene {
     // object to go out of the camera while still on the screen
     const Z_PADDING = 50;
     if (this.camera) {
-      this.camera.left = (center.x - length) / this.settings.defaultZoom;
-      this.camera.right = (center.x + length) / this.settings.defaultZoom;
-      this.camera.top = (center.y + length) / this.settings.defaultZoom;
-      this.camera.bottom = (center.y - length) / this.settings.defaultZoom;
-      this.camera.near = center.z - length - Z_PADDING;
-      this.camera.far = center.z + length + Z_PADDING;
+      this.camera.left = -length / this.settings.defaultZoom;
+      this.camera.right = length / this.settings.defaultZoom;
+      this.camera.top = length / this.settings.defaultZoom;
+      this.camera.bottom = -length / this.settings.defaultZoom;
+      this.camera.near = -length - Z_PADDING;
+      this.camera.far = length + Z_PADDING;
     } else {
       this.camera = new THREE.OrthographicCamera(
-        center.x - length,
-        center.x + length,
-        center.y + length,
-        center.y - length,
-        center.z - length - Z_PADDING,
-        center.z + length + Z_PADDING
+        -length,
+        length,
+        length,
+        -length,
+        -length - Z_PADDING,
+        length + Z_PADDING
       );
     }
 
     // we put the camera behind the object, object should be in the middle of the view, closer to the far plane
-    this.camera.position.z = center.z;
-    this.camera.position.y = center.y;
-    this.camera.position.x = center.x;
+    this.camera.position.z = 0;
+    this.camera.position.y = 0;
+    this.camera.position.x = 0;
 
     const axis = (this.settings.cameraAxis ?? CameraAxis.Z) as CameraAxis;
-    const nextValue =
-      this.settings.cameraPosition === 'back'
-        ? this.camera.position[axis] + length / 2
-        : this.camera.position[axis] - length / 2;
-    this.camera.position[axis] = nextValue;
+    this.camera.position[axis] =
+      this.settings.cameraPosition === 'back' ? length / 2 : -length / 2;
+
+    const offsets: Record<CameraAxis, [CameraAxis, CameraAxis]> = {
+      [CameraAxis.X]: [CameraAxis.Y, CameraAxis.Z],
+      [CameraAxis.Y]: [CameraAxis.X, CameraAxis.Z],
+      [CameraAxis.Z]: [CameraAxis.X, CameraAxis.Y]
+    };
+    const [offsetA, offsetB] = offsets[axis];
+    this.camera.position[offsetA] = length * 0.18;
+    this.camera.position[offsetB] = length * 0.12;
 
     this.camera.lookAt(this.scene.position);
     this.camera.zoom = 4;

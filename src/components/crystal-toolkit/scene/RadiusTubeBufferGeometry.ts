@@ -1,9 +1,4 @@
-import {
-  BufferGeometry,
-  Float32BufferAttribute,
-  Vector2,
-  Vector3,
-} from 'three';
+import { BufferGeometry, Float32BufferAttribute, Vector2, Vector3 } from 'three';
 
 type FrenetFrames = {
   tangents: Vector3[];
@@ -25,168 +20,114 @@ type RadiusTubeParameters = {
   closed: boolean;
 };
 
-type RadiusTubeGeometry = BufferGeometry & {
-  type: string;
-  parameters: RadiusTubeParameters;
-  tangents: Vector3[];
-  normals: Vector3[];
-  binormals: Vector3[];
-};
+export class RadiusTubeBufferGeometry extends BufferGeometry {
+  override type = 'RadiusTubeBufferGeometry';
+  declare parameters: RadiusTubeParameters;
+  tangents: Vector3[] = [];
+  normals: Vector3[] = [];
+  binormals: Vector3[] = [];
 
-export function RadiusTubeBufferGeometry(
-  this: RadiusTubeGeometry,
-  path: CurveLike,
-  tubularSegments?: number,
-  radius?: number,
-  radialSegments?: number,
-  closed?: boolean,
-  taper?: (radius: number, segmentIndex: number) => number
-) {
-  BufferGeometry.call(this);
+  constructor(
+    path: CurveLike,
+    tubularSegments = 64,
+    radius = 1,
+    radialSegments = 8,
+    closed = false,
+    taper: (radius: number, segmentIndex: number) => number = (r) => r
+  ) {
+    super();
 
-  this.type = 'RadiusTubeBufferGeometry';
-  this.parameters = {
-    path,
-    tubularSegments: tubularSegments ?? 64,
-    radius: radius ?? 1,
-    radialSegments: radialSegments ?? 8,
-    closed: closed ?? false,
-  };
+    this.parameters = {
+      path,
+      tubularSegments,
+      radius,
+      radialSegments,
+      closed
+    };
 
-  const resolvedTubularSegments = this.parameters.tubularSegments;
-  const resolvedRadius = this.parameters.radius;
-  const resolvedRadialSegments = this.parameters.radialSegments;
-  const resolvedClosed = this.parameters.closed;
-  const taperFn = taper ?? ((r: number) => r);
+    const frames = path.computeFrenetFrames(tubularSegments, closed);
+    this.tangents = frames.tangents;
+    this.normals = frames.normals;
+    this.binormals = frames.binormals;
 
-  const frames = path.computeFrenetFrames(resolvedTubularSegments, resolvedClosed);
+    const vertex = new Vector3();
+    const normal = new Vector3();
+    const uv = new Vector2();
+    let point = new Vector3();
 
-  // expose internals
+    const vertices: number[] = [];
+    const normals: number[] = [];
+    const uvs: number[] = [];
+    const indices: number[] = [];
 
-  this.tangents = frames.tangents;
-  this.normals = frames.normals;
-  this.binormals = frames.binormals;
+    const generateSegment = (segmentIndex: number) => {
+      point = path.getPointAt(segmentIndex / tubularSegments, point);
 
-  // helper variables
+      const segmentNormal = frames.normals[segmentIndex];
+      const segmentBinormal = frames.binormals[segmentIndex];
 
-  const vertex = new Vector3();
-  const normal = new Vector3();
-  const uv = new Vector2();
-  let P = new Vector3();
+      for (let radialIndex = 0; radialIndex <= radialSegments; radialIndex++) {
+        const angle = (radialIndex / radialSegments) * Math.PI * 2;
+        const sin = Math.sin(angle);
+        const cos = -Math.cos(angle);
 
-  // buffer
+        normal.x = cos * segmentNormal.x + sin * segmentBinormal.x;
+        normal.y = cos * segmentNormal.y + sin * segmentBinormal.y;
+        normal.z = cos * segmentNormal.z + sin * segmentBinormal.z;
+        normal.normalize();
 
-  const vertices: number[] = [];
-  const normals: number[] = [];
-  const uvs: number[] = [];
-  const indices: number[] = [];
+        normals.push(normal.x, normal.y, normal.z);
 
-  // create buffer data
+        const currentRadius = taper(radius, segmentIndex);
+        vertex.x = point.x + currentRadius * normal.x;
+        vertex.y = point.y + currentRadius * normal.y;
+        vertex.z = point.z + currentRadius * normal.z;
 
-  generateBufferData();
+        vertices.push(vertex.x, vertex.y, vertex.z);
+      }
+    };
 
-  // build geometry
+    const generateUVs = () => {
+      for (let segmentIndex = 0; segmentIndex <= tubularSegments; segmentIndex++) {
+        for (let radialIndex = 0; radialIndex <= radialSegments; radialIndex++) {
+          uv.x = segmentIndex / tubularSegments;
+          uv.y = radialIndex / radialSegments;
+          uvs.push(uv.x, uv.y);
+        }
+      }
+    };
 
-  this.setIndex(indices);
-  this.setAttribute('position', new Float32BufferAttribute(vertices, 3));
-  this.setAttribute('normal', new Float32BufferAttribute(normals, 3));
-  this.setAttribute('uv', new Float32BufferAttribute(uvs, 2));
+    const generateIndices = () => {
+      for (let segmentIndex = 1; segmentIndex <= tubularSegments; segmentIndex++) {
+        for (let radialIndex = 1; radialIndex <= radialSegments; radialIndex++) {
+          const a = (radialSegments + 1) * (segmentIndex - 1) + (radialIndex - 1);
+          const b = (radialSegments + 1) * segmentIndex + (radialIndex - 1);
+          const c = (radialSegments + 1) * segmentIndex + radialIndex;
+          const d = (radialSegments + 1) * (segmentIndex - 1) + radialIndex;
 
-  // functions
+          indices.push(a, b, d);
+          indices.push(b, c, d);
+        }
+      }
+    };
 
-  function generateBufferData() {
-    for (let i = 0; i < resolvedTubularSegments; i++) {
-      generateSegment(i);
+    for (let segmentIndex = 0; segmentIndex < tubularSegments; segmentIndex++) {
+      generateSegment(segmentIndex);
     }
 
-    // if the geometry is not closed, generate the last row of vertices and normals
-    // at the regular position on the given path
-    //
-    // if the geometry is closed, duplicate the first row of vertices and normals (uvs will differ)
-
-    generateSegment(resolvedClosed === false ? resolvedTubularSegments : 0);
-
-    // uvs are generated in a separate function.
-    // this makes it easy compute correct values for closed geometries
-
+    generateSegment(closed ? 0 : tubularSegments);
     generateUVs();
-
-    // finally create faces
-
     generateIndices();
+
+    this.setIndex(indices);
+    this.setAttribute('position', new Float32BufferAttribute(vertices, 3));
+    this.setAttribute('normal', new Float32BufferAttribute(normals, 3));
+    this.setAttribute('uv', new Float32BufferAttribute(uvs, 2));
   }
 
-  function generateSegment(i: number) {
-    // we use getPointAt to sample evenly distributed points from the given path
-
-    P = path.getPointAt(i / resolvedTubularSegments, P);
-
-    // retrieve corresponding normal and binormal
-
-    const N = frames.normals[i];
-    const B = frames.binormals[i];
-
-    // generate normals and vertices for the current segment
-
-    for (let j = 0; j <= resolvedRadialSegments; j++) {
-      const v = (j / resolvedRadialSegments) * Math.PI * 2;
-
-      const sin = Math.sin(v);
-      const cos = -Math.cos(v);
-
-      // normal
-
-      normal.x = cos * N.x + sin * B.x;
-      normal.y = cos * N.y + sin * B.y;
-      normal.z = cos * N.z + sin * B.z;
-      normal.normalize();
-
-      normals.push(normal.x, normal.y, normal.z);
-
-      // vertex
-
-      const currentRadius = taperFn(resolvedRadius, i);
-      vertex.x = P.x + currentRadius * normal.x;
-      vertex.y = P.y + currentRadius * normal.y;
-      vertex.z = P.z + currentRadius * normal.z;
-
-      vertices.push(vertex.x, vertex.y, vertex.z);
-    }
-  }
-
-  function generateIndices() {
-    for (let j = 1; j <= resolvedTubularSegments; j++) {
-      for (let i = 1; i <= resolvedRadialSegments; i++) {
-        const a = (resolvedRadialSegments + 1) * (j - 1) + (i - 1);
-        const b = (resolvedRadialSegments + 1) * j + (i - 1);
-        const c = (resolvedRadialSegments + 1) * j + i;
-        const d = (resolvedRadialSegments + 1) * (j - 1) + i;
-
-        // faces
-
-        indices.push(a, b, d);
-        indices.push(b, c, d);
-      }
-    }
-  }
-
-  function generateUVs() {
-    for (let i = 0; i <= resolvedTubularSegments; i++) {
-      for (let j = 0; j <= resolvedRadialSegments; j++) {
-        uv.x = i / resolvedTubularSegments;
-        uv.y = j / resolvedRadialSegments;
-
-        uvs.push(uv.x, uv.y);
-      }
-    }
+  override toJSON() {
+    const data = super.toJSON();
+    (data as any).path = this.parameters.path.toJSON();
+    return data as any;
   }
 }
-
-RadiusTubeBufferGeometry.prototype = Object.create(BufferGeometry.prototype);
-RadiusTubeBufferGeometry.prototype.constructor = RadiusTubeBufferGeometry;
-
-RadiusTubeBufferGeometry.prototype.toJSON = function () {
-  const data = BufferGeometry.prototype.toJSON.call(this);
-  (data as any).path = (this as RadiusTubeGeometry).parameters.path.toJSON();
-  return data as any;
-};
