@@ -10,7 +10,7 @@
 ---
 
 ## 致谢
-衷心感谢 Next-Gen Materials Project 团队（https://next-gen.materialsproject.org/）在材料科学领域的卓越贡献与开源生态建设。正是其开放共享的理念，为下游工具开发、科研界面研究与持续迭代奠定了坚实基础。
+衷心感谢 [Next-Gen Materials Project 团队](https://next-gen.materialsproject.org/) 在材料科学领域的卓越贡献与开源生态建设。正是其开放共享的理念，为下游工具开发、科研界面研究与持续迭代奠定了坚实基础。
 
 ---
 
