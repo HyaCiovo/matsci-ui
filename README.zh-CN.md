@@ -1,4 +1,7 @@
 # MatsciUI
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/HyaCiovo/matsci-ui)
+
 中文文档 | 英文版见 [README.md](./README.md)
 迁移与仓库对比说明：[repo-diff-report.md](./docs/repo-diff-report.md)
 
