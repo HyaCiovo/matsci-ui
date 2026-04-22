@@ -1,16 +1,20 @@
 {
-  "rewrites": [
+  "version": 2,
+  "routes": [
     {
-      "source": "/mp-api/:path*",
-      "destination": "https://api.materialsproject.org/:path*"
+      "src": "/mp-api/(.*)",
+      "dest": "https://api.materialsproject.org/$1"
     },
     {
-      "source": "/mp-contribs-api/:path*",
-      "destination": "https://contribs-api.materialsproject.org/:path*"
+      "src": "/mp-contribs-api/(.*)",
+      "dest": "https://contribs-api.materialsproject.org/$1"
     },
     {
-      "source": "/matscholar-api/:path*",
-      "destination": "https://www.matscholar.com/:path*"
+      "src": "/matscholar-api/(.*)",
+      "dest": "https://www.matscholar.com/$1"
+    },
+    {
+      "handle": "filesystem"
     }
   ]
 }

@@ -1,5 +1,5 @@
-import { cpSync, existsSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { cpSync, existsSync, mkdirSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
 
 const projectRoot = resolve(import.meta.dirname, '..');
 const vercelConfigPath = resolve(projectRoot, 'vercel.json');
@@ -9,4 +9,5 @@ if (!existsSync(vercelConfigPath)) {
   throw new Error('Missing vercel.json in project root.');
 }
 
+mkdirSync(dirname(storybookOutputPath), { recursive: true });
 cpSync(vercelConfigPath, storybookOutputPath);
