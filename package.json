@@ -1,7 +1,7 @@
 {
   "name": "@hyacinth/matsci-ui",
   "version": "0.0.1",
-  "description": "matsci-ui: React component library for materials science research, based on Bulma and Radix UI",
+  "description": "MatsciUI: React component library for materials science research, based on Bulma and Radix UI",
   "author": "hyacinth",
   "type": "module",
   "packageManager": "pnpm@10.33.0",
@@ -26,10 +26,11 @@
     "**/*.less"
   ],
   "scripts": {
-    "build": "node scripts/clean-dist.mjs && rollup -c",
+    "build": "node scripts/clean-dist.mjs && rollup -c && node scripts/generate-components-json.mjs",
     "build-storybook": "HOME=$PWD/.storybook-home storybook build --disable-telemetry && node scripts/prepare-storybook-vercel.mjs",
     "dev": "vite",
     "format": "oxlint --fix src",
+    "generate:components": "node scripts/generate-components-json.mjs",
     "lint": "oxlint src",
     "storybook": "HOME=$PWD/.storybook-home storybook dev -p 6006 --disable-telemetry --no-open",
     "test": "vitest run --passWithNoTests",

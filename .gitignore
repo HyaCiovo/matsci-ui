@@ -24,6 +24,8 @@ coverage/
 # Editor & local tooling
 .trae/
 .vscode/
+.cursor/
+.claude/
 .idea/
 
 # Logs
@@ -35,3 +37,6 @@ pnpm-debug.log*
 
 # OS files
 .DS_Store
+
+# scripts files
+*-gnosys.*

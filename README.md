@@ -1,371 +1,153 @@
-# matsci-ui
+# MatsciUI
+English | 中文文档：[README.zh-CN.md](./README.zh-CN.md)
+For migration and repository comparison: [repo-diff-report.md](./docs/repo-diff-report.md)
 
-English documentation. Chinese version: [README.zh-CN.md](./README.zh-CN.md). Migration and repo comparison: [repo-diff-report.md](./docs/repo-diff-report.md).
+> Project Lineage
+> This component library is built upon Materials Project’s `mp-react-components` (https://github.com/materialsproject/mp-react-components) and refactored with **ESM-first architecture, strong TypeScript typing, and modern tooling**, delivering a production-ready UI library for materials science that can be directly installed via npm.
 
-`@hyacinth/matsci-ui` is a React component library for materials science applications. It evolves the legacy `mp-react-components` codebase into a modern npm-first package with ESM output, typed public exports, Storybook 10 docs, Vitest-based tests, and a cleaner separation between reusable components and app-specific pages.
+`@hyacinth/matsci-ui` is a React component library designed for **materials science research and production applications**. It specializes in data-intensive scientific workflows including material search, tabular exploration, chemical composition input, and interactive 3D crystal visualization. With a focus on maintainability and reusability, it provides ESM-only outputs, explicit package exports, strict TypeScript support, complete Storybook documentation, and a robust Vitest test suite.
 
-## Project Background
+---
 
-The original `mp-react-components` repository mixed reusable UI primitives, page-level demos, legacy Dash-oriented integration patterns, and a transitional release workflow. This repository narrows the scope to the publishable library surface:
+## Acknowledgements
+We sincerely thank the team at the Next-Gen Materials Project (https://next-gen.materialsproject.org/) for their outstanding contributions to materials science and their open-source ecosystem. Their work has laid a solid foundation for downstream tooling, research interface development, and continuous innovation in scientific UI.
 
-- Reusable UI building blocks for materials science products
-- Search-oriented composition primitives for REST-backed datasets
-- Periodic-table-driven data entry and formula parsing
-- Publication and bibliography helpers
-- Crystal Toolkit visualization components
-- Storybook as the primary documentation and interactive playground
+---
 
-This repository is the recommended baseline when you want a package-consumable component library instead of a source-only fork.
+## Key Features
+- **Packaging**: ESM-first with explicit `exports` field, including a dedicated style entry `./style.css`
+- **Tooling**: Rollup bundling, strict TypeScript, Storybook 10, and Vitest
+- **UI Stack**: Bulma-based styling + Radix UI primitives + TanStack Table
+- **Scientific Workflows**: Composable Search UI, periodic-table-driven formula input, publication utilities, and Crystal Toolkit 3D scenes
 
-## Feature Overview
-
-### Component Families
-
-- **Search UI**
-  - Container, search bar, filters, data header, table, grid, cards, and synthesis recipe views
-  - Query serialization, sort / pagination integration, configurable columns, and conditional row styles
-- **Data Entry**
-  - `MaterialsInput`, periodic table selectors, sliders, selects, switches, checkboxes, and text inputs
-- **Data Display**
-  - `DataTable`, `DataBlock`, `DataCard`, `Markdown`, `JsonView`, `Tooltip`, `Modal`, `Drawer`, `Paginator`
-- **Navigation**
-  - `Dropdown`, `Navbar`, `NavbarDropdown`, `NotificationDropdown`, `Scrollspy`, `Tabs`, `Sidebar`, `Link`, `Accordion`
-- **Publications**
-  - `BibCard`, `BibFilter`, `BibjsonCard`, `BibtexButton`, `CrossrefCard`, `OpenAccessButton`, `PublicationButton`
-- **Crystal Toolkit**
-  - `CrystalToolkitScene`, `CrystalToolkitAnimationScene`, `PhononAnimationScene`, `ReactGraphComponent`, `Download`
-
-### Ecosystem Choices
-
-- **Styling**: Bulma + local CSS/Less
-- **Headless primitives**: Radix UI
-- **Tables**: `@tanstack/react-table`
-- **Markdown / math**: `react-markdown`, `remark-math`, `rehype-katex`
-- **3D**: `three`
-- **Docs**: Storybook 10 + docs blocks
-- **Tests**: Vitest + Testing Library + jsdom
-
-## Architecture
-
-### Repository Shape
-
-```text
-src/
-  components/          reusable library surface
-  constants/           domain constants such as point groups / space groups
-  stories/             Storybook stories and MDX docs
-  text/                text helpers such as template formatting / merges
-  theme/               theme exploration and token experiments
-  utils/               cross-component utilities
-.storybook/            Storybook runtime and proxy setup
-docs/                  migration notes and comparison reports
-scripts/               build helpers
-```
-
-### Design Principles
-
-- Prefer composable container + child APIs over page-specific wrappers
-- Expose TypeScript types and utility helpers when they improve consumer ergonomics
-- Keep CSS bundled for easy adoption and treat theme abstraction as future work
-- Keep consumer-facing copy configurable through `texts` props or dedicated label props
-- Make Storybook the canonical source of usage examples
+---
 
 ## Installation
-
 ```bash
 npm install @hyacinth/matsci-ui
 ```
 
-Peer dependencies:
-
+### Peer Dependencies
 - `react`: `^17.0.0 || ^18.0.0 || ^19.0.0`
 - `react-dom`: `^17.0.0 || ^18.0.0 || ^19.0.0`
 
-Recommended runtime:
-
+### Recommended Environment
 - Node.js `^20.19.0 || ^22.12.0`
-- A modern bundler with ESM support
+- Modern ESM-compatible bundler (Vite, Rollup, Webpack 5+)
+
+---
 
 ## Quick Start
-
-Import styles once at your app entry:
-
+Import global styles at your application entry:
 ```ts
 import '@hyacinth/matsci-ui/style.css';
 ```
 
-### Example: Modal
-
-```tsx
-import { Modal, ModalContextProvider, ModalTrigger } from '@hyacinth/matsci-ui';
-
-export function DemoModal() {
-  return (
-    <ModalContextProvider>
-      <ModalTrigger>
-        <button type="button">Open</button>
-      </ModalTrigger>
-      <Modal>
-        <div className="box">Hello from Modal</div>
-      </Modal>
-    </ModalContextProvider>
-  );
-}
-```
-
-### Example: Search UI
-
-```tsx
-import {
-  SearchUIContainer,
-  SearchUISearchBar,
-  SearchUIFilters,
-  SearchUIDataHeader,
-  SearchUIDataTable,
-} from '@hyacinth/matsci-ui';
-
-const columns = [
-  { title: 'Material ID', selector: 'material_id' },
-  { title: 'Formula', selector: 'formula_pretty', formatType: 'FORMULA' },
-];
-
-const filterGroups = [
-  {
-    name: 'Composition',
-    filters: [
-      {
-        name: 'Formula',
-        params: ['formula'],
-        type: 'MATERIALS_INPUT',
-        props: { type: 'formula' },
-      },
-    ],
-  },
-];
-
-export function DemoSearchUI() {
-  return (
-    <SearchUIContainer
-      apiEndpoint="/mp-api/materials/summary"
-      columns={columns}
-      filterGroups={filterGroups}
-      resultLabel="material"
-      searchOnMount={false}
-    >
-      <SearchUISearchBar
-        allowedInputTypesMap={{
-          formula: { field: 'formula' },
-          elements: { field: 'elements' },
-          mpid: { field: 'material_ids' },
-        }}
-      />
-      <SearchUIFilters />
-      <SearchUIDataHeader />
-      <SearchUIDataTable />
-    </SearchUIContainer>
-  );
-}
-```
-
-### Example: Materials Input
-
-```tsx
-import { MaterialsInput, PeriodicTableMode } from '@hyacinth/matsci-ui';
-
-export function DemoMaterialsInput() {
-  return (
-    <MaterialsInput
-      label="Composition"
-      placeholder="Li-Fe-O"
-      periodicTableMode={PeriodicTableMode.TOGGLE}
-      allowedInputTypes={['chemical_system', 'elements', 'formula']}
-    />
-  );
-}
-```
-
-## Using Named Imports and Tree Shaking
-
-The package is published as ESM. In practice, the recommended consumption model is:
-
-- import only the symbols you use from `@hyacinth/matsci-ui`
-- import `@hyacinth/matsci-ui/style.css` once at the application entry
-- rely on your bundler for dead-code elimination of unused JavaScript exports
-
-Example:
-
-```tsx
-import { DataTable, Paginator, MaterialsInput } from '@hyacinth/matsci-ui';
-```
-
-## Styling and Theme Status
-
-The current library ships one practical styling path: bundled Bulma plus component-level CSS/Less. The repository does contain theme-related exploration files such as [`src/theme/tokens.css`](./src/theme/tokens.css) and [theming-and-style-presets.md](./docs/theming-and-style-presets.md), but that work should be treated as planning rather than as a stable, officially adopted theming API.
-
-What is true today:
-
-- consumers should rely on `@hyacinth/matsci-ui/style.css`
-- the rendered DOM and class structure still assume the Bulma-oriented styling model
-- no alternate preset such as `dark.css`, `materials.css`, or `shadcn.css` is currently published
-- token naming and preset strategy are still under discussion and should not yet be treated as a compatibility contract
-
-If you need product-specific visual customization today, prefer targeted stylesheet overrides in the consuming application and validate them per component.
-
-## TypeScript and Public API
-
-- Source entry: [`src/index.ts`](./src/index.ts)
-- Published JS entry: `dist/index.js`
-- Published types: `dist/index.d.ts`
-- Published stylesheet: `dist/index.css`, exposed as `@hyacinth/matsci-ui/style.css`
-
-The package exports both components and supporting types/utilities, especially for Search UI and periodic-table composition. This makes it easier to build product-specific wrappers without forking internals.
-
-## Text and Localization Strategy
-
-The library avoids a required runtime i18n dependency. Consumer-facing copy is generally exposed through one of the following:
-
-- `texts?: Partial<...>` structured copy objects
-- one-off props like `placeholder`, `ariaLabel`, `buttonLabel`, `submitButtonText`
-- explicit consumer-managed labels in column and filter definitions
-
-Example:
-
+Minimal usage example:
 ```tsx
 import { DataTable } from '@hyacinth/matsci-ui';
-
-<DataTable
-  data={data}
-  columns={columns}
-  texts={{
-    columns: 'Columns',
-    selectAll: 'Select all',
-    rowsPerPage: 'Rows per page',
-    pageSummaryTemplate: '{start}-{end} of {total}',
-    paginator: {
-      previous: 'Previous',
-      next: 'Next',
-      jumpTo: 'Jump to',
-    },
-  }}
-/>;
 ```
 
-## Accessibility Notes
+---
 
-Accessibility is handled component-by-component instead of by a global abstraction. Current implementation highlights include:
+## Development & Documentation
+- Run local Storybook: `pnpm storybook`
+- Build static documentation: `pnpm build-storybook`
 
-- Radix-based primitives for dialogs, tooltips, dropdowns, tabs, and checkboxes
-- explicit `aria-*` labels in table pagination, row selection, and inputs
-- keyboard-friendly focus management in modal / drawer / dropdown interactions
-- text overrides for screen-reader-specific copy via `texts` props
+---
 
-When integrating into a product, validate final keyboard flow and color contrast after applying your own stylesheet overrides.
+## Styling & Theming Status
+Currently, the **only stable styling strategy** is bundled Bulma styles combined with component-level CSS/Less.
+
+Files such as [`src/theme/tokens.css`](./src/theme/tokens.css) and [theming-and-style-presets.md](./docs/theming-and-style-presets.md) exist as exploratory planning artifacts and are **not considered stable, backward-compatible public APIs**.
+
+Current stable usage rules:
+- Applications must use `@hyacinth/matsci-ui/style.css` as the official style entry
+- DOM structure and className conventions follow the Bulma framework
+- Alternative presets such as `dark.css`, `materials.css`, or `shadcn.css` are not yet published
+- Design token naming and theming strategy remain under discussion and should not be treated as final
+
+---
+
+## TypeScript & Public API
+- Source entry: [`src/index.ts`](./src/index.ts)
+- Build output: `dist/index.js`
+- Type definitions: `dist/index.d.ts`
+- Stylesheet: `dist/index.css`, exposed as `@hyacinth/matsci-ui/style.css`
+
+In addition to components, the library exports types and utilities for Search UI, periodic table logic, and localization helpers, allowing you to build application-specific wrappers without forking internal code.
+
+---
+
+## Text & Localization
+The library **does not require a global i18n runtime**. All user-facing text is fully configurable via props:
+- Structured text overrides: `texts?: Partial<...>`
+- Explicit props: `placeholder`, `ariaLabel`, `buttonLabel`, `submitButtonText`
+- Custom labels for table columns and filter definitions
+
+---
 
 ## Performance Notes
+This library is optimized for **real-world production-scale datasets and scientific workflows**, rather than extreme virtualization scenarios.
+- `SearchUI` supports `searchOnMount={false}` to avoid expensive automatic requests
+- `DataTable` uses TanStack Table with memoized column and row logic
+- Stories avoid automatic fetching by default to prevent request storms
+- Publication and search components use native `fetch` to reduce dependency overhead
 
-This repository is optimized for typical product-sized datasets and documentation workflows rather than aggressive virtualization.
+For extremely large datasets, we recommend server-side pagination, limited field selection, and smaller default page sizes.
 
-- `SearchUI` supports `searchOnMount={false}` for expensive endpoints
-- `DataTable` uses TanStack Table and memoized column / row helpers
-- docs and stories default to safer API behavior to avoid request storms
-- publication and search components use `fetch`, reducing dependency overhead
-
-For very large datasets, prefer server-side pagination, narrower field selection, and smaller default page sizes.
-
-## Testing and Quality
-
-Development scripts:
-
-```bash
-npm install
-npm test
-npm run typecheck
-npm run build
-npm run storybook
-```
-
-Current quality signals in this repository:
-
-- Vitest + Testing Library test suite
-- Storybook 10 documentation and interactive examples
-- strict TypeScript configuration
-- `oxlint` for fast source linting
-- `lefthook` for local automation
-
-Current automated test breadth at the time of this README update:
-
-- 60 test files
-- 157 passing tests
-
-This number reflects suite breadth, not a line-coverage percentage badge.
+---
 
 ## Browser Support
+`MatsciUI` supports modern evergreen browsers:
+- Latest Chrome / Edge
+- Latest Safari
+- Latest Firefox
 
-`matsci-ui` targets modern evergreen browsers:
+Due to its ESM-first architecture and use of modern DOM/CSS features, **legacy browsers such as Internet Explorer are not supported**.
 
-- current Chrome / Edge
-- current Safari
-- current Firefox
-
-Because the package is ESM-first and uses modern DOM / CSS features, legacy browsers such as Internet Explorer are not supported.
-
-## Storybook and Docs
-
-Storybook is the main interactive documentation surface.
-
-- Local docs: `npm run storybook`
-- Static docs build: `npm run build-storybook`
-- Storybook includes locale switching for English / Chinese docs pages
-- Search-related stories may require `VITE_MP_API_KEY` for authenticated endpoints
+---
 
 ## Migration from `mp-react-components`
+This project is not a line-by-line port. It modernizes tooling, bundling, and dependencies while preserving core component behavior and visual consistency.
 
-The migration is not a simple package rename. Major changes include:
+Key migration considerations:
+- Explicit ESM exports and required `style.css` import
+- Tables and overlays now powered by Radix UI + TanStack Table
+- Multi-theme and non-Bulma theming support is still planned
 
-- ESM-first packaging
-- Storybook 10 + Vite docs stack
-- Vitest instead of Jest
-- `@tanstack/react-table` instead of `react-data-table-component`
-- Radix-based primitives replacing several legacy UI dependencies
-- broader public exports for types and composition helpers
-
-Start here:
-
+Migration references:
 - [docs/repo-diff-report.md](./docs/repo-diff-report.md)
 - [docs/theming-and-style-presets.md](./docs/theming-and-style-presets.md)
 
-## Contribution Workflow
+---
 
-1. Install dependencies with `npm install` or `pnpm install`
-2. Run `npm test` and `npm run typecheck`
-3. Validate examples in `npm run storybook`
-4. Build the publishable package with `npm run build`
-5. Update docs when public props, exports, or behavior changes
+## Support the Project ⭐️
+If this library helps your research, teaching, or production work, please star the repository ⭐️.
+Stars help us prioritize maintenance, attract collaborators, and ensure long-term sustainability for scientific UI tools.
 
-Contribution expectations:
+---
 
-- add or update tests when behavior changes materially
-- keep public exports intentional and documented
-- avoid reintroducing app-specific pages into the package surface
-- prefer additive migration paths when changing component APIs
+## Contributing 🤝
+Contributions of all kinds are welcome and greatly appreciated! We especially value:
+- Modular theming and style flexibility beyond Bulma 🎨
+- Performance and rendering optimizations ⚡️
+- Domain-specific components and scientific accuracy (researchers and students welcome) 🧪
+- Reusable patterns and guidelines for safer AI-assisted development 🧩
 
-## Versioning Strategy
+The project maintains an academic tone while fostering a friendly and inclusive contribution environment.
+If you’ve ever complained that a laggy filter component “violates the second law of thermodynamics,” you’ll fit right in.
 
-The repository currently follows a pragmatic semver-oriented strategy:
+### Standard Workflow
+1. Install dependencies: `pnpm install`
+2. Type checking & testing: `pnpm typecheck` → `pnpm test`
+3. Preview in Storybook: `pnpm storybook`
+4. Verify build output: `pnpm build`
+5. Update documentation if public props, exports, or behavior change
 
-- patch: bug fixes, docs fixes, internal refactors without public behavior changes
-- minor: additive components, props, exports, and non-breaking behavior improvements
-- major: export removals, dependency shifts with clear consumer impact, or behavior changes that require migration work
-
-## Roadmap
-
-- keep aligning Search UI behavior with legacy product expectations where it improves migration
-- expand docs coverage and bilingual examples
-- strengthen published-package validation across React 17 / 18 / 19 consumer setups
-- continue simplifying legacy compatibility layers in favor of typed, composable primitives
+---
 
 ## Related Resources
-
-- Legacy upstream inspiration: [materialsproject/mp-react-components](https://github.com/materialsproject/mp-react-components)
-- Repository comparison: [repo-diff-report.md](./docs/repo-diff-report.md)
-- Theme planning notes: [theming-and-style-presets.md](./docs/theming-and-style-presets.md)
+- Original upstream project: [materialsproject/mp-react-components](https://github.com/materialsproject/mp-react-components)
+- Repository diff report: [repo-diff-report.md](./docs/repo-diff-report.md)
+- Theming planning document: [theming-and-style-presets.md](./docs/theming-and-style-presets.md)

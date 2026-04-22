@@ -1,0 +1,609 @@
+{
+  "package": "@hyacinth/matsci-ui",
+  "version": "0.0.1",
+  "generatedAt": "2026-04-22T05:03:26.936Z",
+  "entrypoints": [
+    "dist/index.js",
+    "dist/index.d.ts",
+    "dist/index.css",
+    "dist/components.json"
+  ],
+  "exports": [
+    {
+      "name": "Accordion",
+      "kind": "component"
+    },
+    {
+      "name": "AccordionContent",
+      "kind": "component"
+    },
+    {
+      "name": "AccordionHeader",
+      "kind": "component"
+    },
+    {
+      "name": "AccordionItem",
+      "kind": "component"
+    },
+    {
+      "name": "AccordionTrigger",
+      "kind": "component"
+    },
+    {
+      "name": "ActiveFilterButtons",
+      "kind": "component"
+    },
+    {
+      "name": "ArrayChips",
+      "kind": "component"
+    },
+    {
+      "name": "Bell",
+      "kind": "component"
+    },
+    {
+      "name": "BibCard",
+      "kind": "component"
+    },
+    {
+      "name": "BibFilter",
+      "kind": "component"
+    },
+    {
+      "name": "BibjsonCard",
+      "kind": "component"
+    },
+    {
+      "name": "BibtexButton",
+      "kind": "component"
+    },
+    {
+      "name": "ButtonBar",
+      "kind": "component"
+    },
+    {
+      "name": "CameraContext",
+      "kind": "component"
+    },
+    {
+      "name": "CameraContextProvider",
+      "kind": "component"
+    },
+    {
+      "name": "categoryToClassName",
+      "kind": "export"
+    },
+    {
+      "name": "Checkbox",
+      "kind": "component"
+    },
+    {
+      "name": "CheckboxList",
+      "kind": "component"
+    },
+    {
+      "name": "ColumnFormat",
+      "kind": "component"
+    },
+    {
+      "name": "convertArrayOfObjectsToCSV",
+      "kind": "export"
+    },
+    {
+      "name": "createDownloadLink",
+      "kind": "export"
+    },
+    {
+      "name": "createSelectableTableStoreState",
+      "kind": "export"
+    },
+    {
+      "name": "CrossrefCard",
+      "kind": "component"
+    },
+    {
+      "name": "crystalSystemOptions",
+      "kind": "export"
+    },
+    {
+      "name": "CrystalToolkitAnimationScene",
+      "kind": "component"
+    },
+    {
+      "name": "CrystalToolkitScene",
+      "kind": "component"
+    },
+    {
+      "name": "DataBlock",
+      "kind": "component"
+    },
+    {
+      "name": "DataCard",
+      "kind": "component"
+    },
+    {
+      "name": "DataTable",
+      "kind": "component"
+    },
+    {
+      "name": "DEFAULT_DISABLED_ELEMENTS",
+      "kind": "component"
+    },
+    {
+      "name": "DISPLAY_MODE",
+      "kind": "component"
+    },
+    {
+      "name": "Download",
+      "kind": "component"
+    },
+    {
+      "name": "downloadAs",
+      "kind": "export"
+    },
+    {
+      "name": "downloadBlob",
+      "kind": "export"
+    },
+    {
+      "name": "DownloadButton",
+      "kind": "component"
+    },
+    {
+      "name": "downloadCSV",
+      "kind": "export"
+    },
+    {
+      "name": "DownloadDropdown",
+      "kind": "component"
+    },
+    {
+      "name": "downloadJSON",
+      "kind": "export"
+    },
+    {
+      "name": "Drawer",
+      "kind": "component"
+    },
+    {
+      "name": "DrawerContextProvider",
+      "kind": "component"
+    },
+    {
+      "name": "DrawerTrigger",
+      "kind": "component"
+    },
+    {
+      "name": "Dropdown",
+      "kind": "component"
+    },
+    {
+      "name": "DualRangeSlider",
+      "kind": "component"
+    },
+    {
+      "name": "ELEMENTS_REGEX",
+      "kind": "component"
+    },
+    {
+      "name": "ELEMENTS_SPLIT_REGEX",
+      "kind": "component"
+    },
+    {
+      "name": "Enlargeable",
+      "kind": "component"
+    },
+    {
+      "name": "FilterField",
+      "kind": "component"
+    },
+    {
+      "name": "FilterType",
+      "kind": "component"
+    },
+    {
+      "name": "formatColumnValue",
+      "kind": "export"
+    },
+    {
+      "name": "formatPointGroup",
+      "kind": "export"
+    },
+    {
+      "name": "Formula",
+      "kind": "component"
+    },
+    {
+      "name": "getActiveFilters",
+      "kind": "export"
+    },
+    {
+      "name": "getAuthorString",
+      "kind": "export"
+    },
+    {
+      "name": "getClampedDisabledElements",
+      "kind": "export"
+    },
+    {
+      "name": "getColumnsFromKeys",
+      "kind": "export"
+    },
+    {
+      "name": "getCrossrefAuthorString",
+      "kind": "export"
+    },
+    {
+      "name": "getElementDetail",
+      "kind": "export"
+    },
+    {
+      "name": "getJournalAndYear",
+      "kind": "export"
+    },
+    {
+      "name": "getRowValueFromSelectorString",
+      "kind": "export"
+    },
+    {
+      "name": "getSelectableTableStateChange",
+      "kind": "export"
+    },
+    {
+      "name": "GlobalSearchBar",
+      "kind": "component"
+    },
+    {
+      "name": "initFilterGroups",
+      "kind": "export"
+    },
+    {
+      "name": "Input",
+      "kind": "component"
+    },
+    {
+      "name": "isNotEmpty",
+      "kind": "export"
+    },
+    {
+      "name": "isUrl",
+      "kind": "export"
+    },
+    {
+      "name": "JsonView",
+      "kind": "component"
+    },
+    {
+      "name": "Link",
+      "kind": "component"
+    },
+    {
+      "name": "Markdown",
+      "kind": "component"
+    },
+    {
+      "name": "matchesConditionalStyle",
+      "kind": "export"
+    },
+    {
+      "name": "MaterialsInput",
+      "kind": "component"
+    },
+    {
+      "name": "MaterialsInputType",
+      "kind": "component"
+    },
+    {
+      "name": "MatscholarSearchUIContainer",
+      "kind": "component"
+    },
+    {
+      "name": "MatscholarSearchUIContextProvider",
+      "kind": "component"
+    },
+    {
+      "name": "Modal",
+      "kind": "component"
+    },
+    {
+      "name": "ModalContextProvider",
+      "kind": "component"
+    },
+    {
+      "name": "ModalTrigger",
+      "kind": "component"
+    },
+    {
+      "name": "Navbar",
+      "kind": "component"
+    },
+    {
+      "name": "NavbarDropdown",
+      "kind": "component"
+    },
+    {
+      "name": "NotificationDropdown",
+      "kind": "component"
+    },
+    {
+      "name": "OpenAccessButton",
+      "kind": "component"
+    },
+    {
+      "name": "Paginator",
+      "kind": "component"
+    },
+    {
+      "name": "parseSearchQuery",
+      "kind": "export"
+    },
+    {
+      "name": "PERIODIC_TABLE_MODE_LABELS",
+      "kind": "component"
+    },
+    {
+      "name": "PeriodicContext",
+      "kind": "component"
+    },
+    {
+      "name": "PeriodicSelectionActionsContext",
+      "kind": "component"
+    },
+    {
+      "name": "PeriodicSelectionContext",
+      "kind": "component"
+    },
+    {
+      "name": "PeriodicSelectionDetailContext",
+      "kind": "component"
+    },
+    {
+      "name": "PeriodicSelectionProvider",
+      "kind": "component"
+    },
+    {
+      "name": "PeriodicTableFormulaButtons",
+      "kind": "component"
+    },
+    {
+      "name": "PeriodicTableMode",
+      "kind": "component"
+    },
+    {
+      "name": "PeriodicTableModeSwitcher",
+      "kind": "component"
+    },
+    {
+      "name": "PeriodicTablePluginWrapper",
+      "kind": "component"
+    },
+    {
+      "name": "PeriodicTableSpacer",
+      "kind": "component"
+    },
+    {
+      "name": "PhononAnimationScene",
+      "kind": "component"
+    },
+    {
+      "name": "pointGroupOptions",
+      "kind": "export"
+    },
+    {
+      "name": "pointGroups",
+      "kind": "export"
+    },
+    {
+      "name": "preprocessQueryParams",
+      "kind": "export"
+    },
+    {
+      "name": "PublicationButton",
+      "kind": "component"
+    },
+    {
+      "name": "RangeSlider",
+      "kind": "component"
+    },
+    {
+      "name": "ReactGraphComponent",
+      "kind": "component"
+    },
+    {
+      "name": "Scene",
+      "kind": "component"
+    },
+    {
+      "name": "Scrollspy",
+      "kind": "component"
+    },
+    {
+      "name": "SearchUIContainer",
+      "kind": "component"
+    },
+    {
+      "name": "SearchUIContextProvider",
+      "kind": "component"
+    },
+    {
+      "name": "SearchUIDataCards",
+      "kind": "component"
+    },
+    {
+      "name": "SearchUIDataHeader",
+      "kind": "component"
+    },
+    {
+      "name": "SearchUIDataTable",
+      "kind": "component"
+    },
+    {
+      "name": "SearchUIDataView",
+      "kind": "component"
+    },
+    {
+      "name": "SearchUIFilters",
+      "kind": "component"
+    },
+    {
+      "name": "SearchUIGrid",
+      "kind": "component"
+    },
+    {
+      "name": "SearchUISearchBar",
+      "kind": "component"
+    },
+    {
+      "name": "SearchUISynthesisRecipeCards",
+      "kind": "component"
+    },
+    {
+      "name": "searchUIViewsMap",
+      "kind": "export"
+    },
+    {
+      "name": "SearchUIViewType",
+      "kind": "component"
+    },
+    {
+      "name": "Select",
+      "kind": "component"
+    },
+    {
+      "name": "SelectableTable",
+      "kind": "component"
+    },
+    {
+      "name": "serializeSearchQuery",
+      "kind": "export"
+    },
+    {
+      "name": "shortenAuthorString",
+      "kind": "export"
+    },
+    {
+      "name": "shortenBibjsonAuthors",
+      "kind": "export"
+    },
+    {
+      "name": "shortenCrossrefAuthors",
+      "kind": "export"
+    },
+    {
+      "name": "Sidebar",
+      "kind": "component"
+    },
+    {
+      "name": "SortDropdown",
+      "kind": "component"
+    },
+    {
+      "name": "spaceGroupNumberOptions",
+      "kind": "export"
+    },
+    {
+      "name": "spaceGroups",
+      "kind": "export"
+    },
+    {
+      "name": "spaceGroupSymbolOptions",
+      "kind": "export"
+    },
+    {
+      "name": "StandalonePeriodicComponent",
+      "kind": "component"
+    },
+    {
+      "name": "Switch",
+      "kind": "component"
+    },
+    {
+      "name": "SynthesisRecipeCard",
+      "kind": "component"
+    },
+    {
+      "name": "TableFilter",
+      "kind": "component"
+    },
+    {
+      "name": "TableLayout",
+      "kind": "component"
+    },
+    {
+      "name": "TableSelectionStyle",
+      "kind": "component"
+    },
+    {
+      "name": "Tabs",
+      "kind": "component"
+    },
+    {
+      "name": "TextInput",
+      "kind": "component"
+    },
+    {
+      "name": "ThreeStateBooleanSelect",
+      "kind": "component"
+    },
+    {
+      "name": "toArray",
+      "kind": "export"
+    },
+    {
+      "name": "Tooltip",
+      "kind": "component"
+    },
+    {
+      "name": "toRecord",
+      "kind": "export"
+    },
+    {
+      "name": "useDebounce",
+      "kind": "hook"
+    },
+    {
+      "name": "useDetailedElement",
+      "kind": "hook"
+    },
+    {
+      "name": "useDrawerContext",
+      "kind": "hook"
+    },
+    {
+      "name": "useElements",
+      "kind": "hook"
+    },
+    {
+      "name": "useModalContext",
+      "kind": "hook"
+    },
+    {
+      "name": "useOptionalPeriodicSelectionActions",
+      "kind": "hook"
+    },
+    {
+      "name": "useOptionalPeriodicSelectionContext",
+      "kind": "hook"
+    },
+    {
+      "name": "usePeriodicSelectionActions",
+      "kind": "hook"
+    },
+    {
+      "name": "usePeriodicSelectionContext",
+      "kind": "hook"
+    },
+    {
+      "name": "usePrevious",
+      "kind": "hook"
+    },
+    {
+      "name": "useSearchUIContext",
+      "kind": "hook"
+    },
+    {
+      "name": "useSearchUIContextActions",
+      "kind": "hook"
+    }
+  ]
+}

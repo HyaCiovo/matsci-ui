@@ -72,7 +72,7 @@ const preview: Preview = {
 
       return createElement(
         StorybookLocaleProvider,
-        { locale, key: locale },
+        { locale, key: locale, children: createElement(Story) },
         createElement(Story)
       );
     },
@@ -88,7 +88,7 @@ const preview: Preview = {
 
         return createElement(
           StorybookLocaleProvider,
-          { locale, key: locale },
+          { locale, key: locale, children: createElement(DocsContainer, props) },
           createElement(DocsContainer, props)
         );
       },
@@ -98,7 +98,7 @@ const preview: Preview = {
       storySort: {
         order: [
           'Introduction',
-          ['matsci-ui', 'Usage with Dash'],
+          ['MatsciUI', 'Usage with Dash'],
           'Search UI',
           [
             'Building a Search UI',

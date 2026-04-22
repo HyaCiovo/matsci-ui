@@ -1,8 +1,16 @@
-# matsci-ui vs mp-react-components 全量差异报告
+# matsci-ui vs mp-react-components / 全量差异报告
 
-更新时间：2026-04-22
+**EN**
+
+Last updated: 2026-04-22
 
 ## 1. 报告范围
+
+**EN**
+
+Scope of this report and the comparison targets.
+
+**中文**
 
 本报告聚焦两个仓库当前磁盘状态中与“可发布组件库”直接相关的部分，覆盖：
 
@@ -15,8 +23,8 @@
 
 对比对象：
 
-- 旧仓库：`/Users/zhujiruo/Desktop/hobby/mp-react-components`
-- 新仓库：`/Users/zhujiruo/Desktop/hobby/matsci-ui`
+- 旧仓库：`mp-react-components`
+- 新仓库：`matsci-ui`
 
 说明：
 
@@ -25,6 +33,12 @@
 - 本报告沿用“聚焦发布面”的约束，不对所有业务实验文件做逐行穷举，而是对发布契约、核心实现替换和迁移风险做逐文件说明。
 
 ## 2. 执行摘要
+
+**EN**
+
+Executive summary of the most impactful changes and suggested migration approach.
+
+**中文**
 
 `matsci-ui` 已从历史性的“组件源码仓库”收敛为“npm-first 的现代 React 组件库”，主要变化如下：
 
@@ -43,6 +57,12 @@
 
 ## 3. 总览矩阵
 
+**EN**
+
+High-level matrix of key differences (packaging, React baseline, docs stack, network layer, tables, overlays).
+
+**中文**
+
 | 维度 | 旧仓库 `mp-react-components` | 新仓库 `matsci-ui` | 影响等级 |
 | --- | --- | --- | --- |
 | 包名 | `@materialsproject/mp-react-components` | `@hyacinth/matsci-ui` | 高 |
@@ -60,7 +80,19 @@
 
 ## 4. 逐文件差异台账
 
+**EN**
+
+File-by-file ledger focused on the publishable library surface and migration risk.
+
+**中文**
+
 ### 4.1 包元数据与发布契约
+
+**EN**
+
+Package metadata, exports/entrypoints, and publishing contract changes.
+
+**中文**
 
 | 文件 | 旧文件与行号 | 新文件与行号 | 变化类型 | 影响说明 |
 | --- | --- | --- | --- | --- |
@@ -71,6 +103,12 @@
 
 ### 4.2 根入口与公共 API
 
+**EN**
+
+Entry exports and public API surface differences.
+
+**中文**
+
 | 文件 | 旧文件与行号 | 新文件与行号 | 变化类型 | 影响说明 |
 | --- | --- | --- | --- | --- |
 | 根入口导出 | `mp-react-components/src/index.ts:L1-L115` | `matsci-ui/src/index.ts:L1-L78` | 扩展 | 新仓库改用 `export *` 聚合，除组件外还导出类型、常量和 utils，方便二次封装。 |
@@ -78,6 +116,12 @@
 | 样式入口 | 旧包无单独 `style.css` export | `matsci-ui/src/index.ts:L1-L3` + `matsci-ui/package.json:L14-L20` | 新增 | 新仓库明确把样式交付纳入发布契约，避免消费端依赖隐式全局 CSS。 |
 
 ### 4.3 构建与 TypeScript
+
+**EN**
+
+Build toolchain and TypeScript compilation/resolution differences.
+
+**中文**
 
 | 文件 | 旧文件与行号 | 新文件与行号 | 变化类型 | 影响说明 |
 | --- | --- | --- | --- | --- |
@@ -87,6 +131,12 @@
 
 ### 4.4 文档与 Storybook
 
+**EN**
+
+Documentation stack changes (Storybook upgrade, Vite integration, docs conventions).
+
+**中文**
+
 | 文件 | 旧文件与行号 | 新文件与行号 | 变化类型 | 影响说明 |
 | --- | --- | --- | --- | --- |
 | Storybook main | `mp-react-components/.storybook/main.js:L1-L35` | `matsci-ui/.storybook/main.ts:L1-L66` | 升级 | webpack5 Storybook 6 升级为 Vite Storybook 10，并加入代理、`react-docgen-typescript` 与 `@storybook/addon-vitest`。 |
@@ -94,6 +144,12 @@
 | README 口径 | `mp-react-components/README.md:L1-L276` | `matsci-ui/README.md:L1-L389`、`README.zh-CN.md:L1-L389` | 重写 | 新仓库 README 不再以“本地 app 开发”和历史 Dash 互链为主，而是围绕功能、架构、安装、主题、测试、浏览器支持、迁移与版本策略组织。 |
 
 ### 4.5 测试、质量门禁与发布验证
+
+**EN**
+
+Testing stack, local quality gates, and publishing validation notes.
+
+**中文**
 
 | 文件 | 旧文件与行号 | 新文件与行号 | 变化类型 | 影响说明 |
 | --- | --- | --- | --- | --- |
@@ -103,12 +159,24 @@
 
 ### 4.6 网络层与实现替换
 
+**EN**
+
+Network-layer consolidation and request/error-model changes (axios → fetch).
+
+**中文**
+
 | 文件 | 旧文件与行号 | 新文件与行号 | 变化类型 | 影响说明 |
 | --- | --- | --- | --- | --- |
 | HTTP 公共层 | 旧仓库无统一 `fetch` 封装，`axios` 散落在组件中 | `matsci-ui/src/utils/http.ts:L1-L76` | 新增 | 新仓库把 URL 拼接、query 序列化和 JSON/text 请求集中封装，减少依赖面，也让测试 mock 更统一。 |
 | SearchUI 请求链 | 旧仓库依赖 `axios` + 查询工具 | `matsci-ui/src/components/data-display/SearchUI/SearchUIContextProvider/SearchUIContextProvider.tsx`（请求逻辑见约 `L193-L259`、`L471-L519`） | 变更 | 请求生命周期已围绕 `fetchJson` 重写，取消 `axios` 专有行为后，错误对象形态和取消请求方式需要重新审视。 |
 
 ### 4.7 样式变量与主题
+
+**EN**
+
+Styling status and theming direction (tokens/presets planned; single stable CSS entry today).
+
+**中文**
 
 | 文件 | 旧文件与行号 | 新文件与行号 | 变化类型 | 影响说明 |
 | --- | --- | --- | --- | --- |
@@ -118,7 +186,19 @@
 
 ## 5. 新增、删除、变更、重命名清单
 
+**EN**
+
+Summary lists of additions, removals, changes, and renames.
+
+**中文**
+
 ### 5.1 新增
+
+**EN**
+
+Additions introduced in the new repository.
+
+**中文**
 
 - 新增 `@hyacinth/matsci-ui/style.css` 发布子路径。
 - 新增统一请求工具 `src/utils/http.ts`。
@@ -128,10 +208,22 @@
 
 ### 5.2 删除
 
+**EN**
+
+Removals compared to the legacy repository.
+
+**中文**
+
 - 删除本地 app sandbox 主路径：`parcel demo/index.html` / `build-prod`。
 - 删除 `axios`、`rxjs`、`react-data-table-component`、`react-tooltip`、`react-json-view` 等历史依赖的核心地位。
 
 ### 5.3 变更
+
+**EN**
+
+Major changes that affect migration behavior and tooling assumptions.
+
+**中文**
 
 - 变更包名、样式接入方式和 Storybook 版本。
 - 变更 SearchUI、DataTable、Tooltip、JsonView 的底层实现。
@@ -140,11 +232,23 @@
 
 ### 5.4 重命名
 
+**EN**
+
+Renames of packages and branding.
+
+**中文**
+
 - npm 包从 `@materialsproject/mp-react-components` 更名为 `@hyacinth/matsci-ui`。
 - 文档/Storybook 品牌名从 `MP React Components` 系列名称迁移为 `matsci-ui`。
 - 主题能力从“历史预置主题文件”转为“规划中的 token / preset 方案”，目前尚未正式应用。
 
 ## 6. 依赖升级与生态替换
+
+**EN**
+
+Dependency and ecosystem replacements (what changed and why it matters).
+
+**中文**
 
 | 旧依赖/能力 | 新依赖/能力 | 类型 | 影响 |
 | --- | --- | --- | --- |
@@ -159,7 +263,19 @@
 
 ## 7. API 接口与组件命名差异
 
+**EN**
+
+API surface and component naming/semantics differences.
+
+**中文**
+
 ### 7.1 根导出面
+
+**EN**
+
+Root export surface comparison and migration interpretation.
+
+**中文**
 
 根据现有审计文档 `docs/component-diff-audit.md`：
 
@@ -176,11 +292,23 @@
 
 ### 7.2 组件命名与语义变化
 
+**EN**
+
+Naming continuity and newly introduced granular exports.
+
+**中文**
+
 - `SearchUIContainer`、`SearchUISearchBar`、`SearchUIFilters`、`SearchUIDataHeader`、`SearchUIDataTable` 等主命名保持延续，便于迁移。
 - 新仓库新增 `DataCard`、`Paginator`、`SortDropdown`、`ActiveFilterButtons`、`ArrayChips`、`ButtonBar`、`ThreeStateBooleanSelect` 等更细粒度导出。
 - Crystal Toolkit 路径更强调显式场景组件，而不是通用 `Scene` runtime。
 
 ## 8. 破坏性变更
+
+**EN**
+
+Breaking changes and high-risk compatibility points.
+
+**中文**
 
 以下项应视为明确的 breaking changes 或高风险兼容点：
 
@@ -200,7 +328,19 @@
 
 ## 9. 兼容性问题
 
+**EN**
+
+Compatibility considerations across React versions, browsers/build tooling, and styling.
+
+**中文**
+
 ### 9.1 React 兼容性
+
+**EN**
+
+React baseline differences and high-risk areas (overlays, portals, identifiers, measurement).
+
+**中文**
 
 - 旧仓库 `main` 分支的真实基线是 React 16：`package.json` 中 `react` / `react-dom` 为 `^16.14.0`，测试侧使用 `enzyme-adapter-react-16`。
 - 因此旧仓库不应被视为支持 React 18 及以上；如果业务当前已经在 React 18/19 宿主中运行旧库，也应视为“非官方、未验证兼容”。
@@ -210,15 +350,33 @@
 
 ### 9.2 浏览器与构建工具
 
+**EN**
+
+Modern ESM/bundler assumptions and host-environment constraints.
+
+**中文**
+
 - 新仓库面向现代 evergreen 浏览器与现代 ESM bundler。
 - 如果旧项目仍依赖 webpack 4、旧 Babel preset 或历史 polyfill 组合，需要先做宿主基线评估。
 
 ### 9.3 样式兼容
 
+**EN**
+
+Style regressions due to DOM/class changes and removed legacy theme presets.
+
+**中文**
+
 - 旧项目如果写了针对 `react-data-table-component`、`react-tooltip` 或旧 Bulma 结构的深层选择器，迁移后容易失效。
 - 旧项目如果通过引入预置主题文件实现换肤，迁移到新仓库时暂时没有官方等价替代方案，需要自行维护样式覆盖。
 
 ## 10. 潜在风险点
+
+**EN**
+
+Risk register with recommended mitigations.
+
+**中文**
 
 | 风险点 | 描述 | 建议 |
 | --- | --- | --- |
@@ -230,6 +388,12 @@
 | 文档口径更新中 | 当前文档已升级，但实际消费样例仍需结合业务验证 | 以 README + Storybook + 本报告联合作为迁移依据 |
 
 ## 11. 迁移优先级
+
+**EN**
+
+Migration priority ordering (P0/P1/P2).
+
+**中文**
 
 | 优先级 | 事项 | 原因 |
 | --- | --- | --- |
@@ -243,6 +407,12 @@
 
 ## 12. 迁移工作量评估
 
+**EN**
+
+Effort estimation by scenario (for planning; validate against your actual codebase).
+
+**中文**
+
 | 场景 | 估算 | 说明 |
 | --- | --- | --- |
 | 仅替换基础展示组件 | 1-2 人日 | 主要是包名、样式引入和少量回归验证 |
@@ -252,7 +422,19 @@
 
 ## 13. 迁移前后示例
 
+**EN**
+
+Before/after snippets for package name, style entry, theming, and scene components.
+
+**中文**
+
 ### 13.1 包名与样式入口
+
+**EN**
+
+Package rename and explicit style import.
+
+**中文**
 
 迁移前：
 
@@ -271,6 +453,12 @@ import { DataTable, SearchUIContainer } from '@hyacinth/matsci-ui';
 
 ### 13.2 主题方式
 
+**EN**
+
+Legacy theme preset removal and current recommended styling entry.
+
+**中文**
+
 迁移前：
 
 ```tsx
@@ -288,6 +476,12 @@ import '@hyacinth/matsci-ui/style.css';
 
 ### 13.3 Crystal Toolkit 场景入口
 
+**EN**
+
+Preferred scene components over legacy `Scene` usage.
+
+**中文**
+
 迁移前：
 
 ```tsx
@@ -303,6 +497,12 @@ import { CrystalToolkitScene } from '@hyacinth/matsci-ui';
 影响说明：优先迁移到显式场景组件；若必须保留底层 runtime，请先确认当前根导出与运行期行为是否满足现有用法。
 
 ## 14. 结论
+
+**EN**
+
+Conclusion: migrate in stages, validate high-impact UI surfaces, and avoid assuming import-only changes are sufficient.
+
+**中文**
 
 如果你的目标是“继续在旧页面里少量替换组件”，迁移工作量主要集中在包名、样式入口和局部回归验证。
 
