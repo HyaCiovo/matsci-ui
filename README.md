@@ -2,6 +2,8 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/HyaCiovo/matsci-ui)
 
+> Current status: the npm package is not published yet, so the live Storybook is currently the best place to preview component behavior and UI.
+
 English | 中文文档：[README.zh-CN.md](./README.zh-CN.md)
 For migration and repository comparison: [repo-diff-report.md](./docs/repo-diff-report.md)
 
