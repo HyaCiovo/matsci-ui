@@ -454,7 +454,13 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
       return;
     }
 
-    !!props.data && scene.current!.addToScene(props.data, false);
+    !!props.data && scene.current!.addToScene(props.data, true);
+    const sceneApi = scene.current as unknown as {
+      renderScene?: () => void;
+      resizeRendererToDisplaySize?: () => void;
+    };
+    sceneApi.renderScene?.();
+    sceneApi.resizeRendererToDisplaySize?.();
     scene.current!.toggleVisibility(props.toggleVisibility as any);
   }, [props.data]);
   useEffect(

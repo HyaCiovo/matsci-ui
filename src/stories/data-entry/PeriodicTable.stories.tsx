@@ -15,11 +15,15 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Basic: Story = {
+  args: {
+    maxElementSelectable: 5
+  },
   render: () => (
     <PeriodicContext>
       <SelectableTable
         forceTableLayout={TableLayout.MINI}
         className="max-750"
+        maxElementSelectable={5}
       />
     </PeriodicContext>
   )

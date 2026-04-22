@@ -10,31 +10,37 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const MENU_GROUPS = [
+  {
+    label: 'Table of Contents',
+    items: [
+      {
+        label: 'Crystal Structure',
+        targetId: 'one'
+      },
+      {
+        label: 'Properties',
+        targetId: 'two',
+        items: [
+          {
+            label: 'Prop One',
+            targetId: 'three'
+          }
+        ]
+      }
+    ]
+  }
+];
+
 export const Basic: Story = {
+  args: {
+    menuGroups: MENU_GROUPS,
+    activeClassName: 'is-active'
+  },
   render: () => (
     <div className="sidebar-story">
       <Scrollspy
-        menuGroups={[
-          {
-            label: 'Table of Contents',
-            items: [
-              {
-                label: 'Crystal Structure',
-                targetId: 'one'
-              },
-              {
-                label: 'Properties',
-                targetId: 'two',
-                items: [
-                  {
-                    label: 'Prop One',
-                    targetId: 'three'
-                  }
-                ]
-              }
-            ]
-          }
-        ]}
+        menuGroups={MENU_GROUPS}
         menuClassName="menu"
         menuItemContainerClassName="menu-list"
         activeClassName="is-active"

@@ -115,8 +115,8 @@ export const validateChemicalSystem = (elementStr: string): string[] | undefined
 
 export const validateFormula = (
   formula: string,
-  illegalCharsRegex: RegExp = /([^A-Z]|^)+[a-z]|[^\w()*\.]+|\s+/,
-  elementsRegex: RegExp = /([A-Z][a-z]*)([\d\.]*)/g
+  illegalCharsRegex: RegExp = /([^A-Z]|^)+[a-z]|[^\w()*.]+|\s+/,
+  elementsRegex: RegExp = /([A-Z][a-z]*)([\d.]*)/g
 ): string[] | undefined => {
   try {
     const cleanFormula = formula.replace(/\s+$/, '');
@@ -144,8 +144,8 @@ export const validateFormula = (
 
 export const validateMoleculeFormula = (
   formula: string,
-  illegalCharsRegex: RegExp = /([^A-Z]|^)+[a-z]|[^\w()*\.]+/g,
-  elementsRegex: RegExp = /([A-Z][a-z]*)([\d\.]*)/g
+  illegalCharsRegex: RegExp = /([^A-Z]|^)+[a-z]|[^\w()*.]+/g,
+  elementsRegex: RegExp = /([A-Z][a-z]*)([\d.]*)/g
 ): string[] | undefined => {
   try {
     const cleanFormula = formula.replace(/\s/g, '');
@@ -171,7 +171,7 @@ export const validateMoleculeFormula = (
 };
 
 export const validateSmiles = (value: string): string | null => {
-  const result = value.trim().match(/^([^J][0-9BCOHNSOPrIFla@+\-[\]\(\)\\/%=#$]{6,})$/gi);
+  const result = value.trim().match(/^([^J][0-9BCOHNSOPrIFla@+\-[\](\)\\/%=#$]{6,})$/gi);
   return Array.isArray(result) ? value : null;
 };
 

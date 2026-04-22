@@ -113,9 +113,9 @@ export const DEBUG_STYLE = {
   height: '500px',
   top: 0,
   left: '700px',
-  position: 'absolute' as 'absolute'
+  position: 'absolute' as const
 };
-export const MOUNT_NODE_STYLE = { position: 'absolute' as 'absolute' };
+export const MOUNT_NODE_STYLE = { position: 'absolute' as const };
 export const MOUNT_NODE_CLASS = 'three-container';
 export const MOUNT_DEBUG_NODE_CLASS = 'three-debug-container';
 

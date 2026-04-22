@@ -40,6 +40,14 @@ export const Basic: Story = {
 };
 
 export const Controlled: Story = {
+  args: {
+    options: [
+      { label: 'One', value: 1 },
+      { label: 'Two', value: 2 },
+      { label: 'Three', value: 3 }
+    ],
+    value: 1
+  },
   render: () => {
     const [state, setState] = useState<{ value: number | null }>({ value: 1 });
     return (

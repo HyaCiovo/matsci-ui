@@ -12,6 +12,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Basic: Story = {
+  args: {
+    id: 'drawer-1'
+  },
   render: () => (
     <DrawerContextProvider>
       <DrawerTrigger forDrawerId="drawer-1">
@@ -31,6 +34,9 @@ export const Basic: Story = {
 };
 
 export const WithTwoDifferentDrawers: Story = {
+  args: {
+    id: 'drawer-1'
+  },
   render: () => (
     <DrawerContextProvider>
       <DrawerTrigger forDrawerId="drawer-1">
@@ -57,6 +63,9 @@ export const WithTwoDifferentDrawers: Story = {
 };
 
 export const BottomDrawer: Story = {
+  args: {
+    id: 'drawer-bottom'
+  },
   render: () => (
     <DrawerContextProvider>
       <DrawerTrigger forDrawerId="drawer-bottom">

@@ -100,7 +100,7 @@ export const getActiveFilters = (filterGroups: FilterGroup[], query: Record<stri
               filter.props?.type === MaterialsInputType.CHEMICAL_SYSTEM ||
               (filter.props?.type === MaterialsInputType.FORMULA && String(parsedValue).includes('-'))
             ) {
-              parsedValue = String(parsedValue).replace(/\-$/, '');
+              parsedValue = String(parsedValue).replace(/-$/, '');
             }
             activeFilters.push({ ...baseFilter, value: parsedValue });
           }
