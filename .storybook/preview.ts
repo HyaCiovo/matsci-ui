@@ -2,9 +2,11 @@ import { createElement } from 'react';
 import type { Preview } from '@storybook/react-vite';
 import type { DocsContainerProps } from '@storybook/addon-docs/blocks';
 import { DocsContainer } from '@storybook/addon-docs/blocks';
-import '../src/theme/tokens.css';
-import '../src/theme/matsci-bulma.css';
+import { ShikiDocsCode } from './ShikiDocsCode';
+import { matsciStorybookTheme } from './matsciStorybookTheme';
+import '../src/themes/default.ts';
 import '../src/stories/stories.css';
+import './storybook-docs.css';
 import { StorybookLocaleProvider, type StorybookLocale } from '../src/stories/i18n/LocaleProvider';
 
 function getStorybookLocationSearch() {
@@ -79,6 +81,10 @@ const preview: Preview = {
   ],
   parameters: {
     docs: {
+      theme: matsciStorybookTheme,
+      components: {
+        code: ShikiDocsCode,
+      },
       container: (props: DocsContainerProps) => {
         const globals = (props.context as unknown as { globals?: Record<string, unknown> }).globals;
         const locale = resolveStorybookLocale({
@@ -88,8 +94,12 @@ const preview: Preview = {
 
         return createElement(
           StorybookLocaleProvider,
-          { locale, key: locale, children: createElement(DocsContainer, props) },
-          createElement(DocsContainer, props)
+          {
+            locale,
+            key: locale,
+            children: createElement(DocsContainer, { ...props, theme: matsciStorybookTheme }),
+          },
+          createElement(DocsContainer, { ...props, theme: matsciStorybookTheme })
         );
       },
     },

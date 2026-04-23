@@ -1,7 +1,6 @@
 import * as RadixSelect from '@radix-ui/react-select';
 import clsx from 'clsx';
 import { FaAngleDown, FaCheck, FaTimes } from 'react-icons/fa';
-import './Select.css';
 
 export interface SelectOption {
   label: string;

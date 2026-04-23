@@ -49,10 +49,14 @@ npm install @hyacinth/matsci-ui
 
 ## Quick Start
 
-Import global styles at your application entry:
+Import the default theme once at your application entry. Components no longer auto-inject styles when you import them:
 
 ```ts
 import '@hyacinth/matsci-ui/style.css';
+// or:
+// import '@hyacinth/matsci-ui/themes/default.css';
+// or:
+// import '@hyacinth/matsci-ui/themes/alt.css';
 ```
 
 Minimal usage example:
@@ -72,16 +76,24 @@ import { DataTable } from '@hyacinth/matsci-ui';
 
 ## Styling & Theming Status
 
-Currently, the **only stable styling strategy** is bundled Bulma styles combined with component-level CSS/Less.
+Currently, the **only stable styling strategy** is the explicitly imported default theme bundle.
 
-Files such as [`src/theme/tokens.css`](./src/theme/tokens.css) and [theming-and-style-presets.md](./docs/theming-and-style-presets.md) exist as exploratory planning artifacts and are **not considered stable, backward-compatible public APIs**.
+Files such as [`src/themes/foundation/tokens.css`](./src/themes/foundation/tokens.css) and [theming-and-style-presets.md](./docs/theming-and-style-presets.md) exist as exploratory planning artifacts and are **not considered stable, backward-compatible public APIs**.
 
 Current stable usage rules:
 
-- Applications must use `@hyacinth/matsci-ui/style.css` as the official style entry
+- Applications must explicitly import `@hyacinth/matsci-ui/style.css` or `@hyacinth/matsci-ui/themes/default.css`
+- A second preset entrypoint is reserved at `@hyacinth/matsci-ui/themes/alt.css` for full alternate-theme delivery
+- Importing components from `@hyacinth/matsci-ui` no longer injects styles automatically
 - DOM structure and className conventions follow the Bulma framework
 - Alternative presets such as `dark.css`, `materials.css`, or `shadcn.css` are not yet published
 - Design token naming and theming strategy remain under discussion and should not be treated as final
+
+Current source layout now lives under a single `src/themes` tree and is intentionally split into three layers:
+
+- `src/themes/foundation/*`: base reset, tokens, Bulma-compatible primitives, and utility rules
+- `src/themes/shared/*`: shared component skinning, aggregated by domain instead of scattered per-component CSS files
+- `src/themes/presets/*`: theme preset assembly, so future theme variants can swap tokens and overrides without changing component code
 
 ***
 
@@ -90,7 +102,9 @@ Current stable usage rules:
 - Source entry: [`src/index.ts`](./src/index.ts)
 - Build output: `dist/index.js`
 - Type definitions: `dist/index.d.ts`
-- Stylesheet: `dist/index.css`, exposed as `@hyacinth/matsci-ui/style.css`
+- Stylesheets:
+  - `dist/themes/default.css`, exposed as `@hyacinth/matsci-ui/style.css` and `@hyacinth/matsci-ui/themes/default.css`
+  - `dist/themes/alt.css`, exposed as `@hyacinth/matsci-ui/themes/alt.css`
 
 In addition to components, the library exports types and utilities for Search UI, periodic table logic, and localization helpers, allowing you to build application-specific wrappers without forking internal code.
 
@@ -182,4 +196,3 @@ If you’ve ever complained that a laggy filter component “violates the second
 - Original upstream project: [materialsproject/mp-react-components](https://github.com/materialsproject/mp-react-components)
 - Repository diff report: [repo-diff-report.md](./docs/repo-diff-report.md)
 - Theming planning document: [theming-and-style-presets.md](./docs/theming-and-style-presets.md)
-

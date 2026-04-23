@@ -2,9 +2,7 @@ import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { FaAngleDown, FaSort, FaSortDown, FaSortUp } from 'react-icons/fa';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import '../../navigation/Dropdown/Dropdown.css';
-import { formatTemplate } from '../../../text/formatTemplate';
-import { mergeTexts } from '../../../text/mergeTexts';
+import { formatTemplate, mergeTexts } from '../../../utils/text';
 
 export interface DropdownItem {
   label: string;

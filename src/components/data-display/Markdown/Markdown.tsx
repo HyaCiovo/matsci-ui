@@ -4,8 +4,6 @@ import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 import remarkHighlight from 'remark-highlight.js';
 import remarkMath from 'remark-math';
-import 'katex/dist/katex.min.css';
-import 'highlight.js/styles/github-dark.css';
 
 export interface MarkdownProps {
   id?: string;

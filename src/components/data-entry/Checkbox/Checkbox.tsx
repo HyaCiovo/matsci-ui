@@ -2,7 +2,6 @@ import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import clsx from 'clsx';
 import { forwardRef } from 'react';
 import { FaCheck, FaMinus } from 'react-icons/fa';
-import './Checkbox.css';
 
 export type CheckboxCheckedState = CheckboxPrimitive.CheckedState;
 

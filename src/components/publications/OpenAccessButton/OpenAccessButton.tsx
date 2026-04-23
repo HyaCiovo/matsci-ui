@@ -1,9 +1,8 @@
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { Tooltip } from '../../data-display/Tooltip';
-import { mergeTexts } from '../../../text/mergeTexts';
+import { mergeTexts } from '../../../utils/text';
 import openAccessButtonLogo from './oabColorPng';
-import './OpenAccessButton.css';
 import { fetchJson } from '../../../utils/http';
 
 export interface OpenAccessButtonProps {

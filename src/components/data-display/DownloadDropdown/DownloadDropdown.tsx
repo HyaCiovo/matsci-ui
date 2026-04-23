@@ -3,8 +3,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { type ReactNode, useState } from 'react';
 import { FaAngleDown } from 'react-icons/fa';
 import { downloadAs, type DownloadType } from '../../../utils/download';
-import '../../navigation/Dropdown/Dropdown.css';
-import { mergeTexts } from '../../../text/mergeTexts';
+import { mergeTexts } from '../../../utils/text';
 
 export interface DownloadDropdownProps {
   id?: string;

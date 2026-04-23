@@ -1,7 +1,7 @@
 import { FaExclamationTriangle } from 'react-icons/fa';
 import { useSearchUIContext } from '../SearchUIContextProvider';
 import { searchUIViewsMap } from '../searchUIViewsMap';
-import { mergeTexts } from '../../../../text/mergeTexts';
+import { mergeTexts } from '../../../../utils/text';
 
 export interface SearchUIDataViewTexts {
   errorTitle: string;

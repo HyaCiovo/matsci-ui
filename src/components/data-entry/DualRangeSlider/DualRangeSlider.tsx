@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDebounce } from '../../../utils/hooks';
 import { Input } from '../Input';
-import './DualRangeSlider.css';
 
 export interface DualRangeSliderProps {
   id?: string;

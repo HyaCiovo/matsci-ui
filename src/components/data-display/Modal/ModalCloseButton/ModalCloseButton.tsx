@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import './ModalCloseButton.css';
 
 export interface ModalCloseButtonProps {
   id?: string;

@@ -1,11 +1,12 @@
 {
   "package": "@hyacinth/matsci-ui",
   "version": "0.0.1",
-  "generatedAt": "2026-04-23T17:36:07.697Z",
+  "generatedAt": "2026-04-23T20:49:24.921Z",
   "entrypoints": [
     "dist/index.js",
     "dist/index.d.ts",
-    "dist/index.css",
+    "dist/themes/default.css",
+    "dist/themes/alt.css",
     "dist/components.json"
   ],
   "exports": [
@@ -210,6 +211,10 @@
       "kind": "export"
     },
     {
+      "name": "formatTemplate",
+      "kind": "export"
+    },
+    {
       "name": "Formula",
       "kind": "component"
     },
@@ -300,6 +305,10 @@
     {
       "name": "MatscholarSearchUIContextProvider",
       "kind": "component"
+    },
+    {
+      "name": "mergeTexts",
+      "kind": "export"
     },
     {
       "name": "Modal",

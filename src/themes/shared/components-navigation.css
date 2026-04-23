@@ -1,0 +1,260 @@
+.ms-accordion-item {
+  border: 0;
+}
+
+.ms-accordion-header {
+  margin: 0;
+}
+
+.ms-accordion-trigger {
+  width: 100%;
+}
+
+.ms-accordion-content {
+  overflow: hidden;
+}
+
+.ms-accordion-content[data-state='open'] {
+  animation: ms-accordion-slide-down 160ms ease-out;
+}
+
+.ms-accordion-content[data-state='closed'] {
+  animation: ms-accordion-slide-up 160ms ease-out;
+}
+
+.ms-accordion-content-inner {
+  min-width: 0;
+}
+
+@keyframes ms-accordion-slide-down {
+  from {
+    height: 0;
+  }
+
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes ms-accordion-slide-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+
+  to {
+    height: 0;
+  }
+}
+
+.ms-dropdown-menu {
+  display: block;
+  z-index: 1000;
+}
+
+.ms-dropdown-content {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.ms-dropdown.ms-is-up .ms-dropdown-menu {
+  margin-bottom: 0.25rem;
+}
+
+.ms-dropdown:not(.ms-is-up) .ms-dropdown-menu {
+  margin-top: 0.25rem;
+}
+
+.ms-dropdown.ms-is-active .ms-dropdown-menu {
+  animation: ms-dropdown-fade-in 140ms ease-out;
+}
+
+@keyframes ms-dropdown-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.ms-navbar-mobile {
+  position: fixed;
+  right: -75%;
+  top: 0;
+  height: 100%;
+  width: 75%;
+  overflow: auto;
+  background: #fff;
+  z-index: 2;
+  transition: 0.5s;
+}
+
+.ms-navbar-mobile.ms-is-active {
+  right: 0;
+}
+
+.ms-navbar .ms-modal-background {
+  position: fixed;
+  transition: 0.5s;
+}
+
+.ms-navbar .ms-modal-background.ms-is-hidden-by-opacity {
+  display: none;
+}
+
+.ms-fa-stack {
+  display: inline-block;
+  height: 2em;
+  line-height: 2em;
+  position: relative;
+  vertical-align: middle;
+  width: 2em;
+}
+
+.ms-fa-stack-1x,
+.ms-fa-stack-2x {
+  left: 0;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+}
+
+.ms-fa-stack-1x {
+  line-height: inherit;
+}
+
+.ms-fa-stack-2x {
+  font-size: 2em;
+}
+
+.ms-fa-inverse {
+  color: inherit;
+}
+
+.ms-bell-icon {
+  font-size: 0.5em;
+  width: 1em;
+}
+
+.ms-has-badge[data-count]::after {
+  position: absolute;
+  right: 14%;
+  top: 22%;
+  content: '\2022';
+  font-size: 1.4em;
+  padding: 0.15em;
+  line-height: 0.75em;
+  color: #ff0000;
+}
+
+.ms-has-badge-number[data-count]::after {
+  position: absolute;
+  right: 0;
+  top: 0;
+  content: attr(data-count);
+  font-size: 0.5em;
+  padding: 0.15em;
+  border-radius: 999%;
+  line-height: 0.75em;
+  color: #fff;
+  background: rgba(255, 0, 0, 0.85);
+  text-align: center;
+  min-width: 2em;
+  font-weight: 700;
+}
+
+.ms-notification-dot {
+  margin-right: 0.5rem;
+  color: #ff3860;
+  font-size: 0.55rem;
+}
+
+.ms-sidebar {
+  position: relative;
+}
+
+.ms-sidebar .ms-sidebar-menu-item.ms-selected .ms-sidebar-item {
+  border-width: 3px;
+}
+
+.ms-sidebar .ms-sidebar-menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.ms-sidebar.vertical {
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+}
+
+.ms-sidebar.horizontal {
+  display: flex;
+  flex-direction: row;
+}
+
+.ms-sidebar.horizontal .ms-content {
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.ms-sidebar .ms-content {
+  margin: 10px 0;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.ms-sidebar .ms-is-unstyled {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.ms-sidebar .ms-sidebar-item {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border: 1px solid #000;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  vertical-align: middle;
+}
+
+.ms-sidebar .ms-sub-app {
+  font-size: 11px;
+}
+
+.ms-sidebar-popover {
+  position: absolute;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 220px;
+  padding: 8px;
+  border: 1px solid #dbdbdb;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(10, 10, 10, 0.12);
+}
+
+.ms-sidebar-popover.vertical {
+  top: 0;
+  left: calc(100% + 16px);
+}
+
+.ms-sidebar-popover.horizontal {
+  top: calc(100% + 12px);
+  left: 0;
+}

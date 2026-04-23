@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import { type CSSProperties, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import './Drawer.css';
 import { ModalCloseButton } from '../Modal/ModalCloseButton/ModalCloseButton';
 import { useDrawerContext } from './DrawerContextProvider';
 

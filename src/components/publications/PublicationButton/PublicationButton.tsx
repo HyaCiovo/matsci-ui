@@ -2,7 +2,6 @@ import clsx from 'clsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FaBook } from 'react-icons/fa';
 import { Tooltip } from '../../data-display/Tooltip';
-import './PublicationButton.css';
 import { getJournalAndYear } from '../../../utils/publications';
 import { fetchJson, fetchText } from '../../../utils/http';
 

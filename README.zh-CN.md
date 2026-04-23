@@ -41,9 +41,13 @@ npm install @hyacinth/matsci-ui
 ---
 
 ## 快速开始
-在应用入口处全局引入样式：
+在应用入口处显式引入默认主题。现在仅导入组件不会再自动注入样式：
 ```ts
 import '@hyacinth/matsci-ui/style.css';
+// 或：
+// import '@hyacinth/matsci-ui/themes/default.css';
+// 或：
+// import '@hyacinth/matsci-ui/themes/alt.css';
 ```
 
 组件最简使用示例：
@@ -60,15 +64,22 @@ import { DataTable } from '@hyacinth/matsci-ui';
 ---
 
 ## 样式与主题现状
-目前组件库**唯一稳定的样式方案**为：内置 Bulma 基础样式 + 组件级 CSS/Less。
+目前组件库**唯一稳定的样式方案**为：显式引入默认主题样式包。
 
-仓库中虽已包含 [`src/theme/tokens.css`](./src/theme/tokens.css)、[theming-and-style-presets.md](./docs/theming-and-style-presets.md) 等主题探索文件，但这些内容**仅为规划阶段产物**，并非稳定可用、承诺兼容的对外主题 API。
+仓库中虽已包含 [`src/themes/foundation/tokens.css`](./src/themes/foundation/tokens.css)、[theming-and-style-presets.md](./docs/theming-and-style-presets.md) 等主题探索文件，但这些内容**仅为规划阶段产物**，并非稳定可用、承诺兼容的对外主题 API。
 
 当前稳定使用规则：
-- 业务项目必须以 `@hyacinth/matsci-ui/style.css` 作为唯一样式入口
+- 业务项目必须显式引入 `@hyacinth/matsci-ui/style.css` 或 `@hyacinth/matsci-ui/themes/default.css`
+- 第二套完整主题的接入口已预留为 `@hyacinth/matsci-ui/themes/alt.css`
+- 仅从 `@hyacinth/matsci-ui` 导入组件时，不会再自动注入样式
 - 组件 DOM 结构与 className 基于 Bulma 体系设计
 - 暂未发布 `dark.css`、`materials.css`、`shadcn.css` 等主题预设
 - 设计 Token 命名与主题切换策略仍在讨论中，不建议业务强依赖
+
+当前源码中的主题结构现在统一收拢在 `src/themes` 目录下，并刻意拆成三层：
+- `src/themes/foundation/*`：基础重置、Token、Bulma 兼容原子层与工具类
+- `src/themes/shared/*`：共享组件皮肤，按领域聚合维护，而不是继续分散在各组件目录
+- `src/themes/presets/*`：主题预设拼装层，后续新增第二套主题时只需要替换 token 与 override 组合
 
 ---
 
@@ -76,7 +87,9 @@ import { DataTable } from '@hyacinth/matsci-ui';
 - 源码入口：[`src/index.ts`](./src/index.ts)
 - 构建产物：`dist/index.js`
 - 类型文件：`dist/index.d.ts`
-- 样式文件：`dist/index.css`，对外暴露为 `@hyacinth/matsci-ui/style.css`
+- 样式文件：
+  - `dist/themes/default.css`，对外暴露为 `@hyacinth/matsci-ui/style.css` 与 `@hyacinth/matsci-ui/themes/default.css`
+  - `dist/themes/alt.css`，对外暴露为 `@hyacinth/matsci-ui/themes/alt.css`
 
 除组件外，库还导出 Search UI、周期表、工具函数及相关类型定义，支持业务层直接二次封装，无需 Fork 内部实现。
 

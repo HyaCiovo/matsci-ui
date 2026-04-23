@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import Graph from 'react-graph-vis';
-import '../vis.less';
 
 export interface ReactGraphComponentProps {
   id?: string;

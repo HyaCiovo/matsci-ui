@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { Paginator } from '../../Paginator';
 import { SynthesisRecipeCard } from '../../SynthesisRecipeCard';
 import { useSearchUIContext } from '../SearchUIContextProvider';
-import { formatTemplate } from '../../../../text/formatTemplate';
-import { mergeTexts } from '../../../../text/mergeTexts';
+import { formatTemplate } from '../../../../utils/text';
+import { mergeTexts } from '../../../../utils/text';
 
 export interface SearchUISynthesisRecipeCardsTexts {
   defaultCardTitle: string;

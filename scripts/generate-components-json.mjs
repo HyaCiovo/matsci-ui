@@ -58,7 +58,13 @@ const componentsJson = {
   package: typeof args.package === 'string' ? args.package : rootPkg.name,
   version: typeof args.version === 'string' ? args.version : rootPkg.version,
   generatedAt: new Date().toISOString(),
-  entrypoints: ['dist/index.js', 'dist/index.d.ts', 'dist/index.css', 'dist/components.json'],
+  entrypoints: [
+    'dist/index.js',
+    'dist/index.d.ts',
+    'dist/themes/default.css',
+    'dist/themes/alt.css',
+    'dist/components.json',
+  ],
   exports: extractExportsFromDts(dtsText),
 };
 

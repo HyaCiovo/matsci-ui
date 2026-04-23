@@ -1,9 +1,11 @@
+@import '../../components/crystal-toolkit/vis.less';
+
 .ms-scene {
   position: relative;
 }
 
 .ms-tooltiptext {
-  background-color: black;
+  background-color: #000;
   color: #fff;
   text-align: center;
   border-radius: 6px;
@@ -34,10 +36,10 @@
 }
 
 /**
-* Prevent the structure layout from growing beyond the height of the modal.
-* Setting max-width with vh instead of simply setting max-height so we don't interfere
-* with the structure's styles that force it to render with 1:1 ratio.
-*/
+ * Prevent the structure layout from growing beyond the height of the modal.
+ * Setting max-width with vh instead of simply setting max-height so we don't interfere
+ * with the structure's styles that force it to render with 1:1 ratio.
+ */
 .ms-scene-square-wrapper {
   width: 100% !important;
   max-width: calc(95vh - 3rem);

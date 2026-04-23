@@ -9,7 +9,6 @@ import React, {
 } from 'react';
 import Scene from '../scene/Scene';
 import { subscribe } from '../scene/download-event';
-import './PhononAnimationScene.less';
 import {
   AnimationStyle,
   DEBUG_STYLE,

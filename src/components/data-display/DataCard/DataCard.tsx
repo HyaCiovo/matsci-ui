@@ -1,6 +1,5 @@
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
-import './DataCard.css';
 
 interface KeyLabelPair {
   key: string;

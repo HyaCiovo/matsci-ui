@@ -6,13 +6,12 @@ import {
 } from '../SelectableTable/PeriodicSelectionContext';
 import { categoryToClassName } from '../SelectableTable/selection-state';
 import { getPeriodicTableFilterValue } from '../SelectableTable/view-model';
-import { mergeTexts } from '../../../text/mergeTexts';
+import { mergeTexts } from '../../../utils/text';
 import {
   FILTERS,
   FILTER_VALUE_MAPPER,
   type TableFilterOption,
 } from './filter-definitions';
-import './TableFilter.less';
 
 export interface TableFilterTexts {
   title: string;

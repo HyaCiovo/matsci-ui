@@ -2,7 +2,6 @@ import clsx from 'clsx';
 import { type CSSProperties, type PropsWithChildren } from 'react';
 import { FaRegTimesCircle } from 'react-icons/fa';
 import { Tooltip } from '../../data-display/Tooltip';
-import './FilterField.css';
 
 export interface FilterFieldProps extends PropsWithChildren {
   id?: string;

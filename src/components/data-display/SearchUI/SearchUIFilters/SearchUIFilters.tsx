@@ -9,8 +9,8 @@ import { PeriodicTableMode } from '../../../data-entry/MaterialsInput/MaterialsI
 import { Select } from '../../../data-entry/Select';
 import { TextInput } from '../../../data-entry/TextInput';
 import { ThreeStateBooleanSelect } from '../../../data-entry/ThreeStateBooleanSelect';
-import { formatTemplate } from '../../../../text/formatTemplate';
-import { mergeTexts } from '../../../../text/mergeTexts';
+import { formatTemplate } from '../../../../utils/text';
+import { mergeTexts } from '../../../../utils/text';
 import {
   Accordion,
   AccordionContent,

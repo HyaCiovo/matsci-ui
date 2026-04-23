@@ -4,7 +4,6 @@ import { SortDropdown } from '../../data-display/SortDropdown';
 import { Input } from '../../data-entry/Input';
 import { BibjsonCard } from '../BibjsonCard';
 import { CrossrefCard } from '../CrossrefCard';
-import './BibFilter.css';
 
 export interface BibFilterProps {
   id?: string;

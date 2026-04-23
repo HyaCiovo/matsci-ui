@@ -2,7 +2,6 @@ import * as RadixAccordion from '@radix-ui/react-accordion';
 import clsx from 'clsx';
 import { forwardRef } from 'react';
 import type * as React from 'react';
-import './Accordion.css';
 
 export type AccordionProps = React.ComponentPropsWithoutRef<typeof RadixAccordion.Root>;
 export type AccordionItemProps = React.ComponentPropsWithoutRef<typeof RadixAccordion.Item>;

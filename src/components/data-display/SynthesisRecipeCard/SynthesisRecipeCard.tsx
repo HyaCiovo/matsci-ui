@@ -5,9 +5,7 @@ import { Formula } from '../Formula';
 import { Link } from '../../navigation/Link';
 import { validateFormula } from '../../data-entry/MaterialsInput/utils';
 import { ColumnFormat, type Column } from '../SearchUI/types';
-import { formatTemplate } from '../../../text/formatTemplate';
-import { mergeTexts } from '../../../text/mergeTexts';
-import './SynthesisRecipeCard.css';
+import { formatTemplate, mergeTexts } from '../../../utils/text';
 
 export interface SynthesisRecipeCardProps {
   id?: string;

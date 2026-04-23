@@ -1,6 +1,5 @@
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
-import './ButtonBar.css';
 
 export interface ButtonBarProps {
   id?: string;

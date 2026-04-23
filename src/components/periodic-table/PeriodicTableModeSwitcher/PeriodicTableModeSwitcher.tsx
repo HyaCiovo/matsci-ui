@@ -4,8 +4,7 @@ import { Markdown } from '../../data-display/Markdown';
 import { Tooltip } from '../../data-display/Tooltip';
 import { PeriodicTableFormulaButtons } from '../PeriodicTableFormulaButtons';
 import { PeriodicTableSelectionMode } from '../../data-entry/MaterialsInput/utils';
-import { mergeTexts } from '../../../text/mergeTexts';
-import './PeriodicTableModeSwitcher.css';
+import { mergeTexts } from '../../../utils/text';
 
 interface Props {
   mode: PeriodicTableSelectionMode;

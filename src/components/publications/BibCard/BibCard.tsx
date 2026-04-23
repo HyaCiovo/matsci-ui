@@ -4,7 +4,6 @@ import { getAuthorString, getJournalAndYear, type CrossrefAuthor } from '../../.
 import { PublicationButton } from '../PublicationButton';
 import { BibtexButton } from '../BibtexButton';
 import { OpenAccessButton } from '../OpenAccessButton';
-import './BibCard.css';
 
 export interface BibCardProps {
   id?: string;

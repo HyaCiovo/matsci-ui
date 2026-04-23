@@ -1,6 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import clsx from 'clsx';
-import './Modal.css';
 import { ModalCloseButton } from './ModalCloseButton/ModalCloseButton';
 import { useModalContext } from './ModalContextProvider';
 

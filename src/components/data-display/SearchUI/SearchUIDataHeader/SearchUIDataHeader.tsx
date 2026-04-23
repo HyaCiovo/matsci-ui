@@ -3,8 +3,8 @@ import { FaCaretDown, FaLink } from 'react-icons/fa';
 import { ActiveFilterButtons } from '../../ActiveFilterButtons';
 import { Checkbox } from '../../../data-entry/Checkbox';
 import { useSearchUIContext } from '../SearchUIContextProvider';
-import { formatTemplate } from '../../../../text/formatTemplate';
-import { mergeTexts } from '../../../../text/mergeTexts';
+import { formatTemplate } from '../../../../utils/text';
+import { mergeTexts } from '../../../../utils/text';
 
 export interface SearchUIDataHeaderProps {
   exportDataButton?: React.ReactNode;

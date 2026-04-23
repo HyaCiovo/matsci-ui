@@ -22,9 +22,7 @@ import {
   getRowValueFromSelectorString,
   matchesConditionalStyle,
 } from '../../../utils/table';
-import { formatTemplate } from '../../../text/formatTemplate';
-import { mergeTexts } from '../../../text/mergeTexts';
-import './DataTable.css';
+import { formatTemplate, mergeTexts } from '../../../utils/text';
 
 export interface DataTableProps {
   id?: string;

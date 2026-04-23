@@ -4,7 +4,6 @@ import { FaCaretDown, FaCaretUp } from 'react-icons/fa';
 import { Tooltip } from '../Tooltip';
 import type { Column } from '../SearchUI/types';
 import { formatColumnValue, getColumnsFromKeys } from '../../../utils/table';
-import './DataBlock.css';
 
 export interface DataBlockProps {
   id?: string;

@@ -38,7 +38,7 @@
 
 /**
  * Ensure that embedded html or MathML inside a bib title
- * have space around them. This is necessary because crossref returns 
+ * have space around them. This is necessary because crossref returns
  * some titles with MathML elements and no spacing.
  */
 .ms-bib-card-title > * > * {
@@ -47,4 +47,53 @@
 
 .ms-bib-card-title > * > *:last-child {
   margin-right: 0.25rem;
+}
+
+.ms-bib-filter-controls {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.ms-bib-filter-input {
+  margin-right: 1rem;
+}
+
+.ms-bib-filter-sort-menu {
+  margin-right: 1rem;
+}
+
+.ms-bib-filter-sort-icon-bg {
+  position: absolute;
+  opacity: 0.3;
+}
+
+.ms-open-access-button {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+  vertical-align: bottom;
+}
+
+.ms-open-access-button img {
+  height: 1.25rem;
+  width: auto;
+}
+
+.ms-open-access-button > span > span {
+  vertical-align: top;
+}
+
+.ms-publication-button {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+  vertical-align: top;
+}
+
+.ms-publication-button svg {
+  flex-shrink: 0;
 }

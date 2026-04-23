@@ -27,7 +27,6 @@ import { SceneJsonObject } from './simple-scene';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { AnimationHelper } from './animation-helper';
 import { PhononAnimationHelper } from './phonon-animation-helper';
-import '../CrystalToolkitScene/CrystalToolkitScene.less';
 import { CameraState } from '../CameraContextProvider/camera-reducer';
 
 const POINTER_CLASS = 'show-pointer';

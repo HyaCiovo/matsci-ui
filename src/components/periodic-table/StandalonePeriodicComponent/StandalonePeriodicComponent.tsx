@@ -3,9 +3,6 @@ import type { CSSProperties } from 'react';
 import type { MatElement } from '../periodic-table-data/table-v2';
 import { TABLE_V2 } from '../periodic-table-data/table-v2';
 import { categoryToClassName } from '../SelectableTable/selection-state';
-import '../SelectableTable/periodic-element.module.less';
-import '../SelectableTable/periodic-element.detailed.less';
-import './StandalonePeriodicComponent.css';
 
 export enum DISPLAY_MODE {
   SIMPLE = 'ms-simple',

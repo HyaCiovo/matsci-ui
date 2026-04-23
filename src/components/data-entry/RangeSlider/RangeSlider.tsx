@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDebounce } from '../../../utils/hooks';
 import { Input } from '../Input';
-import './RangeSlider.css';
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 

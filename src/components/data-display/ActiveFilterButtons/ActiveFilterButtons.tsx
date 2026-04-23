@@ -3,7 +3,6 @@ import { Formula } from '../Formula';
 import { validateFormula } from '../../data-entry/MaterialsInput/utils';
 import { formatPointGroup } from '../SearchUI/utils';
 import type { ActiveFilter } from '../SearchUI/types';
-import './ActiveFilterButtons.css';
 
 const numberFormatter = new Intl.NumberFormat('en-US');
 

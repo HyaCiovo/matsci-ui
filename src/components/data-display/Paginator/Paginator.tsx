@@ -1,9 +1,7 @@
 import clsx from 'clsx';
 import { Dropdown } from '../../navigation/Dropdown';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-import { formatTemplate } from '../../../text/formatTemplate';
-import { mergeTexts } from '../../../text/mergeTexts';
-import './Paginator.css';
+import { formatTemplate, mergeTexts } from '../../../utils/text';
 
 export interface PaginatorProps {
   rowsPerPage: number;

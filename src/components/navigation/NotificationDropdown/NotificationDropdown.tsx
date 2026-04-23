@@ -4,7 +4,6 @@ import { FaCircle } from 'react-icons/fa';
 import { Markdown } from '../../data-display/Markdown';
 import { Modal, ModalContextProvider, ModalTrigger } from '../../data-display/Modal';
 import { Bell } from './Bell';
-import './NotificationDropdown.css';
 
 export interface NotificationItem {
   className?: string;

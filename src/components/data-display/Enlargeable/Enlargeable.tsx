@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import { type Dispatch, type ReactNode, type SetStateAction, useState } from 'react';
 import { FaCompress, FaExpand } from 'react-icons/fa';
-import './Enlargeable.css';
 
 export interface EnlargeableProps {
   id?: string;

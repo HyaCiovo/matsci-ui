@@ -1,0 +1,23 @@
+:root,
+.ms-theme {
+  --ms-font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+
+  --ms-color-bg: #f7f4ec;
+  --ms-color-surface: #fffdf8;
+  --ms-color-text: #1f2b24;
+  --ms-color-text-muted: #536257;
+
+  --ms-color-primary: #0f7b6c;
+  --ms-color-info: #2f7ebd;
+  --ms-color-success: #2f9b59;
+  --ms-color-danger: #c24b3a;
+  --ms-color-warning: #c58a18;
+
+  --ms-border-radius: 8px;
+  --ms-border-radius-lg: 14px;
+  --ms-border-color: #d7d0c2;
+  --ms-border-color-hover: #bcb3a3;
+
+  --ms-shadow-surface: 0 18px 40px -24px rgba(52, 64, 54, 0.28), 0 0 0 1px rgba(84, 94, 83, 0.1);
+  --ms-hover-bg: #f1ece1;
+}

@@ -1,6 +1,6 @@
 import { FaAsterisk } from 'react-icons/fa';
 import { Tooltip } from '../../data-display/Tooltip';
-import { mergeTexts } from '../../../text/mergeTexts';
+import { mergeTexts } from '../../../utils/text';
 
 interface Props {
   onClick: (value: string) => void;

@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { type MatElement } from '../periodic-table-data/table-v2';
 import { getSelectableTableStateChange } from './selection-state';
-import { mergeTexts } from '../../../text/mergeTexts';
+import { mergeTexts } from '../../../utils/text';
 import {
   useOptionalPeriodicSelectionContext,
   PeriodicSelectionProvider,
@@ -23,7 +23,6 @@ import {
   getDetailedElementDetail,
   getSelectableTableElementViewModels,
 } from './view-model';
-import './SelectableTable.less';
 
 function SelectableTableDetailObserver({
   onDetailedElementChange,

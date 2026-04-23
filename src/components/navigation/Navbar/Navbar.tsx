@@ -4,7 +4,6 @@ import { FaAngleDown, FaBars, FaTimes } from 'react-icons/fa';
 import { Link } from '../Link';
 import { NavbarDropdown } from '../NavbarDropdown';
 import { isUrl } from '../../../utils/navigation';
-import './Navbar.css';
 import type { NavbarItem } from './types';
 
 export interface NavbarProps {

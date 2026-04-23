@@ -1,6 +1,5 @@
 import clsx from 'clsx';
 import { type CSSProperties } from 'react';
-import './Switch.css';
 
 export interface SwitchProps {
   id?: string;

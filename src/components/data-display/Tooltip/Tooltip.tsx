@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { type CSSProperties, type ReactElement, type ReactNode, useEffect, useState } from 'react';
-import './Tooltip.css';
 
 export type TooltipPlace = 'top' | 'right' | 'bottom' | 'left';
 export type TooltipEffect = 'solid' | 'float';

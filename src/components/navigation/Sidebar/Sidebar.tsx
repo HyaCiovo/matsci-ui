@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { AiOutlineFund, AiOutlineSetting } from 'react-icons/ai';
-import './Sidebar.css';
 
 export interface SidebarProps {
   width?: number;

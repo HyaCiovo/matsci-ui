@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import { Children, cloneElement, isValidElement, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent, type ReactNode, useEffect, useRef, useState } from 'react';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
-import './Dropdown.css';
 
 export interface DropdownProps {
   id?: string;

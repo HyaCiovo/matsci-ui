@@ -11,7 +11,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { mergeTexts } from '../../../text/mergeTexts';
+import { mergeTexts } from '../../../utils/text';
 import {
   PeriodicTableModeSwitcher,
   type PeriodicTableModeSwitcherTexts,
@@ -37,7 +37,6 @@ import {
   validateInputLength,
   VALID_ELEMENTS,
 } from './utils';
-import './MaterialsInput.css';
 
 export enum PeriodicTableMode {
   TOGGLE = 'toggle',
