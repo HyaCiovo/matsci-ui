@@ -26,7 +26,7 @@
     "**/*.less"
   ],
   "scripts": {
-    "build": "node scripts/clean-dist.mjs && rollup -c && node scripts/generate-components-json.mjs",
+    "build": "node scripts/clean-dist.mjs && rollup -c && node scripts/prepare-vis-network-assets.mjs && node scripts/generate-components-json.mjs",
     "build-storybook": "HOME=$PWD/.storybook-home storybook build --disable-telemetry && node scripts/prepare-storybook-vercel.mjs",
     "dev": "vite",
     "format": "oxlint --fix src",
