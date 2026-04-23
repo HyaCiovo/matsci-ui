@@ -52,4 +52,30 @@ describe('Scrollspy', () => {
       expect(screen.getByRole('link', { name: 'Menu Item 1' })).toHaveClass('ms-is-active');
     });
   });
+
+  it('marks the last crossed section as active near the end of the page', async () => {
+    const originalGetElementById = document.getElementById.bind(document);
+    vi.spyOn(document, 'getElementById').mockImplementation((id) => {
+      const rects: Record<string, { top: number; bottom: number }> = {
+        one: { top: -900, bottom: -300 },
+        two: { top: -250, bottom: 120 },
+        'two-one': { top: 10, bottom: 420 },
+        'two-two': { top: 480, bottom: 900 },
+      };
+
+      if (rects[id]) {
+        return {
+          getBoundingClientRect: () => rects[id],
+        } as HTMLElement;
+      }
+
+      return originalGetElementById(id);
+    });
+
+    render(<Scrollspy menuGroups={menuGroups} activeClassName="ms-is-active" />);
+
+    await waitFor(() => {
+      expect(screen.getByRole('link', { name: 'Sub Menu Item 2.1' })).toHaveClass('ms-is-active');
+    });
+  });
 });

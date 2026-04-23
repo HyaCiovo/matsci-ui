@@ -1,13 +1,15 @@
 .ms-open-access-button {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  padding-left: 0.75em;
+  padding-right: 0.75em;
   vertical-align: bottom;
-  padding-left: 0;
-  padding-right: 0;
-  display: inline-block;
 }
 
 .ms-open-access-button img {
-  max-height: 16px;
-  vertical-align: text-bottom;
+  height: 1.25rem;
+  width: auto;
 }
 
 .ms-open-access-button > span > span {

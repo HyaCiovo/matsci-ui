@@ -14,7 +14,7 @@ type Story = StoryObj<typeof meta>;
 export const FromDOI: Story = {
   args: {
     bibEntries: mpPapers.slice(1, 10),
-    resultClassName: 'box',
+    resultClassName: 'ms-box',
     preventOpenAccessFetch: true
   }
 };

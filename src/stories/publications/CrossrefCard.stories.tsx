@@ -12,7 +12,7 @@ type Story = StoryObj<typeof meta>;
 
 export const PreFetched: Story = {
   args: {
-    className: 'box',
+    className: 'ms-box',
     crossrefEntry: {
       DOI: '10.1093/mnras/stu869',
       title: ['Do cement nanoparticles exist in space?'],
@@ -50,7 +50,7 @@ export const PreFetched: Story = {
 
 export const FromDOI: Story = {
   args: {
-    className: 'box',
+    className: 'ms-box',
     identifier: '10.1093/mnras/stu869'
   }
 };

@@ -113,6 +113,15 @@
   min-height: 4.5rem;
 }
 
+.ms-search-ui .ms-search-ui-data-header [data-testid='data-table-title'] {
+  line-height: 1.25;
+}
+
+.ms-search-ui .ms-search-ui-data-header [data-testid='data-table-title'] .ms-title {
+  display: inline-flex;
+  align-items: center;
+}
+
 .ms-search-ui .ms-progress-container {
   position: relative;
   flex-grow: 1;
@@ -130,6 +139,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
+  gap: 0.25rem;
   position: relative;
 }
 

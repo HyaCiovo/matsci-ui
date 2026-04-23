@@ -12,7 +12,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Basic: Story = {
   args: {
-    className: 'box',
+    className: 'ms-box',
     bibjsonEntry: {
       journal: 'Physical Review Letters',
       year: '2010',

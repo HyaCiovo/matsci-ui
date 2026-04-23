@@ -1,3 +1,12 @@
+.ms-bib-card {
+  color: var(--ms-color-text-muted, #4a4a4a);
+}
+
+.ms-bib-card p {
+  margin: 0;
+  padding: 0;
+}
+
 .ms-bib-card > *:not(:last-child) {
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
@@ -6,6 +15,17 @@
 .ms-bib-card .ms-bib-card-title {
   font-weight: 600;
   font-size: 1rem;
+}
+
+.ms-bib-card .ms-bib-card-title a {
+  color: var(--ms-color-primary, #3273dc);
+  text-decoration: none;
+}
+
+.ms-bib-card .ms-bib-card-title a:hover,
+.ms-bib-card .ms-bib-card-title a:focus-visible {
+  color: var(--ms-color-text, #0a0a0a);
+  text-decoration: none;
 }
 
 .ms-bib-card-journal {

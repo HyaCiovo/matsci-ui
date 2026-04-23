@@ -23,6 +23,11 @@ export interface MenuItem {
 
 type SpyItemMap = Record<string, boolean>;
 
+type SpyRect = {
+  top: number;
+  bottom: number;
+};
+
 const flattenMenuItems = (menuGroups: MenuGroup[]) =>
   menuGroups.flatMap((group) =>
     group.items.flatMap((item) => [item, ...(item.items ?? [])])
@@ -48,24 +53,42 @@ export const Scrollspy = ({
   }, [menuGroups]);
 
   useEffect(() => {
-    const isInView = (targetId: string) => {
+    const getRect = (targetId: string): SpyRect | undefined => {
       const element = document.getElementById(targetId);
       if (!element) {
-        return false;
+        return undefined;
       }
-      const rect = element.getBoundingClientRect();
-      return rect.bottom >= 0 - offset;
+      return element.getBoundingClientRect();
     };
 
     const spy = () => {
-      let firstItemFound = false;
-      const nextSpyItemsViewMap: SpyItemMap = {};
+      const threshold = 0 - offset;
+      let activeTargetId = flattenedItems[0]?.targetId;
 
       flattenedItems.forEach((item) => {
-        nextSpyItemsViewMap[item.targetId] = firstItemFound ? false : isInView(item.targetId);
-        if (nextSpyItemsViewMap[item.targetId]) {
-          firstItemFound = true;
+        const rect = getRect(item.targetId);
+        if (rect && rect.top <= threshold) {
+          activeTargetId = item.targetId;
         }
+      });
+
+      if (!activeTargetId) {
+        return;
+      }
+
+      const activeRect = getRect(activeTargetId);
+      if (!activeRect || activeRect.bottom < threshold) {
+        const firstVisibleItem = flattenedItems.find((item) => {
+          const rect = getRect(item.targetId);
+          return rect ? rect.bottom >= threshold : false;
+        }
+        );
+        activeTargetId = firstVisibleItem?.targetId ?? activeTargetId;
+      }
+
+      const nextSpyItemsViewMap: SpyItemMap = {};
+      flattenedItems.forEach((item) => {
+        nextSpyItemsViewMap[item.targetId] = item.targetId === activeTargetId;
       });
 
       setSpyItemsViewMap(nextSpyItemsViewMap);
@@ -73,8 +96,10 @@ export const Scrollspy = ({
 
     spy();
     window.addEventListener('scroll', spy);
+    window.addEventListener('resize', spy);
     return () => {
       window.removeEventListener('scroll', spy);
+      window.removeEventListener('resize', spy);
     };
   }, [flattenedItems, offset]);
 

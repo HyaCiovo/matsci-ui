@@ -26,7 +26,7 @@ export const ArrayChips = ({
   showDownloadIcon = false,
 }: ArrayChipsProps) => {
   return (
-    <span data-testid="array-chips" id={id} className={`tags ${className ?? ''}`.trim()}>
+    <span data-testid="array-chips" id={id} className={`ms-tags ${className ?? ''}`.trim()}>
       {chips.map((item, index) => {
         const chipContent =
           typeof item === 'string' && validateFormula(item) ? <Formula>{item}</Formula> : String(item);

@@ -12,7 +12,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Basic: Story = {
   args: {
-    className: 'box',
+    className: 'ms-box',
     title:
       'Orientation-Dependent Properties of Epitaxially Strained Perovskite Oxide Thin Films: Insights from First-Principles Calculations',
     author: ['Angsten, Thomas', 'Martin, Lane W.', 'Asta, Mark'],

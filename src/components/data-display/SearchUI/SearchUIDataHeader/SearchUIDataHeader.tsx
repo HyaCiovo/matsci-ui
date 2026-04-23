@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { FaCaretDown } from 'react-icons/fa';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { FaCaretDown, FaLink } from 'react-icons/fa';
 import { ActiveFilterButtons } from '../../ActiveFilterButtons';
 import { Checkbox } from '../../../data-entry/Checkbox';
 import { useSearchUIContext } from '../SearchUIContextProvider';
@@ -48,7 +48,9 @@ export const SearchUIDataHeader = ({ exportDataButton, texts: textsProp }: Searc
   } = useSearchUIContext();
   const ref = useRef<HTMLDivElement>(null);
   const columnsMenuRef = useRef<HTMLDivElement>(null);
+  const resultsId = useId().replace(/:/g, '');
   const [columnsMenuOpen, setColumnsMenuOpen] = useState(false);
+  const [titleHover, setTitleHover] = useState(false);
   const currentLimit = Number(query[limitKey] ?? defaultLimit);
   const currentSkip = Number(query[skipKey] ?? defaultSkip);
   const lowerBound = totalResults === 0 ? 0 : currentSkip + 1;
@@ -58,14 +60,68 @@ export const SearchUIDataHeader = ({ exportDataButton, texts: textsProp }: Searc
 
   const title = useMemo(() => {
     if (loading) {
-      return formatTemplate(texts.loadingTitleTemplate, { label: pluralize(resultLabel, 2) });
+      return (
+        <p data-testid="data-table-title" className="ms-title ms-is-5 ms-has-text-weight-normal">
+          {formatTemplate(texts.loadingTitleTemplate, { label: pluralize(resultLabel, 2) })}
+        </p>
+      );
     }
 
-    return formatTemplate(texts.allTitleTemplate, {
-      total: totalResults.toLocaleString(),
-      label: pluralize(resultLabel, totalResults),
-    });
-  }, [loading, resultLabel, texts.allTitleTemplate, texts.loadingTitleTemplate, totalResults]);
+    if (activeFilters.length === 0 && totalResults > 0) {
+      return (
+        <div data-testid="data-table-title">
+          <a
+            href={`#${resultsId}`}
+            className="ms-title ms-is-5"
+            onMouseOver={() => setTitleHover(true)}
+            onMouseLeave={() => setTitleHover(false)}
+            onClick={() => setTitleHover(false)}
+          >
+            <span className="ms-has-text-weight-normal">All </span>
+            <span className="ms-has-text-weight-bold">
+              {totalResults.toLocaleString()} {pluralize(resultLabel, totalResults)}
+            </span>
+            {titleHover ? <FaLink className="ms-is-size-7 ms-ml-1" /> : null}
+          </a>
+        </div>
+      );
+    }
+
+    return (
+      <div data-testid="data-table-title">
+        <a
+          href={`#${resultsId}`}
+          className="ms-title ms-is-5"
+          onMouseOver={() => setTitleHover(true)}
+          onMouseLeave={() => setTitleHover(false)}
+          onClick={() => setTitleHover(false)}
+        >
+          <span className="ms-has-text-weight-bold">{totalResults.toLocaleString()}</span>
+          {totalResults === 1 ? (
+            <span>
+              <span className="ms-has-text-weight-bold"> {resultLabel}</span>
+              <span className="ms-has-text-weight-normal"> matches</span>
+            </span>
+          ) : (
+            <span>
+              <span className="ms-has-text-weight-bold"> {pluralize(resultLabel, totalResults)}</span>
+              <span className="ms-has-text-weight-normal"> match</span>
+            </span>
+          )}
+          <span className="ms-has-text-weight-normal"> your search</span>
+          {titleHover ? <FaLink className="ms-is-size-7 ms-ml-1" /> : null}
+        </a>
+      </div>
+    );
+  }, [
+    activeFilters.length,
+    loading,
+    resultLabel,
+    resultsId,
+    texts.loadingTitleTemplate,
+    titleHover,
+    totalResults,
+  ]);
 
   useEffect(() => {
     setResultsRef(ref);
@@ -95,12 +151,10 @@ export const SearchUIDataHeader = ({ exportDataButton, texts: textsProp }: Searc
   };
 
   return (
-    <div className="ms-search-ui-data-header ms-box" ref={ref}>
+    <div id={resultsId} className="ms-search-ui-data-header ms-box" ref={ref}>
       <div className="ms-search-ui-data-header-content">
         <div>
-          <p data-testid="data-table-title" className="ms-title ms-is-5">
-            {title}
-          </p>
+          {title}
           <p className="ms-subtitle ms-is-7">
             {formatTemplate(texts.showingTemplate, {
               lower: lowerBound.toLocaleString(),
