@@ -2,8 +2,8 @@
 @bg: black;
 
 body {
-  font-family: var(--mpc-font-family, Helvetica Neue) !important;
-  background: var(--mpc-color-bg, #f3f3f3) !important;
+  font-family: var(--ms-font-family, Helvetica Neue) !important;
+  background: var(--ms-color-bg, #f3f3f3) !important;
   min-height: 100vh;
 }
 
@@ -20,17 +20,17 @@ body {
 
 .tooltip {
   position: relative;
-  border-bottom: 1px dotted var(--mpc-color-text, black);
+  border-bottom: 1px dotted var(--ms-color-text, black);
   margin-bottom: 0.5rem;
   width: max-content;
 }
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 360px;
-  background-color: var(--mpc-color-text, black);
-  color: var(--mpc-color-surface, #fff);
+  background-color: var(--ms-color-text, black);
+  color: var(--ms-color-surface, #fff);
   text-align: center;
-  border-radius: var(--mpc-border-radius-lg, 6px);
+  border-radius: var(--ms-border-radius-lg, 6px);
   padding: 10px;
   position: absolute;
   z-index: 1;
@@ -46,15 +46,15 @@ body {
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
-  border-color: transparent transparent var(--mpc-color-text, black) transparent;
+  border-color: transparent transparent var(--ms-color-text, black) transparent;
 }
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
 
-.tooltip-label {
+.ms-tooltip-label {
   display: inline-block;
-  border-bottom: 1px dotted var(--mpc-color-text, black);
+  border-bottom: 1px dotted var(--ms-color-text, black);
 }
 
 h1:not(.sb-show-main h1) {
@@ -91,64 +91,64 @@ svg.lucide {
   flex-shrink: 0;
 }
 
-.icon > svg.lucide {
+.ms-icon > svg.lucide {
   display: block;
 }
 
-.icon.is-small > svg.lucide {
+.ms-icon.ms-is-small > svg.lucide {
   width: 0.875em;
   height: 0.875em;
 }
 
-.mpc-network-circle-icon {
+.ms-network-circle-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 1.25em;
   height: 1.25em;
   border-radius: 9999px;
-  background: var(--mpc-color-surface, #fff);
+  background: var(--ms-color-surface, #fff);
   border: 2px solid currentColor;
 }
 
-.mpc-network-circle-icon__glyph {
+.ms-network-circle-icon__glyph {
   width: 0.75em;
   height: 0.75em;
   stroke-width: 2.25;
 }
 
-.mpc-network-circle-icon--success {
-  color: var(--mpc-color-success, #48c774);
+.ms-network-circle-icon--success {
+  color: var(--ms-color-success, #48c774);
 }
 
-.mpc-network-circle-icon--danger {
-  color: var(--mpc-color-danger, #f14668);
+.ms-network-circle-icon--danger {
+  color: var(--ms-color-danger, #f14668);
 }
 
-.mpc-network-circle-icon--info {
-  color: var(--mpc-color-info, #3e8ed0);
+.ms-network-circle-icon--info {
+  color: var(--ms-color-info, #3e8ed0);
 }
 
-.mpc-network-circle-icon--warning {
-  color: var(--mpc-color-warning, #ffb000);
+.ms-network-circle-icon--warning {
+  color: var(--ms-color-warning, #ffb000);
 }
 
-.mpc-network-circle-icon--neutral {
+.ms-network-circle-icon--neutral {
   color: #7a7a7a;
 }
 
-a.tag {
-  color: var(--mpc-color-primary, #3273dc) !important;
+a.ms-tag {
+  color: var(--ms-color-primary, #3273dc) !important;
 }
 
 /**
 * Prevent double padding for tags inside tags
 */
-.tag .tags .tag:first-child {
+.ms-tag .ms-tags .ms-tag:first-child {
   padding-left: 0;
 }
 
-.tag .tags .tag:last-child {
+.ms-tag .ms-tags .ms-tag:last-child {
   padding-right: 0;
 }
 
@@ -158,7 +158,7 @@ Destined for bulma-custom.scss in mp-web
 
 *******************************************************/
 
-.mp-dropdown .icon {
+.mp-dropdown .ms-icon {
   display: none;
 }
 
@@ -171,17 +171,17 @@ Destined for bulma-custom.scss in mp-web
   overflow: hidden;
 }
 
-.is-hidden-by-height {
+.ms-is-hidden-by-height {
   max-height: 0 !important;
   margin: 0;
 }
 
-.is-hidden-by-opacity {
+.ms-is-hidden-by-opacity {
   opacity: 0;
   pointer-events: none;
 }
 
-.has-opacity-70 {
+.ms-has-opacity-70 {
   opacity: 0.7;
 }
 
@@ -190,8 +190,8 @@ Destined for bulma-custom.scss in mp-web
 }
 
 .badge {
-  background: var(--mpc-color-primary, hsl(217, 71%, 53%));
-  color: var(--mpc-color-surface, #fff);
+  background: var(--ms-color-primary, hsl(217, 71%, 53%));
+  color: var(--ms-color-surface, #fff);
   text-align: center;
   border-radius: 1em;
   margin-left: 0.5em;
@@ -200,70 +200,70 @@ Destined for bulma-custom.scss in mp-web
   padding: 0em 1em;
 }
 
-.has-oversized-icon {
+.ms-has-oversized-icon {
   height: 100% !important;
   padding: 0 1rem !important;
 }
 
-.has-oversized-icon > [class^='icon-'],
-.has-oversized-icon > [class*=' icon-'],
-.has-oversized-icon > i {
+.ms-has-oversized-icon > [class^='icon-'],
+.ms-has-oversized-icon > [class*=' icon-'],
+.ms-has-oversized-icon > i {
   position: absolute;
   top: 50%;
   transform: translate(0, -50%);
 }
 
-i.is-active,
-span.is-active,
-p.is-active,
-svg.is-active {
-  color: var(--mpc-color-primary, #3273dc);
+i.ms-is-active,
+span.ms-is-active,
+p.ms-is-active,
+svg.ms-is-active {
+  color: var(--ms-color-primary, #3273dc);
 }
 
-.checkbox input + * {
+.ms-checkbox input + * {
   vertical-align: text-bottom;
   margin-left: 0.25em;
 }
 
-.panel {
-  background-color: var(--mpc-color-surface, #fff);
+.ms-panel {
+  background-color: var(--ms-color-surface, #fff);
 }
 
-.pagination-next,
-.pagination-previous,
-.pagination-link {
-  background-color: var(--mpc-color-surface, #fff);
+.ms-pagination-next,
+.ms-pagination-previous,
+.ms-pagination-link {
+  background-color: var(--ms-color-surface, #fff);
 }
 
-.dropdown-item {
+.ms-dropdown-item {
   cursor: pointer;
 }
 
 .react-select-container .react-select__control {
-  border-color: var(--mpc-border-color, #dbdbdb);
+  border-color: var(--ms-border-color, #dbdbdb);
 }
 
 .react-select-container .react-select__control:hover {
-  border-color: var(--mpc-border-color-hover, #b5b5b5);
+  border-color: var(--ms-border-color-hover, #b5b5b5);
 }
 
-.dropdown-content,
+.ms-dropdown-content,
 .react-select-container .react-select__menu {
-  background-color: var(--mpc-color-surface, white);
-  border-radius: var(--mpc-border-radius, 4px);
-  box-shadow: var(--mpc-shadow-surface, 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02));
+  background-color: var(--ms-color-surface, white);
+  border-radius: var(--ms-border-radius, 4px);
+  box-shadow: var(--ms-shadow-surface, 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02));
   padding-bottom: 0.5rem;
   padding-top: 0.5rem;
 }
 
-.dropdown-content {
+.ms-dropdown-content {
   max-height: 300px;
   overflow-y: auto;
 }
 
-.dropdown-item,
+.ms-dropdown-item,
 .react-select-container .react-select__option {
-  color: var(--mpc-color-text-muted, #4a4a4a);
+  color: var(--ms-color-text-muted, #4a4a4a);
   display: block;
   font-size: 0.875rem;
   line-height: 1.5;
@@ -272,26 +272,26 @@ svg.is-active {
 }
 
 .react-select-container .react-select__option {
-  background-color: var(--mpc-color-surface, #fff);
+  background-color: var(--ms-color-surface, #fff);
 }
 
-.dropdown-item:hover,
+.ms-dropdown-item:hover,
 .react-select-container .react-select__option:not(.react-select__option--is-selected):hover {
-  background-color: var(--mpc-hover-bg, #f5f5f5);
-  color: var(--mpc-color-text, #0a0a0a);
+  background-color: var(--ms-hover-bg, #f5f5f5);
+  color: var(--ms-color-text, #0a0a0a);
 }
 
-.dropdown-item.is-active,
+.ms-dropdown-item.ms-is-active,
 .react-select-container .react-select__option--is-selected {
-  background-color: var(--mpc-color-primary, #3273dc);
-  color: var(--mpc-color-surface, #fff);
+  background-color: var(--ms-color-primary, #3273dc);
+  color: var(--ms-color-surface, #fff);
 }
 
 .fas.fa-star {
   width: 15px;
   height: 15px;
   display: inline-block;
-  background-color: var(--mpc-color-primary, #3273dc);
+  background-color: var(--ms-color-primary, #3273dc);
 }
 
 pre {
@@ -315,17 +315,17 @@ Destined for app.scss in mp-web
   .search-ui .table-transition-wrapper-small {
     display: none;
   }
-  .search-ui .materials-input .field > .control:first-child:not(.is-expanded) {
+  .search-ui .materials-input .ms-field > .ms-control:first-child:not(.ms-is-expanded) {
     display: none;
   }
-  .search-ui .panel,
-  .search-ui .panel-block-title {
+  .search-ui .ms-panel,
+  .search-ui .ms-panel-block-title {
     min-width: 0 !important;
   }
-  .search-ui .panel-block-children {
+  .search-ui .ms-panel-block-children {
     padding-left: 0 !important;
   }
-  .search-ui .pagination.is-small {
+  .search-ui .ms-pagination.ms-is-small {
     font-size: 1rem;
   }
   .search-ui .react-data-table-container {
@@ -341,23 +341,23 @@ Destined for home.scss in mp-web
 
 .mp-home .materials-input {
   color: #000;
-  .autocomplete-right {
+  .ms-autocomplete-right {
     top: 45px;
     left: 0;
     margin-left: 0;
-    .autocomplete-label {
+    .ms-autocomplete-label {
       color: #4a4a4a;
     }
   }
 }
 
-.mp-home .mat-element {
-  .mat-symbol {
+.mp-home .ms-mat-element {
+  .ms-mat-symbol {
     font-weight: 300;
   }
 }
 
-.has-badge[data-count]:after {
+.ms-has-badge[data-count]:after {
   position: absolute;
   right: 20%;
   top: 20%;
@@ -373,7 +373,7 @@ Destined for home.scss in mp-web
   font-weight: bold;
 }
 
-.has-badge-number[data-count]:after {
+.ms-has-badge-number[data-count]:after {
   position: absolute;
   right: 20%;
   top: 20%;
@@ -390,10 +390,10 @@ Destined for home.scss in mp-web
 }
 
 @media screen and (max-width: (769px - 1px)) {
-  .mp-home .materials-input .field > .control:first-child:not(.is-expanded) {
+  .mp-home .materials-input .ms-field > .ms-control:first-child:not(.ms-is-expanded) {
     display: none;
   }
-  .mp-home .materials-input .field > .control.is-expanded .input {
+  .mp-home .materials-input .ms-field > .ms-control.ms-is-expanded .ms-input {
     border-radius: 4px 0 0 4px;
   }
 }

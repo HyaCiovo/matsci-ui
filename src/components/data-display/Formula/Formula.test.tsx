@@ -31,6 +31,6 @@ describe('Formula', () => {
 
     const formula = screen.getByTestId('formula');
     expect(formula).toHaveAttribute('id', 'formula-id');
-    expect(formula).toHaveClass('mpc-formula', 'extra-class');
+    expect(formula).toHaveClass('ms-formula', 'extra-class');
   });
 });

@@ -54,11 +54,11 @@ export const DownloadDropdown = ({
   const triggerButton = (
     <button
       type="button"
-      className={clsx('button', buttonClassName)}
+      className={clsx('ms-button', buttonClassName)}
       title={tooltip}
     >
       <span>{children ?? texts.buttonLabel}</span>
-      <span className="icon">
+      <span className="ms-icon">
         <FaAngleDown />
       </span>
     </button>
@@ -68,25 +68,25 @@ export const DownloadDropdown = ({
     <DropdownMenu.Root modal={false} open={open} onOpenChange={setOpen}>
       <div
         id={id}
-        data-testid="mpc-download-dropdown"
-        className={clsx('mpc-download-dropdown dropdown', className, { 'is-active': open })}
+        data-testid="ms-download-dropdown"
+        className={clsx('ms-download-dropdown ms-dropdown', className, { 'ms-is-active': open })}
       >
-        <div className="dropdown-trigger">
+        <div className="ms-dropdown-trigger">
           <DropdownMenu.Trigger asChild>{triggerButton}</DropdownMenu.Trigger>
         </div>
       </div>
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          className="mpc-dropdown-menu dropdown-menu"
+          className="ms-dropdown-menu"
           align="end"
           sideOffset={4}
           collisionPadding={8}
         >
-          <div className="mpc-dropdown-content dropdown-content">
-            <DropdownMenu.Item className="dropdown-item" onSelect={() => handleDownload('json')}>
+          <div className="ms-dropdown-content">
+            <DropdownMenu.Item className="ms-dropdown-item" onSelect={() => handleDownload('json')}>
               {texts.json}
             </DropdownMenu.Item>
-            <DropdownMenu.Item className="dropdown-item" onSelect={() => handleDownload('csv')}>
+            <DropdownMenu.Item className="ms-dropdown-item" onSelect={() => handleDownload('csv')}>
               {texts.csv}
             </DropdownMenu.Item>
           </div>

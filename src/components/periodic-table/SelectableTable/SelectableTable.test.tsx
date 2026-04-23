@@ -84,7 +84,7 @@ describe('SelectableTable compatibility', () => {
       </PeriodicContext>
     );
 
-    expect(screen.getByTestId('periodic-element-Li')).toHaveClass('enabled');
+    expect(screen.getByTestId('periodic-element-Li')).toHaveClass('ms-enabled');
   });
 
   it('includes initial enabled and disabled state in the mount callback', () => {
@@ -122,8 +122,8 @@ describe('SelectableTable compatibility', () => {
       enabledElements: ['He'],
       disabledElements: [],
     });
-    expect(firstTableHeButton).toHaveClass('enabled');
-    expect(secondTableHeButton).toHaveClass('enabled');
+    expect(firstTableHeButton).toHaveClass('ms-enabled');
+    expect(secondTableHeButton).toHaveClass('ms-enabled');
   });
 
   it('emits table state changes with the legacy-compatible shape', () => {
@@ -194,8 +194,8 @@ describe('SelectableTable compatibility', () => {
 
     fireEvent.click(lithiumButton);
 
-    expect(lithiumButton).toHaveClass('enabled');
-    expect(heliumButton).toHaveClass('disabled');
+    expect(lithiumButton).toHaveClass('ms-enabled');
+    expect(heliumButton).toHaveClass('ms-disabled');
   });
 
   it('replaces the previous selection when maxElementSelectable is 1 in select mode', () => {
@@ -211,15 +211,15 @@ describe('SelectableTable compatibility', () => {
       enabledElements: ['Li'],
       disabledElements: [],
     });
-    expect(heliumButton).toHaveClass('disabled');
+    expect(heliumButton).toHaveClass('ms-disabled');
 
     fireEvent.click(heliumButton);
     expect(handleStateChange).toHaveBeenLastCalledWith({
       enabledElements: ['He'],
       disabledElements: [],
     });
-    expect(lithiumButton).not.toHaveClass('enabled');
-    expect(heliumButton).toHaveClass('enabled');
+    expect(lithiumButton).not.toHaveClass('ms-enabled');
+    expect(heliumButton).toHaveClass('ms-enabled');
   });
 
   it('applies the same max-limit disabling behavior in multi-input-select mode', () => {
@@ -235,8 +235,8 @@ describe('SelectableTable compatibility', () => {
 
     fireEvent.click(lithiumButton);
 
-    expect(lithiumButton).toHaveClass('enabled');
-    expect(heliumButton).toHaveClass('disabled');
+    expect(lithiumButton).toHaveClass('ms-enabled');
+    expect(heliumButton).toHaveClass('ms-disabled');
   });
 
   it('keeps only one enabled element at a time in multi-input-select mode', () => {
@@ -251,12 +251,12 @@ describe('SelectableTable compatibility', () => {
     const heliumButton = screen.getByTestId('periodic-element-He');
 
     fireEvent.click(lithiumButton);
-    expect(lithiumButton).toHaveClass('enabled');
+    expect(lithiumButton).toHaveClass('ms-enabled');
     expect(lithiumButton).toHaveAttribute('data-last-action', 'select');
 
     fireEvent.click(heliumButton);
-    expect(lithiumButton).not.toHaveClass('enabled');
-    expect(heliumButton).toHaveClass('enabled');
+    expect(lithiumButton).not.toHaveClass('ms-enabled');
+    expect(heliumButton).toHaveClass('ms-enabled');
     expect(heliumButton).toHaveAttribute('data-last-action', 'select');
   });
 
@@ -379,7 +379,7 @@ describe('SelectableTable compatibility', () => {
       );
     });
 
-    const detailPanel = document.querySelector('.mpc-selectable-table-detail');
+    const detailPanel = document.querySelector('.ms-selectable-table-detail');
     expect(detailPanel).toBeTruthy();
     expect(detailPanel).toHaveTextContent('Helium');
     expect(detailPanel).toHaveTextContent('He');

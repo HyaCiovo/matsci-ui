@@ -48,12 +48,12 @@ const renderFilterValue = (filter: ActiveFilter) => {
 
 export const ActiveFilterButtons = ({ filters, onClick }: ActiveFilterButtonsProps) => {
   return (
-    <div data-testid="active-filter-buttons" className="mpc-active-filter-buttons">
+    <div data-testid="active-filter-buttons" className="ms-active-filter-buttons">
       {filters.map((filter, index) => (
-        <div key={`${filter.name}-${index}`} className="mpc-active-filter-button">
-          <button type="button" className="button is-small is-rounded" onClick={() => onClick(filter.params)}>
+        <div key={`${filter.name}-${index}`} className="ms-active-filter-button">
+          <button type="button" className="ms-button ms-is-small ms-is-rounded" onClick={() => onClick(filter.params)}>
             <FaTimes />
-            <span className="ml-1">
+            <span className="ms-ml-1">
               {filter.name}: {renderFilterValue(filter)}
             </span>
           </button>

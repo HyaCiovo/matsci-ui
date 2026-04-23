@@ -38,14 +38,14 @@ export const Basic: Story = {
     activeClassName: 'is-active'
   },
   render: () => (
-    <div className="sidebar-story">
+    <div className="ms-sidebar-story">
       <Scrollspy
         menuGroups={MENU_GROUPS}
-        menuClassName="menu"
-        menuItemContainerClassName="menu-list"
-        activeClassName="is-active"
+        menuClassName="ms-menu"
+        menuItemContainerClassName="ms-menu-list"
+        activeClassName="ms-is-active"
       />
-      <div className="content">
+      <div className="ms-content">
         <div id="one">
           <h1>Crystal Structure</h1>
           <p>

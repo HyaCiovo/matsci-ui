@@ -1,18 +1,18 @@
-.mpc-bib-card > *:not(:last-child) {
+.ms-bib-card > *:not(:last-child) {
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
 }
 
-.mpc-bib-card .mpc-bib-card-title {
+.ms-bib-card .ms-bib-card-title {
   font-weight: 600;
   font-size: 1rem;
 }
 
-.mpc-bib-card-journal {
+.ms-bib-card-journal {
   font-style: italic;
 }
 
-.mpc-bib-card-buttons {
+.ms-bib-card-buttons {
   margin-top: 0.75rem;
 }
 
@@ -21,10 +21,10 @@
  * have space around them. This is necessary because crossref returns 
  * some titles with MathML elements and no spacing.
  */
-.mpc-bib-card-title > * > * {
+.ms-bib-card-title > * > * {
   margin-left: 0.25rem;
 }
 
-.mpc-bib-card-title > * > *:last-child {
+.ms-bib-card-title > * > *:last-child {
   margin-right: 0.25rem;
 }

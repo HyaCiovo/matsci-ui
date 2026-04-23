@@ -20,7 +20,7 @@ describe('NotificationDropdown', () => {
   it('shows a bell badge when unread notifications exist', () => {
     render(<NotificationDropdown items={items} notifyLevel="message" hasUnread />);
 
-    expect(document.querySelector('.notification-badge')).toBeTruthy();
+    expect(document.querySelector('.ms-notification-badge')).toBeTruthy();
   });
 
   it('marks a message as read when it is opened', async () => {
@@ -33,7 +33,7 @@ describe('NotificationDropdown', () => {
       expect(screen.getByText('Maintenance')).toBeInTheDocument();
     });
 
-    expect(document.querySelectorAll('.notification-dot')).toHaveLength(1);
+    expect(document.querySelectorAll('.ms-notification-dot')).toHaveLength(1);
   });
 
   it('renders a more link when provided', () => {

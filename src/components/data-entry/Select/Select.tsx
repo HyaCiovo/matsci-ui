@@ -41,8 +41,8 @@ export const Select = ({
   const internalValue = selectedOption ? getInternalOptionValue(selectedOption) : '';
 
   return (
-    <div className={clsx('mpc-select', className)}>
-      <div className="mpc-select-shell">
+    <div className={clsx('ms-select', className)}>
+      <div className="ms-select-shell">
         <RadixSelect.Root
           value={internalValue}
           disabled={disabled}
@@ -54,21 +54,21 @@ export const Select = ({
             setProps?.({ value: nextOption?.value ?? null });
           }}
         >
-          <RadixSelect.Trigger className="mpc-select-trigger" aria-label={placeholder}>
+          <RadixSelect.Trigger className="ms-select-trigger" aria-label={placeholder}>
             <RadixSelect.Value placeholder={placeholder}>
               {selectedOption?.customAbbreviation ?? selectedOption?.label}
             </RadixSelect.Value>
-            <RadixSelect.Icon className="mpc-select-icon">
+            <RadixSelect.Icon className="ms-select-icon">
               <FaAngleDown />
             </RadixSelect.Icon>
           </RadixSelect.Trigger>
           <RadixSelect.Portal>
-            <RadixSelect.Content position="popper" className="mpc-select-content">
-              <RadixSelect.Viewport className="mpc-select-viewport">
+            <RadixSelect.Content position="popper" className="ms-select-content">
+              <RadixSelect.Viewport className="ms-select-viewport">
                 {options.map((option) => (
                   <RadixSelect.Item
                     key={getInternalOptionValue(option)}
-                    className="mpc-select-item"
+                    className="ms-select-item"
                     value={getInternalOptionValue(option)}
                   >
                     <RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>
@@ -84,7 +84,7 @@ export const Select = ({
         {isClearable && selectedOption ? (
           <button
             type="button"
-            className="mpc-select-clear"
+            className="ms-select-clear"
             aria-label={clearAriaLabel}
             onClick={() => {
               onChange?.(null);

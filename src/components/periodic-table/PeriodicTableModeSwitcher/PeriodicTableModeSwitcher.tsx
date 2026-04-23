@@ -57,12 +57,12 @@ export const PeriodicTableModeSwitcher = ({
   const resolvedWildcardTooltip = wildcardTooltip ?? texts?.wildcardTooltip ?? resolvedWildcardTitle;
   return (
     <>
-      <div data-testid="mpc-pt-mode-switcher" className="mpc-pt-mode-switcher first-span">
-        <div className="dropdown-container">
-          <div className="tabs is-small is-toggle is-toggle-rounded is-centered">
+      <div data-testid="ms-pt-mode-switcher" className="ms-pt-mode-switcher ms-first-span">
+        <div className="ms-dropdown-container">
+          <div className="ms-tabs-nav ms-is-small ms-is-toggle ms-is-toggle-rounded ms-is-centered">
             <ul>
               {allowedModes.map((mode) => (
-                <li key={mode} className={clsx({ 'is-active': mode === props.mode })}>
+                <li key={mode} className={clsx({ 'ms-is-active': mode === props.mode })}>
                   <a onClick={() => props.onSwitch(mode)}>
                     <span>{resolvedModeLabels[mode]}</span>
                   </a>
@@ -72,7 +72,7 @@ export const PeriodicTableModeSwitcher = ({
           </div>
         </div>
       </div>
-      <div className="second-span mpc-pt-mode-content">
+      <div className="ms-second-span ms-pt-mode-content">
         {props.mode === PeriodicTableSelectionMode.FORMULA ? (
           <PeriodicTableFormulaButtons
             onClick={props.onFormulaButtonClick}
@@ -84,18 +84,18 @@ export const PeriodicTableModeSwitcher = ({
 
         {props.mode === PeriodicTableSelectionMode.CHEMICAL_SYSTEM ? (
           <>
-            <div className="pt-spacer" />
+            <div className="ms-pt-spacer" />
             {!props.hideWildcardButton ? (
               <Tooltip
                 place="bottom"
                 trigger={
                   <button
                     type="button"
-                    className="pt-wildcard-button mat-element has-tooltip-bottom"
+                    className="ms-pt-wildcard-button ms-mat-element ms-has-tooltip-bottom"
                     onClick={() => props.onFormulaButtonClick('-*')}
                     title={resolvedWildcardTitle}
                   >
-                    <span className="mat-symbol">
+                    <span className="ms-mat-symbol">
                       <FaAsterisk />
                     </span>
                   </button>
@@ -104,7 +104,7 @@ export const PeriodicTableModeSwitcher = ({
                 {resolvedWildcardTooltip}
               </Tooltip>
             ) : null}
-            <div className="pt-description">
+            <div className="ms-pt-description">
               {props.chemicalSystemSelectHelpText ? (
                 <Markdown>{props.chemicalSystemSelectHelpText}</Markdown>
               ) : null}
@@ -113,7 +113,7 @@ export const PeriodicTableModeSwitcher = ({
         ) : null}
 
         {props.mode === PeriodicTableSelectionMode.ELEMENTS ? (
-          <div className="pt-description">
+          <div className="ms-pt-description">
             {props.elementsSelectHelpText ? <Markdown>{props.elementsSelectHelpText}</Markdown> : null}
           </div>
         ) : null}

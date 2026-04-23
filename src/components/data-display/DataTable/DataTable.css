@@ -1,4 +1,4 @@
-.mpc-data-table {
+.ms-data-table {
   background-color: #fff;
   border-radius: 6px;
   overflow: hidden;
@@ -7,11 +7,11 @@
   min-height: 0;
 }
 
-.mpc-data-table .mpc-data-table-header {
+.ms-data-table .ms-data-table-header {
   padding: 1rem 1rem 0 1rem;
 }
 
-.mpc-data-table .mpc-data-table-toolbar {
+.ms-data-table .ms-data-table-toolbar {
   display: flex;
   gap: 0.75rem;
   align-items: center;
@@ -19,11 +19,11 @@
   flex-wrap: wrap;
 }
 
-.mpc-data-table .mpc-data-table-columns {
+.ms-data-table .ms-data-table-columns {
   position: relative;
 }
 
-.mpc-data-table .mpc-data-table-columns-trigger {
+.ms-data-table .ms-data-table-columns-trigger {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -37,12 +37,12 @@
   box-shadow: none;
 }
 
-.mpc-data-table .mpc-data-table-columns-trigger:hover {
+.ms-data-table .ms-data-table-columns-trigger:hover {
   border-color: #b5b5b5;
   color: #363636;
 }
 
-.mpc-data-table .mpc-data-table-columns-menu {
+.ms-data-table .ms-data-table-columns-menu {
   position: absolute;
   right: 0;
   top: calc(100% + 0.5rem);
@@ -55,7 +55,7 @@
   box-shadow: 0 10px 24px rgba(10, 10, 10, 0.14);
 }
 
-.mpc-data-table .mpc-data-table-columns-menu label {
+.ms-data-table .ms-data-table-columns-menu label {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -64,17 +64,17 @@
   font-size: 0.95rem;
 }
 
-.mpc-data-table .mpc-data-table-columns-menu label.is-select-all {
+.ms-data-table .ms-data-table-columns-menu label.ms-is-select-all {
   font-weight: 700;
 }
 
-.mpc-data-table .mpc-data-table-columns-menu .mpc-checkbox-root {
+.ms-data-table .ms-data-table-columns-menu .ms-checkbox-root {
   width: 1.2rem;
   height: 1.2rem;
   flex: 0 0 auto;
 }
 
-.mpc-data-table .mpc-data-table-scroll {
+.ms-data-table .ms-data-table-scroll {
   position: relative;
   overflow: auto;
   max-height: 100%;
@@ -82,13 +82,13 @@
   flex: 1;
 }
 
-.mpc-data-table .mpc-data-table-table {
+.ms-data-table .ms-data-table-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
 }
 
-.mpc-data-table .mpc-data-table-table thead th {
+.ms-data-table .ms-data-table-table thead th {
   position: sticky;
   top: 0;
   z-index: 1;
@@ -101,70 +101,70 @@
   border-right: none;
 }
 
-.mpc-data-table .mpc-data-table-table thead th.is-fixed-left,
-.mpc-data-table .mpc-data-table-table thead th.is-fixed-right,
-.mpc-data-table .mpc-data-table-table tbody td.is-fixed-left,
-.mpc-data-table .mpc-data-table-table tbody td.is-fixed-right {
+.ms-data-table .ms-data-table-table thead th.ms-is-fixed-left,
+.ms-data-table .ms-data-table-table thead th.ms-is-fixed-right,
+.ms-data-table .ms-data-table-table tbody td.ms-is-fixed-left,
+.ms-data-table .ms-data-table-table tbody td.ms-is-fixed-right {
   background: #fff;
 }
 
-.mpc-data-table .mpc-data-table-table thead th.is-fixed-left,
-.mpc-data-table .mpc-data-table-table tbody td.is-fixed-left {
+.ms-data-table .ms-data-table-table thead th.ms-is-fixed-left,
+.ms-data-table .ms-data-table-table tbody td.ms-is-fixed-left {
   box-shadow: 8px 0 12px -12px rgba(10, 10, 10, 0.28);
 }
 
-.mpc-data-table .mpc-data-table-table thead th.is-fixed-right,
-.mpc-data-table .mpc-data-table-table tbody td.is-fixed-right {
+.ms-data-table .ms-data-table-table thead th.ms-is-fixed-right,
+.ms-data-table .ms-data-table-table tbody td.ms-is-fixed-right {
   box-shadow: -8px 0 12px -12px rgba(10, 10, 10, 0.28);
 }
 
-.mpc-data-table .mpc-data-table-table th,
-.mpc-data-table .mpc-data-table-table td {
+.ms-data-table .ms-data-table-table th,
+.ms-data-table .ms-data-table-table td {
   padding: 0.75rem 1rem;
   vertical-align: middle;
   border-bottom: 1px solid rgba(10, 10, 10, 0.08);
 }
 
-.mpc-data-table .mpc-data-table-table thead tr {
+.ms-data-table .ms-data-table-table thead tr {
   border: none;
 }
 
-.mpc-data-table .mpc-data-table-table thead {
+.ms-data-table .ms-data-table-table thead {
   box-shadow: inset 0 -1px 0 rgba(10, 10, 10, 0.12);
 }
 
-.mpc-data-table .mpc-data-table-table tbody tr {
+.ms-data-table .ms-data-table-table tbody tr {
   background: none;
 }
 
-.mpc-data-table .mpc-data-table-table tbody tr.is-clickable {
+.ms-data-table .ms-data-table-table tbody tr.ms-is-clickable {
   cursor: pointer;
 }
 
-.mpc-data-table .mpc-data-table-table tbody tr:hover {
+.ms-data-table .ms-data-table-table tbody tr:hover {
   background: rgba(50, 115, 220, 0.04);
 }
 
-.mpc-data-table .column-header-right,
-.mpc-data-table .mpc-data-table-table .is-right {
+.ms-data-table .ms-column-header-right,
+.ms-data-table .ms-data-table-table .ms-is-right {
   text-align: right;
 }
 
-.mpc-data-table .column-header-center,
-.mpc-data-table .mpc-data-table-table .is-center {
+.ms-data-table .ms-column-header-center,
+.ms-data-table .ms-data-table-table .ms-is-center {
   text-align: center;
 }
 
-.mpc-data-table .column-header-left {
+.ms-data-table .ms-column-header-left {
   text-align: left;
 }
 
-.mpc-data-table .selection-cell {
+.ms-data-table .ms-selection-cell {
   width: 48px;
   text-align: center;
 }
 
-.mpc-data-table .selection-control {
+.ms-data-table .ms-selection-control {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -172,7 +172,7 @@
   min-height: 1.5rem;
 }
 
-.mpc-data-table .column-header-content {
+.ms-data-table .ms-column-header-content {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
@@ -180,29 +180,29 @@
   min-width: 0;
 }
 
-.mpc-data-table .column-header-content.is-sortable {
+.ms-data-table .ms-column-header-content.ms-is-sortable {
   cursor: pointer;
 }
 
-.mpc-data-table .column-header-content.is-sort-icon-left {
+.ms-data-table .ms-column-header-content.ms-is-sort-icon-left {
   justify-content: flex-start;
 }
 
-.mpc-data-table .column-header-label {
+.ms-data-table .ms-column-header-label {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.mpc-data-table .mpc-data-table-table thead th:hover .column-header-content,
-.mpc-data-table .mpc-data-table-table thead th:hover .tooltip-label,
-.mpc-data-table .mpc-data-table-table thead th:hover .column-header-left,
-.mpc-data-table .mpc-data-table-table thead th:hover .column-header-center,
-.mpc-data-table .mpc-data-table-table thead th:hover .column-header-right {
+.ms-data-table .ms-data-table-table thead th:hover .ms-column-header-content,
+.ms-data-table .ms-data-table-table thead th:hover .ms-tooltip-label,
+.ms-data-table .ms-data-table-table thead th:hover .ms-column-header-left,
+.ms-data-table .ms-data-table-table thead th:hover .ms-column-header-center,
+.ms-data-table .ms-data-table-table thead th:hover .ms-column-header-right {
   color: #3273dc;
 }
 
-.mpc-data-table .column-sort-icon {
+.ms-data-table .ms-column-sort-icon {
   display: inline-flex;
   align-items: center;
   flex: 0 0 auto;
@@ -213,23 +213,23 @@
   transition: opacity 120ms ease;
 }
 
-.mpc-data-table .mpc-data-table-table thead th:hover .column-sort-icon {
+.ms-data-table .ms-data-table-table thead th:hover .ms-column-sort-icon {
   opacity: 1;
   visibility: visible;
 }
 
-.mpc-data-table .tooltip-label {
+.ms-data-table .ms-tooltip-label {
   display: inline-flex;
   flex-direction: column;
   min-width: 0;
   overflow: hidden;
 }
 
-.mpc-data-table .column-units {
+.ms-data-table .ms-column-units {
   font-weight: normal;
 }
 
-.mpc-data-table .mpc-data-table-cell-content {
+.ms-data-table .ms-data-table-cell-content {
   display: block;
   min-width: 0;
   overflow: hidden;
@@ -237,7 +237,7 @@
   white-space: nowrap;
 }
 
-.mpc-data-table .mpc-data-table-pagination {
+.ms-data-table .ms-data-table-pagination {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -247,13 +247,13 @@
   border-top: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-.mpc-data-table .mpc-data-table-pagination-compact {
+.ms-data-table .ms-data-table-pagination-compact {
   min-height: 52px;
   background: #fafafa;
   justify-content: flex-end;
 }
 
-.mpc-data-table .mpc-data-table-pagination-summary {
+.ms-data-table .ms-data-table-pagination-summary {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -261,29 +261,29 @@
   color: rgba(0, 0, 0, 0.6);
 }
 
-.mpc-data-table .mpc-data-table-pagination-compact .mpc-data-table-pagination-summary {
+.ms-data-table .ms-data-table-pagination-compact .ms-data-table-pagination-summary {
   justify-content: flex-end;
 }
 
-.mpc-data-table .mpc-data-table-pagination-summary label {
+.ms-data-table .ms-data-table-pagination-summary label {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
   margin: 0;
 }
 
-.mpc-data-table .mpc-data-table-pagination-summary .select {
+.ms-data-table .ms-data-table-pagination-summary .ms-select {
   display: inline-flex;
   align-items: center;
 }
 
-.mpc-data-table .mpc-data-table-pagination-actions {
+.ms-data-table .ms-data-table-pagination-actions {
   display: inline-flex;
   gap: 0.5rem;
   align-items: center;
 }
 
-.mpc-data-table .mpc-data-table-pagination-actions .button {
+.ms-data-table .ms-data-table-pagination-actions .ms-button {
   border: none;
   background: transparent;
   color: rgba(0, 0, 0, 0.54);
@@ -293,16 +293,16 @@
   padding: 0.25rem;
 }
 
-.mpc-data-table .mpc-data-table-pagination-actions .button:disabled {
+.ms-data-table .ms-data-table-pagination-actions .ms-button:disabled {
   color: rgba(0, 0, 0, 0.26);
   background: transparent;
 }
 
-.mpc-data-table .mpc-data-table-pagination-actions .button svg {
+.ms-data-table .ms-data-table-pagination-actions .ms-button svg {
   font-size: 1.2rem;
 }
 
-.mpc-data-table .mpc-data-table-footer {
+.ms-data-table .ms-data-table-footer {
   padding: 0 1rem 1rem 1rem;
   font-size: 0.85rem;
 }

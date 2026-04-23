@@ -1,13 +1,13 @@
-.mpc-data-card {
+.ms-data-card {
   display: inline-flex;
 }
 
-.mpc-data-card-right {
+.ms-data-card-right {
   flex: 1;
   margin-left: 1rem;
 }
 
-.mpc-data-card-right-bottom > * {
+.ms-data-card-right-bottom > * {
   flex: 1;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -15,6 +15,6 @@
   row-gap: 1rem;
 }
 
-.mpc-data-card-right-bottom p:first-child {
+.ms-data-card-right-bottom p:first-child {
   font-weight: 600;
 }

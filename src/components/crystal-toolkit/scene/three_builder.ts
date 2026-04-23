@@ -362,7 +362,7 @@ export class ThreeBuilder {
     if (object_json.hoverLabel) {
       const hoverLabel = document.createElement('span');
       hoverLabel.textContent = object_json.hoverLabel;
-      hoverLabel.className = 'tooltiptext';
+      hoverLabel.className = 'ms-tooltiptext';
       label.appendChild(hoverLabel);
     }
     const labelObject = new CSS2DObject(label);

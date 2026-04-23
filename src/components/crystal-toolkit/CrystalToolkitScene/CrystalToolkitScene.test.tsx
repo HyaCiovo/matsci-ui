@@ -58,7 +58,7 @@ describe('CrystalToolkitScene', () => {
     await waitFor(() => expect(Scene).toHaveBeenCalled());
 
     expect(container.querySelector(`.${MOUNT_NODE_CLASS}`)).not.toBeNull();
-    expect(container.querySelector('.mpc-scene-square')).not.toBeNull();
+    expect(container.querySelector('.ms-scene-square')).not.toBeNull();
     expect(sceneApi.addToScene).toHaveBeenCalledWith(sceneData, true);
     expect(sceneApi.toggleVisibility).toHaveBeenCalled();
   });
@@ -100,13 +100,13 @@ describe('CrystalToolkitScene', () => {
     expect(settingsButton).not.toBeNull();
 
     await user.click(settingsButton!);
-    expect(container.querySelector('.mpc-scene-settings-panel.is-hidden')).toBeNull();
+    expect(container.querySelector('.ms-scene-settings-panel.ms-is-hidden')).toBeNull();
 
-    const closeButton = container.querySelector('.delete') as HTMLButtonElement | null;
+    const closeButton = container.querySelector('.ms-delete') as HTMLButtonElement | null;
     expect(closeButton).not.toBeNull();
     await user.click(closeButton!);
 
-    expect(container.querySelector('.mpc-scene-settings-panel.is-hidden')).not.toBeNull();
+    expect(container.querySelector('.ms-scene-settings-panel.ms-is-hidden')).not.toBeNull();
   });
 
   it('emits legacy export callbacks through setProps', async () => {
@@ -127,7 +127,7 @@ describe('CrystalToolkitScene', () => {
     await waitFor(() => expect(Scene).toHaveBeenCalled());
 
     await user.click(document.querySelector('[data-tooltip-id^="export-"] button') as HTMLButtonElement);
-    await user.click(await waitFor(async () => await document.body.querySelector('.dropdown-item')) as any);
+    await user.click(await waitFor(async () => await document.body.querySelector('.ms-dropdown-item')) as any);
 
     expect(setProps).toHaveBeenCalledWith(
       expect.objectContaining({

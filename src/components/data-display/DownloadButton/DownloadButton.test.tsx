@@ -16,7 +16,7 @@ describe('DownloadButton', () => {
 
     const button = screen.getByRole('button', { name: 'Export Data' });
     expect(button).toHaveAttribute('id', 'download-id');
-    expect(button).toHaveClass('mpc-download-button', 'extra');
+    expect(button).toHaveClass('ms-download-button', 'extra');
   });
 
   it('downloads json by default', () => {

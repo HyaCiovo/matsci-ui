@@ -11,7 +11,7 @@ describe('Navbar', () => {
   it('renders brand and desktop items', () => {
     render(<Navbar brandItem={brandItem} items={items} />);
 
-    const desktopMenu = document.querySelector('.navbar-menu');
+    const desktopMenu = document.querySelector('.ms-navbar-menu');
     expect(desktopMenu).toBeTruthy();
     expect(screen.getAllByRole('link', { name: 'MP' })).toHaveLength(2);
     expect(within(desktopMenu as HTMLElement).getByRole('link', { name: 'Docs' })).toBeInTheDocument();
@@ -21,10 +21,10 @@ describe('Navbar', () => {
     render(<Navbar brandItem={brandItem} items={items} />);
 
     fireEvent.click(screen.getByTestId('navbar-burger-open'));
-    expect(screen.getByTestId('navbar-mobile')).toHaveClass('is-active');
+    expect(screen.getByTestId('navbar-mobile')).toHaveClass('ms-is-active');
 
     fireEvent.click(screen.getByTestId('navbar-burger-close'));
-    expect(screen.getByTestId('navbar-mobile')).not.toHaveClass('is-active');
+    expect(screen.getByTestId('navbar-mobile')).not.toHaveClass('ms-is-active');
   });
 
   it('expands grouped mobile items', () => {

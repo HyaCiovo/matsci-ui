@@ -17,10 +17,10 @@ export const Modal = ({ id, className, children }: ModalProps) => {
   return (
     <Dialog.Root open={active} onOpenChange={(nextOpen) => (!forceAction ? setActive(nextOpen) : undefined)}>
       <Dialog.Portal>
-        <div id={id} className={clsx('mpc-modal modal', className, { 'is-active': active })}>
-          <Dialog.Overlay className="modal-background" />
+        <div id={id} className={clsx('ms-modal', className, { 'ms-is-active': active })}>
+          <Dialog.Overlay className="ms-modal-background" />
           <Dialog.Content
-            className="modal-content"
+            className="ms-modal-content"
             onEscapeKeyDown={(event) => {
               if (forceAction) {
                 event.preventDefault();

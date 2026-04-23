@@ -1,28 +1,28 @@
-.mpc-switch {
+.ms-switch {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   line-height: 1.5;
 }
 
-.mpc-switch-button {
+.ms-switch-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--mpc-switch-icon-color, #3273dc);
+  color: var(--ms-switch-icon-color, #3273dc);
   cursor: pointer;
   line-height: 1;
 }
 
-.mpc-switch-button:focus-visible {
+.ms-switch-button:focus-visible {
   outline: 2px solid rgba(50, 115, 220, 0.35);
   outline-offset: 2px;
 }
 
-.mpc-switch-visual {
+.ms-switch-visual {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -35,12 +35,12 @@
   transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
 }
 
-.mpc-switch-visual.is-active {
-  border-color: var(--mpc-switch-icon-color, #3273dc);
-  background: color-mix(in srgb, var(--mpc-switch-icon-color, #3273dc) 16%, #fff);
+.ms-switch-visual.ms-is-active {
+  border-color: var(--ms-switch-icon-color, #3273dc);
+  background: color-mix(in srgb, var(--ms-switch-icon-color, #3273dc) 16%, #fff);
 }
 
-.mpc-switch-thumb {
+.ms-switch-thumb {
   display: block;
   width: 1rem;
   height: 1rem;
@@ -50,16 +50,16 @@
   transition: transform 160ms ease, background-color 160ms ease;
 }
 
-.mpc-switch-visual.is-active .mpc-switch-thumb {
-  background: var(--mpc-switch-icon-color, #3273dc);
+.ms-switch-visual.ms-is-active .ms-switch-thumb {
+  background: var(--ms-switch-icon-color, #3273dc);
   transform: translateX(1rem);
 }
 
-.mpc-switch-button:hover .mpc-switch-visual {
+.ms-switch-button:hover .ms-switch-visual {
   box-shadow: 0 1px 4px rgba(10, 10, 10, 0.12);
 }
 
-.mpc-switch-label {
+.ms-switch-label {
   display: inline-flex;
   align-items: center;
   color: #4a4a4a;

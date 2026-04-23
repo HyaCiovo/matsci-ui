@@ -116,7 +116,7 @@ const RenderParagraphOrHighlight = ({
   highlights?: any[];
   className?: string;
 }) => (
-  <div className={clsx('mpc-synthesis-card-paragraph has-text-grey-dark', className)}>
+  <div className={clsx('ms-synthesis-card-paragraph ms-has-text-grey-dark', className)}>
     <p>
       "
       {highlights
@@ -126,7 +126,7 @@ const RenderParagraphOrHighlight = ({
                 <span
                   key={textIndex}
                   className={clsx({
-                    'mpc-synthesis-card-highlight-hit': text.type === 'hit',
+                    'ms-synthesis-card-highlight-hit': text.type === 'hit',
                   })}
                 >
                   {text.value}
@@ -180,7 +180,7 @@ const formatReactionString = (reactionString?: string) => {
         </span>
         {sides[1]?.map(renderToken)}
       </div>
-      <div className="is-size-7 is-italic">
+      <div className="ms-is-size-7 ms-is-italic">
         {info.map((section, sectionIndex) => (
           <span key={sectionIndex}>
             {section.map(renderToken)}
@@ -246,7 +246,7 @@ export const SynthesisRecipeCard = ({ id, className, data, texts: textsProp }: S
   return (
     <DataBlock
       id={id}
-      className={clsx('mpc-synthesis-card', className)}
+      className={clsx('ms-synthesis-card', className)}
       data={{
         targetFormula: data.target.material_formula,
         precursorFormulas: data.precursors_formula_s,

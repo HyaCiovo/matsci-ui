@@ -14,20 +14,20 @@ export const InputHelp = ({ items, show, onChange }: Props) => {
   return (
     <div
       data-testid="materials-input-help-menu"
-      className={clsx('box input-help-menu', {
-        'is-hidden': !show,
+      className={clsx('ms-box ms-input-help-menu', {
+        'ms-is-hidden': !show,
       })}
     >
       {items.map((item, index) => (
         <div key={`help-item-${index}`}>
           {item.examples ? (
             <div>
-              {item.label ? <strong className="mr-2">{item.label}:</strong> : null}
-              <div className="tags">
+              {item.label ? <strong className="ms-mr-2">{item.label}:</strong> : null}
+              <div className="ms-tags">
                 {item.examples.map((example, exampleIndex) => (
                   <a
                     key={`help-example-${index}-${exampleIndex}`}
-                    className="tag is-medium"
+                    className="ms-tag ms-is-medium"
                     onMouseDown={() => onChange?.(example)}
                   >
                     {example}
@@ -36,7 +36,7 @@ export const InputHelp = ({ items, show, onChange }: Props) => {
               </div>
             </div>
           ) : item.label ? (
-            <div className="is-size-7">{item.label}</div>
+            <div className="ms-is-size-7">{item.label}</div>
           ) : null}
         </div>
       ))}

@@ -78,17 +78,17 @@ export const FormulaAutocomplete = ({
   return (
     <div
       data-testid="materials-input-autocomplete-menu"
-      className={clsx('dropdown-menu', 'autocomplete', {
-        'is-hidden': !isVisible,
+      className={clsx('ms-dropdown-menu', 'ms-autocomplete', {
+        'ms-is-hidden': !isVisible,
       })}
       aria-hidden
     >
-      <div data-testid="materials-input-autocomplete-menu-items" className="dropdown-content">
-        <p className="autocomplete-label">{suggestedLabel}</p>
+      <div data-testid="materials-input-autocomplete-menu-items" className="ms-dropdown-content">
+        <p className="ms-autocomplete-label">{suggestedLabel}</p>
         {formulaSuggestions.map((suggestion, index) => (
           <a
             key={`${suggestion.formula_pretty}-${index}`}
-            className="dropdown-item"
+            className="ms-dropdown-item"
             onMouseDown={(event) => {
               setIsVisible(false);
               setError?.(null);

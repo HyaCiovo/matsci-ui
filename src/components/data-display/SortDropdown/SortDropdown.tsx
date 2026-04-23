@@ -81,31 +81,31 @@ export const SortDropdown = ({
   }, [resolvedSortField, setSortValues, sortAscending, sortFn, sortValues]);
 
   return (
-    <div id={id} data-testid="mpc-sort-dropdown" className={clsx('mpc-sort-dropdown field has-addons', className)}>
-      <div className="control">
+    <div id={id} data-testid="ms-sort-dropdown" className={clsx('ms-sort-dropdown ms-field ms-has-addons', className)}>
+      <div className="ms-control">
         <button
           type="button"
           data-testid="sort-button"
-          className="mpc-sort-button button"
+          className="ms-sort-button ms-button"
           onClick={() => setSortAscending(!sortAscending)}
           aria-label={sortAscending ? texts.ariaLabelSortedAscending : texts.ariaLabelSortedDescending}
         >
-          <FaSort className="mpc-bib-filter-sort-icon-bg" />
+          <FaSort className="ms-bib-filter-sort-icon-bg" />
           {sortAscending ? <FaSortUp /> : <FaSortDown />}
         </button>
       </div>
-      <div className="control">
+      <div className="ms-control">
         <DropdownMenu.Root modal={false} open={open} onOpenChange={setOpen}>
-          <div className={clsx('dropdown is-right', { 'is-active': open })}>
-            <div className="dropdown-trigger">
+          <div className={clsx('ms-dropdown ms-is-right', { 'ms-is-active': open })}>
+            <div className="ms-dropdown-trigger">
               <DropdownMenu.Trigger asChild>
-                <button type="button" className="button">
+                <button type="button" className="ms-button">
                   <span>
                     {formatTemplate(texts.sortLabelTemplate, {
                       label: selectedOption?.label ?? resolvedSortField,
                     })}
                   </span>
-                  <span className="icon">
+                  <span className="ms-icon">
                     <FaAngleDown />
                   </span>
                 </button>
@@ -113,16 +113,16 @@ export const SortDropdown = ({
             </div>
             <DropdownMenu.Portal>
               <DropdownMenu.Content
-                className="mpc-dropdown-menu dropdown-menu"
+                className="ms-dropdown-menu"
                 align="end"
                 sideOffset={4}
                 collisionPadding={8}
               >
-                <div className="mpc-dropdown-content dropdown-content">
+                <div className="ms-dropdown-content">
                   {sortOptions.map((option) => (
                     <DropdownMenu.Item
                       key={option.value}
-                      className={clsx('dropdown-item', { 'is-active': option.value === resolvedSortField })}
+                      className={clsx('ms-dropdown-item', { 'ms-is-active': option.value === resolvedSortField })}
                       onSelect={() => setSortField(option.value)}
                     >
                       {option.label}

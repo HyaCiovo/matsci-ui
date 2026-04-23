@@ -1,12 +1,12 @@
-.mpc-text-input {
+.ms-text-input {
   position: relative;
 }
 
-.mpc-text-input .input {
+.ms-text-input .ms-input {
   padding-right: 2.25rem;
 }
 
-.mpc-text-input-clear {
+.ms-text-input-clear {
   position: absolute;
   top: 50%;
   right: 0.625rem;
@@ -27,6 +27,6 @@
   box-sizing: border-box;
 }
 
-.mpc-text-input-clear:hover {
+.ms-text-input-clear:hover {
   color: #1f4fc9;
 }

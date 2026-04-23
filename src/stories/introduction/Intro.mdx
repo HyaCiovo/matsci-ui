@@ -68,7 +68,7 @@ export function DemoModal() {
         <button type="button">Open</button>
       </ModalTrigger>
       <Modal>
-        <div className="box">Hello from matsci-ui</div>
+        <div className="ms-box">Hello from matsci-ui</div>
       </Modal>
     </ModalContextProvider>
   );
@@ -87,7 +87,7 @@ export function DemoModal() {
     <ul>
       <li>`src/components`: publishable component surface</li>
       <li>`src/stories`: Storybook stories and MDX guides</li>
-      <li>`src/theme`: theme exploration files and token experiments</li>
+      <li>`src/theme`: shared theme tokens and the library-owned `matsci-bulma.css` foundation layer</li>
       <li>`src/utils`: shared helpers such as HTTP and navigation utilities</li>
       <li>`.storybook`: Storybook runtime, locale toolbar, and API proxy setup</li>
     </ul>
@@ -96,7 +96,7 @@ export function DemoModal() {
     <ul>
       <li>`src/components`：组件库发布主体</li>
       <li>`src/stories`：Storybook stories 与 MDX 指南</li>
-      <li>`src/theme`：主题探索文件与 Token 实验</li>
+      <li>`src/theme`：共享主题 Token 与库内自有的 `matsci-bulma.css` 基础样式层</li>
       <li>`src/utils`：HTTP、导航等共享工具</li>
       <li>`.storybook`：Storybook 运行时、语言切换器与 API 代理配置</li>
     </ul>
@@ -131,8 +131,8 @@ export function DemoModal() {
 ## <I18nText en="Styling Status" zh="样式现状" />
 
 <I18nText
-  en="The stable styling path today is the bundled `@hyacinth/matsci-ui/style.css`, which still assumes the Bulma-oriented styling model. Files such as `src/theme/tokens.css` describe a direction of travel, but they should be treated as planning assets rather than as a stable theming API."
-  zh="当前稳定可用的样式入口仍是打包后的 `@hyacinth/matsci-ui/style.css`，其内部依然建立在 Bulma 导向的样式体系上。像 `src/theme/tokens.css` 这样的文件更多是在描述未来方向，而不是已经稳定可用的主题 API。"
+  en="The stable styling entrypoint is the bundled `@hyacinth/matsci-ui/style.css`. It now packages `src/theme/tokens.css`, the library-owned `src/theme/matsci-bulma.css` foundation layer, and component CSS under `ms-*` selectors so the host app is no longer exposed to global Bulma class pollution."
+  zh="当前稳定可用的样式入口是打包后的 `@hyacinth/matsci-ui/style.css`。它现在会把 `src/theme/tokens.css`、库内自有的 `src/theme/matsci-bulma.css` 基础样式层以及组件 CSS 一并打包，并统一使用 `ms-*` 选择器，从而避免把 Bulma 的全局类名污染到宿主应用。"
 />
 
 ## <I18nText en="Accessibility" zh="无障碍" />

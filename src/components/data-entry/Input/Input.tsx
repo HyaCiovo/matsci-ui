@@ -8,7 +8,7 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(({ asChild, className, ...props }, ref) => {
   const Comp: any = asChild ? Slot : 'input';
-  return <Comp ref={ref} className={clsx('input', className)} {...props} />;
+  return <Comp ref={ref} className={clsx('ms-input', className)} {...props} />;
 });
 
 Input.displayName = 'Input';

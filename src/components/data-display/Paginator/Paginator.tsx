@@ -78,19 +78,19 @@ export const Paginator = ({
   const jumpToPageOptions = Array.from({ length: pageCount }, (_, index) => index + 1);
 
   return (
-    <div data-testid="mpc-paginator" className={clsx('mpc-paginator', className)}>
-      <div className="mpc-paginator-controls">
+    <div data-testid="ms-paginator" className={clsx('ms-paginator', className)}>
+      <div className="ms-paginator-controls">
         <Dropdown
-          className="mpc-paginator-dropdown"
+          className="ms-paginator-dropdown"
           triggerLabel={texts.jumpTo}
-          triggerClassName="button is-small"
+          triggerClassName="ms-button ms-is-small"
           isUp={!isTop}
         >
           {jumpToPageOptions.map((page) => (
             <button
               key={page}
               type="button"
-              className={clsx('dropdown-item', { 'is-active': page === currentPage })}
+              className={clsx('ms-dropdown-item', { 'ms-is-active': page === currentPage })}
               onClick={() => onChangePage(page)}
             >
               {page}
@@ -99,16 +99,16 @@ export const Paginator = ({
         </Dropdown>
         {onChangeRowsPerPage ? (
           <Dropdown
-            className="mpc-paginator-dropdown"
+            className="ms-paginator-dropdown"
             triggerLabel={formatTemplate(texts.rowsPerPageTemplate, { rowsPerPage })}
-            triggerClassName="button is-small"
+            triggerClassName="ms-button ms-is-small"
             isUp={!isTop}
           >
             {resultsPerPageOptions.map((value) => (
               <button
                 key={value}
                 type="button"
-                className={clsx('dropdown-item', { 'is-active': value === rowsPerPage })}
+                className={clsx('ms-dropdown-item', { 'ms-is-active': value === rowsPerPage })}
                 onClick={() => onChangeRowsPerPage(Number(value))}
               >
                 {value}
@@ -119,33 +119,33 @@ export const Paginator = ({
       </div>
 
       <nav
-        className="pagination is-small is-centered"
+        className="ms-pagination ms-is-small ms-is-centered"
         role="navigation"
         aria-label={texts.ariaLabelPagination}
       >
         <button
-          className="pagination-previous"
+          className="ms-pagination-previous"
           disabled={currentPage === 1}
           aria-hidden={currentPage === 1}
           onClick={() => currentPage > 1 && onChangePage(currentPage - 1)}
         >
           <FaArrowLeft />
-          <span className="ml-1 is-hidden-touch">{texts.previous}</span>
+          <span className="ms-ml-1 ms-is-hidden-touch">{texts.previous}</span>
         </button>
         <button
-          className="pagination-next"
+          className="ms-pagination-next"
           disabled={currentPage === pageCount}
           aria-hidden={currentPage === pageCount}
           onClick={() => currentPage < pageCount && onChangePage(currentPage + 1)}
         >
-          <span className="mr-1 is-hidden-touch">{texts.next}</span>
+          <span className="ms-mr-1 ms-is-hidden-touch">{texts.next}</span>
           <FaArrowRight />
         </button>
-        <ul className="pagination-list">
+        <ul className="ms-pagination-list">
           {visiblePages.map((page) => (
             <li key={page}>
               <a
-                className={clsx('pagination-link', { 'is-current': page === currentPage })}
+                className={clsx('ms-pagination-link', { 'ms-is-current': page === currentPage })}
                 aria-label={
                   page === currentPage
                     ? formatTemplate(texts.ariaLabelGoToPageTemplate, { page })

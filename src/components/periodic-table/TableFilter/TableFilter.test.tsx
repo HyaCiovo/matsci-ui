@@ -7,9 +7,9 @@ describe('TableFilter', () => {
   it('renders with All selected by default and no subfilters', () => {
     const { container } = render(<TableFilter />);
 
-    expect(container.querySelector('.mat-table-filter')).toBeInTheDocument();
-    expect(screen.getByText('All')).toHaveClass('selected');
-    expect(container.querySelectorAll('.sub-filter-selector .current-filter-selector')).toHaveLength(0);
+    expect(container.querySelector('.ms-mat-table-filter')).toBeInTheDocument();
+    expect(screen.getByText('All')).toHaveClass('ms-selected');
+    expect(container.querySelectorAll('.ms-sub-filter-selector .ms-current-filter-selector')).toHaveLength(0);
   });
 
   it('shows subfilters when a top-level filter is selected', () => {
@@ -17,9 +17,9 @@ describe('TableFilter', () => {
 
     fireEvent.click(screen.getByText('Metals'));
 
-    expect(screen.getByText('Metals')).toHaveClass('selected');
-    expect(container.querySelectorAll('.sub-filter-selector .current-filter-selector')).toHaveLength(7);
-    expect(container.querySelectorAll('.sub-filter-selector .current-filter-selector.selected')).toHaveLength(7);
+    expect(screen.getByText('Metals')).toHaveClass('ms-selected');
+    expect(container.querySelectorAll('.ms-sub-filter-selector .ms-current-filter-selector')).toHaveLength(7);
+    expect(container.querySelectorAll('.ms-sub-filter-selector .ms-current-filter-selector.ms-selected')).toHaveLength(7);
   });
 
   it('keeps only the clicked subfilter selected after choosing a subfilter', () => {
@@ -29,11 +29,11 @@ describe('TableFilter', () => {
     fireEvent.click(screen.getByText('Transition Metals'));
 
     const selectedSubfilters = container.querySelectorAll(
-      '.sub-filter-selector .current-filter-selector.selected'
+      '.ms-sub-filter-selector .ms-current-filter-selector.ms-selected'
     );
 
     expect(selectedSubfilters).toHaveLength(1);
-    expect(screen.getByText('Transition Metals')).toHaveClass('selected');
+    expect(screen.getByText('Transition Metals')).toHaveClass('ms-selected');
   });
 
   it('updates the shared periodic table hidden state through PeriodicContext', () => {
@@ -66,7 +66,7 @@ describe('TableFilter', () => {
     fireEvent.click(screen.getByText('Metals'));
 
     expect(screen.getByTestId('periodic-element-Fe')).toBeInTheDocument();
-    expect(screen.getByText('Metals')).toHaveClass('selected');
+    expect(screen.getByText('Metals')).toHaveClass('ms-selected');
     expect(screen.getByText('Transition Metals')).toBeInTheDocument();
   });
 
@@ -79,7 +79,7 @@ describe('TableFilter', () => {
     );
 
     fireEvent.click(screen.getByText('Groups'));
-    const subFilterSelector = container.querySelector('.sub-filter-selector');
+    const subFilterSelector = container.querySelector('.ms-sub-filter-selector');
     expect(subFilterSelector).toBeTruthy();
     fireEvent.click(within(subFilterSelector as HTMLElement).getByText('1'));
 

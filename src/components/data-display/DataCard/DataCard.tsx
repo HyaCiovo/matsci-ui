@@ -28,12 +28,12 @@ export const DataCard = ({
   leftComponent,
 }: DataCardProps) => {
   return (
-    <div id={id} className={clsx('mpc-data-card', className)}>
-      <div className="mpc-data-card-left">{leftComponent}</div>
-      <div className="mpc-data-card-right">
-        {levelOneKey ? <p className="title is-4">{data[levelOneKey]}</p> : null}
-        {levelTwoKey ? <p className="subtitle">{data[levelTwoKey]}</p> : null}
-        <div className="mpc-data-card-right-bottom">
+    <div id={id} className={clsx('ms-data-card', className)}>
+      <div className="ms-data-card-left">{leftComponent}</div>
+      <div className="ms-data-card-right">
+        {levelOneKey ? <p className="ms-title ms-is-4">{data[levelOneKey]}</p> : null}
+        {levelTwoKey ? <p className="ms-subtitle">{data[levelTwoKey]}</p> : null}
+        <div className="ms-data-card-right-bottom">
           {[0, 1].map((columnGroup) => (
             <div key={columnGroup}>
               {levelThreeKeys

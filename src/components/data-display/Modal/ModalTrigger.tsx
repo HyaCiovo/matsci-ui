@@ -15,7 +15,7 @@ export const ModalTrigger = ({ id, className, children }: ModalTriggerProps) => 
   return (
     <span
       id={id}
-      className={clsx('mpc-modal-trigger', className)}
+      className={clsx('ms-modal-trigger', className)}
       onClick={() => setActive(!active)}
     >
       {children}

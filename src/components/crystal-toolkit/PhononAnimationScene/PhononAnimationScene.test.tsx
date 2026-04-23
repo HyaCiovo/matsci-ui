@@ -66,7 +66,7 @@ describe('PhononAnimationScene', () => {
     await waitFor(() => expect(Scene).toHaveBeenCalled());
 
     expect(container.querySelector(`.${MOUNT_NODE_CLASS}`)).not.toBeNull();
-    expect(container.querySelector('.mpc-scene-square')).not.toBeNull();
+    expect(container.querySelector('.ms-scene-square')).not.toBeNull();
     expect(sceneApi.removeListener).toHaveBeenCalled();
     expect(sceneApi.animate).toHaveBeenCalled();
     expect(sceneApi.addToScene).toHaveBeenCalledWith(sceneData, false);

@@ -42,28 +42,28 @@ export const DataBlock = ({
   const renderColumn = (column: Column) => (
     <div
       key={column.selector}
-      className="mpc-data-block-item"
+      className="ms-data-block-item"
       style={{
         width: column.width || 'auto',
         minWidth: column.minWidth || 'auto',
         maxWidth: column.maxWidth || 'auto',
       }}
     >
-      <div className="heading">{column.title}</div>
-      <div className="value">{formatColumnValue(column, data)}</div>
+      <div className="ms-heading">{column.title}</div>
+      <div className="ms-value">{formatColumnValue(column, data)}</div>
     </div>
   );
 
   return (
-    <div id={id} className={clsx('mpc-data-block box', className)}>
-      <div className="mpc-data-block-header">
+    <div id={id} className={clsx('ms-data-block ms-box', className)}>
+      <div className="ms-data-block-header">
         {topColumns.map((column) => renderColumn(column))}
         {iconClassName ? (
-          <span className="mpc-data-block-icon-container">
+          <span className="ms-data-block-icon-container">
             <Tooltip
               disable={!iconTooltip}
               trigger={
-                <span data-testid="data-block-icon" className="mpc-data-block-icon">
+                <span data-testid="data-block-icon" className="ms-data-block-icon">
                   <i className={iconClassName} />
                 </span>
               }
@@ -75,18 +75,18 @@ export const DataBlock = ({
       </div>
 
       {bottomColumns.length > 0 ? (
-        <div className="mpc-data-block-expandable">
+        <div className="ms-data-block-expandable">
           <div
             data-testid="data-block-bottom-section"
-            className={clsx('mpc-data-block-body', {
-              'is-expanded': isExpanded,
-              'is-collapsed': !isExpanded,
+            className={clsx('ms-data-block-body', {
+              'ms-is-expanded': isExpanded,
+              'ms-is-collapsed': !isExpanded,
             })}
           >
-            {!isExpanded ? <div className="mpc-data-block-fade" /> : null}
+            {!isExpanded ? <div className="ms-data-block-fade" /> : null}
             {bottomColumns.map((column) => renderColumn(column))}
           </div>
-          <p className="mpc-data-block-trigger">
+          <p className="ms-data-block-trigger">
             <a
               href="#"
               onClick={(event) => {
@@ -97,7 +97,7 @@ export const DataBlock = ({
               {isExpanded ? 'See less' : 'See more'}
             </a>
             <span
-              className="mpc-data-block-caret"
+              className="ms-data-block-caret"
               role="button"
               tabIndex={0}
               aria-label={isExpanded ? 'Collapse section' : 'Expand section'}
@@ -115,7 +115,7 @@ export const DataBlock = ({
         </div>
       ) : null}
 
-      {footer || children ? <div className="mpc-data-block-footer">{footer || children}</div> : null}
+      {footer || children ? <div className="ms-data-block-footer">{footer || children}</div> : null}
     </div>
   );
 };

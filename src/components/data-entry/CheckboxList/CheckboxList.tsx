@@ -15,12 +15,12 @@ export interface CheckboxListProps {
 export const CheckboxList = ({ options, values, value, onChange }: CheckboxListProps) => {
   const resolvedValues = value ?? values ?? [];
   return (
-    <div className="checkbox-list">
+    <div className="ms-checkbox-list">
       {options.map((option, index) => {
         const checked = resolvedValues.includes(option.value);
         return (
           <div key={String(option.value) || String(index)}>
-            <label className="checkbox">
+            <label className="ms-checkbox">
               <Checkbox
                 checked={checked}
                 onCheckedChange={(nextChecked) => {

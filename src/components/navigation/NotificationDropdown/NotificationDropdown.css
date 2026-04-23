@@ -1,4 +1,4 @@
-.fa-stack {
+.ms-fa-stack {
   display: inline-block;
   height: 2em;
   line-height: 2em;
@@ -7,32 +7,32 @@
   width: 2em;
 }
 
-.fa-stack-1x,
-.fa-stack-2x {
+.ms-fa-stack-1x,
+.ms-fa-stack-2x {
   left: 0;
   position: absolute;
   text-align: center;
   width: 100%;
 }
 
-.fa-stack-1x {
+.ms-fa-stack-1x {
   line-height: inherit;
 }
 
-.fa-stack-2x {
+.ms-fa-stack-2x {
   font-size: 2em;
 }
 
-.fa-inverse {
+.ms-fa-inverse {
   color: inherit;
 }
 
-.bell-icon {
+.ms-bell-icon {
   font-size: 0.5em;
   width: 1em;
 }
 
-.has-badge[data-count]::after {
+.ms-has-badge[data-count]::after {
   position: absolute;
   right: 14%;
   top: 22%;
@@ -43,7 +43,7 @@
   color: #ff0000;
 }
 
-.has-badge-number[data-count]::after {
+.ms-has-badge-number[data-count]::after {
   position: absolute;
   right: 0;
   top: 0;
@@ -59,7 +59,7 @@
   font-weight: bold;
 }
 
-.notification-dot {
+.ms-notification-dot {
   margin-right: 0.5rem;
   color: #ff3860;
   font-size: 0.55rem;

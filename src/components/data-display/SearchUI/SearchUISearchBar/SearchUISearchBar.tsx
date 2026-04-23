@@ -94,7 +94,7 @@ const getCurrentInputType = ({
 
 export const SearchUISearchBar = ({
   allowedInputTypesMap,
-  className = 'is-medium',
+  className = 'ms-is-medium',
   inputClassName,
   periodicTableMode,
   placeholder,

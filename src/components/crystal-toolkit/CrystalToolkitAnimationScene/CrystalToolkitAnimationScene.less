@@ -1,8 +1,8 @@
-.mpc-scene {
+.ms-scene {
   position: relative;
 }
 
-.tooltiptext {
+.ms-tooltiptext {
   background-color: black;
   color: #fff;
   text-align: center;
@@ -14,11 +14,11 @@
   cursor: pointer !important;
 }
 
-.mpc-scene-square {
+.ms-scene-square {
   position: relative;
 }
 
-.mpc-scene-square:before {
+.ms-scene-square:before {
   content: '';
   display: block;
   height: 0;
@@ -27,7 +27,7 @@
   padding-bottom: 100%;
 }
 
-.mpc-scene-square::after {
+.ms-scene-square::after {
   clear: left;
   content: ' ';
   display: table;
@@ -38,20 +38,20 @@
 * Setting max-width with vh instead of simply setting max-height so we don't interfere
 * with the structure's styles that force it to render with 1:1 ratio.
 */
-.mpc-scene-square-wrapper {
+.ms-scene-square-wrapper {
   width: 100% !important;
   max-width: calc(95vh - 3rem);
   height: auto !important;
   margin: auto;
 }
 
-.mpc-scene .mpc-button-bar {
+.ms-scene .ms-button-bar {
   position: absolute;
   right: 0;
   z-index: 3;
 }
 
-.mpc-scene-settings-panel {
+.ms-scene-settings-panel {
   position: absolute;
   right: 4.5rem;
   max-height: 100%;
@@ -65,7 +65,7 @@
   z-index: 2;
 }
 
-.mpc-scene-bottom-panel {
+.ms-scene-bottom-panel {
   position: absolute;
   right: 0;
   bottom: 0;
@@ -75,14 +75,14 @@
 /**
  * Include this explicitly so that toggling the settings panel works without bulma
  */
-.mpc-scene-settings-panel.is-hidden {
+.ms-scene-settings-panel.ms-is-hidden {
   display: none;
 }
 
 /**
  * Include this explicitly so that file dropdown looks okay without bulma
  */
-.mpc-scene .dropdown-content {
+.ms-scene .ms-dropdown-content {
   position: absolute;
   right: 0;
   min-width: 100px;

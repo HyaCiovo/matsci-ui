@@ -17,7 +17,7 @@ describe('Tooltip', () => {
 
     await user.hover(screen.getByRole('button', { name: 'Trigger' }));
     expect((await screen.findAllByText('Hello tooltip')).length).toBeGreaterThan(0);
-    expect(document.querySelector('.mpc-tooltip-arrow')).toBeInTheDocument();
+    expect(document.querySelector('.ms-tooltip-arrow')).toBeInTheDocument();
   });
 
   it('flips placement when there is not enough viewport space', async () => {
@@ -52,7 +52,7 @@ describe('Tooltip', () => {
 
     await screen.findAllByText('Flip tooltip');
     await waitFor(() => {
-      expect(document.querySelector('.mpc-tooltip')).toHaveAttribute('data-side', 'top');
+      expect(document.querySelector('.ms-tooltip')).toHaveAttribute('data-side', 'top');
     });
 
     trigger.getBoundingClientRect = originalRect;

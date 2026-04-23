@@ -33,10 +33,10 @@ const initSpyItemsViewMap = (menuGroups: MenuGroup[]): SpyItemMap =>
 
 export const Scrollspy = ({
   menuGroups,
-  menuClassName = 'menu',
-  activeClassName = 'is-active',
-  menuGroupLabelClassName = 'menu-label',
-  menuItemContainerClassName = 'menu-list',
+  menuClassName = 'ms-menu',
+  activeClassName = 'ms-is-active',
+  menuGroupLabelClassName = 'ms-menu-label',
+  menuItemContainerClassName = 'ms-menu-list',
   menuItemClassName = '',
   offset = -20,
 }: ScrollspyProps) => {

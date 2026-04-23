@@ -95,27 +95,27 @@ export const SearchUIDataHeader = ({ exportDataButton, texts: textsProp }: Searc
   };
 
   return (
-    <div className="mpc-search-ui-data-header box" ref={ref}>
-      <div className="mpc-search-ui-data-header-content">
+    <div className="ms-search-ui-data-header ms-box" ref={ref}>
+      <div className="ms-search-ui-data-header-content">
         <div>
-          <p data-testid="data-table-title" className="title is-5">
+          <p data-testid="data-table-title" className="ms-title ms-is-5">
             {title}
           </p>
-          <p className="subtitle is-7">
+          <p className="ms-subtitle ms-is-7">
             {formatTemplate(texts.showingTemplate, {
               lower: lowerBound.toLocaleString(),
               upper: upperBound.toLocaleString(),
             })}
           </p>
         </div>
-        <div className="progress-container">
-          {loading ? <progress className="progress is-small is-primary" max={100} /> : null}
+        <div className="ms-progress-container">
+          {loading ? <progress className="ms-progress ms-is-small ms-is-primary" max={100} /> : null}
         </div>
-        <div className="mpc-search-ui-data-header-controls">
-          <div className="mpc-data-table-columns" ref={columnsMenuRef}>
+        <div className="ms-search-ui-data-header-controls">
+          <div className="ms-data-table-columns" ref={columnsMenuRef}>
             <button
               type="button"
-              className="button mpc-data-table-columns-trigger"
+              className="ms-button ms-data-table-columns-trigger"
               aria-expanded={columnsMenuOpen}
               onClick={() => setColumnsMenuOpen((open) => !open)}
             >
@@ -123,8 +123,8 @@ export const SearchUIDataHeader = ({ exportDataButton, texts: textsProp }: Searc
               <FaCaretDown aria-hidden="true" />
             </button>
             {columnsMenuOpen ? (
-              <div className="mpc-data-table-columns-menu">
-                <label className="is-select-all">
+              <div className="ms-data-table-columns-menu">
+                <label className="ms-is-select-all">
                   <Checkbox checked={allColumnsVisible} onCheckedChange={(checked) => toggleAllColumns(checked === true)} />
                   <span>{texts.selectAll}</span>
                 </label>

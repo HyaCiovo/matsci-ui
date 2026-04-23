@@ -1,17 +1,17 @@
-.mpc-bib-filter-controls {
+.ms-bib-filter-controls {
   display: flex;
   margin-bottom: 1rem;
 }
 
-.mpc-bib-filter-input {
+.ms-bib-filter-input {
   margin-right: 1rem;
 }
 
-.mpc-bib-filter-sort-menu {
+.ms-bib-filter-sort-menu {
   margin-right: 1rem;
 }
 
-.mpc-bib-filter-sort-icon-bg {
+.ms-bib-filter-sort-icon-bg {
   position: absolute;
   opacity: 0.3;
 }

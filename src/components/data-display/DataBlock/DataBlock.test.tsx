@@ -56,13 +56,13 @@ describe('DataBlock', () => {
     );
 
     expect(screen.getByText('Silicon entry')).toBeInTheDocument();
-    expect(screen.getByTestId('data-block-bottom-section')).toHaveClass('is-collapsed');
+    expect(screen.getByTestId('data-block-bottom-section')).toHaveClass('ms-is-collapsed');
     fireEvent.click(screen.getByText('See more'));
     expect(screen.getByText('Silicon entry')).toBeInTheDocument();
-    expect(screen.getByTestId('data-block-bottom-section')).toHaveClass('is-expanded');
+    expect(screen.getByTestId('data-block-bottom-section')).toHaveClass('ms-is-expanded');
     fireEvent.click(screen.getByText('See less'));
     expect(screen.getByText('Silicon entry')).toBeInTheDocument();
-    expect(screen.getByTestId('data-block-bottom-section')).toHaveClass('is-collapsed');
+    expect(screen.getByTestId('data-block-bottom-section')).toHaveClass('ms-is-collapsed');
   });
 
   it('supports old array download link options in datablock arrays', () => {

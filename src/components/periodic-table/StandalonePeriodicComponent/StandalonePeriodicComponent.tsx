@@ -8,8 +8,8 @@ import '../SelectableTable/periodic-element.detailed.less';
 import './StandalonePeriodicComponent.css';
 
 export enum DISPLAY_MODE {
-  SIMPLE = 'simple',
-  DETAILED = 'detailed',
+  SIMPLE = 'ms-simple',
+  DETAILED = 'ms-detailed',
 }
 
 export interface PeriodicElementProps {
@@ -60,18 +60,18 @@ export function StandalonePeriodicComponent({
   } satisfies CSSProperties;
 
   return (
-    <div className="mp-element-wrapper" style={style}>
+    <div className="ms-element-wrapper" style={style}>
       <button
         type="button"
         className={clsx(
-          'mat-element',
+          'ms-mat-element',
           displayMode,
           categoryToClassName(detail.category ?? detail.category_2, detail.symbol),
           {
-          enabled: cl.enabled,
-          disabled: cl.disabled,
-          hidden: cl.hidden,
-          'mat-group': !!detail.hasGroup,
+            'ms-enabled': cl.enabled,
+            'ms-disabled': cl.disabled,
+            'ms-hidden': cl.hidden,
+            'ms-mat-group': !!detail.hasGroup,
           }
         )}
         onClick={() => (!detail.hasGroup ? onElementClicked(detail) : undefined)}
@@ -86,19 +86,19 @@ export function StandalonePeriodicComponent({
       >
         {displayMode === DISPLAY_MODE.SIMPLE ? (
           <>
-            <span className="mat-number">{detail.number}</span>
-            <span className="mat-symbol">{detail.symbol}</span>
+            <span className="ms-mat-number">{detail.number}</span>
+            <span className="ms-mat-symbol">{detail.symbol}</span>
           </>
         ) : (
           <>
-            <div className="main-panel">
-              <div className="mat-number">{detail.number}</div>
-              <div className="mat-symbol">{detail.symbol}</div>
-              <div className="mat-name">{detail.name}</div>
-              {!detail.hasGroup ? <div className="mat-weight">{detail.atomic_mass}</div> : null}
+            <div className="ms-main-panel">
+              <div className="ms-mat-number">{detail.number}</div>
+              <div className="ms-mat-symbol">{detail.symbol}</div>
+              <div className="ms-mat-name">{detail.name}</div>
+              {!detail.hasGroup ? <div className="ms-mat-weight">{detail.atomic_mass}</div> : null}
             </div>
             {detail.shells && !detail.hasGroup ? (
-              <div className="mat-side-panel">
+              <div className="ms-mat-side-panel">
                 {detail.shells.map((shell, idx) => (
                   <div key={idx}>{shell}</div>
                 ))}

@@ -1,15 +1,15 @@
-.mpc-range-slider {
+.ms-range-slider {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   width: 100%;
 }
 
-.mpc-range-slider:not(.no-ticks) {
+.ms-range-slider:not(.ms-no-ticks) {
   padding-bottom: 1.25rem;
 }
 
-.mpc-range-slider .mpc-range-number-input {
+.ms-range-slider .ms-range-number-input {
   width: 6rem;
   min-width: 6rem;
   max-width: 6.5rem;
@@ -21,13 +21,13 @@
   box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.06);
 }
 
-.mpc-range-slider .slider {
+.ms-range-slider .ms-slider {
   position: relative;
   padding: 0.25rem 0.5rem 1.5rem;
   margin-top: 0;
 }
 
-.mpc-range-slider .mpc-slider-root {
+.ms-range-slider .ms-slider-root {
   position: relative;
   display: flex;
   align-items: center;
@@ -37,7 +37,7 @@
   user-select: none;
 }
 
-.mpc-range-slider .mpc-slider-track {
+.ms-range-slider .ms-slider-track {
   position: relative;
   flex: 1;
   height: 6px;
@@ -45,14 +45,14 @@
   background: #d5d9e0;
 }
 
-.mpc-range-slider .mpc-slider-range {
+.ms-range-slider .ms-slider-range {
   position: absolute;
   height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, #4f8ef7, #3273dc);
 }
 
-.mpc-range-slider .mpc-slider-thumb {
+.ms-range-slider .ms-slider-thumb {
   display: block;
   width: 18px;
   height: 18px;
@@ -63,29 +63,29 @@
   transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
-.mpc-range-slider .mpc-slider-thumb:hover {
+.ms-range-slider .ms-slider-thumb:hover {
   transform: scale(1.04);
 }
 
-.mpc-range-slider .mpc-slider-thumb:focus-visible {
+.ms-range-slider .ms-slider-thumb:focus-visible {
   outline: none;
   box-shadow: 0 0 0 4px rgba(50, 115, 220, 0.2);
 }
 
-.mpc-range-slider .mpc-slider-track > div {
+.ms-range-slider .ms-slider-track > div {
   position: absolute;
   top: 0;
   transform: translateX(-50%);
 }
 
-.mpc-range-slider .slider-tick-mark {
+.ms-range-slider .ms-slider-tick-mark {
   width: 1px;
   height: 8px;
   margin-top: 10px;
   background: rgba(54, 54, 54, 0.28);
 }
 
-.mpc-range-slider .slider-tick-value {
+.ms-range-slider .ms-slider-tick-value {
   position: absolute;
   top: 1.15rem;
   left: 50%;

@@ -15,7 +15,7 @@ export const Basic: Story = {
       id="Tooltip 1"
       delayShow={0}
       trigger={
-        <button className="button" type="button">
+        <button className="ms-button" type="button">
           Tooltip Trigger
         </button>
       }

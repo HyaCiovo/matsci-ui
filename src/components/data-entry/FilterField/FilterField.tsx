@@ -18,14 +18,14 @@ export interface FilterFieldProps extends PropsWithChildren {
 
 export const FilterField = ({ dois = [], ...props }: FilterFieldProps) => {
   const cancelButton = props.active ? (
-    <span className="filter-cancel-icon-wrap">
-      <FaRegTimesCircle className="filter-cancel-button" />
+    <span className="ms-filter-cancel-icon-wrap">
+      <FaRegTimesCircle className="ms-filter-cancel-button" />
     </span>
   ) : null;
   const innerLabel = (
     <>
       {props.label}
-      {props.units ? <span className="mpc-units"> ({props.units})</span> : null}
+      {props.units ? <span className="ms-units"> ({props.units})</span> : null}
       {cancelButton}
     </>
   );
@@ -35,20 +35,20 @@ export const FilterField = ({ dois = [], ...props }: FilterFieldProps) => {
         props.resetFilter?.(props.id);
       }}
     >
-      <span className={clsx({ 'tooltip-label': props.tooltip })}>{innerLabel}</span>
+      <span className={clsx({ 'ms-tooltip-label': props.tooltip })}>{innerLabel}</span>
     </a>
   ) : (
-    <span className={clsx({ 'tooltip-label': props.tooltip })}>{innerLabel}</span>
+    <span className={clsx({ 'ms-tooltip-label': props.tooltip })}>{innerLabel}</span>
   );
   const labelNode = props.tooltip ? <Tooltip trigger={trigger}>{props.tooltip}</Tooltip> : trigger;
 
   return (
-    <div id={props.id} className={clsx('mpc-filter-field', props.className)}>
+    <div id={props.id} className={clsx('ms-filter-field', props.className)}>
       {props.label ? (
-        <div className="mpc-filter-label" style={props.styleLabel}>
+        <div className="ms-filter-label" style={props.styleLabel}>
           {labelNode}
           {dois.map((doi) => (
-            <span key={doi} className="tag ml-2">
+            <span key={doi} className="ms-tag ms-ml-2">
               {doi}
             </span>
           ))}

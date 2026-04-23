@@ -77,7 +77,7 @@ export const SearchUIDataTable = () => {
   }, [apiEndpoint, currentLimit, currentSkip, results, sortFields]);
 
   return (
-    <div className="mpc-search-ui-data-table">
+    <div className="ms-search-ui-data-table">
       <DataTable
         data={displayResults}
         columns={columns}

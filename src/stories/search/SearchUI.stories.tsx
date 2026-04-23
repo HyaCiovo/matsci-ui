@@ -140,7 +140,7 @@ export const MatscholarAlpha: Story = {
       apiKey={STORYBOOK_API_KEY}
       matscholarEndpoint="/matscholar-api/api/search/materials/"
     >
-      <p className="has-text-centered">
+      <p className="ms-has-text-centered">
         Alpha version of Matscholar search integration with Materials Explorer
       </p>
       <SearchUISearchBar

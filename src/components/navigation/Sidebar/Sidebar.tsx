@@ -100,14 +100,14 @@ const SidebarItem = ({
   }
 
   return (
-    <span className={clsx('sidebar-menu-item', { selected: selectedParentAppId === app.id })}>
+    <span className={clsx('ms-sidebar-menu-item', { 'ms-selected': selectedParentAppId === app.id })}>
       {renderedIcon ? (
-        <span className={clsx('sidebar-item icon', renderedIcon)} />
+        <span className={clsx('ms-sidebar-item ms-icon', renderedIcon)} />
       ) : (
-        <span className="sidebar-item">{renderedSvg}</span>
+        <span className="ms-sidebar-item">{renderedSvg}</span>
       )}
       <span>{app.name}</span>
-      {subApp ? <span className="sub-app">{subApp}</span> : null}
+      {subApp ? <span className="ms-sub-app">{subApp}</span> : null}
     </span>
   );
 };
@@ -135,16 +135,16 @@ export const Sidebar = ({ width, currentApp, onAppSelected, layout, height }: Si
 
   return (
     <div
-      className={clsx('sidebar', layout)}
+      className={clsx('ms-sidebar', layout)}
       style={layout === 'vertical' ? { width } : { height }}
       onMouseLeave={() => setOpenAppId(null)}
     >
-      <div className="content">
+      <div className="ms-content">
         {MAIN_APPS.map((app) => (
           <button
             key={app.id}
             type="button"
-            className="is-unstyled"
+            className="ms-is-unstyled"
             data-testid={`sidebar-app-${app.id}`}
             onMouseEnter={() => setOpenAppId(app.id)}
             onFocus={() => setOpenAppId(app.id)}
@@ -155,18 +155,18 @@ export const Sidebar = ({ width, currentApp, onAppSelected, layout, height }: Si
       </div>
 
       {openAppId && activeSubApps.length ? (
-        <div data-testid="sidebar-popover" className={clsx('sidebar-popover', layout)}>
+        <div data-testid="sidebar-popover" className={clsx('ms-sidebar-popover', layout)}>
           {activeSubApps.map((app) => (
             <button
               key={app.id}
               type="button"
-              className={clsx('sidebar-menu-item', { selected: currentAppId === app.id })}
+              className={clsx('ms-sidebar-menu-item', { 'ms-selected': currentAppId === app.id })}
               onClick={() => setApp(app.id)}
             >
               {app.icon ? (
-                <span className={clsx('sidebar-item icon', app.icon)} />
+                <span className={clsx('ms-sidebar-item ms-icon', app.icon)} />
               ) : (
-                <span className="sidebar-item">{app.svg}</span>
+                <span className="ms-sidebar-item">{app.svg}</span>
               )}
               <span>{app.name}</span>
             </button>

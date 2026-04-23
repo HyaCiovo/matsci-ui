@@ -20,20 +20,20 @@ export const SearchUIDataCards = () => {
   );
 
   return (
-    <div data-testid="mpc-search-ui-data-cards" className="mpc-search-ui-data-cards">
+    <div data-testid="ms-search-ui-data-cards" className="ms-search-ui-data-cards">
       {paginator}
-      <div className="mpc-search-ui-data-cards-container">
+      <div className="ms-search-ui-data-cards-container">
         {results.map((result: any, index: number) => (
           <DataCard
-            key={`mpc-data-card-${index}`}
-            className="box mpc-search-ui-data-card"
+            key={`ms-data-card-${index}`}
+            className="ms-box ms-search-ui-data-card"
             data={result}
             levelOneKey={cardOptions?.levelOneKey}
             levelTwoKey={cardOptions?.levelTwoKey}
             levelThreeKeys={cardOptions?.levelThreeKeys}
             leftComponent={
               cardOptions?.imageBaseURL && cardOptions?.imageKey ? (
-                <figure className="image is-128x128">
+                <figure className="ms-image ms-is-128x128">
                   <img src={`${cardOptions.imageBaseURL}${result[cardOptions.imageKey]}.png`} />
                 </figure>
               ) : undefined

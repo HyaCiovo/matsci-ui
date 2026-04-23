@@ -1,11 +1,11 @@
-.mpc-dual-range-slider {
+.ms-dual-range-slider {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
-.mpc-dual-range-slider .mpc-dual-range-slider-inputs {
+.ms-dual-range-slider .ms-dual-range-slider-inputs {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -13,25 +13,25 @@
   margin-bottom: 0;
 }
 
-.mpc-dual-range-slider .mpc-dual-range-slider-input {
+.ms-dual-range-slider .ms-dual-range-slider-input {
   flex: 0 0 auto;
 }
 
-.mpc-dual-range-slider .mpc-dual-range-slider-input.is-max {
+.ms-dual-range-slider .ms-dual-range-slider-input.ms-is-max {
   margin-left: auto;
 }
 
-.mpc-dual-range-slider .mpc-range-number-input {
+.ms-dual-range-slider .ms-range-number-input {
   width: 75px;
   min-width: 75px;
   max-width: 90px;
 }
 
-.mpc-dual-range-slider .mpc-dual-range-slider-input.is-max .mpc-range-number-input {
+.ms-dual-range-slider .ms-dual-range-slider-input.ms-is-max .ms-range-number-input {
   text-align: right;
 }
 
-.mpc-dual-range-slider .mpc-slider-root {
+.ms-dual-range-slider .ms-slider-root {
   position: relative;
   display: flex;
   align-items: center;
@@ -41,20 +41,20 @@
   user-select: none;
 }
 
-.mpc-dual-range-slider .mpc-slider-track {
+.ms-dual-range-slider .ms-slider-track {
   position: relative;
   flex: 1;
   height: 5px;
   background: #ccc;
 }
 
-.mpc-dual-range-slider .mpc-slider-range {
+.ms-dual-range-slider .ms-slider-range {
   position: absolute;
   height: 100%;
   background: #3273dc;
 }
 
-.mpc-dual-range-slider .mpc-slider-thumb {
+.ms-dual-range-slider .ms-slider-thumb {
   display: block;
   width: 1.5em;
   height: 1.5em;
@@ -65,7 +65,7 @@
   box-shadow: none;
 }
 
-.mpc-dual-range-slider .mpc-slider-thumb:focus-visible {
+.ms-dual-range-slider .ms-slider-thumb:focus-visible {
   outline: none;
   border-color: #3273dc;
   box-shadow: 0 0 0 0.125em rgba(50, 115, 220, 0.25);

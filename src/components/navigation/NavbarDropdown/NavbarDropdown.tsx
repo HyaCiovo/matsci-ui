@@ -22,12 +22,12 @@ const renderNavbarItem = (
   onClose?: () => void
 ) => {
   if (item.isDivider) {
-    return <hr className="navbar-divider" key={key} />;
+    return <hr className="ms-navbar-divider" key={key} />;
   }
 
   if (item.isMenuLabel) {
     return (
-      <span className="navbar-item menu-label" key={key}>
+      <span className="ms-navbar-item ms-menu-label" key={key}>
         {item.label}
       </span>
     );
@@ -40,7 +40,7 @@ const renderNavbarItem = (
         href={item.href}
         target={item.target}
         rel={item.target === '_blank' ? 'noreferrer' : undefined}
-        className={clsx('navbar-item', item.className)}
+        className={clsx('ms-navbar-item', item.className)}
         onClick={onClose}
       >
         {item.label}
@@ -50,7 +50,7 @@ const renderNavbarItem = (
 
   return (
     <span onClick={onClose} key={key}>
-      <Link href={item.href || ''} className={clsx('navbar-item', item.className)}>
+      <Link href={item.href || ''} className={clsx('ms-navbar-item', item.className)}>
         {item.label}
       </Link>
     </span>
@@ -69,17 +69,17 @@ export const NavbarDropdown = ({
   const [isActive, setIsActive] = useState(false);
 
   const dropdownContent = isModal ? (
-    <div className={clsx('navbar-dropdown', { 'is-right': isRight })}>
+    <div className={clsx('ms-navbar-dropdown', { 'ms-is-right': isRight })}>
       {items.map((item, index) => (
         <div key={`modal-item-${index}`} onClick={(event) => event.stopPropagation()}>
           <ModalContextProvider>
             <ModalTrigger>
-              <span className="navbar-item">{item.label}</span>
+              <span className="ms-navbar-item">{item.label}</span>
             </ModalTrigger>
             <Modal>
-              <div className="panel">
-                <div className="panel-heading">{item.header}</div>
-                <div className="panel-block p-5">{item.content}</div>
+              <div className="ms-panel">
+                <div className="ms-panel-heading">{item.header}</div>
+                <div className="ms-panel-block ms-p-5">{item.content}</div>
               </div>
             </Modal>
           </ModalContextProvider>
@@ -88,8 +88,8 @@ export const NavbarDropdown = ({
     </div>
   ) : (
     <>
-      <a className={clsx('navbar-link', { 'is-arrowless': isArrowless })}>{children}</a>
-      <div className={clsx('navbar-dropdown', { 'is-right': isRight })}>
+      <a className={clsx('ms-navbar-link', { 'ms-is-arrowless': isArrowless })}>{children}</a>
+      <div className={clsx('ms-navbar-dropdown', { 'ms-is-right': isRight })}>
         {items.map((item, index) => renderNavbarItem(item, `navbar-dropdown-item-${index}`, () => setIsActive(false)))}
       </div>
     </>
@@ -99,12 +99,12 @@ export const NavbarDropdown = ({
     return (
       <div
         data-testid="navbar-dropdown"
-        className={clsx('navbar-item has-dropdown', className, { 'is-active': isActive })}
+        className={clsx('ms-navbar-item ms-has-dropdown', className, { 'ms-is-active': isActive })}
         onClick={() => setIsActive((current) => !current)}
       >
         {isModal ? (
           <>
-            <a className={clsx('navbar-link', { 'is-arrowless': isArrowless })}>{children}</a>
+            <a className={clsx('ms-navbar-link', { 'ms-is-arrowless': isArrowless })}>{children}</a>
             {dropdownContent}
           </>
         ) : (
@@ -117,7 +117,7 @@ export const NavbarDropdown = ({
   return (
     <div
       data-testid="navbar-dropdown"
-      className={clsx('navbar-item has-dropdown', className, { 'is-active': isActive })}
+      className={clsx('ms-navbar-item ms-has-dropdown', className, { 'ms-is-active': isActive })}
       onMouseEnter={() => setIsActive(true)}
       onMouseLeave={() => setIsActive(false)}
     >

@@ -18,7 +18,7 @@ export const ModalCloseButton = ({
     <button
       id={id}
       type="button"
-      className={clsx('mpc-modal-close modal-close', className)}
+      className={clsx('ms-modal-close', className)}
       aria-label={ariaLabel}
       onClick={onClick}
     />

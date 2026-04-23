@@ -16,10 +16,10 @@ describe('Drawer', () => {
       </DrawerContextProvider>
     );
 
-    expect(document.body.querySelector('.mpc-drawer')).toBeNull();
+    expect(document.body.querySelector('.ms-drawer')).toBeNull();
 
     fireEvent.click(screen.getByRole('button', { name: 'Drawer 1' }));
-    const drawer = document.body.querySelector('.mpc-drawer');
+    const drawer = document.body.querySelector('.ms-drawer');
     expect(screen.getByText('Drawer Content')).toBeInTheDocument();
     expect(['closed', 'opening', 'open']).toContain(drawer?.getAttribute('data-phase'));
 
@@ -46,7 +46,7 @@ describe('Drawer', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: 'Bottom Drawer' }));
-    expect(document.body.querySelector('.mpc-drawer')).toHaveAttribute('data-position', 'bottom');
+    expect(document.body.querySelector('.ms-drawer')).toHaveAttribute('data-position', 'bottom');
   });
 
   it('applies a custom duration through the drawer style variable', () => {
@@ -62,7 +62,7 @@ describe('Drawer', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: 'Fast Drawer' }));
-    expect(document.body.querySelector('.mpc-drawer')).toHaveStyle('--mpc-drawer-duration: 650ms');
+    expect(document.body.querySelector('.ms-drawer')).toHaveStyle('--ms-drawer-duration: 650ms');
   });
 
   it('keeps the new drawer opening while the previous drawer is closing', async () => {
@@ -85,7 +85,7 @@ describe('Drawer', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Drawer 1' }));
     await waitFor(() => {
-      const firstDrawer = Array.from(document.body.querySelectorAll('.mpc-drawer')).find((drawer) =>
+      const firstDrawer = Array.from(document.body.querySelectorAll('.ms-drawer')).find((drawer) =>
         (drawer.textContent ?? '').includes('First Drawer')
       );
       expect(firstDrawer).toHaveAttribute('data-phase', 'open');
@@ -94,7 +94,7 @@ describe('Drawer', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Drawer 2' }));
 
     await waitFor(() => {
-      const drawers = Array.from(document.body.querySelectorAll('.mpc-drawer'));
+      const drawers = Array.from(document.body.querySelectorAll('.ms-drawer'));
       expect(drawers).toHaveLength(2);
       expect(drawers.some((drawer) => drawer.getAttribute('data-phase') === 'closing')).toBe(true);
       expect(

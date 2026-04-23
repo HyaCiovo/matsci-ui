@@ -1,6 +1,6 @@
 @import '../../../assets/mixins.less';
 
-.mat-table-filter {
+.ms-mat-table-filter {
   .flex(row);
   font-family: Helvetica Neue, sans-serif;
   background-color: #f5f6f8;
@@ -8,24 +8,24 @@
   padding: 13px 30px;
   border: 1px solid #bebbbb;
 
-  .left-side {
+  .ms-left-side {
     .flex(row);
     .centered-container();
     .flex-fixed-size(100px);
   }
 
-  .right-side {
+  .ms-right-side {
     .flex(column);
     .flex-container-sized();
 
-    .filter-selector {
+    .ms-filter-selector {
       .flex(row);
 
-      .filter-group {
+      .ms-filter-group {
         .flex(row);
       }
 
-      .filter-group:not(:last-child):after {
+      .ms-filter-group:not(:last-child):after {
         content: '';
         display: inline-block;
         border-left: 1px solid #bebbbb;
@@ -33,11 +33,11 @@
       }
     }
 
-    .sub-filter-selector {
+    .ms-sub-filter-selector {
       .flex(row);
     }
 
-    .current-filter-selector {
+    .ms-current-filter-selector {
       background-color: transparent;
       color: #555759;
       font-size: 14px;
@@ -50,7 +50,7 @@
       border: 1px solid #555759;
       border-radius: 4px;
 
-      &.selected {
+      &.ms-selected {
         background-color: #555759;
         color: #fff;
       }
@@ -58,7 +58,7 @@
   }
 }
 
-.mat-element.hidden {
+.ms-mat-element.ms-hidden {
   background: rgba(200, 200, 200);
   pointer-events: none;
   * {
@@ -66,9 +66,9 @@
   }
 }
 
-.mp-element-wrapper,
-.table-container {
-  .mat-element.hidden {
+.ms-element-wrapper,
+.ms-table-container {
+  .ms-mat-element.ms-hidden {
     * {
       display: none;
     }

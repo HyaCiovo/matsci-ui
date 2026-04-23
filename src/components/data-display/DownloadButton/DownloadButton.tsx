@@ -25,7 +25,7 @@ export const DownloadButton = ({
     <button
       type="button"
       id={id}
-      className={clsx('mpc-download-button', className)}
+      className={clsx('ms-download-button', className)}
       data-tooltip={tooltip}
       onClick={() => downloadAs[filetype](data, filename)}
     >

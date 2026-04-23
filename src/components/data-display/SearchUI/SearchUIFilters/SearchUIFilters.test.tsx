@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { SearchUIContainer } from '../SearchUIContainer';
 import { SearchUIFilters } from './SearchUIFilters';
 import { useSearchUIContext } from '../SearchUIContextProvider';
@@ -161,7 +161,6 @@ const QueryProbe = () => {
 describe('SearchUIFilters', () => {
   afterEach(() => {
     vi.restoreAllMocks();
-    vi.useRealTimers();
     window.history.replaceState({}, '', '/');
   });
 
@@ -198,8 +197,6 @@ describe('SearchUIFilters', () => {
   });
 
   it('uses container debounce for text filters when filter-level debounce is not provided', async () => {
-    vi.useFakeTimers();
-
     const textFilterGroups: FilterGroup[] = [
       {
         name: 'Keyword',
@@ -230,11 +227,9 @@ describe('SearchUIFilters', () => {
 
     expect(screen.getByTestId('search-ui-query')).not.toHaveTextContent('keyword');
 
-    await act(async () => {
-      vi.advanceTimersByTime(50);
+    await waitFor(() => {
+      expect(screen.getByTestId('search-ui-query')).toHaveTextContent('"keyword":"oxide"');
     });
-
-    expect(screen.getByTestId('search-ui-query')).toHaveTextContent('"keyword":"oxide"');
   });
 
   it('expands one accordion group at a time and closes sibling groups', () => {

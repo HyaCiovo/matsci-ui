@@ -1,14 +1,14 @@
-.mpc-filter-label {
+.ms-filter-label {
   font-weight: 700;
   margin-bottom: 0.5rem;
 }
 
-.mpc-filter-label .tooltip-label {
+.ms-filter-label .ms-tooltip-label {
   display: inline-flex;
   align-items: center;
 }
 
-.mpc-filter-label .filter-cancel-icon-wrap {
+.ms-filter-label .ms-filter-cancel-icon-wrap {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -16,11 +16,11 @@
   line-height: 1;
 }
 
-.mpc-filter-label .filter-cancel-button {
+.ms-filter-label .ms-filter-cancel-button {
   display: block;
 }
 
-.mpc-units {
+.ms-units {
   font-weight: normal;
   font-size: 0.85rem;
 }

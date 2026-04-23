@@ -47,13 +47,13 @@ export const SearchUISynthesisRecipeCards = ({ texts: textsProp }: SearchUISynth
     Boolean(result?.target?.material_formula && Array.isArray(result?.precursors) && Array.isArray(result?.operations));
 
   return (
-    <div data-testid="mpc-synthesis-recipe-cards" className="mpc-synthesis-recipe-cards">
-      <div className="is-flex is-justify-content-space-between is-align-items-center mb-4">
-        <div className="is-size-7">
+    <div data-testid="ms-synthesis-recipe-cards" className="ms-synthesis-recipe-cards">
+      <div className="ms-is-flex ms-is-justify-content-space-between ms-is-align-items-center ms-mb-4">
+        <div className="ms-is-size-7">
           {formatTemplate(texts.pageSummaryTemplate, { page: currentPage, totalPages })}
         </div>
-        <label className="is-size-7">
-          <span className="mr-2">{texts.resultsPerPage}</span>
+        <label className="ms-is-size-7">
+          <span className="ms-mr-2">{texts.resultsPerPage}</span>
           <select
             data-testid="search-ui-synthesis-results-per-page"
             value={currentLimit}
@@ -68,7 +68,7 @@ export const SearchUISynthesisRecipeCards = ({ texts: textsProp }: SearchUISynth
         </label>
       </div>
 
-      <div className="mpc-synthesis-recipe-cards-container" style={{ display: 'grid', gap: '1rem' }}>
+      <div className="ms-synthesis-recipe-cards-container" style={{ display: 'grid', gap: '1rem' }}>
         {visibleResults.map((result, index) => {
           if (isSynthesisRecipe(result)) {
             return <SynthesisRecipeCard key={`${result.doi ?? 'recipe'}-${index}`} data={result} />;
@@ -78,9 +78,9 @@ export const SearchUISynthesisRecipeCards = ({ texts: textsProp }: SearchUISynth
             result.title ?? result.formula_pretty ?? result.material_id ?? result.doi ?? texts.defaultCardTitle;
           const subtitle = getCardSubtitle(result);
           return (
-            <article key={`${title}-${index}`} className="box">
-              <h3 className="title is-6 mb-2">{String(title)}</h3>
-              {subtitle ? <p className="subtitle is-7 mb-2">{String(subtitle)}</p> : null}
+            <article key={`${title}-${index}`} className="ms-box">
+              <h3 className="ms-title ms-is-6 ms-mb-2">{String(title)}</h3>
+              {subtitle ? <p className="ms-subtitle ms-is-7 ms-mb-2">{String(subtitle)}</p> : null}
               <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{JSON.stringify(result, null, 2)}</pre>
             </article>
           );

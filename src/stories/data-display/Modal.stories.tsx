@@ -14,12 +14,12 @@ export const Basic: Story = {
   render: () => (
     <ModalContextProvider>
       <ModalTrigger>
-        <button className="button">Open Modal</button>
+        <button className="ms-button">Open Modal</button>
       </ModalTrigger>
       <Modal>
-        <div className="panel">
-          <div className="panel-heading">Panel</div>
-          <div className="panel-block p-5">content</div>
+        <div className="ms-panel">
+          <div className="ms-panel-heading">Panel</div>
+          <div className="ms-panel-block ms-p-5">content</div>
         </div>
       </Modal>
     </ModalContextProvider>
@@ -32,12 +32,12 @@ export const WithForcedAction: Story = {
     return (
       <ModalContextProvider forceAction={true} active={active}>
         <ModalTrigger>
-          <button className="button">Open Modal with Forced Action</button>
+          <button className="ms-button">Open Modal with Forced Action</button>
         </ModalTrigger>
         <Modal>
-          <div className="panel">
-            <div className="panel-heading">Panel</div>
-            <div className="p-5">
+          <div className="ms-panel">
+            <div className="ms-panel-heading">Panel</div>
+            <div className="ms-p-5">
               <div>
                 <strong>Refresh page to close.</strong>
               </div>
@@ -46,7 +46,7 @@ export const WithForcedAction: Story = {
                 that state from a button inside the modal.
               </div>
             </div>
-            <button className="button m-5" onClick={() => setActive(false)}>
+            <button className="ms-button ms-m-5" onClick={() => setActive(false)}>
               Save
             </button>
           </div>

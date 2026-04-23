@@ -29,8 +29,8 @@ describe('Dropdown', () => {
 
     await user.click(screen.getByRole('button', { name: /Items/i }));
 
-    expect(container.querySelector('.dropdown')).toHaveClass('is-up');
-    expect(container.querySelector('.mpc-dropdown-menu')).toBeInTheDocument();
+    expect(container.querySelector('.ms-dropdown')).toHaveClass('ms-is-up');
+    expect(container.querySelector('.ms-dropdown-menu')).toBeInTheDocument();
     expect(await screen.findByText('One')).toBeInTheDocument();
     expect(screen.getByText('Two')).toBeInTheDocument();
   });

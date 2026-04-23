@@ -34,18 +34,18 @@ export const PeriodicTableFormulaButtons = ({
 
   return (
     <>
-      <div className="pt-spacer" />
+      <div className="ms-pt-spacer" />
       {!hideWildcardButton ? (
         <Tooltip
           place="bottom"
           trigger={
             <button
               type="button"
-              className="pt-wildcard-button mat-element has-tooltip-bottom"
+              className="ms-pt-wildcard-button ms-mat-element ms-has-tooltip-bottom"
               onClick={() => onClick('*')}
               title={resolvedWildcardTitle}
             >
-              <span className="mat-symbol">
+              <span className="ms-mat-symbol">
                 <FaAsterisk />
               </span>
             </button>
@@ -55,8 +55,8 @@ export const PeriodicTableFormulaButtons = ({
         </Tooltip>
       ) : null}
       {values.map((value) => (
-        <button key={value} type="button" className="mat-element" onClick={() => onClick(value)}>
-          <span className="mat-symbol">{value}</span>
+        <button key={value} type="button" className="ms-mat-element" onClick={() => onClick(value)}>
+          <span className="ms-mat-symbol">{value}</span>
         </button>
       ))}
     </>

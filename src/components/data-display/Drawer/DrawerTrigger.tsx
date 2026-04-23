@@ -16,7 +16,7 @@ export const DrawerTrigger = ({ id, className, forDrawerId, children }: DrawerTr
   return (
     <span
       id={id}
-      className={clsx('mpc-drawer-trigger', className)}
+      className={clsx('ms-drawer-trigger', className)}
       onClick={() => setActiveDrawer(activeDrawer === forDrawerId ? null : forDrawerId)}
     >
       {children}

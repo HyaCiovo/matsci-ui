@@ -41,13 +41,13 @@ export const ArrayChips = ({
               disable={!tooltipContent}
               trigger={
                 <a
-                  className="tag"
+                  className="ms-tag"
                   href={href}
                   target={target}
                   rel={target === '_blank' ? 'noreferrer' : undefined}
                   onClick={(event) => event.stopPropagation()}
                 >
-                  {showDownloadIcon ? <FaDownload className="mr-1" /> : null}
+                  {showDownloadIcon ? <FaDownload className="ms-mr-1" /> : null}
                   {chipContent}
                 </a>
               }
@@ -62,8 +62,8 @@ export const ArrayChips = ({
             key={`array-chip-${index}-${item}`}
             disable={!tooltipContent}
             trigger={
-              <span className="tag">
-                {showDownloadIcon ? <FaDownload className="mr-1" /> : null}
+              <span className="ms-tag">
+                {showDownloadIcon ? <FaDownload className="ms-mr-1" /> : null}
                 {chipContent}
               </span>
             }

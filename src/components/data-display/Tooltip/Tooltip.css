@@ -1,4 +1,4 @@
-.mpc-tooltip {
+.ms-tooltip {
   pointer-events: none;
   font-weight: normal;
   text-align: left;
@@ -8,22 +8,22 @@
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
   z-index: 1000;
-  animation: mpc-tooltip-fade-in 120ms ease-out;
+  animation: ms-tooltip-fade-in 120ms ease-out;
 }
 
-.mpc-tooltip[data-border='true'] {
+.ms-tooltip[data-border='true'] {
   border: 1px solid #fff;
 }
 
-.mpc-tooltip[data-clickable='true'] {
+.ms-tooltip[data-clickable='true'] {
   pointer-events: auto;
 }
 
-.mpc-tooltip-arrow {
+.ms-tooltip-arrow {
   fill: rgba(54, 54, 54, 0.95);
 }
 
-@keyframes mpc-tooltip-fade-in {
+@keyframes ms-tooltip-fade-in {
   from {
     opacity: 0;
     transform: translateY(2px);

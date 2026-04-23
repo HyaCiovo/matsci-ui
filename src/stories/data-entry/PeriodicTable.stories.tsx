@@ -22,7 +22,7 @@ export const Basic: Story = {
     <PeriodicContext>
       <SelectableTable
         forceTableLayout={TableLayout.MINI}
-        className="max-750"
+        className="ms-max-750"
         maxElementSelectable={5}
       />
     </PeriodicContext>

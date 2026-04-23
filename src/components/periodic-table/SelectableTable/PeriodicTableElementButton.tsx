@@ -38,9 +38,9 @@ function PeriodicTableElementButtonImpl({
   if (hidden) {
     return (
       <div
-        className={clsx('mat-element', 'hidden', {
+        className={clsx('ms-mat-element', 'ms-hidden', {
           [categoryToClassName(detail?.category ?? detail?.category_2, element)]: true,
-          'mat-group': !!detail?.hasGroup,
+          'ms-mat-group': !!detail?.hasGroup,
         })}
         style={{
           gridColumn: xpos,
@@ -59,12 +59,13 @@ function PeriodicTableElementButtonImpl({
         gridColumn: `${xpos}`,
         gridRow: `${ypos}`,
       }}
-      className={clsx('mat-element', {
-        enabled,
-        disabled,
-        'default-disabled': defaultDisabled,
+      className={clsx('ms-mat-element', {
+        'ms-enabled': enabled,
+        'ms-disabled': disabled,
+        'ms-hidden': hidden,
+        'ms-default-disabled': defaultDisabled,
         [categoryToClassName(detail?.category ?? detail?.category_2, element)]: true,
-        'mat-group': !!detail?.hasGroup,
+        'ms-mat-group': !!detail?.hasGroup,
       })}
       onClick={() => {
         if (!interactionDisabled) {
@@ -83,11 +84,11 @@ function PeriodicTableElementButtonImpl({
     >
       {detail ? (
         <>
-          <span className="mat-number">{detail.number}</span>
-          <span className="mat-symbol">{detail.symbol}</span>
+          <span className="ms-mat-number">{detail.number}</span>
+          <span className="ms-mat-symbol">{detail.symbol}</span>
         </>
       ) : (
-        <span className="mat-symbol">{element}</span>
+        <span className="ms-mat-symbol">{element}</span>
       )}
     </button>
   );

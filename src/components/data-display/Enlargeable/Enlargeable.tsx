@@ -28,25 +28,25 @@ export const Enlargeable = ({
   return (
     <div
       id={id}
-      className={clsx('mpc-enlargeable', {
-        'modal is-active': expanded,
+      className={clsx('ms-enlargeable', {
+        'ms-modal ms-is-active': expanded,
         [className]: !expanded,
       })}
     >
       <div
         className={clsx({
-          'modal-background': expanded,
+          'ms-modal-background': expanded,
         })}
         onClick={() => setExpanded(false)}
       />
       <div
         className={clsx({
-          'modal-content is-large': expanded,
+          'ms-modal-content ms-is-large': expanded,
           [className]: expanded,
         })}
       >
         {!hideButton ? (
-          <button className="button mpc-enlarge-button" onClick={() => setExpanded(!expanded)}>
+          <button className="ms-button ms-enlarge-button" onClick={() => setExpanded(!expanded)}>
             {expanded ? <FaCompress /> : <FaExpand />}
           </button>
         ) : null}

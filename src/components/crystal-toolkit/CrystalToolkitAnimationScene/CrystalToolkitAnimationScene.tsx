@@ -562,7 +562,7 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
       expanded={expanded}
       setExpanded={setExpanded}
     >
-      <div className="mpc-scene">
+      <div className="ms-scene">
         {props.showControls && (
           <>
             <ButtonBar>
@@ -571,7 +571,7 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
                   place="left"
                   trigger={
                     <button
-                      className="button"
+                      className="ms-button"
                       onClick={() => {
                         hideTooltip();
                         setExpanded(!expanded);
@@ -590,7 +590,7 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
                   trigger={
                     <button
                       data-tooltip-id={`settings-${tooltipId}`}
-                      className="button"
+                      className="ms-button"
                       onClick={() => setShowSettingsPanel(!showSettingsPanel)}
                     >
                       <FaCogs />
@@ -605,7 +605,7 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
                   place="left"
                   trigger={
                     <button
-                      className="button"
+                      className="ms-button"
                       onClick={() => {
                         if (
                           originalCameraState?.position &&
@@ -635,7 +635,7 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
                       <Dropdown triggerIcon={<FaCamera />} isArrowless isRight>
                         <p
                           key={`image-export-png`}
-                          className="dropdown-item"
+                          className="ms-dropdown-item"
                           onClick={() => {
                             requestImage(ExportType.png, scene.current!);
                           }}
@@ -645,7 +645,7 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
 
                         <p
                           key={`image-export-gltf`}
-                          className="dropdown-item"
+                          className="ms-dropdown-item"
                           onClick={() => {
                             requestImage(ExportType.gltf, scene.current!);
                           }}
@@ -655,7 +655,7 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
 
                         <p
                           key={`image-export-glb`}
-                          className="dropdown-item"
+                          className="ms-dropdown-item"
                           onClick={() => {
                             requestImage(ExportType.glb, scene.current!);
                           }}
@@ -665,7 +665,7 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
 
                         <p
                           key={`image-export-udz`}
-                          className="dropdown-item"
+                          className="ms-dropdown-item"
                           onClick={() => {
                             requestImage(ExportType.usdz, scene.current!);
                           }}
@@ -688,7 +688,7 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
                         {props.fileOptions?.map((option, i) => (
                           <p
                             key={`file-export-${i}`}
-                            className="dropdown-item"
+                            className="ms-dropdown-item"
                             onClick={() => {
                               props.setProps({ fileType: option, fileTimestamp: Date.now() });
                             }}
@@ -708,17 +708,17 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
         )}
         {hasSettingsPanel && (
           <div
-            className={clsx('mpc-scene-settings-panel', {
-              'is-hidden': !showSettingsPanel
+            className={clsx('ms-scene-settings-panel', {
+              'ms-is-hidden': !showSettingsPanel
             })}
           >
-            <ModalCloseButton className="delete" onClick={() => setShowSettingsPanel(false)} />
+            <ModalCloseButton className="ms-delete" onClick={() => setShowSettingsPanel(false)} />
             {settingsPanel}
           </div>
         )}
-        {hasBottomPanel && <div className="mpc-scene-bottom-panel">{bottomPanel}</div>}
-        <div className="mpc-scene-square-wrapper">
-          <div className="mpc-scene-square" style={{ width: size, height: size }}>
+        {hasBottomPanel && <div className="ms-scene-bottom-panel">{bottomPanel}</div>}
+        <div className="ms-scene-square-wrapper">
+          <div className="ms-scene-square" style={{ width: size, height: size }}>
             <div
               id={props.id!}
               style={{ ...MOUNT_NODE_STYLE, width: size, height: size }}

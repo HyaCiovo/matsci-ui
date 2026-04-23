@@ -13,7 +13,7 @@ const PeriodicTableIcon = ({ active }: { active: boolean }) => (
   <svg
     viewBox="0 0 208 118"
     aria-hidden="true"
-    className={clsx('mpc-materials-input-toggle-icon', { 'is-active': active })}
+    className={clsx('ms-materials-input-toggle-icon', { 'ms-is-active': active })}
   >
     <g fill="currentColor">
       <rect x="10" y="10" width="9" height="9" />
@@ -230,8 +230,8 @@ export const MaterialsInputBox = ({
   disableSubmitButton,
 }: MaterialsInputBoxProps) => {
   const inputControl = (
-    <div className="control is-expanded">
-      <div className="mpc-materials-input-control">
+    <div className="ms-control ms-is-expanded">
+      <div className="ms-materials-input-control">
         <Input
           ref={inputRef}
           data-testid="materials-input-search-input"
@@ -266,20 +266,20 @@ export const MaterialsInputBox = ({
 
   if (!showSubmitButton) {
     return (
-      <div className="field has-addons">
+      <div className="ms-field ms-has-addons">
         {inputControl}
         
         {helpItems ? (
-          <div className="control">
+          <div className="ms-control">
             <Tooltip
               place="bottom"
               trigger={
                 <button
                   data-testid="materials-input-help-button"
                   type="button"
-                  className={clsx('mpc-materials-input-addon button', {
-                    'has-text-grey-light': !showInputHelp,
-                    'has-text-link': showInputHelp,
+                  className={clsx('ms-materials-input-addon ms-button', {
+                    'ms-has-text-grey-light': !showInputHelp,
+                    'ms-has-text-link': showInputHelp,
                   })}
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={onHelpToggle}
@@ -294,15 +294,15 @@ export const MaterialsInputBox = ({
         ) : null}
 
         {error ? (
-          <div className="control">
+          <div className="ms-control">
             <Tooltip
               place="bottom"
               trigger={
                 <button
                   data-testid="materials-input-error"
                   type="button"
-                  className={clsx('mpc-materials-input-addon button is-static mpc-materials-input-error', {
-                    'has-tooltip-active': errorTipStayActive,
+                  className={clsx('ms-materials-input-addon ms-button ms-is-static ms-materials-input-error', {
+                    'ms-has-tooltip-active': errorTipStayActive,
                   })}
                   onMouseOver={onErrorMouseOver}
                 >
@@ -319,23 +319,23 @@ export const MaterialsInputBox = ({
   }
 
   return (
-    <div className="field has-addons">
+    <div className="ms-field ms-has-addons">
       {label ? (
-        <div className="control">
-          <button type="button" className="button is-static">
+        <div className="ms-control">
+          <button type="button" className="ms-button ms-is-static">
             {label}
           </button>
         </div>
       ) : null}
 
       {showTypeDropdown ? (
-        <div className="control" data-testid="mpc-chemsys-dropdown">
-          <Dropdown triggerLabel={typeDropdownValue} triggerClassName="button">
+        <div className="ms-control" data-testid="ms-chemsys-dropdown">
+          <Dropdown triggerLabel={typeDropdownValue} triggerClassName="ms-button">
             {typeDropdownOptions.map((option) => (
               <button
                 key={option}
                 type="button"
-                className={clsx('dropdown-item', { 'is-active': option === typeDropdownValue })}
+                className={clsx('ms-dropdown-item', { 'ms-is-active': option === typeDropdownValue })}
                 onClick={() => onTypeChange(option)}
               >
                 {option}
@@ -348,16 +348,16 @@ export const MaterialsInputBox = ({
       {inputControl}
 
       {helpItems ? (
-        <div className="control">
+        <div className="ms-control">
           <Tooltip
             place="bottom"
             trigger={
               <button
                 data-testid="materials-input-help-button"
                 type="button"
-                className={clsx('button input-help-button', {
-                  'has-text-grey-light': !showInputHelp,
-                  'has-text-link': showInputHelp,
+                className={clsx('ms-button ms-input-help-button', {
+                  'ms-has-text-grey-light': !showInputHelp,
+                  'ms-has-text-link': showInputHelp,
                 })}
                 onClick={onHelpToggle}
               >
@@ -371,15 +371,15 @@ export const MaterialsInputBox = ({
       ) : null}
 
       {error ? (
-        <div className="control">
+        <div className="ms-control">
           <Tooltip
             place="bottom"
             trigger={
               <button
                 data-testid="materials-input-error"
                 type="button"
-                className={clsx('mpc-materials-input-error button', {
-                  'has-tooltip-active': errorTipStayActive,
+                className={clsx('ms-materials-input-error ms-button', {
+                  'ms-has-tooltip-active': errorTipStayActive,
                 })}
                 onMouseOver={onErrorMouseOver}
               >
@@ -393,14 +393,14 @@ export const MaterialsInputBox = ({
       ) : null}
 
       {periodicTableMode === 'toggle' && hasPeriodicTable ? (
-        <div className="control">
+        <div className="ms-control">
           <Tooltip
             place="bottom"
             trigger={
               <button
                 data-testid="materials-input-toggle-button"
                 type="button"
-                className="button has-oversized-icon is-size-2 mpc-materials-input-toggle-button"
+                className="ms-button ms-has-oversized-icon ms-is-size-2 ms-materials-input-toggle-button"
                 onClick={onPeriodicToggle}
               >
                 <PeriodicTableIcon active={showPeriodicTable} />
@@ -412,11 +412,11 @@ export const MaterialsInputBox = ({
         </div>
       ) : null}
 
-      <div className="control">
+      <div className="ms-control">
         <button
           data-testid="materials-input-submit-button"
-          className={clsx('button is-primary', {
-            'is-loading': loading,
+          className={clsx('ms-button ms-is-primary', {
+            'ms-is-loading': loading,
           })}
           type="submit"
           disabled={disableSubmitButton}

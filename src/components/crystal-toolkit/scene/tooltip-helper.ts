@@ -14,7 +14,7 @@ export class TooltipHelper {
 
   constructor() {
     const label = document.createElement('div');
-    label.className = 'tooltiptext';
+    label.className = 'ms-tooltiptext';
     const hoverLabel = document.createElement('span');
     hoverLabel.className = '';
     label.appendChild(hoverLabel);

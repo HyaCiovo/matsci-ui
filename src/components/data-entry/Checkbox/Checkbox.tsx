@@ -15,10 +15,10 @@ export type CheckboxProps = Omit<CheckboxPrimitive.CheckboxProps, 'checked' | 'd
 export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
   ({ className, ...props }, ref) => {
     return (
-      <CheckboxPrimitive.Root ref={ref} className={clsx('mpc-checkbox-root', className)} {...props}>
-        <CheckboxPrimitive.Indicator className="mpc-checkbox-indicator">
-          <FaCheck aria-hidden="true" className="mpc-checkbox-icon is-check" />
-          <FaMinus aria-hidden="true" className="mpc-checkbox-icon is-indeterminate" />
+      <CheckboxPrimitive.Root ref={ref} className={clsx('ms-checkbox-root', className)} {...props}>
+        <CheckboxPrimitive.Indicator className="ms-checkbox-indicator">
+          <FaCheck aria-hidden="true" className="ms-checkbox-icon ms-is-check" />
+          <FaMinus aria-hidden="true" className="ms-checkbox-icon ms-is-indeterminate" />
         </CheckboxPrimitive.Indicator>
       </CheckboxPrimitive.Root>
     );

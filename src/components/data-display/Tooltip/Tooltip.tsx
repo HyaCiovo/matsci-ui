@@ -96,13 +96,13 @@ export const Tooltip = ({
             side={place}
             sideOffset={resolveOffset(offset)}
             collisionPadding={8}
-            className={clsx('mpc-tooltip', className)}
+            className={clsx('ms-tooltip', className)}
             data-border={border}
             data-clickable={clickable}
             style={style}
           >
             {content}
-            <TooltipPrimitive.Arrow className="mpc-tooltip-arrow" width={8} height={4} />
+            <TooltipPrimitive.Arrow className="ms-tooltip-arrow" width={8} height={4} />
           </TooltipPrimitive.Content>
         </TooltipPrimitive.Portal>
       </TooltipPrimitive.Root>

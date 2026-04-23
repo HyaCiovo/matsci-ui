@@ -153,10 +153,10 @@ export const RangeSlider = ({
   }, [debouncedInputValue]);
 
   return (
-    <div id={id} className={clsx('mpc-range-slider', className, { 'no-ticks': !tickMarks })}>
+    <div id={id} className={clsx('ms-range-slider', className, { 'ms-no-ticks': !tickMarks })}>
       <Input
         data-testid="range-slider-input"
-        className="is-small mpc-range-number-input"
+        className="ms-is-small ms-range-number-input"
         style={styleInput}
         type="number"
         value={inputValue}
@@ -165,9 +165,9 @@ export const RangeSlider = ({
         step={isLogScale ? undefined : step}
         onChange={(event) => setInputValue(event.target.value)}
       />
-      <div className="slider" style={styleSlider}>
+      <div className="ms-slider" style={styleSlider}>
         <Slider.Root
-          className="mpc-slider-root"
+          className="ms-slider-root"
           min={domain[0]}
           max={domain[1]}
           step={step}
@@ -178,16 +178,16 @@ export const RangeSlider = ({
           }}
           onValueCommit={(next) => emitChange(next[0])}
         >
-          <Slider.Track className="mpc-slider-track">
-            <Slider.Range className="mpc-slider-range" />
+          <Slider.Track className="ms-slider-track">
+            <Slider.Range className="ms-slider-range" />
             {tickMarks?.map((tick, index) => {
               const offset = ((tick - domain[0]) / (domain[1] - domain[0])) * 100;
               const tickLabel = isLogScale ? formatPow10(tick) : tick.toString();
 
               return (
                 <div key={`tick-${tick}-${index}`} style={{ left: `${offset}%` }}>
-                  <div className="slider-tick-mark" />
-                  <span data-testid="tick-value" className="slider-tick-value">
+                  <div className="ms-slider-tick-mark" />
+                  <span data-testid="tick-value" className="ms-slider-tick-value">
                     {tickLabel}
                     {inclusiveTickBounds && index === tickMarks.length - 1 ? '+' : ''}
                   </span>
@@ -195,7 +195,7 @@ export const RangeSlider = ({
               );
             })}
           </Slider.Track>
-          <Slider.Thumb data-testid="slider-button" className="mpc-slider-thumb" />
+          <Slider.Thumb data-testid="slider-button" className="ms-slider-thumb" />
         </Slider.Root>
       </div>
     </div>

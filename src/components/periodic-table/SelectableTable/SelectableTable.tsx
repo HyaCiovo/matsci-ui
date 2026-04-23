@@ -71,15 +71,15 @@ function SelectableTableStateObserver({
 
 function getLayoutClass(forceTableLayout: TableLayout) {
   if (forceTableLayout === TableLayout.MINI) {
-    return 'small';
+    return 'ms-small';
   }
   if (forceTableLayout === TableLayout.COMPACT) {
-    return 'compact';
+    return 'ms-compact';
   }
   if (forceTableLayout === TableLayout.MAP) {
-    return 'map';
+    return 'ms-map';
   }
-  return 'spaced';
+  return 'ms-spaced';
 }
 
 export interface SelectableTableProps {
@@ -189,15 +189,15 @@ function SelectableTableView({
 
   return (
     <div
-      className={clsx('mpc-selectable-table', className, {
-        'mpc-selectable-table-mini': forceTableLayout === TableLayout.MINI,
+      className={clsx('ms-selectable-table', className, {
+        'ms-selectable-table-mini': forceTableLayout === TableLayout.MINI,
       })}
       data-table-layout={forceTableLayout}
     >
       <SelectableTableDetailObserver onDetailedElementChange={onDetailedElementChange} />
       <SelectableTableStateObserver onTableStateChange={onTableStateChange} />
       <div
-        className={clsx('table-container', layoutClass)}
+        className={clsx('ms-table-container', layoutClass)}
         onMouseLeave={() => {
           actions.setDetailedElement(null);
         }}

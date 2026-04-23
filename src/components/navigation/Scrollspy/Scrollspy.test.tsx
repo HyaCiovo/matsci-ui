@@ -20,7 +20,7 @@ describe('Scrollspy', () => {
   ];
 
   it('renders nested menu groups and links', () => {
-    render(<Scrollspy menuGroups={menuGroups} activeClassName="is-active" />);
+    render(<Scrollspy menuGroups={menuGroups} activeClassName="ms-is-active" />);
 
     expect(screen.getByText('Menu Group 1')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Menu Item 1' })).toHaveAttribute('href', '#one');
@@ -46,10 +46,10 @@ describe('Scrollspy', () => {
       return originalGetElementById(id);
     });
 
-    render(<Scrollspy menuGroups={menuGroups} activeClassName="is-active" />);
+    render(<Scrollspy menuGroups={menuGroups} activeClassName="ms-is-active" />);
 
     await waitFor(() => {
-      expect(screen.getByRole('link', { name: 'Menu Item 1' })).toHaveClass('is-active');
+      expect(screen.getByRole('link', { name: 'Menu Item 1' })).toHaveClass('ms-is-active');
     });
   });
 });

@@ -1,11 +1,7 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MaterialsInput, MaterialsInputType, PeriodicTableMode } from './MaterialsInput';
 
 describe('MaterialsInput', () => {
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
   it('restores the last valid value when input exceeds the max element limit', () => {
     render(
       <MaterialsInput
@@ -134,8 +130,7 @@ describe('MaterialsInput', () => {
     expect(screen.getByTestId('materials-input-search-input')).toHaveValue('');
   });
 
-  it('submits the latest input immediately even when debounce is enabled', () => {
-    vi.useFakeTimers();
+  it('submits the latest input immediately even when debounce is enabled', async () => {
     const handleChange = vi.fn();
     const handleSubmit = vi.fn();
 
@@ -161,11 +156,9 @@ describe('MaterialsInput', () => {
     expect(handleSubmit).toHaveBeenCalledWith(expect.anything(), 'Li-Fe');
     expect(handleChange).not.toHaveBeenCalled();
 
-    act(() => {
-      vi.advanceTimersByTime(300);
+    await waitFor(() => {
+      expect(handleChange).toHaveBeenCalledWith('Li-Fe');
     });
-
-    expect(handleChange).toHaveBeenCalledWith('Li-Fe');
   });
 
   it('syncs selection mode formatting when the controlled input type changes', () => {

@@ -71,7 +71,7 @@ const getInitialOpenGroupNames = (groups: FilterGroup[]) => {
   return firstExpandedGroup ? [...alwaysExpanded, firstExpandedGroup] : alwaysExpanded;
 };
 
-const renderUnits = (units?: string) => (units ? <span className="is-size-7 has-text-weight-normal"> ({units})</span> : null);
+const renderUnits = (units?: string) => (units ? <span className="ms-is-size-7 ms-has-text-weight-normal"> ({units})</span> : null);
 
 export const SearchUIFilters = ({ className, texts: textsProp }: SearchUIFiltersProps) => {
   const texts = mergeTexts(DEFAULT_TEXTS, textsProp);
@@ -194,16 +194,16 @@ export const SearchUIFilters = ({ className, texts: textsProp }: SearchUIFilters
   const openGroupNameSet = useMemo(() => new Set(openGroupNames), [openGroupNames]);
 
   return (
-    <div className={clsx('panel', className)}>
-      <div className="panel-heading">
-        <div className="level is-mobile">
+    <div className={clsx('ms-panel', className)}>
+      <div className="ms-panel-heading">
+        <div className="ms-level ms-is-mobile">
           <span>{texts.title}</span>
-          <button data-testid="search-ui-reset-button" className="button" onClick={() => void resetFilters()}>
+          <button data-testid="search-ui-reset-button" className="ms-button" onClick={() => void resetFilters()}>
             {texts.reset}
           </button>
         </div>
       </div>
-      <div data-testid="panel-block-container" className="panel-block-container">
+      <div data-testid="panel-block-container" className="ms-panel-block-container">
         <Accordion
           type="multiple"
           value={openGroupNames}
@@ -214,7 +214,7 @@ export const SearchUIFilters = ({ className, texts: textsProp }: SearchUIFilters
             const nextOpenCollapsible = newlyOpened ?? nextCollapsible[nextCollapsible.length - 1];
             setOpenGroupNames(nextOpenCollapsible ? [...alwaysExpandedGroups, nextOpenCollapsible] : alwaysExpandedGroups);
           }}
-          className="mpc-search-ui-filter-accordion"
+          className="ms-search-ui-filter-accordion"
         >
           {renderedGroups.map((group, index) => {
             const groupState = groupMetaByName[group.name];
@@ -228,24 +228,24 @@ export const SearchUIFilters = ({ className, texts: textsProp }: SearchUIFilters
             <AccordionItem
               key={group.name}
               value={group.name}
-              className={clsx('panel-block', { 'is-active': isExpanded })}
+              className={clsx('ms-panel-block', { 'ms-is-active': isExpanded })}
             >
-              <div className="control">
-                <AccordionHeader className="panel-block-title">
+              <div className="ms-control">
+                <AccordionHeader className="ms-panel-block-title">
                   <AccordionTrigger
-                    className="button is-fullwidth"
+                    className="ms-button ms-is-fullwidth"
                     disabled={group.alwaysExpanded}
                     aria-expanded={isExpanded}
                     aria-controls={`filter-group-${index}`}
                     id={`filter-group-button-${index}`}
                   >
-                    <span className="mr-4">
-                      {group.alwaysExpanded ? null : isExpanded ? <FaCaretDown className="filter-group-caret" /> : <FaCaretRight className="filter-group-caret" />}
+                    <span className="ms-mr-4">
+                      {group.alwaysExpanded ? null : isExpanded ? <FaCaretDown className="ms-filter-group-caret" /> : <FaCaretRight className="ms-filter-group-caret" />}
                     </span>
-                    <span className={clsx('is-size-5', { 'has-opacity-70': !isExpanded })}>
+                    <span className={clsx('ms-is-size-5', { 'ms-has-opacity-70': !isExpanded })}>
                       {group.name}
                       {groupState.activeFilterCount > 0 ? (
-                        <span className="tag is-link is-rounded ml-2">
+                        <span className="ms-tag ms-is-link ms-is-rounded ms-ml-2">
                           {formatTemplate(texts.activeCountTemplate, { count: groupState.activeFilterCount })}
                         </span>
                       ) : null}
@@ -256,7 +256,7 @@ export const SearchUIFilters = ({ className, texts: textsProp }: SearchUIFilters
                   id={`filter-group-${index}`}
                   role="region"
                   aria-labelledby={`filter-group-button-${index}`}
-                  className={clsx('panel-block-children', { 'is-hidden': !isExpanded })}
+                  className={clsx('ms-panel-block-children', { 'ms-is-hidden': !isExpanded })}
                 >
                   {isExpanded ? (
                     <div aria-hidden={!isExpanded}>

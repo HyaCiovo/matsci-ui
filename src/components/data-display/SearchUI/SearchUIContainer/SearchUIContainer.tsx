@@ -39,7 +39,7 @@ export const SearchUIContainer = ({
   children,
 }: SearchUIContainerProps) => {
   return (
-    <div id={id} className={clsx('mpc-search-ui', className)}>
+    <div id={id} className={clsx('ms-search-ui', className)}>
       <SearchUIContextProvider
         id={id}
         className={className}

@@ -1,25 +1,25 @@
-.mpc-pt-mode-switcher .dropdown-container {
+.ms-pt-mode-switcher .ms-dropdown-container {
   width: 100%;
   text-align: center;
 }
 
-.mpc-pt-mode-switcher .dropdown {
+.ms-pt-mode-switcher .ms-dropdown {
   text-align: left;
 }
 
-.mpc-pt-mode-content {
+.ms-pt-mode-content {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: 1fr;
   grid-gap: 2px;
 }
 
-.mpc-pt-mode-content .pt-description {
+.ms-pt-mode-content .ms-pt-description {
   grid-column: 5 / span 6;
   grid-row: 1 / span 2;
 }
 
-.mpc-pt-mode-content .pt-description > * {
+.ms-pt-mode-content .ms-pt-description > * {
   padding: 0.25rem;
   font-size: 0.85rem;
   border: 1px solid #ccc;
@@ -28,7 +28,7 @@
 }
 
 @media screen and (min-width: 769px) and (max-width: 959px) {
-  .mpc-pt-mode-switcher-description {
+  .ms-pt-mode-switcher-description {
     width: 100%;
     margin-left: 0;
     padding: 0.25rem;

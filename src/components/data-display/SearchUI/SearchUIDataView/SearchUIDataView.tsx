@@ -24,16 +24,16 @@ export const SearchUIDataView = ({ texts: textsProp }: SearchUIDataViewProps) =>
   const { error, results, view } = useSearchUIContext();
 
   return (
-    <div className="mpc-search-ui-data-view">
+    <div className="ms-search-ui-data-view">
       {error ? (
-        <div className="react-data-table-message">
+        <div className="ms-react-data-table-message">
           <p>
             <FaExclamationTriangle /> {texts.errorTitle}
           </p>
           <p>{texts.errorDescription}</p>
         </div>
       ) : !results || results.length === 0 ? (
-        <div className="react-data-table-message">
+        <div className="ms-react-data-table-message">
           <p>{texts.emptyTitle}</p>
         </div>
       ) : (() => {

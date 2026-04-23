@@ -158,7 +158,7 @@ export const Drawer = ({
   }
 
   const style = {
-    '--mpc-drawer-duration': `${duration}ms`,
+    '--ms-drawer-duration': `${duration}ms`,
   } as CSSProperties;
 
   return createPortal(
@@ -166,7 +166,7 @@ export const Drawer = ({
       ref={drawerRef}
       role="dialog"
       aria-modal="false"
-      className={clsx('mpc-drawer', className)}
+      className={clsx('ms-drawer', className)}
       data-position={position}
       data-phase={phase}
       style={style}

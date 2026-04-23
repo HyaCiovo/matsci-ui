@@ -1,7 +1,7 @@
 @import '../../../assets/mixins.less';
 @import './table-variable.less';
 
-.mat-element {
+.ms-mat-element {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   transition: all 100ms ease-in-out;
   margin: 0;
@@ -13,19 +13,19 @@
   color: inherit;
   text-align: left;
   .flex(column);
-  &.disabled {
+  &.ms-disabled {
     cursor: default;
     opacity: 0.4;
   }
 
-  &.enabled {
+  &.ms-enabled {
     filter: brightness(90%);
     border: 3px solid rgba(0, 0, 0, 0.25);
   }
 
   &:hover {
     transform: scale(1.075);
-    &:not(.enabled) {
+    &:not(.ms-enabled) {
       filter: brightness(91%);
     }
   }
@@ -34,7 +34,7 @@
     background: #cbf3f0;
   }
 
-  .mat-symbol {
+  .ms-mat-symbol {
     .flex-container-sized();
     .flex-centered-container(row);
     .equal_width_height(100%);
@@ -45,7 +45,7 @@
   .element {
     .flex-container-sized();
   }
-  .mat-number {
+  .ms-mat-number {
     font-size: 0.7em;
     margin: 5px;
   }
@@ -54,108 +54,108 @@
 /* -------------------
 	Elements
 -------------------- */
-.element-metal {
+.ms-element-metal {
   background-color: darken(@metal, 8%);
 }
-.element-alkali-metal {
+.ms-element-alkali-metal {
   background-color: darken(@alkali-metal, 8%);
 }
-.element-alkali-earth-metal {
+.ms-element-alkali-earth-metal {
   background-color: darken(@alkali-earth-metal, 8%);
 }
-.element-transition-metal {
+.ms-element-transition-metal {
   background-color: darken(@transition-metal, 8%);
 }
-.element-lanthoid {
+.ms-element-lanthoid {
   background-color: darken(@lanthoid, 8%);
 }
-.element-actinoid {
+.ms-element-actinoid {
   background-color: darken(@actinoid, 8%);
 }
-.element-metalloid {
+.ms-element-metalloid {
   background-color: darken(@metalloid, 8%);
 }
-.element-non-metal {
+.ms-element-non-metal {
   background-color: darken(@non-metal, 8%);
 }
-.element-halogen {
+.ms-element-halogen {
   background-color: darken(@halogen, 8%);
 }
-.element-noble-gas {
+.ms-element-noble-gas {
   background-color: darken(@noble-gas, 8%);
 }
-.element-lanthanoid-transitional-metal,
-.element-actinoid-transitional-metal {
-  .mat-symbol {
+.ms-element-lanthanoid-transitional-metal,
+.ms-element-actinoid-transitional-metal {
+  .ms-mat-symbol {
     font-size: 0.8em;
   }
 }
-.element-lanthanoid-transitional-metal {
+.ms-element-lanthanoid-transitional-metal {
   background-color: darken(@lanthoid, 15%);
 }
-.element-actinoid-transitional-metal {
+.ms-element-actinoid-transitional-metal {
   background-color: darken(@actinoid, 15%);
 }
 
-.compact.table-container {
-  .mat-number {
+.ms-compact.ms-table-container {
+  .ms-mat-number {
     display: none;
   }
 
-  .main-panel {
-    .mat-number {
+  .ms-main-panel {
+    .ms-mat-number {
       font-size: 1em;
       display: initial;
     }
-    .mat-symbol {
+    .ms-mat-symbol {
       font-size: 1.5rem;
     }
   }
-  .mat-symbol {
+  .ms-mat-symbol {
     font-size: 1rem;
   }
-  .mat-name,
-  .mat-weight {
+  .ms-mat-name,
+  .ms-mat-weight {
     font-size: 0.7rem;
     font-weight: normal;
   }
-  .mat-side-panel {
+  .ms-mat-side-panel {
     font-size: 0.7rem;
   }
 }
 
-.small.table-container .mat-element:not(.detailed) {
-  .mat-number,
-  .mat-name {
+.ms-small.ms-table-container .ms-mat-element:not(.ms-detailed) {
+  .ms-mat-number,
+  .ms-mat-name {
     display: none;
   }
-  .mat-symbol {
+  .ms-mat-symbol {
     font-size: 0.85rem;
   }
 }
 
-.small.table-container .mat-element.detailed {
+.ms-small.ms-table-container .ms-mat-element.ms-detailed {
   overflow: hidden;
-  .mat-weight,
-  .mat-side-panel {
+  .ms-mat-weight,
+  .ms-mat-side-panel {
     display: none;
   }
-  .main-panel {
+  .ms-main-panel {
     width: 100%;
     font-size: 0.8em;
     justify-content: center;
     overflow: visible;
   }
-  .mat-number {
+  .ms-mat-number {
     font-size: 0.78em;
     margin: 0;
     position: absolute;
     top: 0;
   }
-  .mat-symbol {
+  .ms-mat-symbol {
     font-size: 1.5em;
   }
-  .mat-name {
+  .ms-mat-name {
     font-size: 0.78em;
     text-align: center;
     width: calc(100% - 4px);
@@ -173,18 +173,18 @@
   }
 }
 
-.table-container {
-  .detailed,
-  .mat-name {
+.ms-table-container {
+  .ms-detailed,
+  .ms-mat-name {
     display: none;
   }
 
-  .mat-element.mat-group:not(.detailed) {
-    .mat-number {
+  .ms-mat-element.ms-mat-group:not(.ms-detailed) {
+    .ms-mat-number {
       display: none;
     }
 
-    .mat-symbol {
+    .ms-mat-symbol {
       font-size: 0.5rem !important;
       white-space: nowrap;
       text-align: center;
@@ -192,12 +192,12 @@
     }
   }
 }
-.mat-group .main-panel .mat-symbol {
+.ms-mat-group .ms-main-panel .ms-mat-symbol {
   font-size: 2em;
 }
 
 /** Ensures a constant 1:1 aspect ratio for mat-elements */
-.mat-element:before {
+.ms-mat-element:before {
   content: '';
   display: block;
   height: 0;

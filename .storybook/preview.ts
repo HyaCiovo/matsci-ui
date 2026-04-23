@@ -2,8 +2,8 @@ import { createElement } from 'react';
 import type { Preview } from '@storybook/react-vite';
 import type { DocsContainerProps } from '@storybook/addon-docs/blocks';
 import { DocsContainer } from '@storybook/addon-docs/blocks';
-import 'bulma/css/bulma.css';
-import '../src/styles.less';
+import '../src/theme/tokens.css';
+import '../src/theme/matsci-bulma.css';
 import '../src/stories/stories.css';
 import { StorybookLocaleProvider, type StorybookLocale } from '../src/stories/i18n/LocaleProvider';
 

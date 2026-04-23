@@ -11,15 +11,15 @@ export type AccordionTriggerProps = React.ComponentPropsWithoutRef<typeof RadixA
 export type AccordionContentProps = React.ComponentPropsWithoutRef<typeof RadixAccordion.Content>;
 
 export const Accordion = ({ className, ...props }: AccordionProps) => (
-  <RadixAccordion.Root className={clsx('mpc-accordion', className)} {...props} />
+  <RadixAccordion.Root className={clsx('ms-accordion', className)} {...props} />
 );
 
 export const AccordionItem = ({ className, ...props }: AccordionItemProps) => (
-  <RadixAccordion.Item className={clsx('mpc-accordion-item', className)} {...props} />
+  <RadixAccordion.Item className={clsx('ms-accordion-item', className)} {...props} />
 );
 
 export const AccordionHeader = ({ className, ...props }: AccordionHeaderProps) => (
-  <RadixAccordion.Header className={clsx('mpc-accordion-header', className)} {...props} />
+  <RadixAccordion.Header className={clsx('ms-accordion-header', className)} {...props} />
 );
 
 export const AccordionTrigger = forwardRef<
@@ -28,7 +28,7 @@ export const AccordionTrigger = forwardRef<
 >(({ className, ...props }, ref) => (
   <RadixAccordion.Trigger
     ref={ref}
-    className={clsx('mpc-accordion-trigger', className)}
+    className={clsx('ms-accordion-trigger', className)}
     {...props}
   />
 ));
@@ -41,10 +41,10 @@ export const AccordionContent = forwardRef<
 >(({ className, children, ...props }, ref) => (
   <RadixAccordion.Content
     ref={ref}
-    className={clsx('mpc-accordion-content', className)}
+    className={clsx('ms-accordion-content', className)}
     {...props}
   >
-    <div className="mpc-accordion-content-inner">{children}</div>
+    <div className="ms-accordion-content-inner">{children}</div>
   </RadixAccordion.Content>
 ));
 

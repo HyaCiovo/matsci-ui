@@ -1,35 +1,35 @@
-.sidebar {
+.ms-sidebar {
   position: relative;
 }
 
-.sidebar .sidebar-menu-item.selected .sidebar-item {
+.ms-sidebar .ms-sidebar-menu-item.ms-selected .ms-sidebar-item {
   border-width: 3px;
 }
 
-.sidebar .sidebar-menu-item {
+.ms-sidebar .ms-sidebar-menu-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
 }
 
-.sidebar.vertical {
+.ms-sidebar.vertical {
   display: flex;
   flex-direction: column;
   height: 500px;
 }
 
-.sidebar.horizontal {
+.ms-sidebar.horizontal {
   display: flex;
   flex-direction: row;
 }
 
-.sidebar.horizontal .content {
+.ms-sidebar.horizontal .ms-content {
   flex-direction: row;
   justify-content: space-around;
 }
 
-.sidebar .content {
+.ms-sidebar .ms-content {
   margin: 10px 0;
   display: flex;
   width: 100%;
@@ -37,14 +37,14 @@
   justify-content: space-between;
 }
 
-.sidebar .is-unstyled {
+.ms-sidebar .ms-is-unstyled {
   padding: 0;
   border: 0;
   background: transparent;
   color: inherit;
 }
 
-.sidebar .sidebar-item {
+.ms-sidebar .ms-sidebar-item {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -57,11 +57,11 @@
   vertical-align: middle;
 }
 
-.sidebar .sub-app {
+.ms-sidebar .ms-sub-app {
   font-size: 11px;
 }
 
-.sidebar-popover {
+.ms-sidebar-popover {
   position: absolute;
   z-index: 20;
   display: flex;
@@ -75,12 +75,12 @@
   box-shadow: 0 8px 20px rgba(10, 10, 10, 0.12);
 }
 
-.sidebar-popover.vertical {
+.ms-sidebar-popover.vertical {
   top: 0;
   left: calc(100% + 16px);
 }
 
-.sidebar-popover.horizontal {
+.ms-sidebar-popover.horizontal {
   top: calc(100% + 12px);
   left: 0;
 }

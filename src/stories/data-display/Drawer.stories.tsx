@@ -18,7 +18,7 @@ export const Basic: Story = {
   render: () => (
     <DrawerContextProvider>
       <DrawerTrigger forDrawerId="drawer-1">
-        <button className="button">Drawer 1</button>
+        <button className="ms-button">Drawer 1</button>
       </DrawerTrigger>
       <Drawer id="drawer-1" position="right" duration={500}>
         <h2>Drawer Content</h2>
@@ -40,10 +40,10 @@ export const WithTwoDifferentDrawers: Story = {
   render: () => (
     <DrawerContextProvider>
       <DrawerTrigger forDrawerId="drawer-1">
-        <button className="button mr-2">Drawer 1</button>
+        <button className="ms-button ms-mr-2">Drawer 1</button>
       </DrawerTrigger>
       <DrawerTrigger forDrawerId="drawer-2">
-        <button className="button">Drawer 2</button>
+        <button className="ms-button">Drawer 2</button>
       </DrawerTrigger>
       <Drawer id="drawer-1">
         <h2>Drawer Content</h2>
@@ -69,7 +69,7 @@ export const BottomDrawer: Story = {
   render: () => (
     <DrawerContextProvider>
       <DrawerTrigger forDrawerId="drawer-bottom">
-        <button className="button">Bottom Drawer</button>
+        <button className="ms-button">Bottom Drawer</button>
       </DrawerTrigger>
       <Drawer id="drawer-bottom" position="bottom">
         <h2>Bottom Drawer</h2>

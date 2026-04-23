@@ -1,16 +1,16 @@
-.mpc-modal.modal {
+.ms-modal.ms-modal {
   display: flex;
   bottom: 100%;
   opacity: 0;
   transition: 0.5s;
 }
 
-.mpc-modal.modal.is-active {
+.ms-modal.ms-modal.ms-is-active {
   bottom: 0;
   opacity: 1;
 }
 
-.mpc-modal.modal .modal-background {
+.ms-modal.ms-modal .ms-modal-background {
   position: fixed;
   top: 0;
   opacity: 0;
@@ -18,12 +18,12 @@
   transition: 0.5s;
 }
 
-.mpc-modal.modal.is-active .modal-background {
+.ms-modal.ms-modal.ms-is-active .ms-modal-background {
   opacity: 1;
   pointer-events: all;
 }
 
-.mpc-modal.modal-content {
+.ms-modal.ms-modal-content {
   background: #fff;
   border-radius: 6px;
 }

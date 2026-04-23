@@ -25,7 +25,7 @@ const parseDoiFromUrl = (url?: string) => {
 };
 
 export const PublicationButton = ({
-  className = 'tag',
+  className = 'ms-tag',
   target = '_blank',
   doi: doiProp,
   url: urlProp,
@@ -104,13 +104,13 @@ export const PublicationButton = ({
         <a
           data-testid="publication-button"
           id={id}
-          className={clsx('mpc-publication-button', className)}
+          className={clsx('ms-publication-button', className)}
           href={url}
           target={target}
           rel={target === '_blank' ? 'noreferrer' : undefined}
         >
           <FaBook />
-          {!compact ? <span className="ml-1">{linkLabel || 'Publication'}</span> : null}
+          {!compact ? <span className="ms-ml-1">{linkLabel || 'Publication'}</span> : null}
         </a>
       }
     >

@@ -1,4 +1,4 @@
-.mpc-button-bar {
+.ms-button-bar {
   display: flex;
   flex-direction: column;
   position: relative;
@@ -6,35 +6,35 @@
   z-index: 2;
 }
 
-.mpc-button-bar > * {
+.ms-button-bar > * {
   margin: 0 !important;
   width: 100%;
 }
 
-.mpc-button-bar .dropdown,
-.mpc-button-bar .dropdown-trigger,
-.mpc-button-bar .dropdown-trigger .button {
+.ms-button-bar .ms-dropdown,
+.ms-button-bar .ms-dropdown-trigger,
+.ms-button-bar .ms-dropdown-trigger .ms-button {
   width: 100%;
 }
 
-.mpc-button-bar > *:not(:last-child):not(:focus),
-.mpc-button-bar > *:not(:last-child):not(:focus) .button {
+.ms-button-bar > *:not(:last-child):not(:focus),
+.ms-button-bar > *:not(:last-child):not(:focus) .ms-button {
   border-bottom: none;
 }
 
-.mpc-button-bar > *:not(:last-child):not(:first-child),
-.mpc-button-bar > *:not(:last-child):not(:first-child) .button {
+.ms-button-bar > *:not(:last-child):not(:first-child),
+.ms-button-bar > *:not(:last-child):not(:first-child) .ms-button {
   border-radius: 0;
 }
 
-.mpc-button-bar > *:first-child:not(:last-child),
-.mpc-button-bar > *:first-child:not(:last-child) .button {
+.ms-button-bar > *:first-child:not(:last-child),
+.ms-button-bar > *:first-child:not(:last-child) .ms-button {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
 
-.mpc-button-bar > *:last-child:not(:first-child),
-.mpc-button-bar > *:last-child:not(:first-child) .button {
+.ms-button-bar > *:last-child:not(:first-child),
+.ms-button-bar > *:last-child:not(:first-child) .ms-button {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }

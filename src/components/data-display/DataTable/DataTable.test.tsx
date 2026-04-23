@@ -126,8 +126,8 @@ describe('DataTable', () => {
     );
 
     const header = screen.getByText('Material ID').closest('th');
-    expect(header).toHaveClass('is-fixed-left');
-    expect(header?.querySelector('.column-header-content')).toHaveClass('is-sort-icon-left');
+    expect(header).toHaveClass('ms-is-fixed-left');
+    expect(header?.querySelector('.ms-column-header-content')).toHaveClass('ms-is-sort-icon-left');
   });
 
   it('supports pagination and header rendering', () => {
@@ -175,7 +175,7 @@ describe('DataTable', () => {
       />
     );
 
-    expect(screen.getByTestId('mpc-paginator')).toBeInTheDocument();
+    expect(screen.getByTestId('ms-paginator')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Jump to/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /10 \/ page/i })).toBeInTheDocument();
   });

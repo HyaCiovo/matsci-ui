@@ -26,6 +26,6 @@ describe('Switch', () => {
 
   it('supports configurable icon colors', () => {
     render(<Switch value truthyColor="#ff0000" />);
-    expect(screen.getByRole('button').parentElement).toHaveStyle('--mpc-switch-icon-color: #ff0000');
+    expect(screen.getByRole('button').parentElement).toHaveStyle('--ms-switch-icon-color: #ff0000');
   });
 });

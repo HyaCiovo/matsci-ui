@@ -92,7 +92,7 @@ export const NotificationDropdown = ({
       id={id}
       ref={dropdownRef}
       data-testid="notification-dropdown"
-      className={clsx('navbar-item has-dropdown', className, { 'is-active': isActive })}
+      className={clsx('ms-navbar-item ms-has-dropdown', className, { 'ms-is-active': isActive })}
       onClick={() => {
         setIsActive((current) => !current);
         if (!isMessageLevel) {
@@ -100,11 +100,11 @@ export const NotificationDropdown = ({
         }
       }}
     >
-      <a className={clsx('navbar-link', 'is-arrowless')}>
+      <a className={clsx('ms-navbar-link', 'ms-is-arrowless')}>
         <Bell showBadge={hasUnreadMessages} />
       </a>
 
-      <div className={clsx('navbar-dropdown', { 'is-right': isRight })}>
+      <div className={clsx('ms-navbar-dropdown', { 'ms-is-right': isRight })}>
         {items.map((item, index) => (
           <div
             key={`notification-item-${index}`}
@@ -115,17 +115,17 @@ export const NotificationDropdown = ({
           >
             <ModalContextProvider>
               <ModalTrigger>
-                <a className={clsx('navbar-item', item.className)}>
+                <a className={clsx('ms-navbar-item', item.className)}>
                   {isMessageLevel && !unreadMessages.find((message) => message.id === item.id)?.isRead ? (
-                    <FaCircle className="notification-dot" />
+                    <FaCircle className="ms-notification-dot" />
                   ) : null}
                   {item.label}
                 </a>
               </ModalTrigger>
               <Modal>
-                <div className="panel">
-                  <div className="panel-heading">{item.header}</div>
-                  <div className="panel-block p-5">
+                <div className="ms-panel">
+                  <div className="ms-panel-heading">{item.header}</div>
+                  <div className="ms-panel-block ms-p-5">
                     <Markdown>{item.content ?? ' '}</Markdown>
                   </div>
                 </div>
@@ -135,7 +135,7 @@ export const NotificationDropdown = ({
         ))}
 
         {link ? (
-          <a className={clsx('navbar-item', 'more')} href={link} target="_blank" rel="noreferrer">
+          <a className={clsx('ms-navbar-item', 'ms-more')} href={link} target="_blank" rel="noreferrer">
             More
           </a>
         ) : null}

@@ -50,14 +50,14 @@ export const Tabs = ({
         setInternalTabIndex(nextIndex);
         setVisitedTabs((current) => new Set(current).add(nextIndex));
       }}
-      className={clsx('mpc-tabs', className)}
+      className={clsx('ms-tabs', className)}
       {...tabProps}
     >
-      <div className="tabs">
+      <div className="ms-tabs-nav">
         <RadixTabs.List asChild>
           <ul>
             {labels.map((label, index) => (
-              <li key={`tab-${index}`} className={clsx({ 'is-active': internalTabIndex === index })}>
+              <li key={`tab-${index}`} className={clsx({ 'ms-is-active': internalTabIndex === index })}>
                 <RadixTabs.Trigger asChild value={String(index)}>
                   <a onClick={(e) => e.preventDefault()}>
                     <span>{label}</span>
@@ -77,10 +77,10 @@ export const Tabs = ({
             key={`tab-panel-${index}`}
             value={String(index)}
             forceMount
-            className={clsx({ 'is-hidden': !isActive })}
+            className={clsx({ 'ms-is-hidden': !isActive })}
           >
             {(isActive || hasBeenActivated) && (
-              <div className={clsx({ 'is-hidden': !isActive })}>{child}</div>
+              <div className={clsx({ 'ms-is-hidden': !isActive })}>{child}</div>
             )}
           </RadixTabs.Content>
         );

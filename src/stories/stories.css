@@ -3,26 +3,26 @@ body {
   background: #fff !important;
 }
 
-.sidebar-story {
+.ms-sidebar-story {
   display: inline-block;
 }
 
-.sidebar-story .menu {
+.ms-sidebar-story .ms-menu {
   position: fixed;
   width: 200px;
 }
 
-.sbdocs .sidebar-story .menu {
+.sbdocs .ms-sidebar-story .ms-menu {
   position: relative;
 }
 
-.sidebar-story .content {
+.ms-sidebar-story .ms-content {
   display: inline-block;
   margin-left: 200px;
   padding-left: 15px;
 }
 
-.sidebar-story .content p {
+.ms-sidebar-story .ms-content p {
   height: 500px;
 }
 
@@ -34,7 +34,7 @@ body {
   top: 0rem;
 }
 
-.mpc-materials-input {
+.ms-materials-input {
   max-width: 750px;
   margin: auto;
 }
@@ -43,7 +43,7 @@ body {
  * Override bulma tag styles that conflict with the tag class
  * used in storybook code blocks.
  */
-.tag.token {
+.ms-tag.token {
   background-color: inherit;
   border-radius: 0;
   display: inline;
@@ -103,6 +103,6 @@ pre code {
   margin-top: 10rem;
 }
 
-.max-750 {
+.ms-max-750 {
   max-width: 750px;
 }

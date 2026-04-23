@@ -9,7 +9,7 @@ export interface BibtexButtonProps extends React.HTMLProps<HTMLAnchorElement> {
   target?: string;
 }
 
-export const BibtexButton = ({ className = 'tag', target = '_blank', doi, url, ...otherProps }: BibtexButtonProps) => {
+export const BibtexButton = ({ className = 'ms-tag', target = '_blank', doi, url, ...otherProps }: BibtexButtonProps) => {
   const bibtexUrl = url || (doi ? `https://www.doi2bib.org/bib/${doi}` : undefined);
 
   if (!bibtexUrl) {
@@ -19,7 +19,7 @@ export const BibtexButton = ({ className = 'tag', target = '_blank', doi, url, .
   return (
     <a
       data-testid="bibtex-button"
-      className={clsx('mpc-bibtex-button', className)}
+      className={clsx('ms-bibtex-button', className)}
       style={{ backgroundColor: 'transparent' }}
       href={bibtexUrl}
       target={target}

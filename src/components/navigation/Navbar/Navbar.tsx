@@ -19,7 +19,7 @@ export interface NavbarProps {
 
 const Icon = ({ icon }: { icon?: string }) =>
   icon ? (
-    <span className="icon">
+    <span className="ms-icon">
       <i className={icon}></i>
     </span>
   ) : null;
@@ -34,7 +34,7 @@ const InternalOrExternalLink = ({
   if (item.href && isUrl(item.href)) {
     return (
       <a
-        className={clsx('navbar-item', className, item.className)}
+        className={clsx('ms-navbar-item', className, item.className)}
         href={item.href}
         target={item.target}
         rel={item.target === '_blank' ? 'noreferrer' : undefined}
@@ -46,7 +46,7 @@ const InternalOrExternalLink = ({
   }
 
   return (
-    <Link className={clsx('navbar-item', className, item.className)} href={item.href || ''}>
+    <Link className={clsx('ms-navbar-item', className, item.className)} href={item.href || ''}>
       <Icon icon={item.icon} />
       {item.label}
     </Link>
@@ -68,12 +68,12 @@ export const Navbar = ({
   return (
     <nav
       id={id}
-      className={clsx('navbar', className)}
+      className={clsx('ms-navbar', className)}
       role="navigation"
       aria-label={ariaLabel}
     >
-      <div className="navbar-brand">
-        <Link className={clsx('navbar-item', brandItem.className)} href={brandItem.href || ''}>
+      <div className="ms-navbar-brand">
+        <Link className={clsx('ms-navbar-item', brandItem.className)} href={brandItem.href || ''}>
           {brandItem.image ? <img src={brandItem.image} alt={brandItem.label || brandAltFallback} /> : null}
           {!brandItem.image ? <Icon icon={brandItem.icon} /> : null}
           {brandItem.label}
@@ -81,20 +81,20 @@ export const Navbar = ({
         <button
           data-testid="navbar-burger-open"
           type="button"
-          className="navbar-burger"
+          className="ms-navbar-burger"
           onClick={() => setActiveMobile(true)}
         >
           <FaBars />
         </button>
       </div>
 
-      <div className="navbar-menu">
-        <div className="navbar-end">
+      <div className="ms-navbar-menu">
+        <div className="ms-navbar-end">
           {items.map((item, index) =>
             item.items ? (
               <NavbarDropdown
                 key={`navbar-item-${index}`}
-                className={clsx('navbar-item', item.className)}
+                className={clsx('ms-navbar-item', item.className)}
                 items={item.items}
                 isArrowless={item.isArrowless}
                 isRight={item.isRight}
@@ -112,9 +112,9 @@ export const Navbar = ({
         </div>
       </div>
 
-      <div data-testid="navbar-mobile" className={clsx('navbar-mobile', { 'is-active': activeMobile })}>
-        <div className="navbar-brand">
-          <Link className={clsx('navbar-item', brandItem.className)} href={brandItem.href || ''}>
+      <div data-testid="navbar-mobile" className={clsx('ms-navbar-mobile', { 'ms-is-active': activeMobile })}>
+        <div className="ms-navbar-brand">
+          <Link className={clsx('ms-navbar-item', brandItem.className)} href={brandItem.href || ''}>
             {brandItem.image ? <img src={brandItem.image} alt={brandItem.label || brandAltFallback} /> : null}
             {!brandItem.image ? <Icon icon={brandItem.icon} /> : null}
             {!brandItem.image && !brandItem.icon ? brandItem.label : null}
@@ -122,14 +122,14 @@ export const Navbar = ({
           <button
             data-testid="navbar-burger-close"
             type="button"
-            className="navbar-burger"
+            className="ms-navbar-burger"
             onClick={() => setActiveMobile(false)}
           >
             <FaTimes />
           </button>
         </div>
 
-        <div className="navbar-mobile-menu">
+        <div className="ms-navbar-mobile-menu">
           {items.map((item, index) => {
             if (!item.items) {
               return <InternalOrExternalLink item={item} key={`navbar-mobile-item-${index}`} />;
@@ -139,7 +139,7 @@ export const Navbar = ({
             return (
               <div key={`navbar-mobile-item-${index}`} className={item.className}>
                 <a
-                  className="navbar-item navbar-item-toggle"
+                  className="ms-navbar-item ms-navbar-item-toggle"
                   onClick={() =>
                     setMobileOpenGroups((current) => ({
                       ...current,
@@ -155,10 +155,10 @@ export const Navbar = ({
                 </a>
 
                 {open ? (
-                  <div className="navbar-dropdown">
+                  <div className="ms-navbar-dropdown">
                     {item.items.map((innerItem, innerIndex) =>
                       innerItem.isMenuLabel ? (
-                        <span className="navbar-item menu-label" key={`navbar-mobile-inner-item-${innerIndex}`}>
+                        <span className="ms-navbar-item ms-menu-label" key={`navbar-mobile-inner-item-${innerIndex}`}>
                           {innerItem.label}
                         </span>
                       ) : (
@@ -177,7 +177,7 @@ export const Navbar = ({
       </div>
 
       <div
-        className={clsx('modal-background', { 'is-hidden-by-opacity': !activeMobile })}
+        className={clsx('ms-modal-background', { 'ms-is-hidden-by-opacity': !activeMobile })}
         onClick={() => setActiveMobile(false)}
       ></div>
     </nav>

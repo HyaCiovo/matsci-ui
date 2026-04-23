@@ -14,11 +14,11 @@ export const SearchUIGrid = ({ exportDataButton, filtersContent }: SearchUIGridP
   const resolvedFiltersContent = filtersContent ?? (filterGroups.length > 0 ? <SearchUIFilters /> : null);
 
   return (
-    <div className="mpc-search-ui-content columns">
+    <div className="ms-search-ui-content ms-columns">
       {resolvedFiltersContent ? (
-        <div className="mpc-search-ui-left column is-narrow is-12-mobile">{resolvedFiltersContent}</div>
+        <div className="ms-search-ui-left ms-column ms-is-narrow ms-is-12-mobile">{resolvedFiltersContent}</div>
       ) : null}
-      <div className="mpc-search-ui-right column">
+      <div className="ms-search-ui-right ms-column">
         <SearchUIDataHeader exportDataButton={exportDataButton} />
         <SearchUIDataView />
       </div>

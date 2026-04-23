@@ -1,24 +1,24 @@
 @import '../../../assets/mixins.less';
 
-.mat-element {
-  &.detailed {
+.ms-mat-element {
+  &.ms-detailed {
     .flex(row);
   }
-  .main-panel {
+  .ms-main-panel {
     height: 100%;
     .flex(column);
     .flex-grow-shrink-basis(3, 1, 0);
-    &.compact {
+    &.ms-compact {
       font-size: 0.5rem;
     }
-    .mat-name {
+    .ms-mat-name {
       // push down the name
       display: flex;
       .flex-grow-shrink-basis(1, 1, auto);
       align-items: flex-end;
     }
   }
-  .mat-side-panel {
+  .ms-mat-side-panel {
     font-size: 0.75rem;
     .flex(column);
     .flex-grow-shrink-basis(1, 1, 0);

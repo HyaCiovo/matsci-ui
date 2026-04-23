@@ -27,7 +27,7 @@ const DEFAULT_TEXTS: OpenAccessButtonTexts = {
 };
 
 export const OpenAccessButton = ({
-  className = 'tag',
+  className = 'ms-tag',
   target = '_blank',
   doi,
   url: urlProp,
@@ -84,10 +84,10 @@ export const OpenAccessButton = ({
           target={target}
           rel={target === '_blank' ? 'noreferrer' : undefined}
           href={openAccessUrl}
-          className={clsx('mpc-open-access-button', className)}
+          className={clsx('ms-open-access-button', className)}
         >
-          {openAccessUrl ? <img src={openAccessButtonLogo} /> : <div className="loader mpc-open-access-loader" />}
-          {!compact ? <span className="ml-1">{texts.label}</span> : null}
+          {openAccessUrl ? <img src={openAccessButtonLogo} /> : <div className="ms-loader ms-open-access-loader" />}
+          {!compact ? <span className="ms-ml-1">{texts.label}</span> : null}
         </a>
       }
     >

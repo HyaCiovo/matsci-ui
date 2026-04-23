@@ -113,12 +113,12 @@ export function TableFilter({ texts: textsProp, filters: filtersProp, valueMappe
   };
 
   return (
-    <div className="mat-table-filter">
-      <div className="left-side">{texts.title}</div>
-      <div className="right-side">
-        <div className="filter-selector">
+    <div className="ms-mat-table-filter">
+      <div className="ms-left-side">{texts.title}</div>
+      <div className="ms-right-side">
+        <div className="ms-filter-selector">
           {filters.map((filterGroup, index) => (
-            <div key={`group-${index}`} className="filter-group">
+            <div key={`group-${index}`} className="ms-filter-group">
               {filterGroup.map((option) => (
                 <div
                   key={String(option.name)}
@@ -129,8 +129,8 @@ export function TableFilter({ texts: textsProp, filters: filtersProp, valueMappe
                       handleTopFilterSelect(option);
                     }
                   }}
-                  className={`current-filter-selector ${
-                    option.name === filter.topFilter.name ? 'selected' : ''
+                  className={`ms-current-filter-selector ${
+                    option.name === filter.topFilter.name ? 'ms-selected' : ''
                   }`}
                   role="button"
                   tabIndex={0}
@@ -142,7 +142,7 @@ export function TableFilter({ texts: textsProp, filters: filtersProp, valueMappe
           ))}
         </div>
 
-        <div className="sub-filter-selector">
+        <div className="ms-sub-filter-selector">
           {lowerFilters.map((option) => (
             <div
               key={String(option.name)}
@@ -153,9 +153,9 @@ export function TableFilter({ texts: textsProp, filters: filtersProp, valueMappe
                   handleLowerFilterSelect(option);
                 }
               }}
-              className={`current-filter-selector ${
+              className={`ms-current-filter-selector ${
                 option.name === filter.lowerFilter.name || filter.lowerFilter.name === allFilter.name
-                  ? 'selected'
+                  ? 'ms-selected'
                   : ''
               }`}
               role="button"

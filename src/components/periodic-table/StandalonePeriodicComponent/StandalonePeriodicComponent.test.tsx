@@ -13,7 +13,7 @@ describe('StandalonePeriodicComponent', () => {
       />
     );
 
-    expect(document.querySelector('.mp-element-wrapper')).toBeTruthy();
+    expect(document.querySelector('.ms-element-wrapper')).toBeTruthy();
     expect(screen.getByText('H')).toBeInTheDocument();
   });
 

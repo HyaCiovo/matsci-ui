@@ -174,14 +174,14 @@ const renderColumnHeader = (column: Column, disableRichColumnHeaders?: boolean) 
       trigger={
         <div
           className={clsx({
-            'column-header-right': column?.right,
-            'column-header-center': column?.center,
-            'column-header-left': !column?.right && !column?.center,
-            'tooltip-label': column?.tooltip,
+            'ms-column-header-right': column?.right,
+            'ms-column-header-center': column?.center,
+            'ms-column-header-left': !column?.right && !column?.center,
+            'ms-tooltip-label': column?.tooltip,
           })}
         >
           <div>{column.title === '' ? '' : column.title}</div>
-          {column.units ? <div className="column-units">({column.units})</div> : null}
+          {column.units ? <div className="ms-column-units">({column.units})</div> : null}
         </div>
       }
     >
@@ -200,10 +200,10 @@ type ColumnMeta = Column & {
 };
 
 export const DataTable = ({
-  className = 'box p-0',
+  className = 'ms-box ms-p-0',
   resultLabel = 'record',
   resultLabelPlural = `${resultLabel}s`,
-  headerClassName = 'title is-6',
+  headerClassName = 'ms-title ms-is-6',
   data,
   columns,
   selectedRows,
@@ -293,11 +293,11 @@ export const DataTable = ({
       header: ({ table, column: tableColumn }: { table: any; column: any }) => {
         if (column.selector === '_isSelected') {
           if (props.singleSelectableRows) {
-            return <div className="selection-control" aria-hidden="true" />;
+            return <div className="ms-selection-control" aria-hidden="true" />;
           }
 
           return (
-            <label className="selection-control">
+            <label className="ms-selection-control">
               <Checkbox
                 aria-label={texts.ariaSelectAllRows}
                 checked={
@@ -321,10 +321,10 @@ export const DataTable = ({
         const sortState = tableColumn.getIsSorted();
         const sortIcon = canSort ? (
           <span
-            className={clsx('column-sort-icon', {
-              'is-asc': sortState === 'asc',
-              'is-desc': sortState === 'desc',
-              'is-idle': !sortState,
+            className={clsx('ms-column-sort-icon', {
+              'ms-is-asc': sortState === 'asc',
+              'ms-is-desc': sortState === 'desc',
+              'ms-is-idle': !sortState,
             })}
             aria-hidden="true"
           >
@@ -334,13 +334,13 @@ export const DataTable = ({
 
         return (
           <div
-            className={clsx('column-header-content', {
-              'is-sortable': canSort,
-              'is-sort-icon-left': column.sortIconPosition === 'left',
+            className={clsx('ms-column-header-content', {
+              'ms-is-sortable': canSort,
+              'ms-is-sort-icon-left': column.sortIconPosition === 'left',
             })}
           >
             {column.sortIconPosition === 'left' ? sortIcon : null}
-            <span className="column-header-label">
+            <span className="ms-column-header-label">
               {renderColumnHeader(column, props.disableRichColumnHeaders)}
             </span>
             {column.sortIconPosition !== 'left' ? sortIcon : null}
@@ -350,7 +350,7 @@ export const DataTable = ({
       cell: ({ row }: { row: any }) => {
         if (column.formatType === ColumnFormat.RADIO) {
           return (
-            <label className="selection-control">
+            <label className="ms-selection-control">
               <input
                 type="radio"
                 checked={row.getIsSelected()}
@@ -364,7 +364,7 @@ export const DataTable = ({
 
         if (column.selector === '_isSelected') {
           return (
-            <label className="selection-control">
+            <label className="ms-selection-control">
               <Checkbox
                 checked={row.getIsSelected()}
                 onCheckedChange={(checked) => {
@@ -518,17 +518,17 @@ export const DataTable = ({
   };
 
   return (
-    <div id={props.id} className={clsx('mpc-data-table', className)}>
+    <div id={props.id} className={clsx('ms-data-table', className)}>
       {props.hasHeader ? (
-        <div className="mpc-data-table-header">
-          <div className="mpc-data-table-toolbar">
+        <div className="ms-data-table-header">
+          <div className="ms-data-table-toolbar">
             <div className={headerClassName}>
               {data.length} {data.length === 1 ? resultLabel : resultLabelPlural}
             </div>
-            <div className="mpc-data-table-columns" ref={columnsMenuRef}>
+            <div className="ms-data-table-columns" ref={columnsMenuRef}>
               <button
                 type="button"
-                className="button mpc-data-table-columns-trigger"
+                className="ms-button ms-data-table-columns-trigger"
                 aria-expanded={columnsMenuOpen}
                 onClick={() => setColumnsMenuOpen((open) => !open)}
               >
@@ -536,8 +536,8 @@ export const DataTable = ({
                 <FaCaretDown aria-hidden="true" />
               </button>
               {columnsMenuOpen ? (
-                <div className="mpc-data-table-columns-menu">
-                  <label className="is-select-all">
+                <div className="ms-data-table-columns-menu">
+                  <label className="ms-is-select-all">
                     <Checkbox checked={allColumnsVisible} onCheckedChange={(checked) => toggleAllColumns(checked === true)} />
                     <span>{texts.selectAll}</span>
                   </label>
@@ -557,8 +557,8 @@ export const DataTable = ({
         </div>
       ) : null}
 
-      <div className="mpc-data-table-scroll" data-testid="react-data-table-container">
-        <table className="mpc-data-table-table">
+      <div className="ms-data-table-scroll" data-testid="react-data-table-container">
+        <table className="ms-data-table-table">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
@@ -568,11 +568,11 @@ export const DataTable = ({
                     <th
                       key={header.id}
                       className={clsx({
-                        'selection-cell': header.column.id === '_isSelected',
-                        'is-right': column?._resolvedAlign === 'right',
-                        'is-center': column?._resolvedAlign === 'center',
-                        'is-fixed-left': column?._fixedSide === 'left',
-                        'is-fixed-right': column?._fixedSide === 'right',
+                        'ms-selection-cell': header.column.id === '_isSelected',
+                        'ms-is-right': column?._resolvedAlign === 'right',
+                        'ms-is-center': column?._resolvedAlign === 'center',
+                        'ms-is-fixed-left': column?._fixedSide === 'left',
+                        'ms-is-fixed-right': column?._fixedSide === 'right',
                       })}
                       style={getHeaderStyle(column)}
                       onClick={() => handleHeaderSortToggle(header.column.id, header.column.getCanSort())}
@@ -593,7 +593,7 @@ export const DataTable = ({
               return (
                 <tr
                   key={row.id}
-                  className={clsx({ 'is-clickable': props.selectableRows })}
+                  className={clsx({ 'ms-is-clickable': props.selectableRows })}
                   style={conditionalStyle?.style}
                   onClick={props.selectableRows ? () => row.toggleSelected() : undefined}
                 >
@@ -603,16 +603,16 @@ export const DataTable = ({
                       <td
                         key={cell.id}
                         className={clsx({
-                          'selection-cell': cell.column.id === '_isSelected',
-                          'is-right': column?._resolvedAlign === 'right',
-                          'is-center': column?._resolvedAlign === 'center',
-                          'is-fixed-left': column?._fixedSide === 'left',
-                          'is-fixed-right': column?._fixedSide === 'right',
-                          'is-ellipsis': !!(column?._resolvedWidth || column?._resolvedMaxWidth || column?._resolvedMinWidth),
+                          'ms-selection-cell': cell.column.id === '_isSelected',
+                          'ms-is-right': column?._resolvedAlign === 'right',
+                          'ms-is-center': column?._resolvedAlign === 'center',
+                          'ms-is-fixed-left': column?._fixedSide === 'left',
+                          'ms-is-fixed-right': column?._fixedSide === 'right',
+                          'ms-is-ellipsis': !!(column?._resolvedWidth || column?._resolvedMaxWidth || column?._resolvedMinWidth),
                         })}
                         style={getColumnStyle(column)}
                       >
-                        <div className="mpc-data-table-cell-content">
+                        <div className="ms-data-table-cell-content">
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </div>
                       </td>
@@ -626,7 +626,7 @@ export const DataTable = ({
       </div>
 
       {showPagination ? props.paginationIsExpanded ? (
-        <div className="mpc-data-table-pagination">
+        <div className="ms-data-table-pagination">
           <Paginator
             rowCount={data.length}
             rowsPerPage={table.getState().pagination.pageSize}
@@ -637,11 +637,11 @@ export const DataTable = ({
           />
         </div>
       ) : (
-        <div className="mpc-data-table-pagination mpc-data-table-pagination-compact">
-          <div className="mpc-data-table-pagination-summary">
-            <label className="is-size-7">
-              <span className="mr-2">{texts.rowsPerPage}</span>
-              <div className="select is-small">
+        <div className="ms-data-table-pagination ms-data-table-pagination-compact">
+          <div className="ms-data-table-pagination-summary">
+            <label className="ms-is-size-7">
+              <span className="ms-mr-2">{texts.rowsPerPage}</span>
+              <div className="ms-select ms-is-small">
                 <select
                   aria-label={texts.ariaRowsPerPage}
                   value={table.getState().pagination.pageSize}
@@ -655,7 +655,7 @@ export const DataTable = ({
                 </select>
               </div>
             </label>
-            <span className="is-size-7">
+            <span className="ms-is-size-7">
               {formatTemplate(texts.pageSummaryTemplate, {
                 start: pageStart,
                 end: pageEnd,
@@ -663,10 +663,10 @@ export const DataTable = ({
               })}
             </span>
           </div>
-          <div className="mpc-data-table-pagination-actions">
+          <div className="ms-data-table-pagination-actions">
             <button
               type="button"
-              className="button is-small is-ghost"
+              className="ms-button ms-is-small ms-is-ghost"
               aria-label={texts.ariaFirstPage}
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
@@ -675,7 +675,7 @@ export const DataTable = ({
             </button>
             <button
               type="button"
-              className="button is-small is-ghost"
+              className="ms-button ms-is-small ms-is-ghost"
               aria-label={texts.ariaPreviousPage}
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
@@ -684,7 +684,7 @@ export const DataTable = ({
             </button>
             <button
               type="button"
-              className="button is-small is-ghost"
+              className="ms-button ms-is-small ms-is-ghost"
               aria-label={texts.ariaNextPage}
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
@@ -693,7 +693,7 @@ export const DataTable = ({
             </button>
             <button
               type="button"
-              className="button is-small is-ghost"
+              className="ms-button ms-is-small ms-is-ghost"
               aria-label={texts.ariaLastPage}
               onClick={() => table.setPageIndex(pageCount - 1)}
               disabled={!table.getCanNextPage()}
@@ -705,7 +705,7 @@ export const DataTable = ({
       ) : null}
 
       {props.footer ? (
-        <div className="mpc-data-table-footer">
+        <div className="ms-data-table-footer">
           <Markdown>{String(props.footer)}</Markdown>
         </div>
       ) : null}

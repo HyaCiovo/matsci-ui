@@ -61,35 +61,35 @@ export const categoryToClassName = (category?: string, symbol?: string) => {
   }
 
   if (symbol === 'La-Lu') {
-    return 'element-lanthanoid-transitional-metal';
+    return 'ms-element-lanthanoid-transitional-metal';
   }
   if (symbol === 'Ac-Lr') {
-    return 'element-actinoid-transitional-metal';
+    return 'ms-element-actinoid-transitional-metal';
   }
   switch (category) {
     case 'alkali metal':
-      return 'element-alkali-metal';
+      return 'ms-element-alkali-metal';
     case 'alkaline earth metal':
-      return 'element-alkali-earth-metal';
+      return 'ms-element-alkali-earth-metal';
     case 'transition metal':
-      return 'element-transition-metal';
+      return 'ms-element-transition-metal';
     case 'lanthanide':
-      return 'element-lanthoid';
+      return 'ms-element-lanthoid';
     case 'actinide':
-      return 'element-actinoid';
+      return 'ms-element-actinoid';
     case 'metalloid':
-      return 'element-metalloid';
+      return 'ms-element-metalloid';
     case 'halogen':
-      return 'element-halogen';
+      return 'ms-element-halogen';
     case 'noble gas':
-      return 'element-noble-gas';
+      return 'ms-element-noble-gas';
     case 'post-transition metal':
     case 'polyatomic nonmetal':
     case 'diatomic nonmetal':
     case 'nonmetal':
-      return 'element-non-metal';
+      return 'ms-element-non-metal';
     default:
-      return 'element-metal';
+      return 'ms-element-metal';
   }
 };
 

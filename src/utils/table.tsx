@@ -99,7 +99,7 @@ export const formatColumnValue = (column: Column, row: any) => {
         <Tooltip
           disable={!column.cellTooltip}
           trigger={
-            <span className="boolean-cell-wrapper">
+            <span className="ms-boolean-cell-wrapper">
               <i className={clsx({ [truthyClass]: cleanValue, [falsyClass]: !cleanValue })}></i>
             </span>
           }
@@ -161,13 +161,13 @@ export const formatColumnValue = (column: Column, row: any) => {
       if (isLink) {
         const href = options.tagLinksBase && rawValue ? `${options.tagLinksBase}${rawValue}` : rawValue;
         return (
-          <Link className="tag" href={String(href)} target={options.target}>
+          <Link className="ms-tag" href={String(href)} target={options.target}>
             {String(displayValue ?? emptyCellPlaceholder)}
           </Link>
         );
       }
 
-      return <span className="tag">{String(rawValue ?? emptyCellPlaceholder)}</span>;
+      return <span className="ms-tag">{String(rawValue ?? emptyCellPlaceholder)}</span>;
     }
     case ColumnFormat.EMAIL: {
       const firstAuthor =
@@ -183,8 +183,8 @@ export const formatColumnValue = (column: Column, row: any) => {
           : 'mailto:contribs@materialsproject.org';
 
       return (
-        <a className="tag" href={href} onClick={(event) => event.stopPropagation()}>
-          <FaEnvelope className="mr-1" />
+        <a className="ms-tag" href={href} onClick={(event) => event.stopPropagation()}>
+          <FaEnvelope className="ms-mr-1" />
           {firstAuthor}
         </a>
       );
@@ -232,9 +232,9 @@ export const formatColumnValue = (column: Column, row: any) => {
         <span>
           {rawValue.map((item: any) => (
             <span key={item.id ?? item.name}>
-              <span className="tag">{item.name}</span>
+              <span className="ms-tag">{item.name}</span>
               <a href={joinUrl(String(options.baseUrl), item.id)}>
-                <FaDownload className="mr-1" />
+                <FaDownload className="ms-mr-1" />
               </a>
             </span>
           ))}

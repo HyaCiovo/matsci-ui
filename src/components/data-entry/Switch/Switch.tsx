@@ -32,7 +32,7 @@ export const Switch = ({
   const nextLabel = value ? truthyLabel : falsyLabel;
   const currentIconColor = value ? truthyColor ?? iconColor ?? '#3273dc' : falsyColor ?? iconColor ?? '#b5b5b5';
   const style = {
-    '--mpc-switch-icon-color': currentIconColor,
+    '--ms-switch-icon-color': currentIconColor,
   } as CSSProperties;
 
   const handleClick = () => {
@@ -42,19 +42,19 @@ export const Switch = ({
   };
 
   return (
-    <div id={id} className={clsx('mpc-switch', className)} style={style}>
+    <div id={id} className={clsx('ms-switch', className)} style={style}>
       <button
         type="button"
-        className="mpc-switch-button"
+        className="ms-switch-button"
         aria-pressed={value}
         aria-label={nextLabel}
         onClick={handleClick}
       >
-        <span className={clsx('mpc-switch-visual', { 'is-active': value })} aria-hidden="true">
-          <span className="mpc-switch-thumb" />
+        <span className={clsx('ms-switch-visual', { 'ms-is-active': value })} aria-hidden="true">
+          <span className="ms-switch-thumb" />
         </span>
       </button>
-      {hasLabel ? <span className="mpc-switch-label">{nextLabel}</span> : null}
+      {hasLabel ? <span className="ms-switch-label">{nextLabel}</span> : null}
     </div>
   );
 };

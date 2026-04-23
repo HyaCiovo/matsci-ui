@@ -20,9 +20,9 @@ export const Basic: Story = {
 export const ChildrenAsItems: Story = {
   render: () => (
     <Dropdown triggerLabel="Buttons">
-      <div className="button is-primary mb-1">One</div>
-      <div className="button is-warning mb-1">Two</div>
-      <div className="button is-danger">Three</div>
+      <div className="ms-button ms-is-primary ms-mb-1">One</div>
+      <div className="ms-button ms-is-warning ms-mb-1">Two</div>
+      <div className="ms-button ms-is-danger">Three</div>
     </Dropdown>
   )
 };

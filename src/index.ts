@@ -1,6 +1,5 @@
 import './theme/tokens.css';
-import 'bulma/css/bulma.min.css';
-import './styles.less';
+import './theme/matsci-bulma.css';
 
 export * from './components/data-display/ActiveFilterButtons';
 export * from './components/data-display/ArrayChips';

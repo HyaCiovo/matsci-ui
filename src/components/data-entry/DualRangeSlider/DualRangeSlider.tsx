@@ -106,11 +106,11 @@ export const DualRangeSlider = ({
   };
 
   return (
-    <div className={clsx('mpc-dual-range-slider', className)}>
-      <div className="mpc-dual-range-slider-inputs">
-        <div className="mpc-dual-range-slider-input is-min">
+    <div className={clsx('ms-dual-range-slider', className)}>
+      <div className="ms-dual-range-slider-inputs">
+        <div className="ms-dual-range-slider-input ms-is-min">
           <Input
-            className="mpc-range-number-input"
+            className="ms-range-number-input"
             type="number"
             value={values[0]}
             min={minDomain}
@@ -120,9 +120,9 @@ export const DualRangeSlider = ({
             onChange={(event) => updateValue(0, event.target.value)}
           />
         </div>
-        <div className="mpc-dual-range-slider-input is-max">
+        <div className="ms-dual-range-slider-input ms-is-max">
           <Input
-            className="mpc-range-number-input"
+            className="ms-range-number-input"
             type="number"
             value={values[1]}
             min={minDomain}
@@ -135,7 +135,7 @@ export const DualRangeSlider = ({
       </div>
 
       <Slider.Root
-        className="mpc-slider-root"
+        className="ms-slider-root"
         min={minDomain}
         max={maxDomain}
         step={step}
@@ -144,11 +144,11 @@ export const DualRangeSlider = ({
         onValueChange={(next) => setValues([next[0], next[1]])}
         style={styleSlider}
       >
-        <Slider.Track className="mpc-slider-track">
-          <Slider.Range className="mpc-slider-range" />
+        <Slider.Track className="ms-slider-track">
+          <Slider.Range className="ms-slider-range" />
         </Slider.Track>
-        <Slider.Thumb className="mpc-slider-thumb" />
-        <Slider.Thumb className="mpc-slider-thumb" />
+        <Slider.Thumb className="ms-slider-thumb" />
+        <Slider.Thumb className="ms-slider-thumb" />
       </Slider.Root>
     </div>
   );

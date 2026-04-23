@@ -79,10 +79,10 @@ export const BibFilter = ({
   );
 
   return (
-    <div id={props.id} data-testid="bibjson-filter" className={clsx('mpc-bib-filter', props.className)}>
-      <div className="mpc-bib-filter-controls">
+    <div id={props.id} data-testid="bibjson-filter" className={clsx('ms-bib-filter', props.className)}>
+      <div className="ms-bib-filter-controls">
         <Input
-          className="mpc-bib-filter-input"
+          className="ms-bib-filter-input"
           role="searchbox"
           type="search"
           aria-label={props.searchAriaLabel}
@@ -99,7 +99,7 @@ export const BibFilter = ({
           sortFn={sortFn}
         />
       </div>
-      <div className="mpc-bib-filter-results">
+      <div className="ms-bib-filter-results">
         {bibEntriesState.map((entry, i) =>
           props.format === 'bibjson' ? (
             <BibjsonCard

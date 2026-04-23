@@ -1,8 +1,8 @@
-.mpc-materials-input {
+.ms-materials-input {
   position: relative;
 }
 
-.mpc-materials-input .autocomplete {
+.ms-materials-input .ms-autocomplete {
   display: block;
   position: absolute;
   top: 100%;
@@ -13,11 +13,11 @@
   border-radius: 0 0 5px 5px;
 }
 
-.mpc-materials-input .autocomplete .dropdown-content {
+.ms-materials-input .ms-autocomplete .ms-dropdown-content {
   border-radius: 0 0 5px 5px;
 }
 
-.mpc-materials-input .input-help-menu {
+.ms-materials-input .ms-input-help-menu {
   display: block;
   position: absolute;
   top: 100%;
@@ -32,66 +32,66 @@
   overflow: auto;
 }
 
-.mpc-materials-input .input-help-menu > div:not(:last-child) {
+.ms-materials-input .ms-input-help-menu > div:not(:last-child) {
   margin-bottom: 0.5rem;
 }
 
-.mpc-materials-input .input-help-menu .tags {
+.ms-materials-input .ms-input-help-menu .ms-tags {
   display: inline-flex;
 }
 
-.mpc-materials-input .autocomplete-label {
+.ms-materials-input .ms-autocomplete-label {
   font-size: 0.8em;
   font-style: italic;
   padding: 0 0 0.5em 1em;
 }
 
-.mpc-materials-input .input[type='search'] {
+.ms-materials-input .ms-input[type='search'] {
   box-shadow: none;
 }
 
-.mpc-materials-input .mpc-materials-input-control {
+.ms-materials-input .ms-materials-input-control {
   position: relative;
 }
 
-.mpc-materials-input .control [data-tooltip] {
+.ms-materials-input .ms-control [data-tooltip] {
   border-left: none;
 }
 
-.mpc-materials-input .control [data-tooltip]:hover {
+.ms-materials-input .ms-control [data-tooltip]:hover {
   border-left: 1px solid #b5b5b5;
 }
 
-.mpc-materials-input .mpc-materials-input-error {
+.ms-materials-input .ms-materials-input-error {
   color: #d72638;
 }
 
-.mpc-materials-input .mpc-materials-input-addon.button {
+.ms-materials-input .ms-materials-input-addon.ms-button {
   min-width: 3rem;
   border-left: 0;
 }
 
-.mpc-materials-input .control .button {
+.ms-materials-input .ms-control .ms-button {
   height: 100%;
 }
 
-.mpc-materials-input .input-help-button {
+.ms-materials-input .ms-input-help-button {
   border-left: none;
 }
 
-.mpc-materials-input .input-help-button:hover,
-.mpc-materials-input .input-help-button:focus {
+.ms-materials-input .ms-input-help-button:hover,
+.ms-materials-input .ms-input-help-button:focus {
   border-color: #dbdbdb;
 }
 
-.mpc-materials-input .mpc-materials-input-toggle-button {
+.ms-materials-input .ms-materials-input-toggle-button {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.mpc-materials-input .mpc-materials-input-toggle-icon {
+.ms-materials-input .ms-materials-input-toggle-icon {
   display: block;
   width: 3rem;
   height: auto;
@@ -99,11 +99,11 @@
   color: #000;
 }
 
-.mpc-materials-input .mpc-materials-input-toggle-icon.is-active {
+.ms-materials-input .ms-materials-input-toggle-icon.ms-is-active {
   color: #3273dc;
 }
 
-/* .mpc-materials-input .table-transition-wrapper-small {
+/* .ms-materials-input .table-transition-wrapper-small {
   width: 600px;
   margin: auto;
   position: absolute;
@@ -113,7 +113,7 @@
   transform: translate(-50%, 0);
 }
 
-.mpc-materials-input .table-legend-container.box {
+.ms-materials-input .table-legend-container.ms-box {
   border: 1px solid #ddd;
   border-top: none;
   border-radius: 0 0 6px 6px;

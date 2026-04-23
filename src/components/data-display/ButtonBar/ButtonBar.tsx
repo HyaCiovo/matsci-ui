@@ -11,7 +11,7 @@ export interface ButtonBarProps {
 
 export const ButtonBar = ({ id, className, children }: ButtonBarProps) => {
   return (
-    <div id={id} className={clsx('mpc-button-bar', className)}>
+    <div id={id} className={clsx('ms-button-bar', className)}>
       {children}
     </div>
   );

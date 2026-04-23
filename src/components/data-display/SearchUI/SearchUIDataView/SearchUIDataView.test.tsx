@@ -68,7 +68,7 @@ describe('SearchUIDataView', () => {
       </SearchUIContainer>
     );
 
-    expect(screen.getByTestId('mpc-synthesis-recipe-cards')).toBeInTheDocument();
+    expect(screen.getByTestId('ms-synthesis-recipe-cards')).toBeInTheDocument();
     expect(screen.getByText('Page 1 of 2')).toBeInTheDocument();
     expect(screen.getByText('10.1000/example-1')).toBeInTheDocument();
 

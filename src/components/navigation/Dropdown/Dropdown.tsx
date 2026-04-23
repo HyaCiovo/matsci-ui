@@ -30,7 +30,7 @@ export const Dropdown = ({
   id,
   className,
   triggerLabel,
-  triggerClassName = 'button',
+  triggerClassName = 'ms-button',
   triggerIcon,
   items = [],
   isArrowless = false,
@@ -90,15 +90,15 @@ export const Dropdown = ({
   return (
     <div
       ref={dropdownRef}
-      data-testid="mpc-dropdown"
+      data-testid="ms-dropdown"
       id={id}
-      className={clsx('dropdown', className, {
-        'is-active': open,
-        'is-up': isUp,
-        'is-right': isRight,
+      className={clsx('ms-dropdown', className, {
+        'ms-is-active': open,
+        'ms-is-up': isUp,
+        'ms-is-right': isRight,
       })}
     >
-      <div className="dropdown-trigger">
+      <div className="ms-dropdown-trigger">
         <button
           type="button"
           className={clsx(triggerClassName)}
@@ -109,19 +109,19 @@ export const Dropdown = ({
           {renderIcon(triggerIcon)}
           {triggerLabel ? <span>{triggerLabel}</span> : null}
           {!isArrowless ? (
-            <span className="icon">{isUp ? <FaAngleUp /> : <FaAngleDown />}</span>
+            <span className="ms-icon">{isUp ? <FaAngleUp /> : <FaAngleDown />}</span>
           ) : null}
         </button>
       </div>
       {open ? (
-        <div className="mpc-dropdown-menu dropdown-menu" role="menu">
-          <div className="mpc-dropdown-content dropdown-content" role="presentation">
+        <div className="ms-dropdown-menu" role="menu">
+          <div className="ms-dropdown-content" role="presentation">
             {renderedItems.map((item, index) => {
               if (typeof item === 'string' || typeof item === 'number') {
                 return (
                   <div
                     key={index}
-                    className="dropdown-item"
+                    className="ms-dropdown-item"
                     role="menuitem"
                     tabIndex={0}
                     onClick={() => handleItemSelection()}
@@ -146,7 +146,7 @@ export const Dropdown = ({
               return (
                 <div
                   key={index}
-                  className="dropdown-item"
+                  className="ms-dropdown-item"
                   role="menuitem"
                   tabIndex={0}
                   onClick={() => handleItemSelection()}

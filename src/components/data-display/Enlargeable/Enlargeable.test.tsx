@@ -10,9 +10,9 @@ describe('Enlargeable', () => {
     );
 
     fireEvent.click(screen.getByRole('button'));
-    expect(document.querySelector('.modal.is-active')).toBeTruthy();
+    expect(document.querySelector('.ms-modal.ms-is-active')).toBeTruthy();
 
     fireEvent.click(screen.getByRole('button'));
-    expect(document.querySelector('.modal.is-active')).toBeFalsy();
+    expect(document.querySelector('.ms-modal.ms-is-active')).toBeFalsy();
   });
 });

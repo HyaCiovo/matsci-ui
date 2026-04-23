@@ -37,15 +37,15 @@ export const BibCard = ({ title = '', ...otherProps }: BibCardProps) => {
   );
 
   return (
-    <div id={props.id} data-testid="bib-card" className={clsx('mpc-bib-card', props.className)}>
-      <p data-testid="bib-card-title" className="mpc-bib-card-title">
+    <div id={props.id} data-testid="bib-card" className={clsx('ms-bib-card', props.className)}>
+      <p data-testid="bib-card-title" className="ms-bib-card-title">
         {titleElement}
       </p>
-      <p data-testid="bib-card-authors" className="mpc-bib-card-authors">
+      <p data-testid="bib-card-authors" className="ms-bib-card-authors">
         {getAuthorString(props.author)}
       </p>
       {props.doi ? (
-        <div className="mpc-bib-card-buttons tags">
+        <div className="ms-bib-card-buttons ms-tags">
           <PublicationButton doi={props.doi} url={url}>
             {getJournalAndYear(props.journal, props.year)}
           </PublicationButton>

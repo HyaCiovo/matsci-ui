@@ -591,7 +591,7 @@ export const MaterialsInput = ({
   const disableSubmitButton = !!props.loading || !!error || !inputValue;
 
   return (
-    <div id={props.id} className={clsx('mpc-materials-input', props.className)}>
+    <div id={props.id} className={clsx('ms-materials-input', props.className)}>
       {props.showSubmitButton ? (
         <form data-testid="materials-input-form" onSubmit={(event) => handleSubmit(event)}>
           <MaterialsInputBox
@@ -704,9 +704,9 @@ export const MaterialsInput = ({
       {hasPeriodicTable ? (
         <div
           data-testid="materials-input-periodic-table"
-          className={clsx('materials-input-elements-panel', {
-            'is-hidden': !showPeriodicTable,
-            'mt-3': showPeriodicTable,
+          className={clsx('ms-materials-input-elements-panel', {
+            'ms-is-hidden': !showPeriodicTable,
+            'ms-mt-3': showPeriodicTable,
           })}
           aria-hidden={!showPeriodicTable}
           onMouseDown={() => {
@@ -714,7 +714,7 @@ export const MaterialsInput = ({
           }}
         >
           <SelectableTable
-            className="box"
+            className="ms-box"
             disabled={!showPeriodicTable}
             enabledElements={selectedElements}
             maxElementSelectable={
@@ -750,13 +750,13 @@ export const MaterialsInput = ({
           />
 
           {selectionMode === PeriodicTableSelectionMode.CHEMICAL_SYSTEM && props.chemicalSystemSelectHelpText ? (
-            <p className="help mt-3">{props.chemicalSystemSelectHelpText}</p>
+            <p className="ms-help ms-mt-3">{props.chemicalSystemSelectHelpText}</p>
           ) : null}
           {selectionMode === PeriodicTableSelectionMode.ELEMENTS && props.elementsSelectHelpText ? (
-            <p className="help mt-3">{props.elementsSelectHelpText}</p>
+            <p className="ms-help ms-mt-3">{props.elementsSelectHelpText}</p>
           ) : null}
           {selectedElements.length > 0 ? (
-            <p className="help mt-3">
+            <p className="ms-help ms-mt-3">
               {selectedElements.length} {capitalize(pluralize('element'))} selected
             </p>
           ) : null}
