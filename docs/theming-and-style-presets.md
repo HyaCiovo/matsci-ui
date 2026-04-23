@@ -1,281 +1,283 @@
-# Multi-theme / Style Presets (Bulma ↔ Shadcn) / 多套样式 / 主题方案（Bulma ↔ Shadcn）
+# Multi-theme / Style Presets Status / 多主题与样式预设现状
 
-**EN**
+Last updated: 2026-04-24
 
-This document is a planning note rather than a statement of shipped functionality. Today, the only stable styling entrypoint is still `@hyacinth/matsci-ui/style.css`, which is primarily Bulma + component-level CSS/Less. The token/preset ideas below are an evolution path, not a compatibility contract.
+## EN
 
-The goal is to make `matsci-ui` themable and style-system-replaceable without sacrificing maintainability:
+This document is no longer only a planning note. The **multi-theme architecture is now implemented in the repository**, including explicit theme entrypoints, unified source layout, library-owned `ms-*` selectors, and separate default / alternate stylesheet outputs.
 
-- one default preset (currently Bulma-oriented)
-- at least one alternate preset (e.g. a shadcn-like look)
-- easier theme customization via CSS variables (colors, radius, shadows, typography)
+The package is **still not published to npm yet**, so the public install contract is defined, but the primary way to verify theme behavior remains the repository build output and Storybook.
 
-**中文**
+### What is shipped in the repository today
 
-本文档是规划文档，不是当前已正式应用到 `matsci-ui` 发布面的功能说明。当前仓库真正稳定可用的样式入口仍然只有 `@hyacinth/matsci-ui/style.css`，其内部仍以 Bulma 和组件级 CSS/Less 为主。下面讨论的 token、preset、Bulma ↔ Shadcn 兼容层都应视为后续演进方向，而不是现阶段的兼容承诺。
+- Explicit stylesheet entrypoints:
+  - `@hyacinth/matsci-ui/style.css`
+  - `@hyacinth/matsci-ui/themes/default.css`
+  - `@hyacinth/matsci-ui/themes/alt.css`
+- Unified source theme tree under `src/themes`
+- Theme layering:
+  - `src/themes/foundation/*`
+  - `src/themes/shared/*`
+  - `src/themes/presets/*`
+  - `src/themes/entries/*`
+- A library-owned styling contract based on `ms-*` selectors instead of exposing raw Bulma selectors to host applications
+- Build output that emits:
+  - `dist/themes/default.css`
+  - `dist/themes/alt.css`
 
-本文档用于规划 `matsci-ui` 的“可主题化”和“可替换样式体系”能力。目标是让组件库在不牺牲可维护性的前提下，支持：
+### What has changed compared with the earlier plan
 
-- 一份默认样式（当前以 Bulma 为基础）
-- 至少一份替代样式（例如 shadcn 风格）
-- 通过 CSS 变量更便捷地定制颜色/圆角/阴影/字体等主题 token
+Earlier versions of this document described theme presets as “planned”. That is no longer accurate.
 
-## Current State (Why “just swap a CSS file” is not enough) / 现状（为什么不能直接换一份 CSS）
+The following parts are already implemented:
 
-**EN**
+- explicit theme CSS entrypoints in package exports
+- a split between foundation styles, shared component skinning, preset-specific layers, and final build entries
+- a migrated class strategy centered on `ms-*`
+- a dedicated alternate preset hook using:
+  - `src/themes/presets/alt-tokens.css`
+  - `src/themes/presets/alt-overrides.css`
 
-The current styling stack is composed of:
+### What is still incomplete
 
-1) Bulma CSS (global import)
-2) Component-local CSS/LESS (extracted into `dist/index.css`)
-3) Global overrides/patches (e.g. `styles.less`) that further assume Bulma semantics
+The remaining gap is **not the architecture**. The remaining gap is the **visual coverage and completeness of the alternate theme**.
 
-As a result, replacing Bulma with a different framework does not work automatically: the DOM/class contracts produced by components are still Bulma-shaped.
+Today:
 
-Notes:
+- `default.css` is the stable default consumer entry
+- `alt.css` is a real exported build artifact
+- the alternate preset already has dedicated token and override files
+- but the alternate preset is not yet a fully differentiated second visual system across every component surface
 
-- `src/theme/tokens.css` is exploratory rather than a stable public theming API.
-- Alternate presets such as `dark.css`, `materials.css`, `shadcn.css` are not currently published.
-- Any theme mention in README/migration docs should be treated as “planned”, not “supported today”.
+In other words:
 
-**中文**
+- multi-theme delivery is landed
+- the second theme’s visual language is still being expanded
 
-当前组件库的样式体系由三部分组成：
+### Current mental model
 
-1) Bulma CSS（全局导入）
-- 入口文件默认导入 Bulma。
-- 组件 JSX 广泛输出 Bulma 语义类（例如 `box/panel/field/control/button/tag/navbar/modal/dropdown/pagination` 等）。
+Use these terms consistently:
 
-2) 组件内分散的 CSS/LESS（构建期会抽取合并）
-- 各组件通常在组件文件中 side-effect import 对应样式文件。
-- 构建时统一抽取到 `dist/index.css`。
+- **Foundation**: tokens, resets, Bulma-compatible primitives, and utilities
+- **Shared**: component styling shared across presets
+- **Preset**: preset-owned visual choices, tokens, and overrides
+- **Entry**: final theme bundle entrypoint consumed by Storybook and npm package builds
 
-3) 全局覆盖/补丁（styles.less）
-- 存在针对 Bulma 类名的覆盖（例如 `.panel/.dropdown-item/.pagination-*` 等），强化了对 Bulma 结构类的依赖。
+### Current source structure
 
-因此，“只替换 Bulma CSS”为另一个体系（例如 shadcn）并不能自动工作：组件代码输出的 className 与 DOM 结构假设仍然是 Bulma 的语义体系。
+```text
+src/themes/
+  foundation/
+    tokens.css
+    matsci-bulma.css
+  shared/
+    components.ts
+    components-*.css
+    components-*.less
+  presets/
+    default.ts
+    alt.ts
+    alt-tokens.css
+    alt-overrides.css
+  entries/
+    default.ts
+    alt.ts
+```
 
-补充说明：
+### Current published-style contract
 
-- `src/theme/tokens.css` 当前可以视为探索性整理文件，而不是稳定的公开主题 API。
-- 当前没有正式发布 `dark.css`、`materials.css`、`shadcn.css` 等可切换预设文件。
-- README、迁移文档和 Storybook 中若提到主题方案，都应以“规划中”理解，而不是“已正式支持”。
-
-## Terms / 术语
-
-**EN**
-
-- Token: a CSS variable representing a design parameter (color, radius, shadow, typography, spacing).
-- Preset: a standalone CSS bundle that defines the final appearance (Bulma preset, shadcn-like preset).
-- Compat layer: CSS that re-implements or overrides Bulma semantic classes without changing JSX.
-- De-Bulma: components stop emitting Bulma semantic classes and instead emit library-owned semantic classes (e.g. `mpc-*`).
-
-**中文**
-
-- Token：通过 CSS 变量表达的设计参数（颜色、圆角、阴影、字体等），例如 `--mpc-color-primary`。
-- Preset（样式预设）：一份可被单独引入的 CSS 文件集合，决定最终外观（例如 Bulma preset、shadcn preset）。
-- 兼容层（compat layer）：在不改组件 JSX 的情况下，用 CSS 重新实现或覆盖某些 Bulma 语义类，使其呈现另一套视觉风格。
-- 去 Bulma 化：组件不再直接输出 Bulma 语义类，改输出库自有语义类（例如 `mpc-*`），由不同 preset 决定这些语义类如何被渲染。
-
-## Goals / Non-goals / 目标与非目标
-
-**EN**
-
-Goals:
-
-- allow theme customization via CSS variables (light/dark, primary color, radius, shadow, etc.)
-- support at least two switchable presets (Bulma look and an alternative look)
-- provide an incremental migration path away from Bulma coupling
-
-Non-goals (short term):
-
-- rewriting every component to be 100% de-Bulma in one step
-- guaranteeing pixel-identical parity between alternate presets and Bulma
-
-**中文**
-
-目标：
-
-- 支持通过 CSS 变量进行主题定制（浅色/深色、主色、圆角、阴影等）。
-- 支持至少两套可切换的样式预设（Bulma 风格、shadcn 风格）。
-- 为未来逐步减少对 Bulma 的绑定提供迁移路径。
-
-非目标（短期）：
-
-- 不追求“一夜之间全组件 100% 去 Bulma 化”。
-- 不保证替代样式 preset 与原版 Bulma 的像素级一致性。
-
-## Option A: Compat-layer Preset / 方案 A：兼容层预设（保留 Bulma 语义类，新增 shadcn-look CSS）
-
-**EN**
-
-Idea: keep JSX and DOM structure unchanged, and add an additional CSS preset that overrides Bulma semantic classes to approximate an alternate design language.
-
-Suggested artifacts:
-
-- `@hyacinth/matsci-ui/style.css` (default Bulma preset)
-- `@hyacinth/matsci-ui/presets/shadcn.css` (shadcn-look compat preset)
-
-Example:
+When the package is published, consumers should use one of these:
 
 ```ts
 import '@hyacinth/matsci-ui/style.css';
+// or:
+import '@hyacinth/matsci-ui/themes/default.css';
+// or:
+import '@hyacinth/matsci-ui/themes/alt.css';
 ```
 
-Switch to shadcn-look:
+Current recommendation:
+
+- use `style.css` or `themes/default.css` for production-style default usage
+- treat `themes/alt.css` as the shipped alternate-theme entrypoint whose implementation surface is still growing
+
+### Why the old “just swap Bulma” approach was not enough
+
+Historically, this library inherited strong Bulma coupling:
+
+- Bulma-shaped DOM/class conventions
+- component-local style patches
+- host-level leakage from global selectors
+
+The current repository has already addressed the most important structural problem by moving styling ownership into library-controlled `ms-*` selectors and a dedicated theme tree.
+
+That means the problem statement has changed:
+
+- before: “how do we make theming possible at all?”
+- now: “how do we complete and polish the alternate preset without regressing the default one?”
+
+### Recommended next implementation direction
+
+Short term:
+
+- keep `default.css` as the stable visual baseline
+- continue expanding `alt-tokens.css` and `alt-overrides.css`
+- avoid breaking shared component structure while preset coverage improves
+
+Medium term:
+
+- continue moving visual choices into preset-owned files rather than `shared`
+- keep structural rules in `shared`
+- keep global foundation rules in `foundation`
+
+Long term:
+
+- ship a clearly differentiated second preset
+- optionally add more preset entrypoints if they can be maintained safely
+
+### Risks and constraints
+
+- The package is not published yet, so public documentation must keep reminding readers that Storybook is currently the easiest preview surface.
+- Host applications should not depend on internal DOM details or old Bulma selectors.
+- `vis.less` remains intentionally separate because other npm packages still depend on it.
+- The alternate theme should not claim complete parity until its visual coverage is actually finished.
+
+## 中文
+
+本文档不再只是“规划说明”。当前仓库里，**多主题架构本身已经落地**，包括显式主题入口、统一的主题源码目录、库自有 `ms-*` 选择器，以及默认主题 / 第二主题样式产物。
+
+但 npm 包 **仍然还没有正式发布**，所以当前公开安装契约虽然已经确定，实际验证主题能力仍应以仓库构建产物和 Storybook 为主。
+
+### 当前仓库已经具备的能力
+
+- 显式样式入口：
+  - `@hyacinth/matsci-ui/style.css`
+  - `@hyacinth/matsci-ui/themes/default.css`
+  - `@hyacinth/matsci-ui/themes/alt.css`
+- 统一的 `src/themes` 主题源码树
+- 主题分层结构：
+  - `src/themes/foundation/*`
+  - `src/themes/shared/*`
+  - `src/themes/presets/*`
+  - `src/themes/entries/*`
+- 基于库自有 `ms-*` 选择器的样式契约，不再把原始 Bulma 全局类直接暴露给宿主项目
+- 构建产物会输出：
+  - `dist/themes/default.css`
+  - `dist/themes/alt.css`
+
+### 相比旧版规划，已经变化的地方
+
+旧版文档把多主题能力描述为“规划中”。这已经不准确了。
+
+以下部分已经在仓库里落地：
+
+- 包导出中有明确的主题 CSS 入口
+- 样式源码已经拆成基础层、共享层、预设层和最终入口层
+- 组件样式契约已经迁移到 `ms-*`
+- 第二主题已经拥有专属的：
+  - `src/themes/presets/alt-tokens.css`
+  - `src/themes/presets/alt-overrides.css`
+
+### 目前还没完成的部分
+
+当前没完成的不是“架构能力”，而是**第二套主题视觉覆盖面的完整度**。
+
+目前的真实状态是：
+
+- `default.css` 是稳定的默认主题入口
+- `alt.css` 是真实存在、会随构建输出的第二主题产物
+- 第二主题已经有自己的 token 和 override 文件
+- 但第二主题还没有在所有组件表面上形成一套完全成熟、差异明确的第二视觉系统
+
+换句话说：
+
+- 多主题交付能力已经落地
+- 第二主题的视觉语言仍在继续补齐
+
+### 当前推荐的理解方式
+
+统一使用以下术语：
+
+- **Foundation**：token、基础重置、Bulma 兼容原子层与工具类
+- **Shared**：不同 preset 共享的组件结构样式
+- **Preset**：具体主题自己的视觉选择、token 与 override
+- **Entry**：最终供 Storybook 和 npm 构建使用的主题打包入口
+
+### 当前源码结构
+
+```text
+src/themes/
+  foundation/
+    tokens.css
+    matsci-bulma.css
+  shared/
+    components.ts
+    components-*.css
+    components-*.less
+  presets/
+    default.ts
+    alt.ts
+    alt-tokens.css
+    alt-overrides.css
+  entries/
+    default.ts
+    alt.ts
+```
+
+### 当前对外样式契约
+
+等 npm 包正式发布后，业务方应通过以下方式之一引入样式：
 
 ```ts
 import '@hyacinth/matsci-ui/style.css';
-import '@hyacinth/matsci-ui/presets/shadcn.css';
+// 或：
+import '@hyacinth/matsci-ui/themes/default.css';
+// 或：
+import '@hyacinth/matsci-ui/themes/alt.css';
 ```
 
-Pros:
+当前推荐：
 
-- minimal code changes, faster iteration
-- low risk for API and DOM stability
+- 默认生产使用优先走 `style.css` 或 `themes/default.css`
+- 把 `themes/alt.css` 视为已经存在并可交付的第二主题入口，但它的视觉实现仍在继续扩充
 
-Cons:
+### 为什么旧时代“直接替换 Bulma”已经不是重点问题
 
-- substantial CSS work to cover the semantic surface area
-- difficult to match all edge behaviors
-- ongoing maintenance as new Bulma classes appear in components
+历史上这个库的样式和 Bulma 耦合很深：
 
-Suggested steps:
+- DOM/class 语义强依赖 Bulma
+- 组件目录里散落大量样式补丁
+- 全局选择器容易污染宿主应用
 
-1) Define a minimal token set (color, radius, shadow, typography, spacing).
-2) Inventory high-frequency Bulma classes used by the library (button/input/select/modal/dropdown/panel/pagination/tag, etc.).
-3) Implement those semantics in `presets/shadcn.css` using tokens, avoiding hard-coded values.
-4) Provide preset switching guidance in documentation.
-5) Expand coverage incrementally and converge hard-coded values into tokens.
+当前仓库已经通过库自有 `ms-*` 选择器和统一主题目录，解决了最关键的结构性问题。
 
-**中文**
+因此，问题本身已经变化了：
 
-思路：不改组件 JSX、不改 DOM 结构、不改现有 className。新增一套 CSS preset：
+- 过去的问题是：“怎么让主题切换至少成为可能？”
+- 现在的问题是：“如何在不破坏默认主题的前提下，把第二主题继续做完整？”
 
-- 默认仍是 Bulma preset：继续产出 `style.css`（包含 Bulma + 组件样式 + token）。
-- 新增 shadcn-look preset：一份 CSS 覆盖/实现 Bulma 语义类，让 UI 视觉更接近 shadcn。
+### 当前推荐的后续实现方向
 
-你可以把它理解为：“继续使用 Bulma 的类名作为组件库的样式 API，但换掉它们的视觉实现”。
+短期：
 
-产物形式（建议）：
+- 继续把 `default.css` 作为稳定视觉基线
+- 持续补齐 `alt-tokens.css` 与 `alt-overrides.css`
+- 在扩充第二主题覆盖时，避免破坏 shared 层的结构稳定性
 
-- `@hyacinth/matsci-ui/style.css`（默认 Bulma preset）
-- `@hyacinth/matsci-ui/presets/shadcn.css`（shadcn-look preset）
+中期：
 
-使用方式（示意）：
+- 继续把视觉差异尽量收敛到 preset 层，而不是 shared 层
+- 结构性规则留在 `shared`
+- 全局基础规则留在 `foundation`
 
-```ts
-import '@hyacinth/matsci-ui/style.css';
-```
+长期：
 
-切换为 shadcn-look：
+- 交付一套差异更明确、覆盖更完整的第二主题
+- 如果维护成本可控，再考虑扩展更多 preset 入口
 
-```ts
-import '@hyacinth/matsci-ui/style.css';
-import '@hyacinth/matsci-ui/presets/shadcn.css';
-```
+### 风险与约束
 
-优点：
-
-- 改动面最小：组件代码基本不需要改，能够更快落地。
-- 低风险：不改变组件结构与导出 API，业务接入面影响较小。
-
-缺点：
-
-- 兼容层 CSS 工作量大：要覆盖的 Bulma 语义类较多（布局/表单/弹窗/导航/分页等）。
-- 难做到完全一致：部分组件依赖 Bulma 的特定 DOM/状态类细节，覆盖可能需要“补丁式”的 CSS。
-- 长期维护成本：组件新增 Bulma 类时，兼容层也要同步支持。
-
-落地步骤（建议顺序）：
-
-1) 定义 token 的最小闭环（颜色/圆角/阴影/字体/间距）。
-2) 统计项目中使用频率最高的 Bulma 语义类集合（button/input/select/modal/dropdown/panel/pagination/tag 等）。
-3) 在 `presets/shadcn.css` 中实现这些 Bulma 类的视觉（尽量只用 token，不写死颜色）。
-4) 在文档中给出 preset 切换与注意事项。
-5) 逐步扩充覆盖范围，并把仍然写死的值收敛到 token。
-
-## Option B: De-Bulma / 方案 B：去 Bulma 化（组件使用 mpc 语义类，预设实现外观）
-
-**EN**
-
-Idea: make the library own its semantic class contract (`mpc-*`), and let presets implement those semantics.
-
-Pros:
-
-- truly pluggable style systems
-- cleaner long-term theming and token strategy
-- clearer public “styling API” owned by the library
-
-Cons:
-
-- larger migration effort across many components
-- risk for consumers who depend on internal DOM/class selectors
-- requires a staged strategy (mixed-mode period)
-
-Suggested steps:
-
-1) Define the token boundary (must-have vs preset-owned).
-2) Define core semantics: button / input / select / tag / card(box) / panel / dropdown / modal / pagination / table.
-3) Migrate from the most reused primitives:
-   - add `mpc-*` while keeping Bulma classes (transition phase)
-   - gradually remove Bulma classes
-4) Migrate Bulma overrides in `styles.less` into `mpc-*` implementations.
-5) Ship at least two presets (bulma look and an alternative look).
-
-**中文**
-
-思路：把 Bulma 类名从组件的样式 API 中抽离出来，组件只输出库自有语义类（例如 `mpc-button/mpc-input/mpc-panel`）。不同 preset 提供这些语义类的实现：
-
-- `preset/bulma.css`：用 Bulma 或 Bulma-compat 来实现 `mpc-*` 语义类
-- `preset/shadcn.css`：用 shadcn 风格实现 `mpc-*` 语义类
-
-优点：
-
-- 真正可插拔：UI 设计体系可以替换，不再被 Bulma 语义束缚。
-- 更易主题化：所有关键参数都集中为 token，组件样式更易被控制。
-- 长期维护更清晰：组件库对外提供的是自有语义类契约，而不是依赖第三方框架类名。
-
-缺点：
-
-- 工作量大：需要逐组件改 JSX className、补齐对应 CSS、迁移全局覆盖。
-- 潜在破坏性：如果有业务侧依赖组件内部 DOM/Bulma 类名做选择器，迁移会有风险。
-- 需要阶段性策略：无法一次性完成，必须支持“混合阶段”。
-
-落地步骤（建议顺序）：
-
-1) 先明确 token 体系边界：哪些是必需 token，哪些属于 preset 自己决定。
-2) 选定“核心基础语义层”：button / input / select / tag / card(box) / panel / dropdown / modal / pagination / table。
-3) 从最底层、复用最多的组件开始去 Bulma 化：
-   - 先给组件加 `mpc-*` 类，同时保留 Bulma 类（过渡期）
-   - 再逐步移除 Bulma 类
-4) 将 `styles.less` 中对 Bulma 类的覆盖迁移为对 `mpc-*` 的实现。
-5) 提供两套 preset：
-   - bulma preset：保证兼容现有 UI
-   - shadcn preset：作为替代视觉体系
-6) 在文档中补充 preset 切换与迁移说明。
-
-## Recommendation / 选择建议
-
-**EN**
-
-- If you need a second look quickly: start with Option A.
-- For long-term replaceable design systems: converge toward Option B, potentially after Option A delivers early value.
-
-**中文**
-
-- 如果你希望尽快有“第二套外观”，优先方案 A（兼容层 preset）。
-- 如果你希望长期真正可替换设计体系，最终应走向方案 B；但可以先 A 快速落地，再以 B 作为长期演进方向。
-
-## Risks and Notes / 风险与注意事项
-
-**EN**
-
-- shadcn is not a drop-in CSS replacement for Bulma; a compat layer or de-Bulma is required.
-- selector priority and override strategy must be controlled to avoid confusing conflicts.
-- global CSS should gradually converge toward `mpc-*` semantics and a controllable scope (e.g. an `.mpc-theme` container).
-
-**中文**
-
-- Bulma 与 shadcn 的“范式差异”：shadcn 并不是一个“替换 Bulma 文件”的框架；需要兼容层或去 Bulma 化才能成立。
-- CSS 优先级与覆盖：兼容层需要控制 selector 优先级，避免出现难以解释的覆盖冲突。
-- 全局样式污染：当前体系以全局 CSS 为主，建议逐步收敛到 `mpc-*` 前缀与可控作用域（例如 `.mpc-theme` 容器）。
+- npm 包尚未正式发布，因此所有外部文档仍应提醒读者：当前 Storybook 仍然是最直接的预览入口。
+- 宿主项目不应继续依赖内部 DOM 细节或旧 Bulma 选择器。
+- `vis.less` 仍然需要保持独立，因为还有其他 npm 包依赖它。
+- 在第二主题的视觉覆盖尚未完成之前，不应把它表述为“已完全达到默认主题同等级别的正式替代”。

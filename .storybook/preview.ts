@@ -4,7 +4,7 @@ import type { DocsContainerProps } from '@storybook/addon-docs/blocks';
 import { DocsContainer } from '@storybook/addon-docs/blocks';
 import { ShikiDocsCode } from './ShikiDocsCode';
 import { matsciStorybookTheme } from './matsciStorybookTheme';
-import '../src/themes/default.ts';
+import '../src/themes/entries/default.ts';
 import '../src/stories/stories.css';
 import './storybook-docs.css';
 import { StorybookLocaleProvider, type StorybookLocale } from '../src/stories/i18n/LocaleProvider';

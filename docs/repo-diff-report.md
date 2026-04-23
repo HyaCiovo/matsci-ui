@@ -2,7 +2,7 @@
 
 **EN**
 
-Last updated: 2026-04-22
+Last updated: 2026-04-24
 
 ## 1. 报告范围
 
@@ -46,7 +46,7 @@ Executive summary of the most impactful changes and suggested migration approach
 - 打包现代化：从 Parcel 1 + Rollup 2 + Babel/Jest 生态切换为 Vite + Rollup 4 + SWC + Vitest。
 - 依赖升级：核心 UI 基座由多套历史 React 生态组件迁移到 Radix UI、TanStack Table 和原生 `fetch`。
 - 发布面扩展：根入口导出由约 57 个符号扩展到约 151 个，新增大量类型、工具函数和组合能力。
-- 样式策略现状：当前正式样式入口仍是统一打包 CSS；主题 token / preset 方案处于规划阶段，尚未形成稳定对外契约。
+- 样式策略现状：当前正式样式入口已收敛为显式主题 CSS 入口，多主题架构与第二主题导出已落地，但第二主题的视觉覆盖仍在继续完善。
 - React 兼容面调整：旧库主线停留在 React 16 基线，不应视为支持 React 18 及以上；新包则显式支持 React 17/18/19。
 
 综合判断：
@@ -67,8 +67,8 @@ High-level matrix of key differences (packaging, React baseline, docs stack, net
 | --- | --- | --- | --- |
 | 包名 | `@materialsproject/mp-react-components` | `@hyacinth/matsci-ui` | 高 |
 | React 基线 | `react` / `react-dom` 依赖为 `^16.14.0`，不应视为支持 React 18+ | peer 显式支持 `^17 or ^18 or ^19` | 高 |
-| 产物导出 | `main: index.js`、`module: dist/index.es.js` | `.`、`./style.css` | 高 |
-| 样式接入 | 隐式/历史约定 | 显式 `@hyacinth/matsci-ui/style.css` | 高 |
+| 产物导出 | `main: index.js`、`module: dist/index.es.js` | `.`、`./style.css`、`./themes/default.css`、`./themes/alt.css` | 高 |
+| 样式接入 | 隐式/历史约定 | 显式 `@hyacinth/matsci-ui/style.css` / `themes/default.css` / `themes/alt.css` | 高 |
 | 文档栈 | Storybook 6 + webpack5 | Storybook 10 + Vite | 高 |
 | 测试栈 | Jest 26 + ts-jest | Vitest 4 + jsdom | 中 |
 | 网络层 | `axios` | 原生 `fetch` 封装 | 中 |
@@ -96,7 +96,7 @@ Package metadata, exports/entrypoints, and publishing contract changes.
 
 | 文件 | 旧文件与行号 | 新文件与行号 | 变化类型 | 影响说明 |
 | --- | --- | --- | --- | --- |
-| 包名与发布入口 | `mp-react-components/package.json:L2-L25` | `matsci-ui/package.json:L2-L27` | 变更 | 包名从 `@materialsproject/mp-react-components` 更名为 `@hyacinth/matsci-ui`；旧库使用 `main/module` 入口，新包额外显式公开 `./style.css` 子路径，消费方必须显式引入样式。 |
+| 包名与发布入口 | `mp-react-components/package.json:L2-L25` | `matsci-ui/package.json` | 变更 | 包名从 `@materialsproject/mp-react-components` 更名为 `@hyacinth/matsci-ui`；旧库使用 `main/module` 入口，新包显式公开 `./style.css`、`./themes/default.css`、`./themes/alt.css` 等子路径，消费方必须显式引入样式。 |
 | scripts | `mp-react-components/package.json:L29-L42` | `matsci-ui/package.json:L28-L38` | 变更 | 旧仓库保留 `start`、`build-prod`、`build-publish`、`deploy-storybook` 等混合脚本；新仓库收敛为 `build`、`storybook`、`build-storybook`、`test`、`typecheck`。 |
 | React 运行时基线 | `mp-react-components/package.json:L27-L75` | `matsci-ui/package.json:L39-L42` | 升级 | 旧仓库主依赖直接锁定 `react` / `react-dom` 为 `^16.14.0`，且测试栈依赖 `enzyme-adapter-react-16`，不应宣称支持 React 18 及以上；新仓库则显式支持 React 17/18/19。 |
 | 依赖栈 | `mp-react-components/package.json:L47-L170` | `matsci-ui/package.json:L43-L105` | 大幅变更 | 多个底层库被替换，属于迁移风险最大区域之一。 |
@@ -113,7 +113,7 @@ Entry exports and public API surface differences.
 | --- | --- | --- | --- | --- |
 | 根入口导出 | `mp-react-components/src/index.ts:L1-L115` | `matsci-ui/src/index.ts:L1-L78` | 扩展 | 新仓库改用 `export *` 聚合，除组件外还导出类型、常量和 utils，方便二次封装。 |
 | `Scene` 导出 | `mp-react-components/src/index.ts:L10-L10,L57-L60` | `matsci-ui/src/index.ts:L57-L63` | 根级重构 | 新仓库仍导出 `Scene` 默认实现，但 Crystal Toolkit 主路径已经由 `CrystalToolkitScene` / `CrystalToolkitAnimationScene` / `PhononAnimationScene` 主导，迁移时不建议继续依赖历史 runtime 入口。 |
-| 样式入口 | 旧包无单独 `style.css` export | `matsci-ui/src/index.ts:L1-L3` + `matsci-ui/package.json:L14-L20` | 新增 | 新仓库明确把样式交付纳入发布契约，避免消费端依赖隐式全局 CSS。 |
+| 样式入口 | 旧包无单独 `style.css` export | `matsci-ui/package.json` + `matsci-ui/src/themes/entries/*` | 新增 | 新仓库明确把默认主题和第二主题样式交付纳入发布契约，避免消费端依赖隐式全局 CSS。 |
 
 ### 4.3 构建与 TypeScript
 
@@ -125,7 +125,7 @@ Build toolchain and TypeScript compilation/resolution differences.
 
 | 文件 | 旧文件与行号 | 新文件与行号 | 变化类型 | 影响说明 |
 | --- | --- | --- | --- | --- |
-| Rollup 配置 | `mp-react-components/rollup.config.mjs:L1-L80` | `matsci-ui/rollup.config.mjs:L1-L57` | 升级 | 旧仓库使用 `rollup-plugin-typescript2`、`rollup-plugin-styles`；新仓库切换到 `@rollup/plugin-swc`、`rollup-plugin-postcss`、`rollup-plugin-dts`，构建链更现代，也更贴近发布产物。 |
+| Rollup 配置 | `mp-react-components/rollup.config.mjs:L1-L80` | `matsci-ui/rollup.config.mjs` | 升级 | 旧仓库使用 `rollup-plugin-typescript2`、`rollup-plugin-styles`；新仓库切换到 `@rollup/plugin-swc`、`rollup-plugin-postcss`、`rollup-plugin-dts`，并通过 preserve-modules ESM 输出提升消费端 tree-shaking 效果。 |
 | TS 编译目标 | `mp-react-components/tsconfig.json:L2-L24` | `matsci-ui/tsconfig.json:L2-L21` | 升级 | 新仓库把目标提升到 `ES2022`，使用 `moduleResolution: bundler` 和 `react-jsx`，对现代 bundler 更友好，但不再面向旧式构建工具。 |
 | demo/app 构建 | `mp-react-components/package.json:L33-L35` | 无对应脚本 | 删除 | 旧仓库保留 Parcel 本地 app sandbox；新仓库去页面化，开发入口迁移到 Storybook/Vite。 |
 
@@ -174,15 +174,17 @@ Network-layer consolidation and request/error-model changes (axios → fetch).
 
 **EN**
 
-Styling status and theming direction (tokens/presets planned; single stable CSS entry today).
+Styling status and theming direction after the theme architecture landed.
 
 **中文**
 
 | 文件 | 旧文件与行号 | 新文件与行号 | 变化类型 | 影响说明 |
 | --- | --- | --- | --- | --- |
-| 主题探索文件 | 旧仓库无统一主题抽象 | `matsci-ui/src/theme/tokens.css:L1-L24` | 新增 | 新仓库开始整理 token 与 preset 方向，但当前仍属探索性资产，不能视为稳定主题 API。 |
-| 主题规划文档 | 旧仓库无同类规划文档 | `matsci-ui/docs/theming-and-style-presets.md:L1-L138` | 新增 | 文档明确说明多套样式/主题能力仍在规划阶段，尚未正式应用到当前公开发布面。 |
-| 主题文件 | 新仓库不再发布 `dark.css`、`materials.css` | 无正式替代发布物 | 删除/未落地 | 旧项目如果依赖预置主题文件，需要自行保留旧方案或等待新仓库主题能力正式落地。 |
+| 主题基础层 | 旧仓库无统一主题抽象 | `matsci-ui/src/themes/foundation/tokens.css`、`matsci-ui/src/themes/foundation/matsci-bulma.css` | 新增 | 新仓库已经形成统一的主题基础层，负责 token、基础重置与 Bulma 兼容原子层。 |
+| 共享主题层 | 旧仓库样式分散在组件目录 | `matsci-ui/src/themes/shared/*` | 重构 | 组件样式已按领域聚合到共享主题层，减少零散 CSS/LESS 的维护成本。 |
+| 主题预设层 | 旧仓库无统一 preset 组织 | `matsci-ui/src/themes/presets/default.ts`、`matsci-ui/src/themes/presets/alt.ts` | 新增 | 默认主题与第二主题的预设装配层已经落地。 |
+| 主题入口层 | 旧仓库无统一 theme entry | `matsci-ui/src/themes/entries/default.ts`、`matsci-ui/src/themes/entries/alt.ts` | 新增 | Storybook 与打包构建已经显式基于 theme entry 工作。 |
+| 对外主题产物 | 旧仓库曾发布历史主题文件 | `matsci-ui/dist/themes/default.css`、`matsci-ui/dist/themes/alt.css` | 替换 | 新仓库已提供显式默认/第二主题 CSS 入口，但第二主题的视觉覆盖仍在继续补齐。 |
 
 ## 5. 新增、删除、变更、重命名清单
 
@@ -240,7 +242,7 @@ Renames of packages and branding.
 
 - npm 包从 `@materialsproject/mp-react-components` 更名为 `@hyacinth/matsci-ui`。
 - 文档/Storybook 品牌名从 `MP React Components` 系列名称迁移为 `matsci-ui`。
-- 主题能力从“历史预置主题文件”转为“规划中的 token / preset 方案”，目前尚未正式应用。
+- 主题能力从“历史预置主题文件”转为“已落地的显式主题入口 + preset 架构”，当前仍在补齐第二主题的视觉完成度。
 
 ## 6. 依赖升级与生态替换
 
@@ -317,8 +319,10 @@ Breaking changes and high-risk compatibility points.
    - 新：`@hyacinth/matsci-ui`
 2. 样式入口变化
    - 新包要求显式引入 `@hyacinth/matsci-ui/style.css`。
-3. 主题预设删除且暂无正式替代
-   - `dark.css` / `materials.css` 不再发布，token / preset 方案仍处于规划阶段。
+3. 历史主题预设不再延续为原路径
+   - `dark.css` / `materials.css` 不再发布为旧式兼容入口。
+   - 新仓库改为显式 `style.css` / `themes/default.css` / `themes/alt.css` 体系。
+   - 第二主题入口已落地，但视觉覆盖仍需继续完善。
 4. `DataTable` 底层替换
    - 自定义测试选择器、分页交互和列格式化行为存在回归风险。
 5. `Tooltip` / `JsonView` 实现替换
@@ -469,10 +473,13 @@ import '@materialsproject/mp-react-components/themes/dark.css';
 
 ```tsx
 import '@hyacinth/matsci-ui/style.css';
-// 新仓库当前没有正式发布 dark/materials 替代 preset
+// 新仓库改为显式主题入口模型：
+// @hyacinth/matsci-ui/style.css
+// @hyacinth/matsci-ui/themes/default.css
+// @hyacinth/matsci-ui/themes/alt.css
 ```
 
-影响说明：主题能力在新仓库中仍处于规划阶段，当前没有官方等价替代物；如果业务依赖旧主题文件，需要先保留自定义样式层。
+影响说明：新仓库的多主题架构和第二主题入口已经落地，但历史 `dark.css` / `materials.css` 没有按原路径保留；如果旧业务依赖这些旧入口，需要迁移到新的显式主题导入模型，并视情况补充自定义视觉层。
 
 ### 13.3 Crystal Toolkit 场景入口
 

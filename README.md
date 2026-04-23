@@ -2,38 +2,44 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/HyaCiovo/matsci-ui)
 
-> Current status: the npm package is not published yet, so the live Storybook is currently the best place to preview component behavior and UI.
+> Current status: the npm package name, exports, and build artifacts are ready, but the package has not been published to npm yet. Until publication, the live Storybook remains the best way to preview behavior and UI.
 
 English | 中文文档：[README.zh-CN.md](./README.zh-CN.md)
 For migration and repository comparison: [repo-diff-report.md](./docs/repo-diff-report.md)
 
 > Project Lineage
-> This component library is built upon Materials Project’s `mp-react-components` (<https://github.com/materialsproject/mp-react-components>) and refactored with **ESM-first architecture, strong TypeScript typing, and modern tooling**, delivering a production-ready UI library for materials science that can be directly installed via npm.
+> This component library is built upon Materials Project’s `mp-react-components` (<https://github.com/materialsproject/mp-react-components>) and refactored with **ESM-first architecture, strong TypeScript typing, modern bundling, and Storybook-first documentation**, with the goal of becoming a production-ready UI library for materials science applications.
 
-`@hyacinth/matsci-ui` is a React component library designed for **materials science research and production applications**. It specializes in data-intensive scientific workflows including material search, tabular exploration, chemical composition input, and interactive 3D crystal visualization. With a focus on maintainability and reusability, it provides ESM-only outputs, explicit package exports, strict TypeScript support, complete Storybook documentation, and a robust Vitest test suite.
+`@hyacinth/matsci-ui` is a React component library for **materials science research and production workflows**. It focuses on reusable search experiences, table and card rendering, chemistry-aware input, publication helpers, and interactive 3D crystal visualization. The current repository emphasizes maintainability, explicit public exports, type safety, visual regression control through Storybook, and a publishable npm package surface.
 
 ***
 
 ## Acknowledgements
 
-We sincerely thank the team at the Next-Gen Materials Project (<https://next-gen.materialsproject.org/>) for their outstanding contributions to materials science and their open-source ecosystem. Their work has laid a solid foundation for downstream tooling, research interface development, and continuous innovation in scientific UI.
+We sincerely thank the team at the Next-Gen Materials Project (<https://next-gen.materialsproject.org/>) for their outstanding contributions to materials science and their open-source ecosystem. Their work laid the foundation that made this modernization effort possible.
 
 ***
 
 ## Key Features
 
-- **Packaging**: ESM-first with explicit `exports` field, including a dedicated style entry `./style.css`
-- **Tooling**: Rollup bundling, strict TypeScript, Storybook 10, and Vitest
-- **UI Stack**: Bulma-based styling + Radix UI primitives + TanStack Table
-- **Scientific Workflows**: Composable Search UI, periodic-table-driven formula input, publication utilities, and Crystal Toolkit 3D scenes
+- **Packaging**: ESM-only package with explicit `exports`, including `./style.css`, `./themes/default.css`, and `./themes/alt.css`
+- **Bundle Optimization**: minified theme CSS output plus preserve-modules ESM build for better consumer-side tree shaking
+- **Tooling**: Rollup 4, strict TypeScript, Storybook 10, Vitest, and `lefthook`
+- **UI Stack**: library-owned `ms-*` styling contract, Bulma-compatible foundation layer, Radix UI primitives, and TanStack Table
+- **Scientific Workflows**: composable Search UI, periodic-table-driven materials input, publication utilities, and Crystal Toolkit scenes
+- **Theming Architecture**: unified `src/themes` tree with `foundation`, `shared`, `presets`, and `entries` layers, ready for multi-theme delivery
 
 ***
 
-## Installation
+## Installation Status
+
+The intended package name is:
 
 ```bash
 npm install @hyacinth/matsci-ui
 ```
+
+The package is **not published yet**, so the command above is the future public install contract rather than something users can run today from npm. For now, use the repository workspace and Storybook to evaluate the library.
 
 ### Peer Dependencies
 
@@ -43,13 +49,13 @@ npm install @hyacinth/matsci-ui
 ### Recommended Environment
 
 - Node.js `^20.19.0 || ^22.12.0`
-- Modern ESM-compatible bundler (Vite, Rollup, Webpack 5+)
+- Modern ESM-compatible bundler such as Vite, Rollup, or Webpack 5+
 
 ***
 
 ## Quick Start
 
-Import the default theme once at your application entry. Components no longer auto-inject styles when you import them:
+Import one theme stylesheet once at your application entry. Components no longer auto-inject styles when you import them:
 
 ```ts
 import '@hyacinth/matsci-ui/style.css';
@@ -59,11 +65,16 @@ import '@hyacinth/matsci-ui/style.css';
 // import '@hyacinth/matsci-ui/themes/alt.css';
 ```
 
-Minimal usage example:
+Minimal component usage:
 
 ```tsx
 import { DataTable } from '@hyacinth/matsci-ui';
 ```
+
+Recommended current usage:
+
+- Use `@hyacinth/matsci-ui/style.css` or `@hyacinth/matsci-ui/themes/default.css` for the stable default appearance
+- Treat `@hyacinth/matsci-ui/themes/alt.css` as the shipped alternate-theme entrypoint whose architecture is ready, while its second visual language is still being expanded
 
 ***
 
@@ -71,29 +82,46 @@ import { DataTable } from '@hyacinth/matsci-ui';
 
 - Run local Storybook: `pnpm storybook`
 - Build static documentation: `pnpm build-storybook`
+- Build the library: `pnpm build`
+- Type check: `pnpm typecheck`
+- Run tests: `pnpm test`
+
+Storybook is currently the primary interactive documentation surface because the npm package is not yet published.
 
 ***
 
 ## Styling & Theming Status
 
-Currently, the **only stable styling strategy** is the explicitly imported default theme bundle.
+The repository’s styling system has already moved beyond the old “single implicit Bulma bundle” model.
 
-Files such as [`src/themes/foundation/tokens.css`](./src/themes/foundation/tokens.css) and [theming-and-style-presets.md](./docs/theming-and-style-presets.md) exist as exploratory planning artifacts and are **not considered stable, backward-compatible public APIs**.
-
-Current stable usage rules:
+What is stable today:
 
 - Applications must explicitly import `@hyacinth/matsci-ui/style.css` or `@hyacinth/matsci-ui/themes/default.css`
-- A second preset entrypoint is reserved at `@hyacinth/matsci-ui/themes/alt.css` for full alternate-theme delivery
-- Importing components from `@hyacinth/matsci-ui` no longer injects styles automatically
-- DOM structure and className conventions follow the Bulma framework
-- Alternative presets such as `dark.css`, `materials.css`, or `shadcn.css` are not yet published
-- Design token naming and theming strategy remain under discussion and should not be treated as final
+- The package also exports `@hyacinth/matsci-ui/themes/alt.css`
+- Components no longer inject styles automatically
+- Global Bulma pollution has been removed from the library’s published selectors by converging on library-owned `ms-*` classes
+- The source theme system now lives under a single `src/themes` tree
 
-Current source layout now lives under a single `src/themes` tree and is intentionally split into three layers:
+What is implemented in the repository:
 
-- `src/themes/foundation/*`: base reset, tokens, Bulma-compatible primitives, and utility rules
-- `src/themes/shared/*`: shared component skinning, aggregated by domain instead of scattered per-component CSS files
-- `src/themes/presets/*`: theme preset assembly, so future theme variants can swap tokens and overrides without changing component code
+- `src/themes/foundation/*`: tokens, base reset, Bulma-compatible primitives, and utility rules
+- `src/themes/shared/*`: shared component skinning aggregated by domain
+- `src/themes/presets/*`: preset-specific assembly and override hooks
+- `src/themes/entries/*`: final theme entrypoints used by Storybook and package builds
+- `dist/themes/default.css`: the default published stylesheet
+- `dist/themes/alt.css`: the alternate published stylesheet entrypoint
+
+What is still in progress:
+
+- The multi-theme architecture and npm entrypoints are already landed
+- The second preset already has dedicated tokens and override hooks
+- The repository still needs a more complete alternate visual skin before `alt.css` should be treated as a full visual replacement for every product scenario
+
+Practical takeaway:
+
+- The default theme is stable and should be the primary consumer entry
+- The alternate theme entry is real and shipped in build output
+- The visual design surface of the alternate theme is still being expanded
 
 ***
 
@@ -106,54 +134,61 @@ Current source layout now lives under a single `src/themes` tree and is intentio
   - `dist/themes/default.css`, exposed as `@hyacinth/matsci-ui/style.css` and `@hyacinth/matsci-ui/themes/default.css`
   - `dist/themes/alt.css`, exposed as `@hyacinth/matsci-ui/themes/alt.css`
 
-In addition to components, the library exports types and utilities for Search UI, periodic table logic, and localization helpers, allowing you to build application-specific wrappers without forking internal code.
+The JavaScript build now uses preserve-modules ESM output, so consumer bundlers can tree-shake the package more effectively than a single monolithic bundle.
+
+In addition to components, the library exports types, constants, and utilities for Search UI, periodic-table logic, text helpers, and localization-oriented configuration.
 
 ***
 
 ## Text & Localization
 
-The library **does not require a global i18n runtime**. All user-facing text is fully configurable via props:
+The library does not require a global i18n runtime. User-facing copy is configurable through props:
 
-- Structured text overrides: `texts?: Partial<...>`
-- Explicit props: `placeholder`, `ariaLabel`, `buttonLabel`, `submitButtonText`
+- Structured text overrides such as `texts?: Partial<...>`
+- Explicit props such as `placeholder`, `ariaLabel`, `buttonLabel`, and `submitButtonText`
 - Custom labels for table columns and filter definitions
+
+Storybook docs also support bilingual English and Chinese switching.
 
 ***
 
 ## Performance Notes
 
-This library is optimized for **real-world production-scale datasets and scientific workflows**, rather than extreme virtualization scenarios.
+This library is optimized for real scientific-product workflows rather than extreme virtualization scenarios.
 
 - `SearchUI` supports `searchOnMount={false}` to avoid expensive automatic requests
-- `DataTable` uses TanStack Table with memoized column and row logic
-- Stories avoid automatic fetching by default to prevent request storms
-- Publication and search components use native `fetch` to reduce dependency overhead
+- `DataTable` uses TanStack Table and library helpers rather than the legacy table stack
+- Stories avoid automatic fetching by default to reduce noisy traffic
+- Search and publication flows use native `fetch` utilities instead of `axios`
+- CSS is minified in published theme outputs, and JS output is structured for downstream tree shaking
 
-For extremely large datasets, we recommend server-side pagination, limited field selection, and smaller default page sizes.
+For very large datasets, prefer server-side pagination, smaller default page sizes, and narrower field selection.
 
 ***
 
 ## Browser Support
 
-`MatsciUI` supports modern evergreen browsers:
+`MatsciUI` targets modern evergreen browsers:
 
 - Latest Chrome / Edge
 - Latest Safari
 - Latest Firefox
 
-Due to its ESM-first architecture and use of modern DOM/CSS features, **legacy browsers such as Internet Explorer are not supported**.
+Because the package is ESM-first and uses modern DOM/CSS features, Internet Explorer and similarly old environments are not supported.
 
 ***
 
 ## Migration from `mp-react-components`
 
-This project is not a line-by-line port. It modernizes tooling, bundling, and dependencies while preserving core component behavior and visual consistency.
+This repository is not a line-by-line port. It modernizes packaging, styling contracts, Storybook infrastructure, table rendering, overlays, and the network layer while preserving the core component families and overall product direction.
 
 Key migration considerations:
 
-- Explicit ESM exports and required `style.css` import
-- Tables and overlays now powered by Radix UI + TanStack Table
-- Multi-theme and non-Bulma theming support is still planned
+- Change imports from `@materialsproject/mp-react-components` to `@hyacinth/matsci-ui`
+- Explicitly import `@hyacinth/matsci-ui/style.css`
+- Re-test `SearchUI`, `DataTable`, `Tooltip`, `JsonView`, and Crystal Toolkit integrations
+- If an older product depended on `dark.css` or `materials.css`, migrate that usage to the new explicit theme entry model
+- Treat the new alternate theme architecture as available, but do not assume complete visual parity yet across every screen
 
 Migration references:
 
@@ -162,32 +197,28 @@ Migration references:
 
 ***
 
-## Support the Project ⭐️
+## Support the Project
 
-If this library helps your research, teaching, or production work, please star the repository ⭐️.
-Stars help us prioritize maintenance, attract collaborators, and ensure long-term sustainability for scientific UI tools.
+If this library helps your research, teaching, or product work, please star the repository. Stars help prioritize maintenance and attract collaborators for long-term scientific UI work.
 
 ***
 
-## Contributing 🤝
+## Contributing
 
-Contributions of all kinds are welcome and greatly appreciated! We especially value:
+Contributions of all kinds are welcome. We especially value:
 
-- Modular theming and style flexibility beyond Bulma 🎨
-- Performance and rendering optimizations ⚡️
-- Domain-specific components and scientific accuracy (researchers and students welcome) 🧪
-- Reusable patterns and guidelines for safer AI-assisted development 🧩
-
-The project maintains an academic tone while fostering a friendly and inclusive contribution environment.
-If you’ve ever complained that a laggy filter component “violates the second law of thermodynamics,” you’ll fit right in.
+- theming and style-system improvements beyond the default Bulma-like surface
+- performance and rendering optimizations
+- domain-specific components and scientific accuracy improvements
+- safer and clearer AI-assisted development patterns
 
 ### Standard Workflow
 
 1. Install dependencies: `pnpm install`
-2. Type checking & testing: `pnpm typecheck` → `pnpm test`
-3. Preview in Storybook: `pnpm storybook`
+2. Run type checking and tests: `pnpm typecheck` then `pnpm test`
+3. Preview docs and examples: `pnpm storybook`
 4. Verify build output: `pnpm build`
-5. Update documentation if public props, exports, or behavior change
+5. Update documentation whenever public props, exports, styling contracts, or behavior changes
 
 ***
 
@@ -195,4 +226,4 @@ If you’ve ever complained that a laggy filter component “violates the second
 
 - Original upstream project: [materialsproject/mp-react-components](https://github.com/materialsproject/mp-react-components)
 - Repository diff report: [repo-diff-report.md](./docs/repo-diff-report.md)
-- Theming planning document: [theming-and-style-presets.md](./docs/theming-and-style-presets.md)
+- Theming and style preset status: [theming-and-style-presets.md](./docs/theming-and-style-presets.md)

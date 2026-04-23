@@ -17,20 +17,30 @@ const isStyleRequest = (id) => /\.(css|less)$/.test(id);
 const isExternal = (id) =>
   !isStyleRequest(id) &&
   externalPackages.some((packageName) => id === packageName || id.startsWith(`${packageName}/`));
+const extensions = ['.ts', '.tsx', '.js', '.jsx'];
+const treeshake = {
+  preset: 'recommended',
+  moduleSideEffects: (id) => isStyleRequest(id),
+};
 
 export default [
-  buildThemeConfig('src/themes/default.ts', 'dist/themes/default.js', 'default.css'),
-  buildThemeConfig('src/themes/alt.ts', 'dist/themes/alt.js', 'alt.css'),
+  buildThemeConfig('src/themes/entries/default.ts', 'dist/themes/default.js', 'default.css'),
+  buildThemeConfig('src/themes/entries/alt.ts', 'dist/themes/alt.js', 'alt.css'),
   {
     input: 'src/index.ts',
     output: {
-      file: pkg.main,
+      dir: 'dist',
       format: 'esm',
+      entryFileNames: '[name].js',
+      chunkFileNames: 'chunks/[name]-[hash].js',
+      preserveModules: true,
+      preserveModulesRoot: 'src',
       sourcemap: true,
     },
     external: isExternal,
+    treeshake,
     plugins: [
-      resolve({ extensions: ['.ts', '.tsx', '.js', '.jsx'] }),
+      resolve({ extensions }),
       commonjs(),
       swc({
         exclude: /\.?(css|less)$/,
@@ -47,11 +57,6 @@ export default [
             },
           },
         },
-      }),
-      postcss({
-        extract: 'index.css',
-        minimize: true,
-        use: ['less'],
       }),
     ],
   },
@@ -71,6 +76,7 @@ function buildThemeConfig(input, outputFile, extractedCssFile) {
       format: 'esm',
       sourcemap: true,
     },
+    treeshake,
     onwarn(warning, warn) {
       if (warning.code === 'EMPTY_BUNDLE' || warning.message?.includes('Generated an empty chunk')) {
         return;
@@ -80,7 +86,7 @@ function buildThemeConfig(input, outputFile, extractedCssFile) {
     },
     external: isExternal,
     plugins: [
-      resolve({ extensions: ['.ts', '.tsx', '.js', '.jsx'] }),
+      resolve({ extensions }),
       commonjs(),
       swc({
         exclude: /\.?(css|less)$/,
@@ -100,7 +106,16 @@ function buildThemeConfig(input, outputFile, extractedCssFile) {
       }),
       postcss({
         extract: extractedCssFile,
-        minimize: true,
+        minimize: {
+          preset: [
+            'default',
+            {
+              discardComments: {
+                removeAll: true,
+              },
+            },
+          ],
+        },
         use: ['less'],
       }),
     ],

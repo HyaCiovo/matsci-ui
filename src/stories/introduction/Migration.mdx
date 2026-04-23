@@ -30,7 +30,7 @@ import { I18nText } from '../i18n/I18nText';
     <ol>
       <li>Change the package import from `@materialsproject/mp-react-components` to `@hyacinth/matsci-ui`.</li>
       <li>Import `@hyacinth/matsci-ui/style.css` once at the application entry.</li>
-      <li>Audit any dependency on legacy theme preset files because the new repository does not yet provide an official replacement preset API.</li>
+      <li>Audit any dependency on legacy theme preset files because the new repository now uses explicit `style.css` / `themes/default.css` / `themes/alt.css` entries instead of the historical preset paths.</li>
       <li>Re-test Search UI, `DataTable`, `Tooltip`, `JsonView`, and Crystal Toolkit flows.</li>
     </ol>
   }
@@ -38,7 +38,7 @@ import { I18nText } from '../i18n/I18nText';
     <ol>
       <li>把包导入从 `@materialsproject/mp-react-components` 改为 `@hyacinth/matsci-ui`。</li>
       <li>在应用入口显式引入一次 `@hyacinth/matsci-ui/style.css`。</li>
-      <li>排查对历史主题预设文件的依赖，因为新仓库目前还没有正式发布可替代的主题 preset API。</li>
+      <li>排查对历史主题预设文件路径的依赖，因为新仓库已经改为显式 `style.css` / `themes/default.css` / `themes/alt.css` 模型。</li>
       <li>重新回归 Search UI、`DataTable`、`Tooltip`、`JsonView` 与 Crystal Toolkit 相关页面。</li>
     </ol>
   }
@@ -53,7 +53,7 @@ import { I18nText } from '../i18n/I18nText';
       <li><b>Tooltip</b>: the implementation moved from `react-tooltip` to Radix Tooltip primitives.</li>
       <li><b>JsonView</b>: the implementation moved from `react-json-view` to `@microlink/react-json-view`.</li>
       <li><b>Network layer</b>: internal requests now use native `fetch` instead of `axios`.</li>
-      <li><b>Theming</b>: prebuilt `dark.css` and `materials.css` are no longer published, and the new token/preset direction is still in planning.</li>
+      <li><b>Theming</b>: legacy `dark.css` and `materials.css` are no longer published under the old paths; the new repository already ships explicit default/alt theme entrypoints, but the alternate visual skin is still being expanded.</li>
     </ul>
   }
   zh={
@@ -62,7 +62,7 @@ import { I18nText } from '../i18n/I18nText';
       <li><b>Tooltip</b>：底层从 `react-tooltip` 切换为 Radix Tooltip。</li>
       <li><b>JsonView</b>：底层从 `react-json-view` 切换为 `@microlink/react-json-view`。</li>
       <li><b>网络层</b>：内部请求已从 `axios` 切换为原生 `fetch`。</li>
-      <li><b>主题方式</b>：预置的 `dark.css` 与 `materials.css` 已不再发布，而且新的 token/preset 方案仍处于规划阶段。</li>
+      <li><b>主题方式</b>：历史 `dark.css` 与 `materials.css` 旧路径已不再保留；新仓库已经提供显式 default/alt 主题入口，但第二主题视觉仍在继续补齐。</li>
     </ul>
   }
 />
@@ -101,7 +101,10 @@ import { DataTable, SearchUIContainer } from '@hyacinth/matsci-ui';
 
 ```tsx
 import '@hyacinth/matsci-ui/style.css';
-// No officially published dark/materials replacement preset exists yet.
+// or:
+// import '@hyacinth/matsci-ui/themes/default.css';
+// or:
+import '@hyacinth/matsci-ui/themes/alt.css';
 ```
 
 <I18nText en="Crystal Toolkit migration preference:" zh="Crystal Toolkit 的推荐迁移方式：" />
@@ -125,7 +128,7 @@ import { CrystalToolkitScene } from '@hyacinth/matsci-ui';
       <tbody>
         <tr>
           <td>P0</td>
-          <td>Package rename, style import, theme preset removal</td>
+          <td>Package rename, explicit style import, legacy theme-path cleanup</td>
           <td>Low to medium</td>
         </tr>
         <tr>
@@ -153,7 +156,7 @@ import { CrystalToolkitScene } from '@hyacinth/matsci-ui';
       <tbody>
         <tr>
           <td>P0</td>
-          <td>包名替换、样式引入、主题预设清理</td>
+          <td>包名替换、显式样式引入、历史主题路径清理</td>
           <td>低到中</td>
         </tr>
         <tr>

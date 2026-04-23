@@ -134,15 +134,17 @@ export function DemoSearchUI() {
   en={
     <ul>
       <li>Search UI inherits the bundled styles shipped in `@hyacinth/matsci-ui/style.css`.</li>
-      <li>That stylesheet now combines `src/themes/foundation/tokens.css`, `src/themes/foundation/matsci-bulma.css`, and component CSS behind `ms-*` class names to keep host applications isolated from global Bulma selectors.</li>
-      <li>If a product needs a second visual preset, `matsci-bulma.css` is now the main replacement point to swap the foundation layer while keeping component markup stable.</li>
+      <li>The repository already ships explicit theme entrypoints for `style.css`, `themes/default.css`, and `themes/alt.css`.</li>
+      <li>The current style system combines `src/themes/foundation/*`, `src/themes/shared/*`, and preset-specific files under library-owned `ms-*` selectors so host applications are no longer exposed to global Bulma selector pollution.</li>
+      <li>The alternate preset entry already exists; the remaining work is to continue expanding its visual coverage rather than inventing a new theme architecture.</li>
     </ul>
   }
   zh={
     <ul>
       <li>Search UI 当前继承的是 `@hyacinth/matsci-ui/style.css` 中打包好的样式。</li>
-      <li>这份样式现在由 `src/themes/foundation/tokens.css`、`src/themes/foundation/matsci-bulma.css` 和组件 CSS 组成，并统一收敛在 `ms-*` 类名之下，从而隔离宿主应用与 Bulma 的全局选择器。</li>
-      <li>如果后续需要第二套视觉主题，`matsci-bulma.css` 现在就是替换基础风格的主要落点，组件层的 DOM 结构可以保持不变。</li>
+      <li>仓库已经显式提供 `style.css`、`themes/default.css` 与 `themes/alt.css` 三个主题入口。</li>
+      <li>当前样式体系由 `src/themes/foundation/*`、`src/themes/shared/*` 和 preset 专属文件共同组成，并统一收敛到库自有 `ms-*` 选择器之下，从而隔离宿主应用与 Bulma 的全局选择器污染。</li>
+      <li>第二主题入口本身已经存在，当前剩余工作是继续补齐它的视觉覆盖，而不是重新设计主题架构。</li>
     </ul>
   }
 />

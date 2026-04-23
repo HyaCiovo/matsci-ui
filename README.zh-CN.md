@@ -2,46 +2,61 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/HyaCiovo/matsci-ui)
 
+> 当前状态：npm 包名、对外导出和构建产物已经整理完成，但 **还没有正式发布到 npm**。在正式发布前，线上 Storybook 仍然是预览组件行为和视觉效果的最佳入口。
+
 中文文档 | 英文版见 [README.md](./README.md)
 迁移与仓库对比说明：[repo-diff-report.md](./docs/repo-diff-report.md)
 
 > 项目传承
-> 本组件库基于 Materials Project 开源项目 `mp-react-components` 构建（https://github.com/materialsproject/mp-react-components），并在此基础上进行**ESM 优先、强类型规范、工程化重构**，打造可直接通过 npm 安装使用的专业材料科学 UI 组件库。
+> 本组件库基于 Materials Project 开源项目 `mp-react-components` 构建（https://github.com/materialsproject/mp-react-components），并在此基础上进行 **ESM 优先、强类型、现代打包与 Storybook-first 文档化** 重构，目标是形成可正式发布的材料科学 UI 组件库。
 
-`@hyacinth/matsci-ui` 是面向**材料科学产品与科研场景**的 React 组件库，专为数据密集型科研工作流设计，支持材料检索、表格数据探索、化学组成输入及交互式三维晶体展示。项目以生产可用为目标，提供规范的 ESM 产物、清晰的导出定义、完整的 TypeScript 类型、Storybook 文档体系，以及基于 Vitest 的自动化测试保障。
+`@hyacinth/matsci-ui` 是面向 **材料科学产品与科研工作流** 的 React 组件库，覆盖可组合搜索、表格与卡片渲染、化学语义输入、文献辅助组件和三维晶体可视化等场景。当前仓库重点强调清晰的发布面、显式样式引入、类型安全、可维护的主题架构，以及以 Storybook 为核心的交互式文档体系。
 
 ---
 
 ## 致谢
-衷心感谢 [Next-Gen Materials Project 团队](https://next-gen.materialsproject.org/) 在材料科学领域的卓越贡献与开源生态建设。正是其开放共享的理念，为下游工具开发、科研界面研究与持续迭代奠定了坚实基础。
+
+衷心感谢 [Next-Gen Materials Project 团队](https://next-gen.materialsproject.org/) 在材料科学领域的卓越贡献与开源生态建设。正是这些积累，让本仓库的现代化重构成为可能。
 
 ---
 
 ## 技术特点
-- **打包规范**：ESM 优先，显式定义 `exports` 字段，包含独立样式入口 `./style.css`
-- **工程体系**：Rollup 构建、严格 TypeScript 校验、Storybook 10 文档、Vitest 单元测试
-- **UI 技术栈**：Bulma 样式体系 + Radix UI 无样式组件 + TanStack Table 高性能表格
-- **科研场景能力**：Search UI 组合式搜索、周期表驱动化学式输入、文献辅助组件、Crystal Toolkit 三维场景
+
+- **打包规范**：ESM-only 包，显式导出 `./style.css`、`./themes/default.css`、`./themes/alt.css`
+- **产物优化**：主题 CSS 压缩输出，组件 JS 使用 preserve-modules ESM 产物，增强业务侧 tree-shaking
+- **工程体系**：Rollup 4、严格 TypeScript、Storybook 10、Vitest 与 `lefthook`
+- **UI 技术栈**：库自有 `ms-*` 样式契约、Bulma 兼容基础层、Radix UI primitives、TanStack Table
+- **科研场景能力**：可组合 Search UI、周期表驱动的材料输入、文献辅助能力与 Crystal Toolkit 场景组件
+- **主题架构**：统一的 `src/themes` 目录，按 `foundation / shared / presets / entries` 四层组织
 
 ---
 
-## 安装
+## 安装状态
+
+预期公开包名为：
+
 ```bash
 npm install @hyacinth/matsci-ui
 ```
 
+但这个包 **目前还没有正式发布到 npm**，所以上面的命令代表未来的公开安装契约，而不是此刻可直接从 npm 获取的已发布版本。当前请以仓库源码与 Storybook 作为实际评估入口。
+
 ### 对等依赖
+
 - `react`: `^17.0.0 || ^18.0.0 || ^19.0.0`
 - `react-dom`: `^17.0.0 || ^18.0.0 || ^19.0.0`
 
 ### 推荐运行环境
+
 - Node.js `^20.19.0 || ^22.12.0`
-- 支持 ESM 的现代构建工具（Vite、Rollup、Webpack 5+ 等）
+- 支持 ESM 的现代构建工具，如 Vite、Rollup、Webpack 5+
 
 ---
 
 ## 快速开始
-在应用入口处显式引入默认主题。现在仅导入组件不会再自动注入样式：
+
+在应用入口显式引入一份主题样式。现在仅导入组件本身不会再自动注入样式：
+
 ```ts
 import '@hyacinth/matsci-ui/style.css';
 // 或：
@@ -50,40 +65,68 @@ import '@hyacinth/matsci-ui/style.css';
 // import '@hyacinth/matsci-ui/themes/alt.css';
 ```
 
-组件最简使用示例：
+最小组件使用示例：
+
 ```tsx
 import { DataTable } from '@hyacinth/matsci-ui';
 ```
 
+当前推荐用法：
+
+- 稳定默认样式优先使用 `@hyacinth/matsci-ui/style.css` 或 `@hyacinth/matsci-ui/themes/default.css`
+- `@hyacinth/matsci-ui/themes/alt.css` 已经是正式导出的第二主题入口，但它的第二套视觉语言仍在继续补齐，不建议过早假设已覆盖所有产品场景
+
 ---
 
 ## 开发与文档
-- 启动本地 Storybook 文档：`pnpm storybook`
+
+- 启动本地 Storybook：`pnpm storybook`
 - 构建静态文档站点：`pnpm build-storybook`
+- 构建组件库：`pnpm build`
+- 类型检查：`pnpm typecheck`
+- 运行测试：`pnpm test`
+
+由于 npm 包尚未正式发布，当前 Storybook 仍然是最主要的交互式文档入口。
 
 ---
 
 ## 样式与主题现状
-目前组件库**唯一稳定的样式方案**为：显式引入默认主题样式包。
 
-仓库中虽已包含 [`src/themes/foundation/tokens.css`](./src/themes/foundation/tokens.css)、[theming-and-style-presets.md](./docs/theming-and-style-presets.md) 等主题探索文件，但这些内容**仅为规划阶段产物**，并非稳定可用、承诺兼容的对外主题 API。
+仓库当前的样式体系已经不再是历史上那种“隐式注入 Bulma 全局样式”的模式。
 
-当前稳定使用规则：
+当前稳定可用的能力：
+
 - 业务项目必须显式引入 `@hyacinth/matsci-ui/style.css` 或 `@hyacinth/matsci-ui/themes/default.css`
-- 第二套完整主题的接入口已预留为 `@hyacinth/matsci-ui/themes/alt.css`
-- 仅从 `@hyacinth/matsci-ui` 导入组件时，不会再自动注入样式
-- 组件 DOM 结构与 className 基于 Bulma 体系设计
-- 暂未发布 `dark.css`、`materials.css`、`shadcn.css` 等主题预设
-- 设计 Token 命名与主题切换策略仍在讨论中，不建议业务强依赖
+- 包同时对外暴露 `@hyacinth/matsci-ui/themes/alt.css`
+- 组件导入本身不会再自动注入样式
+- 发布样式已统一收敛为库自有的 `ms-*` 选择器，避免把 Bulma 的全局类污染到宿主应用
+- 源码中的主题体系已经统一收口到单一 `src/themes` 目录
 
-当前源码中的主题结构现在统一收拢在 `src/themes` 目录下，并刻意拆成三层：
-- `src/themes/foundation/*`：基础重置、Token、Bulma 兼容原子层与工具类
-- `src/themes/shared/*`：共享组件皮肤，按领域聚合维护，而不是继续分散在各组件目录
-- `src/themes/presets/*`：主题预设拼装层，后续新增第二套主题时只需要替换 token 与 override 组合
+仓库里已经落地的部分：
+
+- `src/themes/foundation/*`：token、基础重置、Bulma 兼容原子层与工具类
+- `src/themes/shared/*`：按领域聚合的共享组件皮肤
+- `src/themes/presets/*`：主题预设的拼装与 override 钩子
+- `src/themes/entries/*`：最终供 Storybook 与打包产物使用的主题入口
+- `dist/themes/default.css`：默认主题样式产物
+- `dist/themes/alt.css`：第二主题样式产物入口
+
+当前仍在继续完善的部分：
+
+- 多主题架构、npm 样式导出与目录分层已经全部落地
+- 第二主题已经拥有独立 token 与 override 钩子
+- 但第二套视觉风格本身还需要继续补齐，`alt.css` 目前更适合视为“已落地的主题入口与可扩展交付面”，而不是所有页面都已完成差异化设计的最终视觉包
+
+实际使用建议：
+
+- 默认主题已经稳定，可作为主入口使用
+- 第二主题入口是真实存在且会随构建产出
+- 第二主题的视觉层仍在继续完善
 
 ---
 
 ## TypeScript 与公共 API
+
 - 源码入口：[`src/index.ts`](./src/index.ts)
 - 构建产物：`dist/index.js`
 - 类型文件：`dist/index.d.ts`
@@ -91,79 +134,96 @@ import { DataTable } from '@hyacinth/matsci-ui';
   - `dist/themes/default.css`，对外暴露为 `@hyacinth/matsci-ui/style.css` 与 `@hyacinth/matsci-ui/themes/default.css`
   - `dist/themes/alt.css`，对外暴露为 `@hyacinth/matsci-ui/themes/alt.css`
 
-除组件外，库还导出 Search UI、周期表、工具函数及相关类型定义，支持业务层直接二次封装，无需 Fork 内部实现。
+当前 JavaScript 构建已经改为 preserve-modules ESM 输出，因此业务侧 bundler 比起历史单文件 bundle 更容易做 tree-shaking。
+
+除组件外，库还导出 Search UI、周期表、文本工具、常量与相关类型，方便业务层在不 fork 的前提下进行二次封装。
 
 ---
 
 ## 文案与国际化
-组件库**不依赖全局 i18n 运行时**，所有展示文本均通过 Props 完全可控：
-- 结构化文案覆盖：`texts?: Partial<...>`
-- 常用显式配置：`placeholder`、`ariaLabel`、`buttonLabel`、`submitButtonText`
-- 表格列、筛选器等业务文案由调用方自主定义
+
+组件库本身不依赖全局 i18n runtime，面向用户的文案主要通过 props 控制：
+
+- 结构化文本覆盖，如 `texts?: Partial<...>`
+- 显式 props，如 `placeholder`、`ariaLabel`、`buttonLabel`、`submitButtonText`
+- 表格列与筛选定义中的自定义标签
+
+Storybook 文档也支持中英文切换。
 
 ---
 
 ## 性能说明
-组件库针对**真实产品级数据量与科研场景**做了针对性优化，而非追求极端虚拟滚动：
-- `SearchUI` 支持 `searchOnMount={false}`，避免高耗时接口自动请求
-- `DataTable` 基于 TanStack Table 实现，并对行列逻辑做记忆化优化
-- Storybook 示例默认避免自动发起请求，防止请求风暴
-- 文献与搜索组件使用原生 `fetch`，减少运行时依赖体积
 
-面对超大规模数据集时，建议搭配服务端分页、精简返回字段、缩小默认页大小使用。
+该库针对真实科研产品工作流优化，而不是极端虚拟滚动场景。
+
+- `SearchUI` 支持 `searchOnMount={false}`，避免高成本接口自动请求
+- `DataTable` 已使用 TanStack Table 与库内辅助逻辑替代旧表格栈
+- Storybook 示例默认避免无意义自动请求
+- 搜索与文献请求链使用原生 `fetch` 工具，而不再依赖 `axios`
+- 主题 CSS 会压缩输出，JS 产物也按更利于 tree-shaking 的方式组织
+
+面对超大数据集时，建议优先采用服务端分页、更小的默认页大小，以及更收敛的字段返回。
 
 ---
 
 ## 浏览器支持
-`MatsciUI` 仅支持现代常青浏览器：
+
+`MatsciUI` 面向现代常青浏览器：
+
 - 最新版 Chrome / Edge
 - 最新版 Safari
 - 最新版 Firefox
 
-由于采用 ESM 优先架构并使用现代 DOM / CSS 特性，**不支持 IE 等旧版浏览器**。
+由于包采用 ESM-first 并使用现代 DOM / CSS 特性，不支持 IE 等旧环境。
 
 ---
 
 ## 从 `mp-react-components` 迁移
-本项目并非逐行复刻，而是在保留组件核心行为与视觉一致性的前提下，对工程化、打包规范、依赖体系进行现代化升级。
 
-迁移重点关注：
-- 显式 ESM 导出，必须手动引入 `style.css`
-- 表格、弹层等组件底层改为 Radix + TanStack Table
-- 多主题、非 Bulma 主题能力仍在规划中
+本仓库不是逐行平移，而是在保留核心组件家族和整体产品方向的基础上，对发布方式、样式契约、文档体系、表格实现、浮层能力和网络层进行了现代化替换。
 
-迁移参考文档：
+迁移时建议重点关注：
+
+- 把包名从 `@materialsproject/mp-react-components` 改为 `@hyacinth/matsci-ui`
+- 显式引入 `@hyacinth/matsci-ui/style.css`
+- 重新回归 `SearchUI`、`DataTable`、`Tooltip`、`JsonView` 与 Crystal Toolkit 场景
+- 如果旧项目依赖 `dark.css` 或 `materials.css`，需要迁移到新的显式主题入口模型
+- 新的多主题架构已经可用，但不要过早假设第二套视觉样式已经在所有页面达到完整视觉替换
+
+迁移参考：
+
 - [docs/repo-diff-report.md](./docs/repo-diff-report.md)
 - [docs/theming-and-style-presets.md](./docs/theming-and-style-presets.md)
 
 ---
 
-## 欢迎 Star ⭐️
-如果本组件库对你的研究、教学或产品开发有所帮助，欢迎点亮 Star ⭐️。
-这不仅是鼓励，也能帮助我们更好地排定维护优先级、吸引更多协作者，持续提升科研 UI 工具的长期可持续性。
+## 欢迎支持
+
+如果这个项目对你的研究、教学或产品开发有帮助，欢迎点亮 Star。它能帮助我们更好地安排维护优先级，并吸引更多协作者共同完善科研 UI 工具生态。
 
 ---
 
-## 欢迎贡献 🤝
-我们热烈欢迎各类贡献，并会郑重致谢！尤其期待以下方向：
-- 主题模块化与样式可配置能力，摆脱对 Bulma 的单一依赖 🎨
-- 渲染性能与交互流畅度优化 ⚡️
-- 更贴合科研场景的组件实现与科学性修正（欢迎科研人员与学生参与）🧪
-- 可复用规范与规则，提升 AI 辅助开发的安全性与规范性 🧩
+## 贡献说明
 
-项目整体风格保持学术严谨，但贡献氛围轻松友好——
-如果你也曾吐槽某个卡顿的筛选组件“违背热力学第二定律”，那你一定能快速融入我们。
+我们欢迎各种形式的贡献，尤其包括：
 
-### 标准贡献流程
+- 主题与样式体系的继续演进
+- 性能与渲染优化
+- 更贴近科研场景的组件能力与准确性修正
+- 更安全、更清晰的 AI 辅助开发实践
+
+### 标准工作流
+
 1. 安装依赖：`pnpm install`
-2. 类型检查与测试：`pnpm typecheck` → `pnpm test`
-3. 预览示例与文档：`pnpm storybook`
-4. 构建产物校验：`pnpm build`
-5. 若修改公共 Props、导出或行为，请同步更新文档
+2. 执行类型检查与测试：`pnpm typecheck` 然后 `pnpm test`
+3. 预览文档与示例：`pnpm storybook`
+4. 校验构建产物：`pnpm build`
+5. 若修改了公共 props、导出、样式契约或行为，请同步更新文档
 
 ---
 
 ## 相关资源
-- 上游原项目：[materialsproject/mp-react-components](https://github.com/materialsproject/mp-react-components)
-- 仓库差异对比：[repo-diff-report.md](./docs/repo-diff-report.md)
-- 主题规划文档：[theming-and-style-presets.md](./docs/theming-and-style-presets.md)
+
+- 上游项目：[materialsproject/mp-react-components](https://github.com/materialsproject/mp-react-components)
+- 仓库差异报告：[repo-diff-report.md](./docs/repo-diff-report.md)
+- 主题与样式预设现状文档：[theming-and-style-presets.md](./docs/theming-and-style-presets.md)
