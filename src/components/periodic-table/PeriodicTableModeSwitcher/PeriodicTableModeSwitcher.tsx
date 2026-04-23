@@ -4,6 +4,7 @@ import { Markdown } from '../../data-display/Markdown';
 import { Tooltip } from '../../data-display/Tooltip';
 import { PeriodicTableFormulaButtons } from '../PeriodicTableFormulaButtons';
 import { PeriodicTableSelectionMode } from '../../data-entry/MaterialsInput/utils';
+import { mergeTexts } from '../../../text/mergeTexts';
 import './PeriodicTableModeSwitcher.css';
 
 interface Props {
@@ -15,6 +16,7 @@ interface Props {
   modeLabels?: Partial<Record<PeriodicTableSelectionMode, string>>;
   wildcardTitle?: string;
   wildcardTooltip?: string;
+  texts?: Partial<PeriodicTableModeSwitcherTexts>;
   onSwitch: (mode: PeriodicTableSelectionMode) => void;
   onFormulaButtonClick: (value: string) => void;
 }
@@ -25,6 +27,18 @@ export const PERIODIC_TABLE_MODE_LABELS: Record<PeriodicTableSelectionMode, stri
   [PeriodicTableSelectionMode.FORMULA]: 'Formula',
 };
 
+export interface PeriodicTableModeSwitcherTexts {
+  modeLabels: Record<PeriodicTableSelectionMode, string>;
+  wildcardTitle: string;
+  wildcardTooltip: string;
+}
+
+const DEFAULT_TEXTS: PeriodicTableModeSwitcherTexts = {
+  modeLabels: PERIODIC_TABLE_MODE_LABELS,
+  wildcardTitle: 'Wildcard element',
+  wildcardTooltip: 'Wildcard element',
+};
+
 export const PeriodicTableModeSwitcher = ({
   allowedModes = [
     PeriodicTableSelectionMode.FORMULA,
@@ -32,11 +46,15 @@ export const PeriodicTableModeSwitcher = ({
     PeriodicTableSelectionMode.CHEMICAL_SYSTEM,
   ],
   modeLabels,
-  wildcardTitle = 'Wildcard element',
-  wildcardTooltip = wildcardTitle,
+  wildcardTitle,
+  wildcardTooltip,
+  texts,
   ...props
 }: Props) => {
-  const resolvedModeLabels = { ...PERIODIC_TABLE_MODE_LABELS, ...(modeLabels ?? {}) };
+  const resolvedTexts = mergeTexts(DEFAULT_TEXTS, texts);
+  const resolvedModeLabels = { ...resolvedTexts.modeLabels, ...(modeLabels ?? {}) };
+  const resolvedWildcardTitle = wildcardTitle ?? resolvedTexts.wildcardTitle;
+  const resolvedWildcardTooltip = wildcardTooltip ?? texts?.wildcardTooltip ?? resolvedWildcardTitle;
   return (
     <>
       <div data-testid="mpc-pt-mode-switcher" className="mpc-pt-mode-switcher first-span">
@@ -59,6 +77,8 @@ export const PeriodicTableModeSwitcher = ({
           <PeriodicTableFormulaButtons
             onClick={props.onFormulaButtonClick}
             hideWildcardButton={props.hideWildcardButton}
+            wildcardTitle={resolvedWildcardTitle}
+            wildcardTooltip={resolvedWildcardTooltip}
           />
         ) : null}
 
@@ -73,7 +93,7 @@ export const PeriodicTableModeSwitcher = ({
                     type="button"
                     className="pt-wildcard-button mat-element has-tooltip-bottom"
                     onClick={() => props.onFormulaButtonClick('-*')}
-                    title={wildcardTitle}
+                    title={resolvedWildcardTitle}
                   >
                     <span className="mat-symbol">
                       <FaAsterisk />
@@ -81,7 +101,7 @@ export const PeriodicTableModeSwitcher = ({
                   </button>
                 }
               >
-                {wildcardTooltip}
+                {resolvedWildcardTooltip}
               </Tooltip>
             ) : null}
             <div className="pt-description">

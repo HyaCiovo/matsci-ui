@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { type MatElement } from '../periodic-table-data/table-v2';
 import { getSelectableTableStateChange } from './selection-state';
+import { mergeTexts } from '../../../text/mergeTexts';
 import {
   useOptionalPeriodicSelectionContext,
   PeriodicSelectionProvider,
@@ -100,7 +101,16 @@ export interface SelectableTableProps {
   onDetailedElementChange?: (element: string | null, detail: MatElement | null) => void;
   children?: React.ReactNode;
   unavailableElementTitle?: string;
+  texts?: Partial<SelectableTableTexts>;
 }
+
+export interface SelectableTableTexts {
+  unavailableElementTitle: string;
+}
+
+const DEFAULT_TEXTS: SelectableTableTexts = {
+  unavailableElementTitle: 'Unavailable in current table',
+};
 
 function SelectableTableView({
   className,
@@ -114,6 +124,7 @@ function SelectableTableView({
   forwardOuterChange = true,
   children,
   unavailableElementTitle,
+  texts,
 }: Omit<
   SelectableTableProps,
   | 'enabledElements'
@@ -121,6 +132,8 @@ function SelectableTableView({
   | 'hiddenElements'
   | 'detailedElement'
 >) {
+  const resolvedTexts = mergeTexts(DEFAULT_TEXTS, texts);
+  const resolvedUnavailableElementTitle = unavailableElementTitle ?? resolvedTexts.unavailableElementTitle;
   const context = useOptionalPeriodicSelectionContext();
   const forwardOuterChangeRef = useRef(context?.forwardOuterChange ?? true);
   useEffect(() => {
@@ -213,7 +226,7 @@ function SelectableTableView({
             hidden={hidden}
             interactionDisabled={interactionDisabled}
             defaultDisabled={defaultDisabled}
-            unavailableTitle={unavailableElementTitle}
+            unavailableTitle={resolvedUnavailableElementTitle}
             lastAction={lastAction}
             onToggle={actions.toggleEnabledElement}
             onHoverDetail={actions.setDetailedElement}
@@ -243,6 +256,7 @@ export function SelectableTable({
   onDetailedElementChange,
   children,
   unavailableElementTitle,
+  texts,
 }: SelectableTableProps) {
   const externalContext = useOptionalPeriodicSelectionContext();
   const tableView = (
@@ -258,6 +272,7 @@ export function SelectableTable({
       forwardOuterChange={forwardOuterChange}
       onDetailedElementChange={onDetailedElementChange}
       unavailableElementTitle={unavailableElementTitle}
+      texts={texts}
     >
       {children}
     </SelectableTableView>

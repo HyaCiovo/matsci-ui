@@ -166,6 +166,8 @@ interface MaterialsInputBoxProps {
   onHelpChange: (value: string) => void;
   onHelpToggle: () => void;
   helpTooltipId: string;
+  showExamplesTooltipText?: string;
+  hideExamplesTooltipText?: string;
   error?: string | null;
   errorTipStayActive?: boolean;
   onErrorMouseOver: () => void;
@@ -175,6 +177,8 @@ interface MaterialsInputBoxProps {
   showPeriodicTable: boolean;
   onPeriodicToggle: () => void;
   periodicToggleTooltipId: string;
+  showPeriodicTableTooltipText?: string;
+  hidePeriodicTableTooltipText?: string;
   showSubmitButton?: boolean;
   loading?: boolean;
   submitButtonText: string;
@@ -207,6 +211,8 @@ export const MaterialsInputBox = ({
   onHelpChange,
   onHelpToggle,
   helpTooltipId,
+  showExamplesTooltipText = 'Show examples',
+  hideExamplesTooltipText = 'Hide examples',
   error,
   errorTipStayActive,
   onErrorMouseOver,
@@ -216,6 +222,8 @@ export const MaterialsInputBox = ({
   showPeriodicTable,
   onPeriodicToggle,
   periodicToggleTooltipId,
+  showPeriodicTableTooltipText = 'Show Periodic Table',
+  hidePeriodicTableTooltipText = 'Hide Periodic Table',
   showSubmitButton,
   loading,
   submitButtonText,
@@ -280,7 +288,7 @@ export const MaterialsInputBox = ({
                 </button>
               }
             >
-              {showInputHelp ? 'Hide examples' : 'Show examples'}
+              {showInputHelp ? hideExamplesTooltipText : showExamplesTooltipText}
             </Tooltip>
           </div>
         ) : null}
@@ -357,7 +365,7 @@ export const MaterialsInputBox = ({
               </button>
             }
           >
-            {showInputHelp ? 'Hide examples' : 'Show examples'}
+            {showInputHelp ? hideExamplesTooltipText : showExamplesTooltipText}
           </Tooltip>
         </div>
       ) : null}
@@ -399,7 +407,7 @@ export const MaterialsInputBox = ({
               </button>
             }
           >
-            {showPeriodicTable ? 'Hide Periodic Table' : 'Show Periodic Table'}
+            {showPeriodicTable ? hidePeriodicTableTooltipText : showPeriodicTableTooltipText}
           </Tooltip>
         </div>
       ) : null}

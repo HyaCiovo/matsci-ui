@@ -11,11 +11,16 @@ import {
   useRef,
   useState,
 } from 'react';
-import { PeriodicTableModeSwitcher } from '../../periodic-table/PeriodicTableModeSwitcher';
+import { mergeTexts } from '../../../text/mergeTexts';
+import {
+  PeriodicTableModeSwitcher,
+  type PeriodicTableModeSwitcherTexts,
+} from '../../periodic-table/PeriodicTableModeSwitcher';
 import {
   SelectableTable,
   TableLayout,
   type SelectableTableSelectionChange,
+  type SelectableTableTexts,
 } from '../../periodic-table/SelectableTable';
 import { type InputHelpItem } from './InputHelp';
 import { MaterialsInputBox } from './MaterialsInputBox/MaterialsInputBox';
@@ -51,6 +56,7 @@ export interface MaterialsInputSharedProps {
   autocompleteApiKey?: string;
   helpItems?: InputHelpItem[];
   maxElementSelectable?: number;
+  texts?: Partial<MaterialsInputTexts>;
   onChange?: (value: string) => any;
   onInputTypeChange?: (type: MaterialsInputType) => any;
   onSubmit?: (event: FormEvent | MouseEvent, value?: string, filterProps?: any) => any;
@@ -178,9 +184,25 @@ const getConvertedValueForInputType = (
   return currentInputValue;
 };
 
+export interface MaterialsInputTexts {
+  showExamplesTooltipText: string;
+  hideExamplesTooltipText: string;
+  showPeriodicTableTooltipText: string;
+  hidePeriodicTableTooltipText: string;
+  selectableTable?: Partial<SelectableTableTexts>;
+  periodicTableModeSwitcher?: Partial<PeriodicTableModeSwitcherTexts>;
+}
+
+const DEFAULT_TEXTS: MaterialsInputTexts = {
+  showExamplesTooltipText: 'Show examples',
+  hideExamplesTooltipText: 'Hide examples',
+  showPeriodicTableTooltipText: 'Show Periodic Table',
+  hidePeriodicTableTooltipText: 'Hide Periodic Table',
+};
+
 export const MaterialsInput = ({
   value = '',
-  errorMessage = 'Invalid input value',
+  errorMessage,
   type = MaterialsInputType.ELEMENTS,
   allowedInputTypes = [type],
   onChange = (nextValue) => nextValue,
@@ -193,7 +215,7 @@ export const MaterialsInput = ({
   const props = {
     value,
     type,
-    errorMessage,
+    errorMessage: errorMessage ?? 'Invalid input value',
     allowedInputTypes,
     onChange,
     maxElementSelectable,
@@ -202,6 +224,7 @@ export const MaterialsInput = ({
     debounce,
     ...otherProps,
   };
+  const resolvedTexts = mergeTexts(DEFAULT_TEXTS, props.texts);
 
   const [inputValue, setInputValue] = useState(props.value);
   const [inputType, setInputType] = useState<MaterialsInputType>(props.type);
@@ -611,6 +634,8 @@ export const MaterialsInput = ({
             }}
             onHelpToggle={() => setShowInputHelp((current) => !current)}
             helpTooltipId={helpTooltipId}
+            showExamplesTooltipText={resolvedTexts.showExamplesTooltipText}
+            hideExamplesTooltipText={resolvedTexts.hideExamplesTooltipText}
             error={error}
             errorTipStayActive={errorTipStayActive}
             onErrorMouseOver={() => setErrorTipStayActive(false)}
@@ -620,6 +645,8 @@ export const MaterialsInput = ({
             showPeriodicTable={showPeriodicTable}
             onPeriodicToggle={() => setShowPeriodicTable((current) => !current)}
             periodicToggleTooltipId={periodicToggleTooltipId}
+            showPeriodicTableTooltipText={resolvedTexts.showPeriodicTableTooltipText}
+            hidePeriodicTableTooltipText={resolvedTexts.hidePeriodicTableTooltipText}
             showSubmitButton={props.showSubmitButton}
             loading={props.loading}
             submitButtonText={props.submitButtonText}
@@ -658,12 +685,16 @@ export const MaterialsInput = ({
           }}
           setError={setError}
           helpTooltipId={helpTooltipId}
+          showExamplesTooltipText={resolvedTexts.showExamplesTooltipText}
+          hideExamplesTooltipText={resolvedTexts.hideExamplesTooltipText}
           errorTooltipId={errorTooltipId}
           periodicTableMode={periodicTableMode}
           hasPeriodicTable={hasPeriodicTable}
           showPeriodicTable={showPeriodicTable}
           onPeriodicToggle={() => undefined}
           periodicToggleTooltipId={periodicToggleTooltipId}
+          showPeriodicTableTooltipText={resolvedTexts.showPeriodicTableTooltipText}
+          hidePeriodicTableTooltipText={resolvedTexts.hidePeriodicTableTooltipText}
           showSubmitButton={false}
           submitButtonText={props.submitButtonText}
           disableSubmitButton={disableSubmitButton}
@@ -689,6 +720,7 @@ export const MaterialsInput = ({
             maxElementSelectable={
               selectionMode === PeriodicTableSelectionMode.ELEMENTS ? 5 : props.maxElementSelectable
             }
+            texts={resolvedTexts.selectableTable}
             forceTableLayout={TableLayout.MINI}
             hiddenElements={[]}
             onStateChange={handleTableStateChange}
@@ -700,6 +732,7 @@ export const MaterialsInput = ({
                   hideWildcardButton={props.hideWildcardButton}
                   chemicalSystemSelectHelpText={props.chemicalSystemSelectHelpText}
                   elementsSelectHelpText={props.elementsSelectHelpText}
+                  texts={resolvedTexts.periodicTableModeSwitcher}
                   onSwitch={(mode) => {
                     setSelectionMode(mode);
                     const nextInputType = getNextInputTypeForSelectionMode(mode);

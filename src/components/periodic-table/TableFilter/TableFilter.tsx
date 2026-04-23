@@ -6,6 +6,7 @@ import {
 } from '../SelectableTable/PeriodicSelectionContext';
 import { categoryToClassName } from '../SelectableTable/selection-state';
 import { getPeriodicTableFilterValue } from '../SelectableTable/view-model';
+import { mergeTexts } from '../../../text/mergeTexts';
 import {
   FILTERS,
   FILTER_VALUE_MAPPER,
@@ -58,7 +59,7 @@ const performFilter = (key: NonNullable<TableFilterOption['key']>, value: string
   }, {});
 
 export function TableFilter({ texts: textsProp, filters: filtersProp, valueMapper }: TableFilterProps) {
-  const texts = { ...DEFAULT_TEXTS, ...(textsProp ?? {}) };
+  const texts = mergeTexts(DEFAULT_TEXTS, textsProp);
   const actions = useOptionalPeriodicSelectionActions() ?? noopActions;
   const filters = filtersProp ?? FILTERS.categories;
   const resolvedValueMapper = valueMapper ?? FILTER_VALUE_MAPPER;

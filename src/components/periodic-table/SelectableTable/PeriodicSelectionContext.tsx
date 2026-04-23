@@ -193,7 +193,6 @@ export function PeriodicSelectionProvider({
       }
 
       setChangeOrigin('action');
-      console.log("setChangeOrigin('action') in toggleElement", element);
       setForwardOuterChangeState(true);
       setEnabledRecord((current) => {
         const enabled = !!current[element];
@@ -211,6 +210,8 @@ export function PeriodicSelectionProvider({
 
         if (enabled) {
           delete nextEnabledRecord[element];
+        } else if (selectionStyle === TableSelectionStyle.SELECT && maxSelectionLimit > 1 && atSelectionLimit) {
+          return current;
         } else if (selectionStyle === TableSelectionStyle.SELECT && maxSelectionLimit === 1 && atSelectionLimit) {
           Object.keys(nextEnabledRecord).forEach((selectedElement) => {
             delete nextEnabledRecord[selectedElement];
@@ -244,7 +245,6 @@ export function PeriodicSelectionProvider({
         setLastAction(undefined);
         setEnabledRecord((current) => {
           const next = { ...nextEnabledElements };
-          console.log("setChangeOrigin('action') in setEnabledElements", Object.keys(current), "->", next);
           return next;
         });
       },

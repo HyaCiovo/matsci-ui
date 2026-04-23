@@ -1,19 +1,35 @@
 import { FaAsterisk } from 'react-icons/fa';
 import { Tooltip } from '../../data-display/Tooltip';
+import { mergeTexts } from '../../../text/mergeTexts';
 
 interface Props {
   onClick: (value: string) => void;
   hideWildcardButton?: boolean;
   wildcardTitle?: string;
   wildcardTooltip?: string;
+  texts?: Partial<PeriodicTableFormulaButtonsTexts>;
 }
+
+export interface PeriodicTableFormulaButtonsTexts {
+  wildcardTitle: string;
+  wildcardTooltip: string;
+}
+
+const DEFAULT_TEXTS: PeriodicTableFormulaButtonsTexts = {
+  wildcardTitle: 'Wildcard element',
+  wildcardTooltip: 'Wildcard element',
+};
 
 export const PeriodicTableFormulaButtons = ({
   onClick,
   hideWildcardButton,
-  wildcardTitle = 'Wildcard element',
-  wildcardTooltip = wildcardTitle,
+  wildcardTitle,
+  wildcardTooltip,
+  texts,
 }: Props) => {
+  const resolvedTexts = mergeTexts(DEFAULT_TEXTS, texts);
+  const resolvedWildcardTitle = wildcardTitle ?? resolvedTexts.wildcardTitle;
+  const resolvedWildcardTooltip = wildcardTooltip ?? texts?.wildcardTooltip ?? resolvedWildcardTitle;
   const values = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(', ')'];
 
   return (
@@ -27,7 +43,7 @@ export const PeriodicTableFormulaButtons = ({
               type="button"
               className="pt-wildcard-button mat-element has-tooltip-bottom"
               onClick={() => onClick('*')}
-              title={wildcardTitle}
+              title={resolvedWildcardTitle}
             >
               <span className="mat-symbol">
                 <FaAsterisk />
@@ -35,7 +51,7 @@ export const PeriodicTableFormulaButtons = ({
             </button>
           }
         >
-          {wildcardTooltip}
+          {resolvedWildcardTooltip}
         </Tooltip>
       ) : null}
       {values.map((value) => (

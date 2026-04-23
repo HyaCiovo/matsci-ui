@@ -31,6 +31,8 @@ describe('MaterialsInputBox', () => {
         onHelpChange={() => undefined}
         onHelpToggle={onHelpToggle}
         helpTooltipId="help-tooltip"
+        showExamplesTooltipText="Show examples"
+        hideExamplesTooltipText="Hide examples"
         onErrorMouseOver={() => undefined}
         errorTooltipId="error-tooltip"
         periodicTableMode={PeriodicTableMode.TOGGLE}
@@ -38,6 +40,8 @@ describe('MaterialsInputBox', () => {
         showPeriodicTable={false}
         onPeriodicToggle={onPeriodicToggle}
         periodicToggleTooltipId="periodic-tooltip"
+        showPeriodicTableTooltipText="Show Periodic Table"
+        hidePeriodicTableTooltipText="Hide Periodic Table"
         showSubmitButton
         submitButtonText="Search"
         disableSubmitButton={false}

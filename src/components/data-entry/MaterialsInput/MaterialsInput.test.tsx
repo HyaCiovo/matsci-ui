@@ -220,4 +220,30 @@ describe('MaterialsInput', () => {
     expect(screen.getByTestId('materials-input-search-input')).toHaveValue('Li-Fe');
     expect(handleInputTypeChange).toHaveBeenCalledWith(MaterialsInputType.CHEMICAL_SYSTEM);
   });
+
+  it('keeps the selection stable when clicking an element after reaching the max selection limit', () => {
+    render(
+      <MaterialsInput
+        value=""
+        type={MaterialsInputType.ELEMENTS}
+        allowedInputTypes={[MaterialsInputType.ELEMENTS]}
+        showSubmitButton
+        maxElementSelectable={5}
+      />
+    );
+
+    const getElementsValue = () => screen.getByTestId('materials-input-search-input').getAttribute('value');
+
+    fireEvent.click(screen.getByTestId('periodic-element-Li'));
+    fireEvent.click(screen.getByTestId('periodic-element-Fe'));
+    fireEvent.click(screen.getByTestId('periodic-element-Co'));
+    fireEvent.click(screen.getByTestId('periodic-element-Ni'));
+    fireEvent.click(screen.getByTestId('periodic-element-Cu'));
+
+    expect(getElementsValue()).toBe('Li,Fe,Co,Ni,Cu');
+
+    fireEvent.click(screen.getByTestId('periodic-element-He'));
+
+    expect(getElementsValue()).toBe('Li,Fe,Co,Ni,Cu');
+  });
 });
