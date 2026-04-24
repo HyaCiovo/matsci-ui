@@ -19,6 +19,11 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const CHEMICAL_SYSTEM_SELECT_HELP_TEXT =
+  'Select elements to search for materials with only these elements';
+const ELEMENTS_SELECT_HELP_TEXT =
+  'Select elements to search for materials with at least these elements';
+
 export const Basic: Story = {
   render: (args) => (
     <SearchUIContainer
@@ -34,6 +39,8 @@ export const Basic: Story = {
         periodicTableMode={'toggle' as PeriodicTableMode}
         placeholder="Search by elements, formula, or ID"
         errorMessage="Invalid search value"
+        chemicalSystemSelectHelpText={CHEMICAL_SYSTEM_SELECT_HELP_TEXT}
+        elementsSelectHelpText={ELEMENTS_SELECT_HELP_TEXT}
         allowedInputTypesMap={{
           elements: {
             field: 'elements'

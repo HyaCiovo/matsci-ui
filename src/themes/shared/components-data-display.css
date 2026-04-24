@@ -853,8 +853,11 @@
 }
 
 .ms-search-ui .ms-search-ui-data-header [data-testid='data-table-title'] .ms-title {
-  display: inline-flex;
-  align-items: center;
+  display: inline;
+}
+
+.ms-search-ui .ms-search-ui-data-header [data-testid='data-table-title'] .ms-title svg {
+  vertical-align: middle;
 }
 
 .ms-search-ui .ms-progress-container {
