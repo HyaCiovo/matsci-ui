@@ -1,5 +1,6 @@
 import type { StorybookConfig } from '@storybook/react-vite';
 import https from 'node:https';
+import { resolve } from 'node:path';
 import { loadEnv } from 'vite';
 
 const httpsAgent = new https.Agent({ keepAlive: true });
@@ -15,6 +16,10 @@ const config: StorybookConfig = {
 
   typescript: {
     reactDocgen: 'react-docgen-typescript',
+    reactDocgenTypescriptOptions: {
+      tsconfigPath: resolve(import.meta.dirname, '../tsconfig.json'),
+      exclude: ['.storybook/**', '**/*.stories.tsx', '**/*.stories.ts', '**/*.mdx'],
+    },
   },
 
   viteFinal: async (viteConfig, options) => {
