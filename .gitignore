@@ -40,3 +40,4 @@ pnpm-debug.log*
 
 # scripts files
 *-gnosys.*
+.npm-cache/
