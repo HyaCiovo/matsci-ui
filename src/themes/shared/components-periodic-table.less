@@ -43,7 +43,7 @@
   .flex(column);
 
   &.ms-disabled {
-    cursor: default;
+    cursor: not-allowed;
     opacity: 0.4;
   }
 
@@ -58,6 +58,10 @@
     &:not(.ms-enabled) {
       filter: brightness(91%);
     }
+  }
+
+  &.ms-disabled:hover {
+    transform: none;
   }
 
   &.active {
@@ -312,7 +316,7 @@
     }
 
     .ms-mat-symbol {
-      font-size: 0.5rem !important;
+      font-size: 0.625rem !important;
       white-space: nowrap;
       text-align: center;
       line-height: 1;
@@ -420,7 +424,7 @@
 
 .ms-mat-element.ms-simple.ms-element-lanthanoid-transitional-metal.ms-disabled .ms-mat-symbol,
 .ms-mat-element.ms-simple.ms-element-actinoid-transitional-metal.ms-disabled .ms-mat-symbol {
-  font-size: 0.5rem !important;
+  font-size: 0.625rem !important;
   white-space: nowrap;
 }
 

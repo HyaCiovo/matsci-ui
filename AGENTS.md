@@ -27,8 +27,8 @@ When making changes, keep these priorities in order:
 - Keep Rollup as the library bundler. Do not reintroduce `tsup` or another parallel library build tool.
 - Keep explicit style exports in `package.json`:
   - `./style.css`
-  - `./themes/default.css`
-  - `./themes/alt.css`
+  - `./themes/bulma.css`
+  - `./themes/gnosys.css`
 - Do not reintroduce global Bulma selector leakage into host apps.
 - Do not move back to per-component scattered CSS imports from component TSX files.
 - Do not change `src/components/crystal-toolkit/vis.less` content unless the task explicitly requires it. It is intentionally kept separate because other npm packages depend on it.
@@ -69,7 +69,7 @@ Use these directories according to their responsibilities.
   - This is where component skinning belongs
 - `src/themes/presets/`
   - Preset-specific token and override composition
-  - Currently includes default and alt preset assembly
+  - Currently includes bulma and gnosys preset assembly
 - `src/themes/entries/`
   - Final theme entrypoints used by Storybook and package builds
 

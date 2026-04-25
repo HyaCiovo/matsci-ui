@@ -1,67 +1,79 @@
 # Multi-theme / Style Presets Status / 多主题与样式预设现状
 
-Last updated: 2026-04-24
+Last updated: 2026-04-26
 
 ## EN
 
-This document is no longer only a planning note. The **multi-theme architecture is now implemented in the repository**, including explicit theme entrypoints, unified source layout, library-owned `ms-*` selectors, and separate default / alternate stylesheet outputs.
+This document reflects the current repository reality rather than an old theming plan. The library now has **two supported published theme entrypoints** plus a **separate Storybook-only preview layer**.
 
-The package is **still not published to npm yet**, so the public install contract is defined, but the primary way to verify theme behavior remains the repository build output and Storybook.
+### Public package contract
 
-### What is shipped in the repository today
+The npm package is designed to expose exactly these stylesheet entrypoints:
 
-- Explicit stylesheet entrypoints:
-  - `@hyacinth/matsci-ui/style.css`
-  - `@hyacinth/matsci-ui/themes/default.css`
-  - `@hyacinth/matsci-ui/themes/alt.css`
-- Unified source theme tree under `src/themes`
-- Theme layering:
-  - `src/themes/foundation/*`
-  - `src/themes/shared/*`
-  - `src/themes/presets/*`
-  - `src/themes/entries/*`
-- A library-owned styling contract based on `ms-*` selectors instead of exposing raw Bulma selectors to host applications
-- Build output that emits:
-  - `dist/themes/default.css`
-  - `dist/themes/alt.css`
+- `@hyacinth/matsci-ui/style.css`
+- `@hyacinth/matsci-ui/themes/bulma.css`
+- `@hyacinth/matsci-ui/themes/gnosys.css`
 
-### What has changed compared with the earlier plan
+Current meaning:
 
-Earlier versions of this document described theme presets as “planned”. That is no longer accurate.
+- `style.css`: alias of the published Bulma theme
+- `themes/bulma.css`: explicit Bulma preset entry
+- `themes/gnosys.css`: explicit Gnosys preset entry
 
-The following parts are already implemented:
+Applications should load **exactly one** of these theme bundles at the application shell entry.
 
-- explicit theme CSS entrypoints in package exports
-- a split between foundation styles, shared component skinning, preset-specific layers, and final build entries
-- a migrated class strategy centered on `ms-*`
-- a dedicated alternate preset hook using:
-  - `src/themes/presets/alt-tokens.css`
-  - `src/themes/presets/alt-overrides.css`
+### Recommended consumer usage
 
-### What is still incomplete
+```ts
+// Bulma theme
+import '@hyacinth/matsci-ui/style.css';
 
-The remaining gap is **not the architecture**. The remaining gap is the **visual coverage and completeness of the alternate theme**.
+// or:
+import '@hyacinth/matsci-ui/themes/bulma.css';
 
-Today:
+// Gnosys theme
+import '@hyacinth/matsci-ui/themes/gnosys.css';
+```
 
-- `default.css` is the stable default consumer entry
-- `alt.css` is a real exported build artifact
-- the alternate preset already has dedicated token and override files
-- but the alternate preset is not yet a fully differentiated second visual system across every component surface
+Guidance:
 
-In other words:
+- Do not statically import both `bulma.css` and `gnosys.css` into the same app shell.
+- Components do not auto-inject CSS.
+- Storybook toolbar switching is a docs/runtime convenience, not a public JS theming API.
+- If a product needs runtime theme switching, swap the active stylesheet at the host-app shell level rather than eagerly importing both preset bundles.
 
-- multi-theme delivery is landed
-- the second theme’s visual language is still being expanded
+### What ships in the package
 
-### Current mental model
+Published build output currently emits:
+
+- `dist/themes/bulma.css`
+- `dist/themes/gnosys.css`
+
+The package exports map only points to those published theme files. Storybook-only CSS is not exported from `package.json` and is not emitted into `dist`.
+
+### What is Storybook-only
+
+These files exist only for Storybook preview/runtime behavior:
+
+- `.storybook/themes/gnosys-preview-tokens.css`
+- `.storybook/themes/gnosys-preview-overrides.css`
+
+They are intentionally outside `src/themes` now so the boundary is obvious:
+
+- `src/themes/*`: publishable library theme source
+- `.storybook/themes/*`: preview-only docs/runtime adjustments
+
+This simplification removes the earlier confusion where Storybook-specific Gnosys preview files lived beside publishable preset files under `src/themes/presets`.
+
+### Current theme model
 
 Use these terms consistently:
 
-- **Foundation**: tokens, resets, Bulma-compatible primitives, and utilities
-- **Shared**: component styling shared across presets
-- **Preset**: preset-owned visual choices, tokens, and overrides
-- **Entry**: final theme bundle entrypoint consumed by Storybook and npm package builds
+- **Foundation**: tokens, resets, Bulma-compatible primitives, and utility rules
+- **Shared**: component rules shared by all published presets
+- **Preset**: preset-owned visual tokens and overrides
+- **Entry**: final published bundle entrypoint
+- **Preview-only**: Storybook runtime styling that should not ship in the npm package
 
 ### Current source structure
 
@@ -75,133 +87,119 @@ src/themes/
     components-*.css
     components-*.less
   presets/
-    default.ts
-    alt.ts
-    alt-tokens.css
-    alt-overrides.css
+    bulma.ts
+    gnosys.ts
+    gnosys-tokens.css
+    gnosys-overrides.css
   entries/
-    default.ts
-    alt.ts
+    bulma.ts
+    gnosys.ts
+
+.storybook/
+  themes/
+    gnosys-preview-tokens.css
+    gnosys-preview-overrides.css
 ```
 
-### Current published-style contract
+### Current supported presets
 
-When the package is published, consumers should use one of these:
+- `bulma.css`: stable Bulma preset, closest to Bulma continuity
+- `gnosys.css`: stable secondary preset, now tuned toward a flatter academic style with stronger deep-blue emphasis and tighter radii
 
-```ts
-import '@hyacinth/matsci-ui/style.css';
-// or:
-import '@hyacinth/matsci-ui/themes/default.css';
-// or:
-import '@hyacinth/matsci-ui/themes/alt.css';
-```
+The repository intentionally keeps the public preset surface narrow. That is a maintenance choice, not a temporary accident.
 
-Current recommendation:
-
-- use `style.css` or `themes/default.css` for production-style default usage
-- treat `themes/alt.css` as the shipped alternate-theme entrypoint whose implementation surface is still growing
-
-### Why the old “just swap Bulma” approach was not enough
-
-Historically, this library inherited strong Bulma coupling:
-
-- Bulma-shaped DOM/class conventions
-- component-local style patches
-- host-level leakage from global selectors
-
-The current repository has already addressed the most important structural problem by moving styling ownership into library-controlled `ms-*` selectors and a dedicated theme tree.
-
-That means the problem statement has changed:
-
-- before: “how do we make theming possible at all?”
-- now: “how do we complete and polish the alternate preset without regressing the default one?”
-
-### Recommended next implementation direction
+### Practical maintenance direction
 
 Short term:
 
-- keep `default.css` as the stable visual baseline
-- continue expanding `alt-tokens.css` and `alt-overrides.css`
-- avoid breaking shared component structure while preset coverage improves
+- keep `bulma.css` as the baseline consumer entry
+- keep visual deltas for the Gnosys theme in `gnosys-tokens.css` and `gnosys-overrides.css`
+- keep Storybook preview CSS outside the publishable theme tree
 
 Medium term:
 
-- continue moving visual choices into preset-owned files rather than `shared`
-- keep structural rules in `shared`
-- keep global foundation rules in `foundation`
+- continue pushing structural rules into `shared`
+- keep preset-specific visuals in `presets`
+- avoid letting Storybook preview fixes leak back into package theme sources unless they are genuinely consumer-facing rules
 
-Long term:
+Constraints:
 
-- ship a clearly differentiated second preset
-- optionally add more preset entrypoints if they can be maintained safely
-
-### Risks and constraints
-
-- The package is not published yet, so public documentation must keep reminding readers that Storybook is currently the easiest preview surface.
-- Host applications should not depend on internal DOM details or old Bulma selectors.
-- `vis.less` remains intentionally separate because other npm packages still depend on it.
-- The alternate theme should not claim complete parity until its visual coverage is actually finished.
+- Host applications should not depend on internal DOM details or old Bulma global selectors.
+- `vis.less` remains intentionally separate because other packages still depend on it.
+- Additional presets should not be added unless they have a real maintenance owner.
 
 ## 中文
 
-本文档不再只是“规划说明”。当前仓库里，**多主题架构本身已经落地**，包括显式主题入口、统一的主题源码目录、库自有 `ms-*` 选择器，以及默认主题 / 第二主题样式产物。
+本文档反映的是当前仓库真实状态，而不是早期的主题规划说明。现在组件库已经形成了 **两套正式发布主题入口**，同时又把 **Storybook 预览专用样式层** 和 npm 包样式层明确分开。
 
-但 npm 包 **仍然还没有正式发布**，所以当前公开安装契约虽然已经确定，实际验证主题能力仍应以仓库构建产物和 Storybook 为主。
+### 对外包契约
 
-### 当前仓库已经具备的能力
+npm 包当前设计为只暴露这三个样式入口：
 
-- 显式样式入口：
-  - `@hyacinth/matsci-ui/style.css`
-  - `@hyacinth/matsci-ui/themes/default.css`
-  - `@hyacinth/matsci-ui/themes/alt.css`
-- 统一的 `src/themes` 主题源码树
-- 主题分层结构：
-  - `src/themes/foundation/*`
-  - `src/themes/shared/*`
-  - `src/themes/presets/*`
-  - `src/themes/entries/*`
-- 基于库自有 `ms-*` 选择器的样式契约，不再把原始 Bulma 全局类直接暴露给宿主项目
-- 构建产物会输出：
-  - `dist/themes/default.css`
-  - `dist/themes/alt.css`
+- `@hyacinth/matsci-ui/style.css`
+- `@hyacinth/matsci-ui/themes/bulma.css`
+- `@hyacinth/matsci-ui/themes/gnosys.css`
 
-### 相比旧版规划，已经变化的地方
+当前含义分别是：
 
-旧版文档把多主题能力描述为“规划中”。这已经不准确了。
+- `style.css`：Bulma 主题别名
+- `themes/bulma.css`：显式 Bulma 主题入口
+- `themes/gnosys.css`：显式 Gnosys 主题入口
 
-以下部分已经在仓库里落地：
+业务应用应当在应用壳层入口 **只加载其中一套**。
 
-- 包导出中有明确的主题 CSS 入口
-- 样式源码已经拆成基础层、共享层、预设层和最终入口层
-- 组件样式契约已经迁移到 `ms-*`
-- 第二主题已经拥有专属的：
-  - `src/themes/presets/alt-tokens.css`
-  - `src/themes/presets/alt-overrides.css`
+### 推荐引入方式
 
-### 目前还没完成的部分
+```ts
+// Bulma 主题
+import '@hyacinth/matsci-ui/style.css';
 
-当前没完成的不是“架构能力”，而是**第二套主题视觉覆盖面的完整度**。
+// 或：
+import '@hyacinth/matsci-ui/themes/bulma.css';
 
-目前的真实状态是：
+// Gnosys 主题
+import '@hyacinth/matsci-ui/themes/gnosys.css';
+```
 
-- `default.css` 是稳定的默认主题入口
-- `alt.css` 是真实存在、会随构建输出的第二主题产物
-- 第二主题已经有自己的 token 和 override 文件
-- 但第二主题还没有在所有组件表面上形成一套完全成熟、差异明确的第二视觉系统
+使用建议：
 
-换句话说：
+- 不要在同一个应用壳层里静态同时引入 `bulma.css` 和 `gnosys.css`
+- 组件本身不会自动注入 CSS
+- Storybook 工具栏里的主题切换只是文档运行时能力，不是公开的 JS 主题 API
+- 如果业务项目需要运行时换肤，应当在宿主应用壳层切换实际加载的 stylesheet，而不是把两套 preset 一起预加载
 
-- 多主题交付能力已经落地
-- 第二主题的视觉语言仍在继续补齐
+### 哪些文件会随包发布
 
-### 当前推荐的理解方式
+当前正式构建只会产出：
 
-统一使用以下术语：
+- `dist/themes/bulma.css`
+- `dist/themes/gnosys.css`
 
-- **Foundation**：token、基础重置、Bulma 兼容原子层与工具类
-- **Shared**：不同 preset 共享的组件结构样式
-- **Preset**：具体主题自己的视觉选择、token 与 override
-- **Entry**：最终供 Storybook 和 npm 构建使用的主题打包入口
+`package.json` 的 `exports` 也只指向这两套正式主题文件。Storybook 专用 CSS 不会在 `package.json` 中导出，也不会进入 `dist`。
+
+### 哪些文件只是 Storybook 预览用
+
+以下文件只服务于 Storybook 预览/runtime：
+
+- `.storybook/themes/gnosys-preview-tokens.css`
+- `.storybook/themes/gnosys-preview-overrides.css`
+
+它们现在被有意放在 `src/themes` 之外，边界更清楚：
+
+- `src/themes/*`：可发布的库主题源码
+- `.storybook/themes/*`：只服务于文档预览的运行时修正
+
+这次简化解决了之前一个明显的问题：Storybook 专用的 Gnosys 预览文件以前和正式发布 preset 文件混放在 `src/themes/presets` 里，容易让人误以为它们也属于 npm 包契约。
+
+### 当前主题模型
+
+建议统一使用以下术语：
+
+- **Foundation**：token、基础重置、Bulma 兼容原子层和工具规则
+- **Shared**：所有正式 preset 共享的组件样式
+- **Preset**：某个 preset 自己的视觉 token 与 override
+- **Entry**：最终对外打包的主题入口
+- **Preview-only**：只服务于 Storybook 文档运行时、不应进入 npm 包的样式文件
 
 ### 当前源码结构
 
@@ -215,69 +213,43 @@ src/themes/
     components-*.css
     components-*.less
   presets/
-    default.ts
-    alt.ts
-    alt-tokens.css
-    alt-overrides.css
+    bulma.ts
+    gnosys.ts
+    gnosys-tokens.css
+    gnosys-overrides.css
   entries/
-    default.ts
-    alt.ts
+    bulma.ts
+    gnosys.ts
+
+.storybook/
+  themes/
+    gnosys-preview-tokens.css
+    gnosys-preview-overrides.css
 ```
 
-### 当前对外样式契约
+### 当前两套正式主题
 
-等 npm 包正式发布后，业务方应通过以下方式之一引入样式：
+- `bulma.css`：稳定 Bulma 主题，最接近 Bulma 延续风格
+- `gnosys.css`：稳定的第二主题，当前已经调整为更扁平、更学术、更偏深蓝强调、圆角更小的方向
 
-```ts
-import '@hyacinth/matsci-ui/style.css';
-// 或：
-import '@hyacinth/matsci-ui/themes/default.css';
-// 或：
-import '@hyacinth/matsci-ui/themes/alt.css';
-```
+仓库当前有意把正式 preset 面收敛在这两套里，这不是临时状态，而是维护策略的一部分。
 
-当前推荐：
-
-- 默认生产使用优先走 `style.css` 或 `themes/default.css`
-- 把 `themes/alt.css` 视为已经存在并可交付的第二主题入口，但它的视觉实现仍在继续扩充
-
-### 为什么旧时代“直接替换 Bulma”已经不是重点问题
-
-历史上这个库的样式和 Bulma 耦合很深：
-
-- DOM/class 语义强依赖 Bulma
-- 组件目录里散落大量样式补丁
-- 全局选择器容易污染宿主应用
-
-当前仓库已经通过库自有 `ms-*` 选择器和统一主题目录，解决了最关键的结构性问题。
-
-因此，问题本身已经变化了：
-
-- 过去的问题是：“怎么让主题切换至少成为可能？”
-- 现在的问题是：“如何在不破坏默认主题的前提下，把第二主题继续做完整？”
-
-### 当前推荐的后续实现方向
+### 当前维护建议
 
 短期：
 
-- 继续把 `default.css` 作为稳定视觉基线
-- 持续补齐 `alt-tokens.css` 与 `alt-overrides.css`
-- 在扩充第二主题覆盖时，避免破坏 shared 层的结构稳定性
+- 继续把 `bulma.css` 作为主基线
+- 继续把 Gnosys 主题的视觉差异集中在 `gnosys-tokens.css` 和 `gnosys-overrides.css`
+- 持续把 Storybook 预览 CSS 保留在发布主题树之外
 
 中期：
 
-- 继续把视觉差异尽量收敛到 preset 层，而不是 shared 层
-- 结构性规则留在 `shared`
-- 全局基础规则留在 `foundation`
+- 结构性规则继续留在 `shared`
+- preset 视觉差异继续留在 `presets`
+- Storybook 预览修正只有在真正影响消费者时，才回流到可发布主题源码
 
-长期：
+约束：
 
-- 交付一套差异更明确、覆盖更完整的第二主题
-- 如果维护成本可控，再考虑扩展更多 preset 入口
-
-### 风险与约束
-
-- npm 包尚未正式发布，因此所有外部文档仍应提醒读者：当前 Storybook 仍然是最直接的预览入口。
-- 宿主项目不应继续依赖内部 DOM 细节或旧 Bulma 选择器。
-- `vis.less` 仍然需要保持独立，因为还有其他 npm 包依赖它。
-- 在第二主题的视觉覆盖尚未完成之前，不应把它表述为“已完全达到默认主题同等级别的正式替代”。
+- 宿主应用不应依赖内部 DOM 细节或旧 Bulma 全局选择器
+- `vis.less` 仍然需要保持独立，因为还有其他包依赖它
+- 不应继续轻易增加更多公开 preset，除非有明确维护人和长期维护预算

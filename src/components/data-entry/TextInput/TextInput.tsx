@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDebounce } from '../../../utils/hooks';
 import { Input } from '../Input';
 
@@ -22,13 +22,31 @@ export const TextInput = ({
   const [inputValue, setInputValue] = useState(value);
   const delay = debounceTime ?? debounce;
   const debouncedInputValue = delay ? useDebounce(inputValue, delay) : inputValue;
+  const onChangeRef = useRef(onChange);
+  const hasMountedRef = useRef(false);
+  const lastReportedValueRef = useRef(value);
 
   useEffect(() => {
-    onChange(debouncedInputValue);
-  }, [debouncedInputValue, onChange]);
+    onChangeRef.current = onChange;
+  }, [onChange]);
+
+  useEffect(() => {
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      return;
+    }
+
+    if (Object.is(lastReportedValueRef.current, debouncedInputValue)) {
+      return;
+    }
+
+    lastReportedValueRef.current = debouncedInputValue;
+    onChangeRef.current(debouncedInputValue);
+  }, [debouncedInputValue]);
 
   useEffect(() => {
     setInputValue(value);
+    lastReportedValueRef.current = value;
   }, [value]);
 
   return (

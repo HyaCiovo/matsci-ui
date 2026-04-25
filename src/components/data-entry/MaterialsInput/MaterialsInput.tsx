@@ -5,6 +5,7 @@ import {
   type FormEvent,
   type KeyboardEvent,
   type MouseEvent,
+  type ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -51,6 +52,7 @@ export interface MaterialsInputSharedProps {
   placeholder?: string;
   errorMessage?: string;
   inputClassName?: string;
+  periodicTableToggleIcon?: ReactNode;
   autocompleteFormulaUrl?: string;
   autocompleteApiKey?: string;
   helpItems?: InputHelpItem[];
@@ -312,6 +314,7 @@ export const MaterialsInput = ({
       props.onPropsChange,
       props.onSubmit,
       props.periodicTableMode,
+      props.periodicTableToggleIcon,
       props.placeholder,
       props.setProps,
       props.showSubmitButton,
@@ -612,6 +615,7 @@ export const MaterialsInput = ({
             inputType={inputType}
             inputClassName={props.inputClassName}
             placeholder={props.placeholder}
+            periodicTableToggleIcon={props.periodicTableToggleIcon}
             onInputChange={handleInputChange}
             onFocus={handleInputFocus}
             onBlur={handleInputBlur}
@@ -661,6 +665,7 @@ export const MaterialsInput = ({
           onTypeChange={() => undefined}
           inputClassName={props.inputClassName}
           placeholder={props.placeholder}
+          periodicTableToggleIcon={props.periodicTableToggleIcon}
           onInputChange={handleInputChange}
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}

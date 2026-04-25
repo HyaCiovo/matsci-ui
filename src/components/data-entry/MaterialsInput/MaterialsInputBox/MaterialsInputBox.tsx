@@ -1,6 +1,6 @@
 import clsx from 'clsx';
-import type { FocusEvent, FormEvent, KeyboardEvent, MouseEvent, MutableRefObject } from 'react';
-import { FaExclamationTriangle, FaQuestionCircle } from 'react-icons/fa';
+import type { FocusEvent, FormEvent, KeyboardEvent, MouseEvent, MutableRefObject, ReactNode } from 'react';
+import { FaExclamationTriangle, FaKeyboard, FaQuestionCircle } from 'react-icons/fa';
 import { Tooltip } from '../../../data-display/Tooltip';
 import { FormulaAutocomplete } from '../FormulaAutocomplete';
 import { InputHelp, type InputHelpItem } from '../InputHelp';
@@ -9,135 +9,7 @@ import type { PeriodicTableMode } from '../MaterialsInput';
 import { Dropdown } from '../../../navigation/Dropdown';
 import { Input } from '../../Input';
 
-const PeriodicTableIcon = ({ active }: { active: boolean }) => (
-  <svg
-    viewBox="0 0 208 118"
-    aria-hidden="true"
-    className={clsx('ms-materials-input-toggle-icon', { 'ms-is-active': active })}
-  >
-    <g fill="currentColor">
-      <rect x="10" y="10" width="9" height="9" />
-      <rect x="190" y="10" width="8" height="9" />
-      <rect x="10" y="22" width="9" height="8" />
-      <rect x="21" y="22" width="8" height="8" />
-      <rect x="137" y="22" width="9" height="8" />
-      <rect x="147" y="22" width="9" height="8" />
-      <rect x="158" y="22" width="9" height="8" />
-      <rect x="169" y="22" width="8" height="8" />
-      <rect x="179" y="22" width="9" height="8" />
-      <rect x="10" y="33" width="9" height="9" />
-      <rect x="21" y="33" width="8" height="9" />
-      <rect x="137" y="33" width="9" height="9" />
-      <rect x="147" y="33" width="9" height="9" />
-      <rect x="158" y="33" width="9" height="9" />
-      <rect x="169" y="33" width="8" height="9" />
-      <rect x="179" y="33" width="9" height="9" />
-      <rect x="190" y="33" width="8" height="9" />
-      <rect x="10" y="45" width="9" height="8" />
-      <rect x="21" y="45" width="8" height="8" />
-      <rect x="31" y="45" width="9" height="8" />
-      <rect x="42" y="45" width="8" height="8" />
-      <rect x="52" y="45" width="9" height="8" />
-      <rect x="63" y="45" width="9" height="8" />
-      <rect x="73" y="45" width="9" height="8" />
-      <rect x="84" y="45" width="9" height="8" />
-      <rect x="95" y="45" width="8" height="8" />
-      <rect x="105" y="45" width="9" height="8" />
-      <rect x="116" y="45" width="8" height="8" />
-      <rect x="126" y="45" width="9" height="8" />
-      <rect x="137" y="45" width="9" height="8" />
-      <rect x="147" y="45" width="9" height="8" />
-      <rect x="158" y="45" width="9" height="8" />
-      <rect x="169" y="45" width="8" height="8" />
-      <rect x="179" y="45" width="9" height="8" />
-      <rect x="190" y="45" width="8" height="8" />
-      <rect x="10" y="56" width="9" height="9" />
-      <rect x="21" y="56" width="8" height="9" />
-      <rect x="31" y="56" width="9" height="9" />
-      <rect x="42" y="56" width="8" height="9" />
-      <rect x="52" y="56" width="9" height="9" />
-      <rect x="63" y="56" width="9" height="9" />
-      <rect x="73" y="56" width="9" height="9" />
-      <rect x="84" y="56" width="9" height="9" />
-      <rect x="95" y="56" width="8" height="9" />
-      <rect x="105" y="56" width="9" height="9" />
-      <rect x="116" y="56" width="8" height="9" />
-      <rect x="126" y="56" width="9" height="9" />
-      <rect x="137" y="56" width="9" height="9" />
-      <rect x="147" y="56" width="9" height="9" />
-      <rect x="158" y="56" width="9" height="9" />
-      <rect x="169" y="56" width="8" height="9" />
-      <rect x="179" y="56" width="9" height="9" />
-      <rect x="190" y="56" width="8" height="9" />
-      <rect x="10" y="68" width="9" height="9" />
-      <rect x="21" y="68" width="8" height="9" />
-      <rect x="31" y="68" width="9" height="9" />
-      <rect x="42" y="68" width="8" height="9" />
-      <rect x="52" y="68" width="9" height="9" />
-      <rect x="63" y="68" width="9" height="9" />
-      <rect x="73" y="68" width="9" height="9" />
-      <rect x="84" y="68" width="9" height="9" />
-      <rect x="95" y="68" width="8" height="9" />
-      <rect x="105" y="68" width="9" height="9" />
-      <rect x="116" y="68" width="8" height="9" />
-      <rect x="126" y="68" width="9" height="9" />
-      <rect x="137" y="68" width="9" height="9" />
-      <rect x="147" y="68" width="9" height="9" />
-      <rect x="158" y="68" width="9" height="9" />
-      <rect x="169" y="68" width="8" height="9" />
-      <rect x="179" y="68" width="9" height="9" />
-      <rect x="190" y="68" width="8" height="9" />
-      <rect x="10" y="79" width="9" height="9" />
-      <rect x="21" y="79" width="8" height="9" />
-      <rect x="31" y="79" width="9" height="9" />
-      <rect x="42" y="79" width="8" height="9" />
-      <rect x="52" y="79" width="9" height="9" />
-      <rect x="63" y="79" width="9" height="9" />
-      <rect x="73" y="79" width="9" height="9" />
-      <rect x="84" y="79" width="9" height="9" />
-      <rect x="95" y="79" width="8" height="9" />
-      <rect x="105" y="79" width="9" height="9" />
-      <rect x="116" y="79" width="8" height="9" />
-      <rect x="126" y="79" width="9" height="9" />
-      <rect x="137" y="79" width="9" height="9" />
-      <rect x="147" y="79" width="9" height="9" />
-      <rect x="158" y="79" width="9" height="9" />
-      <rect x="169" y="79" width="8" height="9" />
-      <rect x="179" y="79" width="9" height="9" />
-      <rect x="190" y="79" width="8" height="9" />
-      <rect x="42" y="96" width="8" height="9" />
-      <rect x="52" y="96" width="9" height="9" />
-      <rect x="63" y="96" width="9" height="9" />
-      <rect x="73" y="96" width="9" height="9" />
-      <rect x="84" y="96" width="9" height="9" />
-      <rect x="95" y="96" width="8" height="9" />
-      <rect x="105" y="96" width="9" height="9" />
-      <rect x="116" y="96" width="8" height="9" />
-      <rect x="126" y="96" width="9" height="9" />
-      <rect x="137" y="96" width="9" height="9" />
-      <rect x="147" y="96" width="9" height="9" />
-      <rect x="158" y="96" width="9" height="9" />
-      <rect x="169" y="96" width="8" height="9" />
-      <rect x="179" y="96" width="9" height="9" />
-      <rect x="190" y="96" width="8" height="9" />
-      <rect x="42" y="108" width="8" height="9" />
-      <rect x="52" y="108" width="9" height="9" />
-      <rect x="63" y="108" width="9" height="9" />
-      <rect x="73" y="108" width="9" height="9" />
-      <rect x="84" y="108" width="9" height="9" />
-      <rect x="95" y="108" width="8" height="9" />
-      <rect x="105" y="108" width="9" height="9" />
-      <rect x="116" y="108" width="8" height="9" />
-      <rect x="126" y="108" width="9" height="9" />
-      <rect x="137" y="108" width="9" height="9" />
-      <rect x="147" y="108" width="9" height="9" />
-      <rect x="158" y="108" width="9" height="9" />
-      <rect x="169" y="108" width="8" height="9" />
-      <rect x="179" y="108" width="9" height="9" />
-      <rect x="190" y="108" width="8" height="9" />
-    </g>
-  </svg>
-);
+const DEFAULT_PERIODIC_TABLE_TOGGLE_ICON = <FaKeyboard aria-hidden="true" focusable="false" />;
 
 interface MaterialsInputBoxProps {
   label?: string;
@@ -151,6 +23,7 @@ interface MaterialsInputBoxProps {
   inputType: MaterialsInputType;
   inputClassName?: string;
   placeholder?: string;
+  periodicTableToggleIcon?: ReactNode;
   onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus: () => void;
   onBlur: (event: FocusEvent<HTMLInputElement>) => void;
@@ -196,6 +69,7 @@ export const MaterialsInputBox = ({
   inputType,
   inputClassName,
   placeholder,
+  periodicTableToggleIcon,
   onInputChange,
   onFocus,
   onBlur,
@@ -400,10 +274,22 @@ export const MaterialsInputBox = ({
               <button
                 data-testid="materials-input-toggle-button"
                 type="button"
-                className="ms-button ms-has-oversized-icon ms-is-size-2 ms-materials-input-toggle-button"
+                className={clsx(
+                  'ms-button ms-has-oversized-icon ms-is-size-2 ms-materials-input-toggle-button',
+                  {
+                    'ms-is-active': showPeriodicTable,
+                    'ms-is-inactive': !showPeriodicTable,
+                  }
+                )}
                 onClick={onPeriodicToggle}
               >
-                <PeriodicTableIcon active={showPeriodicTable} />
+                <span
+                  className={clsx('ms-materials-input-toggle-icon', {
+                    'ms-is-active': showPeriodicTable,
+                  })}
+                >
+                  {periodicTableToggleIcon ?? DEFAULT_PERIODIC_TABLE_TOGGLE_ICON}
+                </span>
               </button>
             }
           >

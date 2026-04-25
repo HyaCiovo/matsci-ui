@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaAngleDown, FaBars, FaTimes } from 'react-icons/fa';
 import { Link } from '../Link';
 import { NavbarDropdown } from '../NavbarDropdown';
@@ -22,6 +22,36 @@ const Icon = ({ icon }: { icon?: string }) =>
       <i className={icon}></i>
     </span>
   ) : null;
+
+const normalizePath = (path?: string) => {
+  if (!path) {
+    return '/';
+  }
+
+  const pathname = path.startsWith('http://') || path.startsWith('https://') ? new URL(path).pathname : path;
+  const trimmed = pathname.split('?')[0]?.split('#')[0] || '/';
+  if (trimmed === '/') {
+    return '/';
+  }
+
+  return trimmed.replace(/\/+$/, '') || '/';
+};
+
+const getCurrentPath = () => {
+  if (typeof window === 'undefined') {
+    return '/';
+  }
+
+  return normalizePath(window.location.pathname);
+};
+
+const isItemActive = (item: NavbarItem, currentPath: string): boolean => {
+  if (item.href && !isUrl(item.href) && normalizePath(item.href) === currentPath) {
+    return true;
+  }
+
+  return item.items?.some((child) => isItemActive(child, currentPath)) ?? false;
+};
 
 const InternalOrExternalLink = ({
   item,
@@ -63,6 +93,19 @@ export const Navbar = ({
 }: NavbarProps) => {
   const [activeMobile, setActiveMobile] = useState(false);
   const [mobileOpenGroups, setMobileOpenGroups] = useState<Record<string, boolean>>({});
+  const [currentPath, setCurrentPath] = useState(getCurrentPath);
+
+  useEffect(() => {
+    const syncPath = () => setCurrentPath(getCurrentPath());
+
+    window.addEventListener('popstate', syncPath);
+    window.addEventListener('_dashprivate_pushstate', syncPath as EventListener);
+
+    return () => {
+      window.removeEventListener('popstate', syncPath);
+      window.removeEventListener('_dashprivate_pushstate', syncPath as EventListener);
+    };
+  }, []);
 
   return (
     <nav
@@ -72,7 +115,12 @@ export const Navbar = ({
       aria-label={ariaLabel}
     >
       <div className="ms-navbar-brand">
-        <Link className={clsx('ms-navbar-item', brandItem.className)} href={brandItem.href || ''}>
+        <Link
+          className={clsx('ms-navbar-item', brandItem.className, {
+            'ms-is-active': isItemActive(brandItem, currentPath),
+          })}
+          href={brandItem.href || ''}
+        >
           {brandItem.image ? <img src={brandItem.image} alt={brandItem.label || brandAltFallback} /> : null}
           {!brandItem.image ? <Icon icon={brandItem.icon} /> : null}
           {brandItem.label}
@@ -93,7 +141,9 @@ export const Navbar = ({
             item.items ? (
               <NavbarDropdown
                 key={`navbar-item-${index}`}
-                className={clsx('ms-navbar-item', item.className)}
+                className={clsx('ms-navbar-item', item.className, {
+                  'ms-is-active': isItemActive(item, currentPath),
+                })}
                 items={item.items}
                 isArrowless={item.isArrowless}
                 isRight={item.isRight}
@@ -104,7 +154,11 @@ export const Navbar = ({
                 {item.label}
               </NavbarDropdown>
             ) : (
-              <InternalOrExternalLink item={item} key={`navbar-item-${index}`} />
+              <InternalOrExternalLink
+                item={item}
+                key={`navbar-item-${index}`}
+                className={clsx({ 'ms-is-active': isItemActive(item, currentPath) })}
+              />
             )
           )}
           {children}
@@ -113,7 +167,12 @@ export const Navbar = ({
 
       <div data-testid="navbar-mobile" className={clsx('ms-navbar-mobile', { 'ms-is-active': activeMobile })}>
         <div className="ms-navbar-brand">
-          <Link className={clsx('ms-navbar-item', brandItem.className)} href={brandItem.href || ''}>
+          <Link
+            className={clsx('ms-navbar-item', brandItem.className, {
+              'ms-is-active': isItemActive(brandItem, currentPath),
+            })}
+            href={brandItem.href || ''}
+          >
             {brandItem.image ? <img src={brandItem.image} alt={brandItem.label || brandAltFallback} /> : null}
             {!brandItem.image ? <Icon icon={brandItem.icon} /> : null}
             {!brandItem.image && !brandItem.icon ? brandItem.label : null}
@@ -131,14 +190,27 @@ export const Navbar = ({
         <div className="ms-navbar-mobile-menu">
           {items.map((item, index) => {
             if (!item.items) {
-              return <InternalOrExternalLink item={item} key={`navbar-mobile-item-${index}`} />;
+              return (
+                <InternalOrExternalLink
+                  item={item}
+                  key={`navbar-mobile-item-${index}`}
+                  className={clsx({ 'ms-is-active': isItemActive(item, currentPath) })}
+                />
+              );
             }
 
             const open = !!mobileOpenGroups[item.label || String(index)];
             return (
-              <div key={`navbar-mobile-item-${index}`} className={item.className}>
+              <div
+                key={`navbar-mobile-item-${index}`}
+                className={clsx(item.className, {
+                  'ms-is-active': isItemActive(item, currentPath),
+                })}
+              >
                 <a
-                  className="ms-navbar-item ms-navbar-item-toggle"
+                  className={clsx('ms-navbar-item ms-navbar-item-toggle', {
+                    'ms-is-active': isItemActive(item, currentPath),
+                  })}
                   onClick={() =>
                     setMobileOpenGroups((current) => ({
                       ...current,

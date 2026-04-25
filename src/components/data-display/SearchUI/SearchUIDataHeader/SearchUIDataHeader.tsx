@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { FaCaretDown, FaLink } from 'react-icons/fa';
 import { ActiveFilterButtons } from '../../ActiveFilterButtons';
 import { Checkbox } from '../../../data-entry/Checkbox';
+import { CheckboxList } from '../../../data-entry/CheckboxList';
 import { useSearchUIContext } from '../SearchUIContextProvider';
 import { formatTemplate } from '../../../../utils/text';
 import { mergeTexts } from '../../../../utils/text';
@@ -57,6 +58,18 @@ export const SearchUIDataHeader = ({ exportDataButton, texts: textsProp }: Searc
   const upperBound = totalResults === 0 ? 0 : Math.min(totalResults, currentSkip + currentLimit);
   const visibleSelectorColumns = columns.filter((column) => !column.excludeFromColumnsSelector);
   const allColumnsVisible = visibleSelectorColumns.every((column) => !column.hidden);
+  const visibleColumnOptions = useMemo(
+    () =>
+      visibleSelectorColumns.map((column) => ({
+        label: String(column.title),
+        value: column.selector,
+      })),
+    [visibleSelectorColumns]
+  );
+  const visibleColumnValues = useMemo(
+    () => visibleSelectorColumns.filter((column) => !column.hidden).map((column) => column.selector),
+    [visibleSelectorColumns]
+  );
 
   const title = useMemo(() => {
     if (loading) {
@@ -162,9 +175,6 @@ export const SearchUIDataHeader = ({ exportDataButton, texts: textsProp }: Searc
             })}
           </p>
         </div>
-        <div className="ms-progress-container">
-          {loading ? <progress className="ms-progress ms-is-small ms-is-primary" max={100} /> : null}
-        </div>
         <div className="ms-search-ui-data-header-controls">
           <div className="ms-data-table-columns" ref={columnsMenuRef}>
             <button
@@ -182,23 +192,20 @@ export const SearchUIDataHeader = ({ exportDataButton, texts: textsProp }: Searc
                   <Checkbox checked={allColumnsVisible} onCheckedChange={(checked) => toggleAllColumns(checked === true)} />
                   <span>{texts.selectAll}</span>
                 </label>
-                {visibleSelectorColumns.map((column) => (
-                  <label key={column.selector}>
-                    <Checkbox
-                      checked={!column.hidden}
-                      onCheckedChange={(checked) =>
-                        setColumns(
-                          columns.map((candidate) =>
-                            candidate.selector === column.selector
-                              ? { ...candidate, hidden: !(checked === true) }
-                              : candidate
-                          )
-                        )
-                      }
-                    />
-                    <span>{String(column.title)}</span>
-                  </label>
-                ))}
+                <CheckboxList
+                  options={visibleColumnOptions}
+                  value={visibleColumnValues}
+                  onChange={(nextVisibleColumns) => {
+                    const nextVisibleSelectors = new Set(nextVisibleColumns.map((value) => String(value)));
+                    setColumns(
+                      columns.map((candidate) =>
+                        candidate.excludeFromColumnsSelector
+                          ? candidate
+                          : { ...candidate, hidden: !nextVisibleSelectors.has(candidate.selector) }
+                      )
+                    );
+                  }}
+                />
               </div>
             ) : null}
           </div>

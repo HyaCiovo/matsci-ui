@@ -1,12 +1,12 @@
 {
   "package": "@hyacinth/matsci-ui",
   "version": "0.1.0",
-  "generatedAt": "2026-04-24T07:13:23.671Z",
+  "generatedAt": "2026-04-25T19:10:02.184Z",
   "entrypoints": [
     "dist/index.js",
     "dist/index.d.ts",
-    "dist/themes/default.css",
-    "dist/themes/alt.css",
+    "dist/themes/bulma.css",
+    "dist/themes/gnosys.css",
     "dist/components.json"
   ],
   "exports": [

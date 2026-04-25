@@ -14,6 +14,7 @@ export interface SearchUISearchBarProps
     MaterialsInputProps,
     | 'inputClassName'
     | 'periodicTableMode'
+    | 'periodicTableToggleIcon'
     | 'placeholder'
     | 'errorMessage'
     | 'chemicalSystemSelectHelpText'
@@ -97,6 +98,7 @@ export const SearchUISearchBar = ({
   className = 'ms-is-medium',
   inputClassName,
   periodicTableMode,
+  periodicTableToggleIcon,
   placeholder,
   errorMessage,
   chemicalSystemSelectHelpText,
@@ -194,6 +196,7 @@ export const SearchUISearchBar = ({
       }}
       onSubmit={handleSubmit}
       periodicTableMode={periodicTableMode}
+      periodicTableToggleIcon={periodicTableToggleIcon}
       placeholder={placeholder}
       errorMessage={errorMessage}
       chemicalSystemSelectHelpText={chemicalSystemSelectHelpText}

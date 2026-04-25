@@ -1,6 +1,8 @@
 body {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  background: #fff !important;
+  font-family: var(--ms-font-family, "Helvetica Neue", Helvetica, Arial, sans-serif);
+  background: var(--ms-storybook-bg, #fff) !important;
+  color: var(--ms-color-text, #0a0a0a);
+  transition: background-color 180ms ease, color 180ms ease, background 180ms ease;
 }
 
 .ms-sidebar-story {

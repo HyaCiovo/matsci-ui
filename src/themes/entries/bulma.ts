@@ -1,2 +1,2 @@
-import '../presets/alt';
+import '../presets/bulma';
 import '../shared/components';

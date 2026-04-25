@@ -99,6 +99,17 @@ const extractMatscholarMaterialIds = (data: any) => {
   });
 };
 
+const areQueryValuesEqual = (left: Record<string, any>, right: Record<string, any>) => {
+  const leftKeys = Object.keys(left);
+  const rightKeys = Object.keys(right);
+
+  if (leftKeys.length !== rightKeys.length) {
+    return false;
+  }
+
+  return leftKeys.every((key) => JSON.stringify(left[key]) === JSON.stringify(right[key]));
+};
+
 export const SearchUIContextProvider = ({
   id,
   className,
@@ -163,6 +174,7 @@ export const SearchUIContextProvider = ({
   const [selectedRows, setSelectedRows] = useState<any[]>(initialSelectedRows);
   const [resultsRef, setResultsRef] = useState<RefObject<HTMLDivElement> | null>(null);
   const matscholarCacheRef = useRef<{ query: string; materialIds: string[] } | null>(null);
+  const pendingAppliedQueryRef = useRef<Record<string, any> | null>(null);
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>(() =>
     getActiveFilters(initializedFilterGroups, initialQuery)
   );
@@ -292,13 +304,36 @@ export const SearchUIContextProvider = ({
 
   const applyQuery = useCallback(
     async (nextQuery: Record<string, any>) => {
+      if (areQueryValuesEqual(query, nextQuery)) {
+        return;
+      }
+
+      if (
+        pendingAppliedQueryRef.current &&
+        areQueryValuesEqual(pendingAppliedQueryRef.current, nextQuery)
+      ) {
+        return;
+      }
+
+      pendingAppliedQueryRef.current = nextQuery;
+
       if (apiEndpoint) {
-        await submitSearch(nextQuery);
+        try {
+          await submitSearch(nextQuery);
+        } finally {
+          if (
+            pendingAppliedQueryRef.current &&
+            areQueryValuesEqual(pendingAppliedQueryRef.current, nextQuery)
+          ) {
+            pendingAppliedQueryRef.current = null;
+          }
+        }
       } else {
         setQuery(nextQuery);
+        pendingAppliedQueryRef.current = null;
       }
     },
-    [apiEndpoint, setQuery, submitSearch]
+    [apiEndpoint, query, setQuery, submitSearch]
   );
 
   const setFilterValue = useCallback(

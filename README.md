@@ -22,12 +22,12 @@ We sincerely thank the team at the Next-Gen Materials Project (<https://next-gen
 
 ## Key Features
 
-- **Packaging**: ESM-only package with explicit `exports`, including `./style.css`, `./themes/default.css`, and `./themes/alt.css`
+- **Packaging**: ESM-only package with explicit `exports`, including `./style.css`, `./themes/bulma.css`, and `./themes/gnosys.css`
 - **Bundle Optimization**: minified theme CSS output plus preserve-modules ESM build for better consumer-side tree shaking
 - **Tooling**: Rollup 4, strict TypeScript, Storybook 10, Vitest, and `lefthook`
 - **UI Stack**: library-owned `ms-*` styling contract, Bulma-compatible foundation layer, Radix UI primitives, and TanStack Table
 - **Scientific Workflows**: composable Search UI, periodic-table-driven materials input, publication utilities, and Crystal Toolkit scenes
-- **Theming Architecture**: unified `src/themes` tree with `foundation`, `shared`, `presets`, and `entries` layers, ready for multi-theme delivery
+- **Theming Architecture**: publishable theme layers live under `src/themes`, while Storybook-only preview overrides are isolated under `.storybook/themes`
 
 ***
 
@@ -55,15 +55,27 @@ The package is **not published yet**, so the command above is the future public 
 
 ## Quick Start
 
-Import one theme stylesheet once at your application entry. Components no longer auto-inject styles when you import them:
+Import exactly one theme stylesheet once at your application entry. Components no longer auto-inject styles when you import them:
 
 ```ts
 import '@hyacinth/matsci-ui/style.css';
 // or:
-// import '@hyacinth/matsci-ui/themes/default.css';
+// import '@hyacinth/matsci-ui/themes/bulma.css';
 // or:
-// import '@hyacinth/matsci-ui/themes/alt.css';
+// import '@hyacinth/matsci-ui/themes/gnosys.css';
 ```
+
+Theme entrypoint mapping:
+
+- `@hyacinth/matsci-ui/style.css`: alias of the published Bulma theme
+- `@hyacinth/matsci-ui/themes/bulma.css`: explicit Bulma theme entry
+- `@hyacinth/matsci-ui/themes/gnosys.css`: explicit Gnosys theme entry
+
+Important:
+
+- Do not statically import both `bulma.css` and `gnosys.css` in the same application shell.
+- Storybook toolbar theme switching is a docs/runtime convenience, not a public JavaScript theming API.
+- If your host app needs runtime theme switching, swap the active stylesheet at the app shell level rather than eagerly importing both preset bundles.
 
 Minimal component usage:
 
@@ -73,8 +85,8 @@ import { DataTable } from '@hyacinth/matsci-ui';
 
 Recommended current usage:
 
-- Use `@hyacinth/matsci-ui/style.css` or `@hyacinth/matsci-ui/themes/default.css` for the stable default appearance
-- Treat `@hyacinth/matsci-ui/themes/alt.css` as the shipped alternate-theme entrypoint whose architecture is ready, while its second visual language is still being expanded
+- Use `@hyacinth/matsci-ui/style.css` or `@hyacinth/matsci-ui/themes/bulma.css` for the stable Bulma appearance
+- Use `@hyacinth/matsci-ui/themes/gnosys.css` when you want the secondary flatter preset with deeper blue emphasis and smaller radii
 
 ***
 
@@ -96,11 +108,12 @@ The repository’s styling system has already moved beyond the old “single imp
 
 What is stable today:
 
-- Applications must explicitly import `@hyacinth/matsci-ui/style.css` or `@hyacinth/matsci-ui/themes/default.css`
-- The package also exports `@hyacinth/matsci-ui/themes/alt.css`
+- Applications must explicitly import `@hyacinth/matsci-ui/style.css` or `@hyacinth/matsci-ui/themes/bulma.css`
+- The package also exports `@hyacinth/matsci-ui/themes/gnosys.css`
 - Components no longer inject styles automatically
 - Global Bulma pollution has been removed from the library’s published selectors by converging on library-owned `ms-*` classes
 - The source theme system now lives under a single `src/themes` tree
+- Storybook-only preview CSS is not exported from the package and is not emitted into `dist`
 
 What is implemented in the repository:
 
@@ -108,20 +121,14 @@ What is implemented in the repository:
 - `src/themes/shared/*`: shared component skinning aggregated by domain
 - `src/themes/presets/*`: preset-specific assembly and override hooks
 - `src/themes/entries/*`: final theme entrypoints used by Storybook and package builds
-- `dist/themes/default.css`: the default published stylesheet
-- `dist/themes/alt.css`: the alternate published stylesheet entrypoint
-
-What is still in progress:
-
-- The multi-theme architecture and npm entrypoints are already landed
-- The second preset already has dedicated tokens and override hooks
-- The repository still needs a more complete alternate visual skin before `alt.css` should be treated as a full visual replacement for every product scenario
+- `.storybook/themes/*`: Storybook-only preview tokens and overrides
+- `dist/themes/bulma.css`: the default published stylesheet
+- `dist/themes/gnosys.css`: the published secondary preset stylesheet
 
 Practical takeaway:
 
-- The default theme is stable and should be the primary consumer entry
-- The alternate theme entry is real and shipped in build output
-- The visual design surface of the alternate theme is still being expanded
+- The Bulma theme is stable and should be the primary consumer entry
+- The Gnosys theme is the secondary preset for a flatter academic UI direction with stronger blue emphasis
 
 ***
 
@@ -131,8 +138,10 @@ Practical takeaway:
 - Build output: `dist/index.js`
 - Type definitions: `dist/index.d.ts`
 - Stylesheets:
-  - `dist/themes/default.css`, exposed as `@hyacinth/matsci-ui/style.css` and `@hyacinth/matsci-ui/themes/default.css`
-  - `dist/themes/alt.css`, exposed as `@hyacinth/matsci-ui/themes/alt.css`
+  - `dist/themes/bulma.css`, exposed as `@hyacinth/matsci-ui/style.css` and `@hyacinth/matsci-ui/themes/bulma.css`
+  - `dist/themes/gnosys.css`, exposed as `@hyacinth/matsci-ui/themes/gnosys.css`
+
+Storybook-only files such as `.storybook/themes/gnosys-preview-tokens.css` and `.storybook/themes/gnosys-preview-overrides.css` are not part of the npm package contract.
 
 The JavaScript build now uses preserve-modules ESM output, so consumer bundlers can tree-shake the package more effectively than a single monolithic bundle.
 
@@ -188,7 +197,7 @@ Key migration considerations:
 - Explicitly import `@hyacinth/matsci-ui/style.css`
 - Re-test `SearchUI`, `DataTable`, `Tooltip`, `JsonView`, and Crystal Toolkit integrations
 - If an older product depended on `dark.css` or `materials.css`, migrate that usage to the new explicit theme entry model
-- Treat the new alternate theme architecture as available, but do not assume complete visual parity yet across every screen
+- Prefer the Bulma theme for Bulma-like continuity and `themes/gnosys.css` for the flatter blue-accent preset
 
 Migration references:
 

@@ -134,17 +134,17 @@ export function DemoSearchUI() {
   en={
     <ul>
       <li>Search UI inherits the bundled styles shipped in `@hyacinth/matsci-ui/style.css`.</li>
-      <li>The repository already ships explicit theme entrypoints for `style.css`, `themes/default.css`, and `themes/alt.css`.</li>
+      <li>The repository already ships explicit theme entrypoints for `style.css`, `themes/bulma.css`, and `themes/gnosys.css`.</li>
       <li>The current style system combines `src/themes/foundation/*`, `src/themes/shared/*`, and preset-specific files under library-owned `ms-*` selectors so host applications are no longer exposed to global Bulma selector pollution.</li>
-      <li>The alternate preset entry already exists; the remaining work is to continue expanding its visual coverage rather than inventing a new theme architecture.</li>
+      <li>The supported visual choices now stay intentionally narrow: keep the Bulma preset for continuity and use the Gnosys preset for the flatter academic direction with stronger blue emphasis.</li>
     </ul>
   }
   zh={
     <ul>
       <li>Search UI 当前继承的是 `@hyacinth/matsci-ui/style.css` 中打包好的样式。</li>
-      <li>仓库已经显式提供 `style.css`、`themes/default.css` 与 `themes/alt.css` 三个主题入口。</li>
+      <li>仓库已经显式提供 `style.css`、`themes/bulma.css` 与 `themes/gnosys.css` 两套正式主题入口。</li>
       <li>当前样式体系由 `src/themes/foundation/*`、`src/themes/shared/*` 和 preset 专属文件共同组成，并统一收敛到库自有 `ms-*` 选择器之下，从而隔离宿主应用与 Bulma 的全局选择器污染。</li>
-      <li>第二主题入口本身已经存在，当前剩余工作是继续补齐它的视觉覆盖，而不是重新设计主题架构。</li>
+      <li>当前主题选择有意保持收敛：Bulma 主题负责延续原有 Bulma 气质，Gnosys 主题负责更扁平、偏学术化、深蓝强调的视觉方向。</li>
     </ul>
   }
 />

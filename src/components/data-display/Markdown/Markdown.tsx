@@ -52,11 +52,12 @@ export const Markdown = ({
 }: MarkdownProps) => {
   const source = Array.isArray(children) ? children.join('\n') : children ?? '';
   const markdown = dedent ? dedentLines(source) : source;
+  const rootClassName = ['ms-markdown', className].filter(Boolean).join(' ');
 
   return (
     <div
       id={id}
-      className={className}
+      className={rootClassName}
       style={style}
       data-dash-is-loading={loading_state?.is_loading || undefined}
     >

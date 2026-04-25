@@ -22,12 +22,12 @@
 
 ## 技术特点
 
-- **打包规范**：ESM-only 包，显式导出 `./style.css`、`./themes/default.css`、`./themes/alt.css`
+- **打包规范**：ESM-only 包，显式导出 `./style.css`、`./themes/bulma.css`、`./themes/gnosys.css`
 - **产物优化**：主题 CSS 压缩输出，组件 JS 使用 preserve-modules ESM 产物，增强业务侧 tree-shaking
 - **工程体系**：Rollup 4、严格 TypeScript、Storybook 10、Vitest 与 `lefthook`
 - **UI 技术栈**：库自有 `ms-*` 样式契约、Bulma 兼容基础层、Radix UI primitives、TanStack Table
 - **科研场景能力**：可组合 Search UI、周期表驱动的材料输入、文献辅助能力与 Crystal Toolkit 场景组件
-- **主题架构**：统一的 `src/themes` 目录，按 `foundation / shared / presets / entries` 四层组织
+- **主题架构**：可发布主题层统一放在 `src/themes`，Storybook 预览专用覆盖单独放在 `.storybook/themes`
 
 ---
 
@@ -55,15 +55,27 @@ npm install @hyacinth/matsci-ui
 
 ## 快速开始
 
-在应用入口显式引入一份主题样式。现在仅导入组件本身不会再自动注入样式：
+在应用入口显式引入且只引入一份主题样式。现在仅导入组件本身不会再自动注入样式：
 
 ```ts
 import '@hyacinth/matsci-ui/style.css';
 // 或：
-// import '@hyacinth/matsci-ui/themes/default.css';
+// import '@hyacinth/matsci-ui/themes/bulma.css';
 // 或：
-// import '@hyacinth/matsci-ui/themes/alt.css';
+// import '@hyacinth/matsci-ui/themes/gnosys.css';
 ```
+
+当前入口含义如下：
+
+- `@hyacinth/matsci-ui/style.css`：Bulma 主题别名
+- `@hyacinth/matsci-ui/themes/bulma.css`：显式 Bulma 主题入口
+- `@hyacinth/matsci-ui/themes/gnosys.css`：显式 Gnosys 主题入口
+
+注意：
+
+- 不要在同一个应用壳层里静态同时引入 `bulma.css` 和 `gnosys.css`
+- Storybook 工具栏里的主题切换只是文档运行时能力，不是对外公开的 JS 主题 API
+- 如果业务项目需要运行时换肤，应由宿主应用在壳层切换实际加载的 stylesheet，而不是把两套主题一起预加载
 
 最小组件使用示例：
 
@@ -73,8 +85,8 @@ import { DataTable } from '@hyacinth/matsci-ui';
 
 当前推荐用法：
 
-- 稳定默认样式优先使用 `@hyacinth/matsci-ui/style.css` 或 `@hyacinth/matsci-ui/themes/default.css`
-- `@hyacinth/matsci-ui/themes/alt.css` 已经是正式导出的第二主题入口，但它的第二套视觉语言仍在继续补齐，不建议过早假设已覆盖所有产品场景
+- 稳定 Bulma 样式优先使用 `@hyacinth/matsci-ui/style.css` 或 `@hyacinth/matsci-ui/themes/bulma.css`
+- `@hyacinth/matsci-ui/themes/gnosys.css` 提供第二套学术化、扁平化、深蓝强调的主题预设
 
 ---
 
@@ -96,11 +108,12 @@ import { DataTable } from '@hyacinth/matsci-ui';
 
 当前稳定可用的能力：
 
-- 业务项目必须显式引入 `@hyacinth/matsci-ui/style.css` 或 `@hyacinth/matsci-ui/themes/default.css`
-- 包同时对外暴露 `@hyacinth/matsci-ui/themes/alt.css`
+- 业务项目必须显式引入 `@hyacinth/matsci-ui/style.css` 或 `@hyacinth/matsci-ui/themes/bulma.css`
+- 包同时对外暴露 `@hyacinth/matsci-ui/themes/gnosys.css`
 - 组件导入本身不会再自动注入样式
 - 发布样式已统一收敛为库自有的 `ms-*` 选择器，避免把 Bulma 的全局类污染到宿主应用
 - 源码中的主题体系已经统一收口到单一 `src/themes` 目录
+- Storybook 预览专用 CSS 不会通过 npm 对外导出，也不会进入 `dist` 产物
 
 仓库里已经落地的部分：
 
@@ -108,20 +121,14 @@ import { DataTable } from '@hyacinth/matsci-ui';
 - `src/themes/shared/*`：按领域聚合的共享组件皮肤
 - `src/themes/presets/*`：主题预设的拼装与 override 钩子
 - `src/themes/entries/*`：最终供 Storybook 与打包产物使用的主题入口
-- `dist/themes/default.css`：默认主题样式产物
-- `dist/themes/alt.css`：第二主题样式产物入口
-
-当前仍在继续完善的部分：
-
-- 多主题架构、npm 样式导出与目录分层已经全部落地
-- 第二主题已经拥有独立 token 与 override 钩子
-- 但第二套视觉风格本身还需要继续补齐，`alt.css` 目前更适合视为“已落地的主题入口与可扩展交付面”，而不是所有页面都已完成差异化设计的最终视觉包
+- `.storybook/themes/*`：仅供 Storybook 预览使用的主题 token 与覆盖
+- `dist/themes/bulma.css`：Bulma 主题样式产物
+- `dist/themes/gnosys.css`：第二套正式主题样式产物入口
 
 实际使用建议：
 
-- 默认主题已经稳定，可作为主入口使用
-- 第二主题入口是真实存在且会随构建产出
-- 第二主题的视觉层仍在继续完善
+- Bulma 主题已经稳定，可作为主入口使用
+- `gnosys.css` 是第二套正式主题，适合更扁平、学术化、深蓝强调的产品界面
 
 ---
 
@@ -131,8 +138,10 @@ import { DataTable } from '@hyacinth/matsci-ui';
 - 构建产物：`dist/index.js`
 - 类型文件：`dist/index.d.ts`
 - 样式文件：
-  - `dist/themes/default.css`，对外暴露为 `@hyacinth/matsci-ui/style.css` 与 `@hyacinth/matsci-ui/themes/default.css`
-  - `dist/themes/alt.css`，对外暴露为 `@hyacinth/matsci-ui/themes/alt.css`
+  - `dist/themes/bulma.css`，对外暴露为 `@hyacinth/matsci-ui/style.css` 与 `@hyacinth/matsci-ui/themes/bulma.css`
+  - `dist/themes/gnosys.css`，对外暴露为 `@hyacinth/matsci-ui/themes/gnosys.css`
+
+像 `.storybook/themes/gnosys-preview-tokens.css`、`.storybook/themes/gnosys-preview-overrides.css` 这类文件只服务于 Storybook 预览，不属于 npm 包公开契约。
 
 当前 JavaScript 构建已经改为 preserve-modules ESM 输出，因此业务侧 bundler 比起历史单文件 bundle 更容易做 tree-shaking。
 
@@ -188,7 +197,7 @@ Storybook 文档也支持中英文切换。
 - 显式引入 `@hyacinth/matsci-ui/style.css`
 - 重新回归 `SearchUI`、`DataTable`、`Tooltip`、`JsonView` 与 Crystal Toolkit 场景
 - 如果旧项目依赖 `dark.css` 或 `materials.css`，需要迁移到新的显式主题入口模型
-- 新的多主题架构已经可用，但不要过早假设第二套视觉样式已经在所有页面达到完整视觉替换
+- 需要延续原有 Bulma 语义时优先 Bulma 主题；需要更扁平、深蓝强调的视觉时使用 `themes/gnosys.css`
 
 迁移参考：
 

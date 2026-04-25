@@ -214,6 +214,21 @@ describe('MaterialsInput', () => {
     expect(handleInputTypeChange).toHaveBeenCalledWith(MaterialsInputType.CHEMICAL_SYSTEM);
   });
 
+  it('passes a custom periodic table toggle icon through the public API', () => {
+    render(
+      <MaterialsInput
+        value="Li-Fe"
+        type={MaterialsInputType.CHEMICAL_SYSTEM}
+        allowedInputTypes={[MaterialsInputType.CHEMICAL_SYSTEM]}
+        periodicTableToggleIcon={<span data-testid="custom-periodic-icon">PT</span>}
+        showSubmitButton
+        periodicTableMode={PeriodicTableMode.TOGGLE}
+      />
+    );
+
+    expect(screen.getByTestId('custom-periodic-icon')).toBeInTheDocument();
+  });
+
   it('keeps the selection stable when clicking an element after reaching the max selection limit', () => {
     render(
       <MaterialsInput

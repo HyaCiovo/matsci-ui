@@ -92,18 +92,18 @@ export function DemoModal() {
     <ul>
       <li>`src/components`: publishable component surface</li>
       <li>`src/stories`: Storybook stories and MDX guides</li>
-      <li>`src/themes`: unified theme tree, including `foundation`, `shared`, `presets`, and `entries` layers</li>
+      <li>`src/themes`: publishable theme tree, including `foundation`, `shared`, `presets`, and `entries` layers</li>
       <li>`src/utils`: shared helpers such as HTTP and navigation utilities</li>
-      <li>`.storybook`: Storybook runtime, locale toolbar, and API proxy setup</li>
+      <li>`.storybook`: Storybook runtime, locale toolbar, API proxy setup, and preview-only theme overrides</li>
     </ul>
   }
   zh={
     <ul>
       <li>`src/components`：组件库发布主体</li>
       <li>`src/stories`：Storybook stories 与 MDX 指南</li>
-      <li>`src/themes`：统一的主题目录，内部再划分为 `foundation`、`shared`、`presets`、`entries` 四层</li>
+      <li>`src/themes`：可发布主题目录，内部再划分为 `foundation`、`shared`、`presets`、`entries` 四层</li>
       <li>`src/utils`：HTTP、导航等共享工具</li>
-      <li>`.storybook`：Storybook 运行时、语言切换器与 API 代理配置</li>
+      <li>`.storybook`：Storybook 运行时、语言切换器、API 代理配置，以及仅供预览使用的主题覆盖</li>
     </ul>
   }
 />
@@ -136,8 +136,8 @@ export function DemoModal() {
 ## <I18nText en="Styling Status" zh="样式现状" />
 
 <I18nText
-  en="The stable styling entrypoint is `@hyacinth/matsci-ui/style.css`, with `@hyacinth/matsci-ui/themes/default.css` and `@hyacinth/matsci-ui/themes/alt.css` exposed as explicit theme entrypoints. The multi-theme architecture is already landed in the repository; what is still evolving is the visual completeness of the alternate preset."
-  zh="当前稳定可用的样式入口是 `@hyacinth/matsci-ui/style.css`，同时仓库也已经显式导出 `@hyacinth/matsci-ui/themes/default.css` 和 `@hyacinth/matsci-ui/themes/alt.css`。多主题架构本身已经落地，当前仍在继续完善的是第二主题的视觉覆盖完整度。"
+  en="The stable styling entrypoint is `@hyacinth/matsci-ui/style.css`, with `@hyacinth/matsci-ui/themes/bulma.css` and `@hyacinth/matsci-ui/themes/gnosys.css` exposed as explicit theme entrypoints. The repository now keeps two supported presets: the default Bulma-adjacent surface and a secondary flatter academic preset with stronger blue emphasis. Storybook-specific preview CSS stays outside the published theme bundle."
+  zh="当前稳定可用的样式入口是 `@hyacinth/matsci-ui/style.css`，同时仓库也已经显式导出 `@hyacinth/matsci-ui/themes/bulma.css` 和 `@hyacinth/matsci-ui/themes/gnosys.css`。仓库现在只保留两套正式支持的预设：Bulma 主题延续原有风格，Gnosys 主题则更扁平、偏学术化、深蓝强调。Storybook 专用预览 CSS 也已经和正式发布主题产物分离。"
 />
 
 ## <I18nText en="Accessibility" zh="无障碍" />

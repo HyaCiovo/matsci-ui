@@ -1,6 +1,7 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { SearchUIContainer } from './SearchUIContainer';
 import { useSearchUIContext } from './SearchUIContextProvider';
+import { SearchUIFilters } from './SearchUIFilters';
 import { FilterType, type FilterGroup } from './types';
 import {
   initFilterGroups,
@@ -96,6 +97,7 @@ describe('SearchUI query utilities', () => {
 
   afterEach(() => {
     cleanup();
+    vi.clearAllMocks();
     vi.restoreAllMocks();
     window.history.replaceState({}, '', '/');
   });
@@ -281,5 +283,60 @@ describe('SearchUI query utilities', () => {
       expect(screen.getByTestId('query-probe')).toHaveTextContent('"_sort_fields"');
       expect(screen.getByTestId('total-results-probe')).toHaveTextContent('42');
     });
+  });
+
+  it('does not loop API requests when a text filter value changes', async () => {
+    const mockedFetch = globalThis.fetch as unknown as ReturnType<typeof vi.fn>;
+    mockedFetch.mockResolvedValue({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      json: async () => ({
+        data: [],
+        meta: {
+          total_doc: 0,
+        },
+      }),
+    });
+
+    const textFilterGroups: FilterGroup[] = [
+      {
+        name: 'Identifiers',
+        expanded: true,
+        filters: [
+          {
+            name: 'Identifier',
+            type: FilterType.TEXT_INPUT,
+            params: ['identifier__exact'],
+            props: {
+              placeholder: 'Identifier',
+            },
+          },
+        ],
+      },
+    ];
+
+    render(
+      <SearchUIContainer
+        apiEndpoint="https://example.com/materials"
+        searchOnMount={false}
+        filterGroups={textFilterGroups}
+      >
+        <SearchUIFilters />
+      </SearchUIContainer>
+    );
+
+    fireEvent.change(screen.getByPlaceholderText('Identifier'), {
+      target: { value: '1' },
+    });
+
+    await waitFor(() => {
+      expect(mockedFetch).toHaveBeenCalledTimes(1);
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    expect(mockedFetch).toHaveBeenCalledTimes(1);
+    expect(String(mockedFetch.mock.calls[0]?.[0] ?? '')).toContain('identifier__exact=1');
   });
 });

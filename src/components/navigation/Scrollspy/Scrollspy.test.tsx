@@ -76,6 +76,7 @@ describe('Scrollspy', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('link', { name: 'Sub Menu Item 2.1' })).toHaveClass('ms-is-active');
+      expect(screen.getByRole('link', { name: 'Menu Item 2' })).toHaveClass('ms-is-active');
     });
   });
 });

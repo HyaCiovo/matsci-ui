@@ -16,9 +16,11 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./style.css": "./dist/themes/default.css",
-    "./themes/default.css": "./dist/themes/default.css",
-    "./themes/alt.css": "./dist/themes/alt.css"
+    "./style.css": "./dist/themes/bulma.css",
+    "./themes/bulma.css": "./dist/themes/bulma.css",
+    "./themes/gnosys.css": "./dist/themes/gnosys.css",
+    "./themes/default.css": "./dist/themes/bulma.css",
+    "./themes/tech.css": "./dist/themes/gnosys.css"
   },
   "files": [
     "dist"

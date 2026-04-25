@@ -890,7 +890,8 @@ a.ms-dropdown-item {
 .ms-navbar-link {
   color: #4a4a4a;
   align-items: center;
-  display: block;
+  display: inline-flex;
+  gap: 0.5rem;
   line-height: 1.5;
   min-height: 3.25rem;
   padding: 0.5rem 0.75rem;
@@ -902,6 +903,16 @@ a.ms-dropdown-item {
 .ms-navbar-link .ms-icon:only-child {
   margin-left: -0.25rem;
   margin-right: -0.25rem;
+}
+
+.ms-navbar-item > :is(.ms-icon, svg),
+.ms-navbar-link > :is(.ms-icon, svg),
+.ms-navbar-burger > svg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  line-height: 1;
 }
 
 .ms-navbar-link,
@@ -1027,7 +1038,9 @@ a.ms-navbar-item:hover {
   border: 0;
   color: inherit;
   cursor: pointer;
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   height: 3.25rem;
   margin-left: auto;
   position: relative;

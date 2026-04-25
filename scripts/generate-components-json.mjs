@@ -61,8 +61,8 @@ const componentsJson = {
   entrypoints: [
     'dist/index.js',
     'dist/index.d.ts',
-    'dist/themes/default.css',
-    'dist/themes/alt.css',
+    'dist/themes/bulma.css',
+    'dist/themes/gnosys.css',
     'dist/components.json',
   ],
   exports: extractExportsFromDts(dtsText),

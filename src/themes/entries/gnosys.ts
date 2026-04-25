@@ -1,2 +1,2 @@
-import '../presets/default';
+import '../presets/gnosys';
 import '../shared/components';

@@ -24,8 +24,8 @@ const treeshake = {
 };
 
 export default [
-  buildThemeConfig('src/themes/entries/default.ts', 'dist/themes/default.js', 'default.css'),
-  buildThemeConfig('src/themes/entries/alt.ts', 'dist/themes/alt.js', 'alt.css'),
+  buildThemeConfig('src/themes/entries/bulma.ts', 'dist/themes/bulma.js', 'bulma.css'),
+  buildThemeConfig('src/themes/entries/gnosys.ts', 'dist/themes/gnosys.js', 'gnosys.css'),
   {
     input: 'src/index.ts',
     output: {

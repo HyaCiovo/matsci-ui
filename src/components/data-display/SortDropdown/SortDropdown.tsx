@@ -1,8 +1,8 @@
 import clsx from 'clsx';
-import { useEffect, useState } from 'react';
-import { FaAngleDown, FaSort, FaSortDown, FaSortUp } from 'react-icons/fa';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { useEffect } from 'react';
+import { FaSort, FaSortDown, FaSortUp } from 'react-icons/fa';
 import { formatTemplate, mergeTexts } from '../../../utils/text';
+import { Dropdown } from '../../navigation/Dropdown';
 
 export interface DropdownItem {
   label: string;
@@ -65,7 +65,6 @@ export const SortDropdown = ({
   texts: textsProp,
 }: SortDropdownProps) => {
   const texts = mergeTexts(DEFAULT_TEXTS, textsProp);
-  const [open, setOpen] = useState(false);
   const resolvedSortField = sortField ?? sortOptions[0]?.value ?? '';
   const selectedOption = sortOptions.find((option) => option.value === resolvedSortField);
 
@@ -93,44 +92,24 @@ export const SortDropdown = ({
         </button>
       </div>
       <div className="ms-control">
-        <DropdownMenu.Root modal={false} open={open} onOpenChange={setOpen}>
-          <div className={clsx('ms-dropdown ms-is-right', { 'ms-is-active': open })}>
-            <div className="ms-dropdown-trigger">
-              <DropdownMenu.Trigger asChild>
-                <button type="button" className="ms-button">
-                  <span>
-                    {formatTemplate(texts.sortLabelTemplate, {
-                      label: selectedOption?.label ?? resolvedSortField,
-                    })}
-                  </span>
-                  <span className="ms-icon">
-                    <FaAngleDown />
-                  </span>
-                </button>
-              </DropdownMenu.Trigger>
-            </div>
-            <DropdownMenu.Portal>
-              <DropdownMenu.Content
-                className="ms-dropdown-menu"
-                align="end"
-                sideOffset={4}
-                collisionPadding={8}
-              >
-                <div className="ms-dropdown-content">
-                  {sortOptions.map((option) => (
-                    <DropdownMenu.Item
-                      key={option.value}
-                      className={clsx('ms-dropdown-item', { 'ms-is-active': option.value === resolvedSortField })}
-                      onSelect={() => setSortField(option.value)}
-                    >
-                      {option.label}
-                    </DropdownMenu.Item>
-                  ))}
-                </div>
-              </DropdownMenu.Content>
-            </DropdownMenu.Portal>
-          </div>
-        </DropdownMenu.Root>
+        <Dropdown
+          className="ms-is-right"
+          triggerClassName="ms-button"
+          triggerLabel={formatTemplate(texts.sortLabelTemplate, {
+            label: selectedOption?.label ?? resolvedSortField,
+          })}
+        >
+          {sortOptions.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              className={clsx('ms-dropdown-item', { 'ms-is-active': option.value === resolvedSortField })}
+              onClick={() => setSortField(option.value)}
+            >
+              {option.label}
+            </button>
+          ))}
+        </Dropdown>
       </div>
     </div>
   );

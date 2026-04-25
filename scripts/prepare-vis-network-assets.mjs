@@ -3,8 +3,8 @@ import { dirname, resolve } from 'node:path';
 
 const distDir = resolve(process.cwd(), 'dist');
 const cssPaths = [
-  resolve(distDir, 'themes/default.css'),
-  resolve(distDir, 'themes/alt.css'),
+  resolve(distDir, 'themes/bulma.css'),
+  resolve(distDir, 'themes/gnosys.css'),
   resolve(distDir, 'index.css'),
 ];
 

@@ -28,6 +28,8 @@ type SpyRect = {
   bottom: number;
 };
 
+type ParentMap = Record<string, string | undefined>;
+
 const flattenMenuItems = (menuGroups: MenuGroup[]) =>
   menuGroups.flatMap((group) =>
     group.items.flatMap((item) => [item, ...(item.items ?? [])])
@@ -35,6 +37,22 @@ const flattenMenuItems = (menuGroups: MenuGroup[]) =>
 
 const initSpyItemsViewMap = (menuGroups: MenuGroup[]): SpyItemMap =>
   Object.fromEntries(flattenMenuItems(menuGroups).map((item) => [item.targetId, false]));
+
+const buildParentMap = (menuGroups: MenuGroup[]) => {
+  const parentMap: ParentMap = {};
+
+  const walk = (items: MenuItem[], parentTargetId?: string) => {
+    items.forEach((item) => {
+      parentMap[item.targetId] = parentTargetId;
+      if (item.items?.length) {
+        walk(item.items, item.targetId);
+      }
+    });
+  };
+
+  menuGroups.forEach((group) => walk(group.items));
+  return parentMap;
+};
 
 export const Scrollspy = ({
   menuGroups,
@@ -47,6 +65,7 @@ export const Scrollspy = ({
 }: ScrollspyProps) => {
   const [spyItemsViewMap, setSpyItemsViewMap] = useState<SpyItemMap>(() => initSpyItemsViewMap(menuGroups));
   const flattenedItems = useMemo(() => flattenMenuItems(menuGroups), [menuGroups]);
+  const parentMap = useMemo(() => buildParentMap(menuGroups), [menuGroups]);
 
   useEffect(() => {
     setSpyItemsViewMap(initSpyItemsViewMap(menuGroups));
@@ -86,9 +105,17 @@ export const Scrollspy = ({
         activeTargetId = firstVisibleItem?.targetId ?? activeTargetId;
       }
 
+      const activeTargetIds = new Set<string>();
+      let currentTargetId: string | undefined = activeTargetId;
+
+      while (currentTargetId) {
+        activeTargetIds.add(currentTargetId);
+        currentTargetId = parentMap[currentTargetId];
+      }
+
       const nextSpyItemsViewMap: SpyItemMap = {};
       flattenedItems.forEach((item) => {
-        nextSpyItemsViewMap[item.targetId] = item.targetId === activeTargetId;
+        nextSpyItemsViewMap[item.targetId] = activeTargetIds.has(item.targetId);
       });
 
       setSpyItemsViewMap(nextSpyItemsViewMap);
@@ -101,7 +128,7 @@ export const Scrollspy = ({
       window.removeEventListener('scroll', spy);
       window.removeEventListener('resize', spy);
     };
-  }, [flattenedItems, offset]);
+  }, [flattenedItems, offset, parentMap]);
 
   const renderMenuItemLink = (item: MenuItem) => (
     <a className={spyItemsViewMap[item.targetId] ? activeClassName : ''} href={`#${item.targetId}`}>

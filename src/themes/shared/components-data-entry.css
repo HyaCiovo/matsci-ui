@@ -182,6 +182,7 @@
   position: absolute;
   top: 100%;
   left: 0;
+  z-index: 30;
   width: 100%;
   padding: 0;
   border: solid 1px #eee;
@@ -197,7 +198,7 @@
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: 2;
+  z-index: 30;
   width: 100%;
   background: #fff;
   padding: 1rem;
@@ -267,15 +268,41 @@
 }
 
 .ms-materials-input .ms-materials-input-toggle-icon {
-  display: block;
-  width: 3rem;
-  height: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.65rem;
+  height: 1.65rem;
   flex-shrink: 0;
-  color: #000;
+  color: #4a4a4a;
+  line-height: 1;
+}
+
+.ms-materials-input .ms-materials-input-toggle-icon > svg {
+  width: 100%;
+  height: 100%;
 }
 
 .ms-materials-input .ms-materials-input-toggle-icon.ms-is-active {
   color: #3273dc;
+}
+
+.ms-materials-input .ms-materials-input-toggle-button.ms-is-active {
+  background-color: var(--ms-color-primary, #3273dc);
+  border-color: var(--ms-color-primary, #3273dc);
+  color: #fff;
+}
+
+.ms-materials-input .ms-materials-input-toggle-button.ms-is-active:hover,
+.ms-materials-input .ms-materials-input-toggle-button.ms-is-active:focus-visible {
+  background-color: #275fc7;
+  border-color: #275fc7;
+  color: #fff;
+}
+
+.ms-materials-input .ms-materials-input-toggle-button.ms-is-active .ms-materials-input-toggle-icon,
+.ms-materials-input .ms-materials-input-toggle-button.ms-is-active .ms-materials-input-toggle-icon > svg {
+  color: #fff;
 }
 
 .ms-range-slider {
