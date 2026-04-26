@@ -17,14 +17,21 @@
 .ms-pt-mode-content .ms-pt-description {
   grid-column: 5 / span 6;
   grid-row: 1 / span 2;
+  align-self: start;
+  height: 100%;
 }
 
 .ms-pt-mode-content .ms-pt-description > * {
-  padding: 0.25rem;
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0.25rem 0.5rem;
   font-size: 0.85rem;
+  line-height: 1.45;
   border: 1px solid #ccc;
   border-radius: 2px;
-  height: 100%;
+  background: #fff;
 }
 
 .ms-element-wrapper {

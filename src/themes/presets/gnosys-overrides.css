@@ -1095,6 +1095,11 @@
   background: #ffffff;
 }
 
+.ms-materials-input .ms-selectable-table.ms-box,
+.ms-materials-input .ms-selectable-table .ms-table-container {
+  background: #ffffff;
+}
+
 .ms-pt-mode-content .ms-pt-description > * {
   border-color: rgba(100, 116, 139, 0.18);
   color: #334155;
@@ -1105,7 +1110,7 @@
 .ms-selectable-table .ms-pt-wildcard-button {
   border-width: 1px;
   border-color: rgba(100, 116, 139, 0.36);
-  border-radius: 3px;
+  border-radius: 2px;
   box-shadow: none;
 }
 
