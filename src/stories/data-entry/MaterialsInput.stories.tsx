@@ -25,9 +25,9 @@ export const MultiType: Story = {
     ],
     type: 'chemical_system' as MaterialsInputType,
     chemicalSystemSelectHelpText:
-      'Select elements to search for materials with **only** these elements',
+      'Select elements to search for materials with only these elements',
     elementsSelectHelpText:
-      'Select elements to search for materials with **at least** these elements',
+      'Select elements to search for materials with at least these elements',
     errorMessage: 'Please enter a valid list of element symbols, chemical formula, or Material ID.',
     onChange: fn(),
     onInputTypeChange: fn(),

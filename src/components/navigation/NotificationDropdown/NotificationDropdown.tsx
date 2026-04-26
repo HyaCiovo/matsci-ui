@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FaCircle } from 'react-icons/fa';
-import { Markdown } from '../../data-display/Markdown';
+import { LazyMarkdownText } from '../../data-display/Markdown/LazyMarkdownText';
 import { Modal, ModalContextProvider, ModalTrigger } from '../../data-display/Modal';
 import { Bell } from './Bell';
 
@@ -125,7 +125,7 @@ export const NotificationDropdown = ({
                 <div className="ms-panel">
                   <div className="ms-panel-heading">{item.header}</div>
                   <div className="ms-panel-block ms-p-5">
-                    <Markdown>{item.content ?? ' '}</Markdown>
+                    <LazyMarkdownText text={item.content ?? ' '} />
                   </div>
                 </div>
               </Modal>

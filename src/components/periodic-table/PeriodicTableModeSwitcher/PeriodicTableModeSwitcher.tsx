@@ -1,6 +1,5 @@
 import clsx from 'clsx';
 import { FaAsterisk } from 'react-icons/fa';
-import { Markdown } from '../../data-display/Markdown';
 import { Tooltip } from '../../data-display/Tooltip';
 import { PeriodicTableFormulaButtons } from '../PeriodicTableFormulaButtons';
 import { PeriodicTableSelectionMode } from '../../data-entry/MaterialsInput/utils';
@@ -104,16 +103,14 @@ export const PeriodicTableModeSwitcher = ({
               </Tooltip>
             ) : null}
             <div className="ms-pt-description">
-              {props.chemicalSystemSelectHelpText ? (
-                <Markdown>{props.chemicalSystemSelectHelpText}</Markdown>
-              ) : null}
+              {props.chemicalSystemSelectHelpText ? <span>{props.chemicalSystemSelectHelpText}</span> : null}
             </div>
           </>
         ) : null}
 
         {props.mode === PeriodicTableSelectionMode.ELEMENTS ? (
           <div className="ms-pt-description">
-            {props.elementsSelectHelpText ? <Markdown>{props.elementsSelectHelpText}</Markdown> : null}
+            {props.elementsSelectHelpText ? <span>{props.elementsSelectHelpText}</span> : null}
           </div>
         ) : null}
       </div>

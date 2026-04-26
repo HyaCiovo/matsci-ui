@@ -11,7 +11,6 @@ import {
 import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import { FaCaretDown, FaCaretUp } from 'react-icons/fa';
 import { FaAngleDoubleLeft, FaAngleDoubleRight, FaAngleLeft, FaAngleRight } from 'react-icons/fa';
-import { Markdown } from '../Markdown';
 import { Tooltip } from '../Tooltip';
 import { Paginator, type PaginatorTexts } from '../Paginator';
 import { Checkbox } from '../../data-entry/Checkbox';
@@ -704,7 +703,7 @@ export const DataTable = ({
 
       {props.footer ? (
         <div className="ms-data-table-footer">
-          <Markdown>{String(props.footer)}</Markdown>
+          {props.footer}
         </div>
       ) : null}
     </div>
