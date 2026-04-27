@@ -45,6 +45,16 @@ function extractExportsFromDts(dtsText) {
 }
 
 const args = parseArgs(process.argv.slice(2));
+const rootOnly = Boolean(args['root-only']);
+const distOnly = Boolean(args['dist-only']);
+
+if (rootOnly && distOnly) {
+  process.stderr.write('Use either --root-only or --dist-only, not both.\n');
+  process.exit(1);
+}
+
+const writeRoot = rootOnly || !distOnly;
+const writeDist = distOnly || !rootOnly;
 
 const projectRoot = process.cwd();
 const rootPackageJsonPath = resolve(projectRoot, 'package.json');
@@ -61,9 +71,19 @@ const componentsJson = {
   entrypoints: [
     'dist/index.js',
     'dist/index.d.ts',
+    'dist/crystal-toolkit.js',
+    'dist/crystal-toolkit.d.ts',
+    'dist/markdown.js',
+    'dist/markdown.d.ts',
+    'dist/periodic-table.js',
+    'dist/periodic-table.d.ts',
+    'dist/publications.js',
+    'dist/publications.d.ts',
+    'dist/search-ui.js',
+    'dist/search-ui.d.ts',
     'dist/themes/bulma.css',
     'dist/themes/gnosys.css',
-    'dist/components.json',
+    'dist/themes/markdown.css',
   ],
   exports: extractExportsFromDts(dtsText),
 };
@@ -71,5 +91,9 @@ const componentsJson = {
 const componentsJsonText = JSON.stringify(componentsJson, null, 2) + '\n';
 
 mkdirSync(distPath, { recursive: true });
-writeFileSync(resolve(projectRoot, 'components.json'), componentsJsonText);
-writeFileSync(resolve(distPath, 'components.json'), componentsJsonText);
+if (writeRoot) {
+  writeFileSync(resolve(projectRoot, 'components.json'), componentsJsonText);
+}
+if (writeDist) {
+  writeFileSync(resolve(distPath, 'components.json'), componentsJsonText);
+}

@@ -22,7 +22,7 @@ We sincerely thank the team at the Next-Gen Materials Project (<https://next-gen
 
 ## Key Features
 
-- **Packaging**: ESM-only package with explicit `exports`, including `./style.css`, `./themes/bulma.css`, and `./themes/gnosys.css`
+- **Packaging**: ESM-only package with explicit `exports`, including curated domain subpaths plus `./style.css`, `./themes/bulma.css`, `./themes/gnosys.css`, and `./themes/markdown.css`
 - **Bundle Optimization**: minified theme CSS output plus preserve-modules ESM build for better consumer-side tree shaking
 - **Tooling**: Rollup 4, strict TypeScript, Storybook 10, Vitest, and `lefthook`
 - **UI Stack**: library-owned `ms-*` styling contract, Bulma-compatible foundation layer, Radix UI primitives, and TanStack Table
@@ -67,6 +67,8 @@ import '@hyacinth/matsci-ui/style.css';
 // import '@hyacinth/matsci-ui/themes/bulma.css';
 // or:
 // import '@hyacinth/matsci-ui/themes/gnosys.css';
+// Optional addon for Markdown math / highlighted code:
+// import '@hyacinth/matsci-ui/themes/markdown.css';
 ```
 
 Theme entrypoint mapping:
@@ -74,10 +76,12 @@ Theme entrypoint mapping:
 - `@hyacinth/matsci-ui/style.css`: alias of the published Bulma theme
 - `@hyacinth/matsci-ui/themes/bulma.css`: explicit Bulma theme entry
 - `@hyacinth/matsci-ui/themes/gnosys.css`: explicit Gnosys theme entry
+- `@hyacinth/matsci-ui/themes/markdown.css`: optional KaTeX and code-highlighting addon for `Markdown`
 
 Important:
 
 - Do not statically import both `bulma.css` and `gnosys.css` in the same application shell.
+- Import `themes/markdown.css` only in applications that render math or highlighted code via `Markdown`.
 - Storybook toolbar theme switching is a docs/runtime convenience, not a public JavaScript theming API.
 - If your host app needs runtime theme switching, swap the active stylesheet at the app shell level rather than eagerly importing both preset bundles.
 
@@ -85,12 +89,15 @@ Minimal component usage:
 
 ```tsx
 import { DataTable } from '@hyacinth/matsci-ui';
+import { SearchUIContainer } from '@hyacinth/matsci-ui/search-ui';
+import { Markdown } from '@hyacinth/matsci-ui/markdown';
 ```
 
 Recommended current usage:
 
 - Use `@hyacinth/matsci-ui/style.css` or `@hyacinth/matsci-ui/themes/bulma.css` for the stable Bulma appearance
 - Use `@hyacinth/matsci-ui/themes/gnosys.css` when you want the secondary flatter preset with deeper blue emphasis and smaller radii
+- Use subpath exports such as `@hyacinth/matsci-ui/search-ui` and `@hyacinth/matsci-ui/crystal-toolkit` when you want tighter import boundaries
 
 ***
 
@@ -116,6 +123,7 @@ What is stable today:
 
 - Applications must explicitly import `@hyacinth/matsci-ui/style.css` or `@hyacinth/matsci-ui/themes/bulma.css`
 - The package also exports `@hyacinth/matsci-ui/themes/gnosys.css`
+- Markdown math and syntax-highlighting assets now live behind the optional `@hyacinth/matsci-ui/themes/markdown.css` entry
 - Components no longer inject styles automatically
 - Global Bulma pollution has been removed from the library’s published selectors by converging on library-owned `ms-*` classes
 - The source theme system now lives under a single `src/themes` tree
@@ -130,6 +138,7 @@ What is implemented in the repository:
 - `.storybook/themes/*`: Storybook-only preview tokens and overrides
 - `dist/themes/bulma.css`: the default published stylesheet
 - `dist/themes/gnosys.css`: the published secondary preset stylesheet
+- `dist/themes/markdown.css`: optional Markdown addon stylesheet for KaTeX and code-highlighting assets
 
 Practical takeaway:
 
@@ -146,12 +155,19 @@ Practical takeaway:
 - Stylesheets:
   - `dist/themes/bulma.css`, exposed as `@hyacinth/matsci-ui/style.css` and `@hyacinth/matsci-ui/themes/bulma.css`
   - `dist/themes/gnosys.css`, exposed as `@hyacinth/matsci-ui/themes/gnosys.css`
+  - `dist/themes/markdown.css`, exposed as `@hyacinth/matsci-ui/themes/markdown.css`
 
 Storybook-only files such as `.storybook/themes/gnosys-preview-tokens.css` and `.storybook/themes/gnosys-preview-overrides.css` are not part of the npm package contract.
 
 The JavaScript build now uses preserve-modules ESM output, so consumer bundlers can tree-shake the package more effectively than a single monolithic bundle.
 
-In addition to components, the library exports types, constants, and utilities for Search UI, periodic-table logic, text helpers, and localization-oriented configuration.
+In addition to the root barrel, the package now exposes curated subpaths for heavier domains:
+
+- `@hyacinth/matsci-ui/search-ui`
+- `@hyacinth/matsci-ui/periodic-table`
+- `@hyacinth/matsci-ui/crystal-toolkit`
+- `@hyacinth/matsci-ui/publications`
+- `@hyacinth/matsci-ui/markdown`
 
 ***
 
@@ -201,6 +217,7 @@ Key migration considerations:
 
 - Change imports from `@materialsproject/mp-react-components` to `@hyacinth/matsci-ui`
 - Explicitly import `@hyacinth/matsci-ui/style.css`
+- Import `@hyacinth/matsci-ui/themes/markdown.css` when existing pages rely on Markdown math or fenced-code highlighting
 - Consumer projects can keep using npm / pnpm / Yarn, or move to Bun, as long as the host toolchain supports modern ESM and CSS imports
 - Re-test `SearchUI`, `DataTable`, `Tooltip`, `JsonView`, and Crystal Toolkit integrations
 - If an older product depended on `dark.css` or `materials.css`, migrate that usage to the new explicit theme entry model

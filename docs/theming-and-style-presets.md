@@ -4,7 +4,7 @@ Last updated: 2026-04-26
 
 ## EN
 
-This document reflects the current repository reality rather than an old theming plan. The library now has **two supported published theme entrypoints** plus a **separate Storybook-only preview layer**.
+This document reflects the current repository reality rather than an old theming plan. The library now has **two supported published base theme entrypoints**, an **optional Markdown addon stylesheet**, and a **separate Storybook-only preview layer**.
 
 ### Public package contract
 
@@ -13,12 +13,14 @@ The npm package is designed to expose exactly these stylesheet entrypoints:
 - `@hyacinth/matsci-ui/style.css`
 - `@hyacinth/matsci-ui/themes/bulma.css`
 - `@hyacinth/matsci-ui/themes/gnosys.css`
+- `@hyacinth/matsci-ui/themes/markdown.css`
 
 Current meaning:
 
 - `style.css`: alias of the published Bulma theme
 - `themes/bulma.css`: explicit Bulma preset entry
 - `themes/gnosys.css`: explicit Gnosys preset entry
+- `themes/markdown.css`: optional KaTeX and code-highlighting addon for `Markdown`
 
 Applications should load **exactly one** of these theme bundles at the application shell entry.
 
@@ -33,11 +35,15 @@ import '@hyacinth/matsci-ui/themes/bulma.css';
 
 // Gnosys theme
 import '@hyacinth/matsci-ui/themes/gnosys.css';
+
+// Optional Markdown math / code-highlighting addon
+import '@hyacinth/matsci-ui/themes/markdown.css';
 ```
 
 Guidance:
 
 - Do not statically import both `bulma.css` and `gnosys.css` into the same app shell.
+- Import `themes/markdown.css` only when the application renders Markdown math or highlighted code.
 - Components do not auto-inject CSS.
 - Storybook toolbar switching is a docs/runtime convenience, not a public JS theming API.
 - If a product needs runtime theme switching, swap the active stylesheet at the host-app shell level rather than eagerly importing both preset bundles.
@@ -48,6 +54,7 @@ Published build output currently emits:
 
 - `dist/themes/bulma.css`
 - `dist/themes/gnosys.css`
+- `dist/themes/markdown.css`
 
 The package exports map only points to those published theme files. Storybook-only CSS is not exported from `package.json` and is not emitted into `dist`.
 
@@ -130,21 +137,23 @@ Constraints:
 
 ## 中文
 
-本文档反映的是当前仓库真实状态，而不是早期的主题规划说明。现在组件库已经形成了 **两套正式发布主题入口**，同时又把 **Storybook 预览专用样式层** 和 npm 包样式层明确分开。
+本文档反映的是当前仓库真实状态，而不是早期的主题规划说明。现在组件库已经形成了 **两套正式发布基础主题入口**、**一套可选 Markdown 附加样式入口**，同时又把 **Storybook 预览专用样式层** 和 npm 包样式层明确分开。
 
 ### 对外包契约
 
-npm 包当前设计为只暴露这三个样式入口：
+npm 包当前设计为暴露以下样式入口：
 
 - `@hyacinth/matsci-ui/style.css`
 - `@hyacinth/matsci-ui/themes/bulma.css`
 - `@hyacinth/matsci-ui/themes/gnosys.css`
+- `@hyacinth/matsci-ui/themes/markdown.css`
 
 当前含义分别是：
 
 - `style.css`：Bulma 主题别名
 - `themes/bulma.css`：显式 Bulma 主题入口
 - `themes/gnosys.css`：显式 Gnosys 主题入口
+- `themes/markdown.css`：`Markdown` 的可选 KaTeX 与代码高亮附加样式
 
 业务应用应当在应用壳层入口 **只加载其中一套**。
 
@@ -159,11 +168,15 @@ import '@hyacinth/matsci-ui/themes/bulma.css';
 
 // Gnosys 主题
 import '@hyacinth/matsci-ui/themes/gnosys.css';
+
+// 可选的 Markdown 数学公式 / 代码高亮附加样式
+import '@hyacinth/matsci-ui/themes/markdown.css';
 ```
 
 使用建议：
 
 - 不要在同一个应用壳层里静态同时引入 `bulma.css` 和 `gnosys.css`
+- 只有业务里会渲染 Markdown 数学公式或代码高亮时，才引入 `themes/markdown.css`
 - 组件本身不会自动注入 CSS
 - Storybook 工具栏里的主题切换只是文档运行时能力，不是公开的 JS 主题 API
 - 如果业务项目需要运行时换肤，应当在宿主应用壳层切换实际加载的 stylesheet，而不是把两套 preset 一起预加载
@@ -174,6 +187,7 @@ import '@hyacinth/matsci-ui/themes/gnosys.css';
 
 - `dist/themes/bulma.css`
 - `dist/themes/gnosys.css`
+- `dist/themes/markdown.css`
 
 `package.json` 的 `exports` 也只指向这两套正式主题文件。Storybook 专用 CSS 不会在 `package.json` 中导出，也不会进入 `dist`。
 

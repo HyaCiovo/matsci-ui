@@ -7,6 +7,15 @@ import dts from 'rollup-plugin-dts';
 
 const require = createRequire(import.meta.url);
 const pkg = require('./package.json');
+const entryPoints = {
+  index: 'src/index.ts',
+  'crystal-toolkit': 'src/crystal-toolkit.ts',
+  markdown: 'src/markdown.ts',
+  'periodic-table': 'src/periodic-table.ts',
+  publications: 'src/publications.ts',
+  'search-ui': 'src/search-ui.ts',
+};
+const isReleaseBuild = process.env.MATSCI_UI_RELEASE === '1';
 
 const externalPackages = [
   ...Object.keys(pkg.peerDependencies || {}),
@@ -26,8 +35,9 @@ const treeshake = {
 export default [
   buildThemeConfig('src/themes/entries/bulma.ts', 'dist/themes/bulma.js', 'bulma.css'),
   buildThemeConfig('src/themes/entries/gnosys.ts', 'dist/themes/gnosys.js', 'gnosys.css'),
+  buildThemeConfig('src/themes/entries/markdown.ts', 'dist/themes/markdown.js', 'markdown.css'),
   {
-    input: 'src/index.ts',
+    input: entryPoints,
     output: {
       dir: 'dist',
       format: 'esm',
@@ -35,7 +45,7 @@ export default [
       chunkFileNames: 'chunks/[name]-[hash].js',
       preserveModules: true,
       preserveModulesRoot: 'src',
-      sourcemap: true,
+      sourcemap: !isReleaseBuild,
     },
     external: isExternal,
     treeshake,
@@ -60,12 +70,7 @@ export default [
       }),
     ],
   },
-  {
-    input: 'src/index.ts',
-    output: [{ file: pkg.types, format: 'es' }],
-    external: [/\.css$/, /\.less$/],
-    plugins: [dts()],
-  },
+  ...Object.entries(entryPoints).map(([name, input]) => buildDtsConfig(input, `dist/${name}.d.ts`)),
 ];
 
 function buildThemeConfig(input, outputFile, extractedCssFile) {
@@ -74,7 +79,7 @@ function buildThemeConfig(input, outputFile, extractedCssFile) {
     output: {
       file: outputFile,
       format: 'esm',
-      sourcemap: true,
+      sourcemap: !isReleaseBuild,
     },
     treeshake,
     onwarn(warning, warn) {
@@ -119,5 +124,14 @@ function buildThemeConfig(input, outputFile, extractedCssFile) {
         use: ['less'],
       }),
     ],
+  };
+}
+
+function buildDtsConfig(input, outputFile) {
+  return {
+    input,
+    output: [{ file: outputFile, format: 'es' }],
+    external: [/\.css$/, /\.less$/],
+    plugins: [dts()],
   };
 }

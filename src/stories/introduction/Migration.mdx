@@ -30,6 +30,7 @@ import { I18nText } from '../i18n/I18nText';
     <ol>
       <li>Change the package import from `@materialsproject/mp-react-components` to `@hyacinth/matsci-ui`.</li>
       <li>Import `@hyacinth/matsci-ui/style.css` once at the application entry.</li>
+      <li>Import `@hyacinth/matsci-ui/themes/markdown.css` only on apps that render Markdown math or highlighted code.</li>
       <li>Audit any dependency on legacy theme preset files because the new repository now uses explicit `style.css` / `themes/bulma.css` / `themes/gnosys.css` entries instead of the historical preset paths.</li>
       <li>Re-test Search UI, `DataTable`, `Tooltip`, `JsonView`, and Crystal Toolkit flows.</li>
     </ol>
@@ -38,6 +39,7 @@ import { I18nText } from '../i18n/I18nText';
     <ol>
       <li>把包导入从 `@materialsproject/mp-react-components` 改为 `@hyacinth/matsci-ui`。</li>
       <li>在应用入口显式引入一次 `@hyacinth/matsci-ui/style.css`。</li>
+      <li>只有页面会渲染 Markdown 数学公式或代码高亮时，才额外引入 `@hyacinth/matsci-ui/themes/markdown.css`。</li>
       <li>排查对历史主题预设文件路径的依赖，因为新仓库已经改为显式 `style.css` / `themes/bulma.css` / `themes/gnosys.css` 模型。</li>
       <li>重新回归 Search UI、`DataTable`、`Tooltip`、`JsonView` 与 Crystal Toolkit 相关页面。</li>
     </ol>
@@ -97,12 +99,14 @@ import { I18nText } from '../i18n/I18nText';
 ```tsx
 import '@hyacinth/matsci-ui/style.css';
 import { DataTable, SearchUIContainer } from '@hyacinth/matsci-ui';
+import { CrystalToolkitScene } from '@hyacinth/matsci-ui/crystal-toolkit';
 ```
 
 <I18nText en="Theme migration status:" zh="主题迁移现状：" />
 
 ```tsx
 import '@hyacinth/matsci-ui/style.css';
+// import '@hyacinth/matsci-ui/themes/markdown.css';
 // or:
 // import '@hyacinth/matsci-ui/themes/bulma.css';
 // or:
@@ -112,7 +116,7 @@ import '@hyacinth/matsci-ui/style.css';
 <I18nText en="Crystal Toolkit migration preference:" zh="Crystal Toolkit 的推荐迁移方式：" />
 
 ```tsx
-import { CrystalToolkitScene } from '@hyacinth/matsci-ui';
+import { CrystalToolkitScene } from '@hyacinth/matsci-ui/crystal-toolkit';
 ```
 
 ## <I18nText en="Priority and Effort" zh="优先级与工作量" />

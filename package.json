@@ -16,34 +16,59 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
+    "./crystal-toolkit": {
+      "import": "./dist/crystal-toolkit.js",
+      "types": "./dist/crystal-toolkit.d.ts"
+    },
+    "./markdown": {
+      "import": "./dist/markdown.js",
+      "types": "./dist/markdown.d.ts"
+    },
+    "./periodic-table": {
+      "import": "./dist/periodic-table.js",
+      "types": "./dist/periodic-table.d.ts"
+    },
+    "./publications": {
+      "import": "./dist/publications.js",
+      "types": "./dist/publications.d.ts"
+    },
+    "./search-ui": {
+      "import": "./dist/search-ui.js",
+      "types": "./dist/search-ui.d.ts"
+    },
     "./style.css": "./dist/themes/bulma.css",
     "./themes/bulma.css": "./dist/themes/bulma.css",
     "./themes/gnosys.css": "./dist/themes/gnosys.css",
+    "./themes/markdown.css": "./dist/themes/markdown.css",
     "./themes/default.css": "./dist/themes/bulma.css",
     "./themes/tech.css": "./dist/themes/gnosys.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "!dist/**/*.map",
+    "!dist/components.json",
+    "!dist/themes/fonts/*.ttf"
   ],
   "sideEffects": [
     "**/*.css",
     "**/*.less"
   ],
   "scripts": {
-    "build": "pnpm clean && pnpm build:lib && pnpm build:assets && pnpm build:meta",
+    "build": "pnpm clean && pnpm build:lib:release && pnpm build:assets && pnpm build:meta",
     "build:assets": "node scripts/prepare-vis-network-assets.mjs",
     "build:lib": "rollup -c",
-    "build:meta": "node scripts/generate-components-json.mjs",
+    "build:lib:release": "node scripts/build-lib-release.mjs",
+    "build:meta": "node scripts/generate-components-json.mjs --dist-only",
     "build:npm:gnosys": "node scripts/publish-npm-gnosys.mjs --pack --dry-run",
     "build-storybook": "HOME=$PWD/.storybook-home storybook build --disable-telemetry && node scripts/prepare-storybook-vercel.mjs",
     "clean": "node scripts/clean-dist.mjs",
     "dev": "vite",
     "format": "oxlint --fix src",
-    "generate:components": "node scripts/generate-components-json.mjs",
+    "generate:components": "node scripts/generate-components-json.mjs --root-only",
     "lint": "oxlint src",
     "pack:npm:gnosys": "node scripts/publish-npm-gnosys.mjs --pack",
     "pack:npm:gnosys:dry-run": "node scripts/publish-npm-gnosys.mjs --pack --dry-run",
-    "prepare": "lefthook install",
+    "prepare": "node scripts/run-prepare.mjs",
     "publish:npm:gnosys": "node scripts/publish-npm-gnosys.mjs",
     "publish:npm:gnosys:dry-run": "node scripts/publish-npm-gnosys.mjs --dry-run",
     "storybook": "HOME=$PWD/.storybook-home storybook dev -p 6006 --disable-telemetry --no-open",

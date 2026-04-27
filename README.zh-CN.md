@@ -22,7 +22,7 @@
 
 ## 技术特点
 
-- **打包规范**：ESM-only 包，显式导出 `./style.css`、`./themes/bulma.css`、`./themes/gnosys.css`
+- **打包规范**：ESM-only 包，显式导出精选领域子路径，以及 `./style.css`、`./themes/bulma.css`、`./themes/gnosys.css`、`./themes/markdown.css`
 - **产物优化**：主题 CSS 压缩输出，组件 JS 使用 preserve-modules ESM 产物，增强业务侧 tree-shaking
 - **工程体系**：Rollup 4、严格 TypeScript、Storybook 10、Vitest 与 `lefthook`
 - **UI 技术栈**：库自有 `ms-*` 样式契约、Bulma 兼容基础层、Radix UI primitives、TanStack Table
@@ -67,6 +67,8 @@ import '@hyacinth/matsci-ui/style.css';
 // import '@hyacinth/matsci-ui/themes/bulma.css';
 // 或：
 // import '@hyacinth/matsci-ui/themes/gnosys.css';
+// 只有在渲染 Markdown 数学公式或代码高亮时才需要：
+// import '@hyacinth/matsci-ui/themes/markdown.css';
 ```
 
 当前入口含义如下：
@@ -74,10 +76,12 @@ import '@hyacinth/matsci-ui/style.css';
 - `@hyacinth/matsci-ui/style.css`：Bulma 主题别名
 - `@hyacinth/matsci-ui/themes/bulma.css`：显式 Bulma 主题入口
 - `@hyacinth/matsci-ui/themes/gnosys.css`：显式 Gnosys 主题入口
+- `@hyacinth/matsci-ui/themes/markdown.css`：`Markdown` 组件的可选 KaTeX 与代码高亮样式入口
 
 注意：
 
 - 不要在同一个应用壳层里静态同时引入 `bulma.css` 和 `gnosys.css`
+- 只有业务里会用到 `Markdown` 的数学公式或代码高亮时，才额外引入 `themes/markdown.css`
 - Storybook 工具栏里的主题切换只是文档运行时能力，不是对外公开的 JS 主题 API
 - 如果业务项目需要运行时换肤，应由宿主应用在壳层切换实际加载的 stylesheet，而不是把两套主题一起预加载
 
@@ -85,12 +89,15 @@ import '@hyacinth/matsci-ui/style.css';
 
 ```tsx
 import { DataTable } from '@hyacinth/matsci-ui';
+import { SearchUIContainer } from '@hyacinth/matsci-ui/search-ui';
+import { Markdown } from '@hyacinth/matsci-ui/markdown';
 ```
 
 当前推荐用法：
 
 - 稳定 Bulma 样式优先使用 `@hyacinth/matsci-ui/style.css` 或 `@hyacinth/matsci-ui/themes/bulma.css`
 - `@hyacinth/matsci-ui/themes/gnosys.css` 提供第二套学术化、扁平化、深蓝强调的主题预设
+- 希望导入边界更清晰时，优先使用 `@hyacinth/matsci-ui/search-ui`、`@hyacinth/matsci-ui/crystal-toolkit` 这类新子路径
 
 ---
 
@@ -116,6 +123,7 @@ import { DataTable } from '@hyacinth/matsci-ui';
 
 - 业务项目必须显式引入 `@hyacinth/matsci-ui/style.css` 或 `@hyacinth/matsci-ui/themes/bulma.css`
 - 包同时对外暴露 `@hyacinth/matsci-ui/themes/gnosys.css`
+- Markdown 数学公式与代码高亮资源已经拆分到可选的 `@hyacinth/matsci-ui/themes/markdown.css`
 - 组件导入本身不会再自动注入样式
 - 发布样式已统一收敛为库自有的 `ms-*` 选择器，避免把 Bulma 的全局类污染到宿主应用
 - 源码中的主题体系已经统一收口到单一 `src/themes` 目录
@@ -130,6 +138,7 @@ import { DataTable } from '@hyacinth/matsci-ui';
 - `.storybook/themes/*`：仅供 Storybook 预览使用的主题 token 与覆盖
 - `dist/themes/bulma.css`：Bulma 主题样式产物
 - `dist/themes/gnosys.css`：第二套正式主题样式产物入口
+- `dist/themes/markdown.css`：Markdown 的可选 KaTeX 与代码高亮附加样式
 
 实际使用建议：
 
@@ -146,12 +155,19 @@ import { DataTable } from '@hyacinth/matsci-ui';
 - 样式文件：
   - `dist/themes/bulma.css`，对外暴露为 `@hyacinth/matsci-ui/style.css` 与 `@hyacinth/matsci-ui/themes/bulma.css`
   - `dist/themes/gnosys.css`，对外暴露为 `@hyacinth/matsci-ui/themes/gnosys.css`
+  - `dist/themes/markdown.css`，对外暴露为 `@hyacinth/matsci-ui/themes/markdown.css`
 
 像 `.storybook/themes/gnosys-preview-tokens.css`、`.storybook/themes/gnosys-preview-overrides.css` 这类文件只服务于 Storybook 预览，不属于 npm 包公开契约。
 
 当前 JavaScript 构建已经改为 preserve-modules ESM 输出，因此业务侧 bundler 比起历史单文件 bundle 更容易做 tree-shaking。
 
-除组件外，库还导出 Search UI、周期表、文本工具、常量与相关类型，方便业务层在不 fork 的前提下进行二次封装。
+除根入口外，包现在还提供了几个更清晰的公开子路径：
+
+- `@hyacinth/matsci-ui/search-ui`
+- `@hyacinth/matsci-ui/periodic-table`
+- `@hyacinth/matsci-ui/crystal-toolkit`
+- `@hyacinth/matsci-ui/publications`
+- `@hyacinth/matsci-ui/markdown`
 
 ---
 
@@ -201,6 +217,7 @@ Storybook 文档也支持中英文切换。
 
 - 把包名从 `@materialsproject/mp-react-components` 改为 `@hyacinth/matsci-ui`
 - 显式引入 `@hyacinth/matsci-ui/style.css`
+- 如果旧页面依赖 Markdown 数学公式或围栏代码高亮，再额外引入 `@hyacinth/matsci-ui/themes/markdown.css`
 - 业务项目可继续使用 npm / pnpm / Yarn，也可以迁移到 Bun；前提是宿主工具链支持现代 ESM 与 CSS 导入
 - 重新回归 `SearchUI`、`DataTable`、`Tooltip`、`JsonView` 与 Crystal Toolkit 场景
 - 如果旧项目依赖 `dark.css` 或 `materials.css`，需要迁移到新的显式主题入口模型

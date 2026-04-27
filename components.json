@@ -1,13 +1,23 @@
 {
   "package": "@hyacinth/matsci-ui",
   "version": "0.1.0",
-  "generatedAt": "2026-04-27T03:09:43.338Z",
+  "generatedAt": "2026-04-27T03:48:58.576Z",
   "entrypoints": [
     "dist/index.js",
     "dist/index.d.ts",
+    "dist/crystal-toolkit.js",
+    "dist/crystal-toolkit.d.ts",
+    "dist/markdown.js",
+    "dist/markdown.d.ts",
+    "dist/periodic-table.js",
+    "dist/periodic-table.d.ts",
+    "dist/publications.js",
+    "dist/publications.d.ts",
+    "dist/search-ui.js",
+    "dist/search-ui.d.ts",
     "dist/themes/bulma.css",
     "dist/themes/gnosys.css",
-    "dist/components.json"
+    "dist/themes/markdown.css"
   ],
   "exports": [
     {
