@@ -91,4 +91,29 @@ describe('CrystalToolkitAnimationScene', () => {
       })
     );
   });
+
+  it('uses custom toolbar tooltip texts when provided', async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <CrystalToolkitAnimationScene
+        sceneSize={500}
+        settings={{ renderer: Renderer.SVG }}
+        data={sceneData}
+        debug={false}
+        toggleVisibility={{}}
+        showImageButton={false}
+        showExportButton={false}
+        texts={{ enterFullScreen: 'Enter animation full screen' }}
+      />
+    );
+
+    await waitFor(() => expect(Scene).toHaveBeenCalled());
+
+    const expandButton = container.querySelector('.ms-button') as HTMLButtonElement | null;
+    expect(expandButton).not.toBeNull();
+
+    await user.hover(expandButton!);
+
+    expect((await screen.findAllByText('Enter animation full screen')).length).toBeGreaterThan(0);
+  });
 });

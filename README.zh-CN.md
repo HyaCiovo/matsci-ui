@@ -37,6 +37,9 @@
 
 ```bash
 npm install @hyacinth/matsci-ui
+# pnpm add @hyacinth/matsci-ui
+# yarn add @hyacinth/matsci-ui
+# bun add @hyacinth/matsci-ui
 ```
 
 但这个包 **目前还没有正式发布到 npm**，所以上面的命令代表未来的公开安装契约，而不是此刻可直接从 npm 获取的已发布版本。当前请以仓库源码与 Storybook 作为实际评估入口。
@@ -50,6 +53,7 @@ npm install @hyacinth/matsci-ui
 
 - Node.js `^20.19.0 || ^22.12.0`
 - 支持 ESM 的现代构建工具，如 Vite、Rollup、Webpack 5+
+- 只要宿主能够消费现代 ESM 包与 CSS 入口，基于 Bun 管理的业务应用也在支持范围内
 
 ---
 
@@ -99,6 +103,8 @@ import { DataTable } from '@hyacinth/matsci-ui';
 - 运行测试：`pnpm test`
 
 由于 npm 包尚未正式发布，当前 Storybook 仍然是最主要的交互式文档入口。
+
+当前仓库自身的开发工作流仍然以 pnpm 为准。这里补充的 Bun 支持，指的是发布后可在 Bun 管理的业务应用中消费本组件库，而不是仓库已经切换到 Bun 作为锁文件和脚本执行基线。
 
 ---
 
@@ -195,6 +201,7 @@ Storybook 文档也支持中英文切换。
 
 - 把包名从 `@materialsproject/mp-react-components` 改为 `@hyacinth/matsci-ui`
 - 显式引入 `@hyacinth/matsci-ui/style.css`
+- 业务项目可继续使用 npm / pnpm / Yarn，也可以迁移到 Bun；前提是宿主工具链支持现代 ESM 与 CSS 导入
 - 重新回归 `SearchUI`、`DataTable`、`Tooltip`、`JsonView` 与 Crystal Toolkit 场景
 - 如果旧项目依赖 `dark.css` 或 `materials.css`，需要迁移到新的显式主题入口模型
 - 需要延续原有 Bulma 语义时优先 Bulma 主题；需要更扁平、深蓝强调的视觉时使用 `themes/gnosys.css`

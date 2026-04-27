@@ -1556,6 +1556,11 @@
   border-radius: 0 !important;
 }
 
+.ms-search-ui .ms-materials-input .ms-field.ms-has-addons > .ms-control:last-child > .ms-button.ms-is-primary {
+  border-left-width: 1px !important;
+  border-left-color: #9fb3c8 !important;
+}
+
 .ms-search-ui .ms-materials-input .ms-button.ms-is-static {
   background: #f7fafc;
   color: #1f2937;

@@ -37,6 +37,9 @@ The intended package name is:
 
 ```bash
 npm install @hyacinth/matsci-ui
+# pnpm add @hyacinth/matsci-ui
+# yarn add @hyacinth/matsci-ui
+# bun add @hyacinth/matsci-ui
 ```
 
 The package is **not published yet**, so the command above is the future public install contract rather than something users can run today from npm. For now, use the repository workspace and Storybook to evaluate the library.
@@ -50,6 +53,7 @@ The package is **not published yet**, so the command above is the future public 
 
 - Node.js `^20.19.0 || ^22.12.0`
 - Modern ESM-compatible bundler such as Vite, Rollup, or Webpack 5+
+- Bun-managed consumer applications are also supported when they can consume modern ESM packages and CSS entrypoints
 
 ***
 
@@ -99,6 +103,8 @@ Recommended current usage:
 - Run tests: `pnpm test`
 
 Storybook is currently the primary interactive documentation surface because the npm package is not yet published.
+
+Repository development remains pnpm-based today. Bun support here refers to consuming the library from Bun-managed applications rather than switching the repository lockfile and script workflow away from pnpm.
 
 ***
 
@@ -195,6 +201,7 @@ Key migration considerations:
 
 - Change imports from `@materialsproject/mp-react-components` to `@hyacinth/matsci-ui`
 - Explicitly import `@hyacinth/matsci-ui/style.css`
+- Consumer projects can keep using npm / pnpm / Yarn, or move to Bun, as long as the host toolchain supports modern ESM and CSS imports
 - Re-test `SearchUI`, `DataTable`, `Tooltip`, `JsonView`, and Crystal Toolkit integrations
 - If an older product depended on `dark.css` or `materials.css`, migrate that usage to the new explicit theme entry model
 - Prefer the Bulma theme for Bulma-like continuity and `themes/gnosys.css` for the flatter blue-accent preset

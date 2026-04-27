@@ -109,3 +109,32 @@ export const TubeScene: Story = {
     }
   }
 };
+
+export const CustomControlTexts: Story = {
+  args: {
+    debug: false,
+    animation: AnimationStyle.NONE,
+    inletPadding: 10,
+    inletSize: 100,
+    data: sceneJson,
+    sceneSize: STORY_SCENE_SIZE,
+    toggleVisibility: {},
+    texts: {
+      enterFullScreen: 'Open viewer',
+      exitFullScreen: 'Close viewer',
+      showSettings: 'Open controls',
+      hideSettings: 'Close controls',
+      returnToOriginalPosition: 'Reset camera',
+      downloadVisualizationAs: 'Download assets',
+      exportAs: 'Export structure',
+      screenshotPng: 'Save image (PNG)',
+      modelGltf: 'Save model (GLTF)',
+      modelGlb: 'Save model (GLB)',
+      augmentedRealityIosOnly: 'Open in AR (iOS only)'
+    },
+    settings: {
+      renderer: Renderer.WEBGL,
+      extractAxis: false
+    }
+  }
+};

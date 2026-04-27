@@ -75,6 +75,7 @@ import { I18nText } from '../i18n/I18nText';
       <li>The legacy `main` branch is React 16 based and should not be treated as React 18+ compatible.</li>
       <li>The new package declares React 17, 18, and 19 support.</li>
       <li>ESM-first packaging assumes a modern bundler and modern evergreen browsers.</li>
+      <li>Consumer projects may use npm, pnpm, Yarn, or Bun, provided the host toolchain supports ESM packages and CSS imports.</li>
       <li>Behavioral compatibility is higher than DOM-structure compatibility. Snapshot and selector-based tests often need updates.</li>
     </ul>
   }
@@ -83,6 +84,7 @@ import { I18nText } from '../i18n/I18nText';
       <li>旧仓库 `main` 分支以 React 16 为基线，不应视为兼容 React 18 及以上。</li>
       <li>新包当前显式声明支持 React 17、18 与 19。</li>
       <li>ESM-first 的发布方式默认宿主使用现代 bundler 与现代浏览器。</li>
+      <li>业务项目可以使用 npm、pnpm、Yarn 或 Bun，只要宿主工具链支持 ESM 包与 CSS 导入即可。</li>
       <li>行为兼容通常高于 DOM 结构兼容；如果测试依赖旧 DOM 或 className，通常需要更新。</li>
     </ul>
   }

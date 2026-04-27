@@ -1833,6 +1833,12 @@
 }
 
 :is(html[data-ms-theme='gnosys'], body[data-ms-theme='gnosys'], .ms-theme.ms-theme-gnosys, [data-ms-theme='gnosys'])
+  .ms-search-ui .ms-materials-input .ms-field.ms-has-addons > .ms-control:last-child > .ms-button.ms-is-primary {
+  border-left-width: 1px !important;
+  border-left-color: #9fb3c8 !important;
+}
+
+:is(html[data-ms-theme='gnosys'], body[data-ms-theme='gnosys'], .ms-theme.ms-theme-gnosys, [data-ms-theme='gnosys'])
   .ms-search-ui .ms-materials-input .ms-button.ms-is-static {
   background: #f7fafc;
   color: #1f2937;

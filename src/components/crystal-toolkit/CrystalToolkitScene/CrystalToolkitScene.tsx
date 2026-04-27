@@ -43,6 +43,11 @@ import { ModalCloseButton } from '../../data-display/Modal/ModalCloseButton/Moda
 import { downloadBlob, downloadJSON } from '../../../utils/download';
 import { RangeSlider } from '../../data-entry/RangeSlider';
 import { ScenePosition } from '../scene/inset-helper';
+import {
+  DEFAULT_CRYSTAL_TOOLKIT_SCENE_TEXTS,
+  type CrystalToolkitSceneTexts
+} from '../sceneControlTexts';
+import { mergeTexts } from '../../../utils/text';
 
 const getSceneSize = (sceneSize?: number | string) =>
   sceneSize ? sceneSize : DEFAULT_SCENE_SIZE;
@@ -235,6 +240,10 @@ export interface CrystalToolkitSceneProps {
    * @default true
    */
   showPositionButton?: boolean;
+  /**
+   * Override toolbar tooltip and export menu text.
+   */
+  texts?: Partial<CrystalToolkitSceneTexts>;
 }
 
 /**
@@ -252,9 +261,12 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
   showExpandButton = true,
   showImageButton = true,
   showExportButton = true,
+  texts: textsProp,
   ...otherProps
 }) => {
-  let props = {
+  const texts = mergeTexts(DEFAULT_CRYSTAL_TOOLKIT_SCENE_TEXTS, textsProp);
+
+  const props = {
     imageType,
     imageRequest,
     setProps,
@@ -262,6 +274,7 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
     showExpandButton,
     showImageButton,
     showExportButton,
+    texts,
     ...otherProps
   };
   /**
@@ -576,7 +589,7 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
                     </button>
                   }
                 >
-                  {expanded ? 'Exit full screen' : 'Full screen'}
+                  {expanded ? texts.exitFullScreen : texts.enterFullScreen}
                 </Tooltip>
               )}
               {hasSettingsPanel && (
@@ -592,7 +605,7 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
                     </button>
                   }
                 >
-                  {showSettingsPanel ? 'Hide settings' : 'Show settings'}
+                  {showSettingsPanel ? texts.hideSettings : texts.showSettings}
                 </Tooltip>
               )}
               {props.showPositionButton && (
@@ -619,7 +632,7 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
                     </button>
                   }
                 >
-                  Return to original position
+                  {texts.returnToOriginalPosition}
                 </Tooltip>
               )}
               {props.showImageButton && (
@@ -635,7 +648,7 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
                             requestImage(ExportType.png, scene.current!);
                           }}
                         >
-                          {'Screenshot (PNG)'}
+                          {texts.screenshotPng}
                         </p>
 
                         <p
@@ -645,7 +658,7 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
                             requestImage(ExportType.gltf, scene.current!);
                           }}
                         >
-                          {'3D Model (GLTF)'}
+                          {texts.modelGltf}
                         </p>
 
 
@@ -656,7 +669,7 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
                             requestImage(ExportType.glb, scene.current!);
                           }}
                         >
-                          {'3D Model (GLB)'}
+                          {texts.modelGlb}
                         </p>
 
                         <p
@@ -666,13 +679,13 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
                             requestImage(ExportType.usdz, scene.current!);
                           }}
                         >
-                          {'Augmented Reality (iOS devices only)'}
+                          {texts.augmentedRealityIosOnly}
                         </p>
                       </Dropdown>
                     </div>
                   }
                 >
-                  Download visualization as
+                  {texts.downloadVisualizationAs}
                 </Tooltip>
               )}
               {props.showExportButton && (
@@ -696,7 +709,7 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
                     </div>
                   }
                 >
-                  Export as
+                  {texts.exportAs}
                 </Tooltip>
               )}
             </ButtonBar>

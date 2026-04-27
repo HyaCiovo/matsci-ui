@@ -1,4 +1,4 @@
-import { render, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CrystalToolkitScene } from './CrystalToolkitScene';
@@ -135,5 +135,30 @@ describe('CrystalToolkitScene', () => {
         fileTimestamp: expect.any(Number),
       })
     );
+  });
+
+  it('uses custom toolbar tooltip texts when provided', async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <CrystalToolkitScene
+        sceneSize={500}
+        settings={{ renderer: Renderer.SVG }}
+        data={sceneData}
+        debug={false}
+        toggleVisibility={{}}
+        showImageButton={false}
+        showExportButton={false}
+        texts={{ enterFullScreen: 'Enter immersive mode' }}
+      />
+    );
+
+    await waitFor(() => expect(Scene).toHaveBeenCalled());
+
+    const expandButton = container.querySelector('.ms-button') as HTMLButtonElement | null;
+    expect(expandButton).not.toBeNull();
+
+    await user.hover(expandButton!);
+
+    expect((await screen.findAllByText('Enter immersive mode')).length).toBeGreaterThan(0);
   });
 });
