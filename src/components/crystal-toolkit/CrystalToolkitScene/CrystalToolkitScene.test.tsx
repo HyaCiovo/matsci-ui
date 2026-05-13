@@ -8,6 +8,7 @@ import Scene from '../scene/Scene';
 
 const sceneApi = vi.hoisted(() => ({
   resizeRendererToDisplaySize: vi.fn(),
+  renderScene: vi.fn(),
   enableDebug: vi.fn(),
   addToScene: vi.fn(),
   toggleVisibility: vi.fn(),
