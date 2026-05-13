@@ -318,11 +318,10 @@ export class ThreeBuilder {
   //Note(chab) we use morphtargets for geometries like cube, convex, beziers
   // objects that are built by scaling and rotating a simple geometry should
   // be animated by interpolating those specific properties
-  public makeMaterial(color = DEFAULT_MATERIAL_COLOR, animated = false, opacity = 1.0) {
-    const parameters = Object.assign(this.settings.material.parameters, {
+  public makeMaterial(color = DEFAULT_MATERIAL_COLOR, _animated = false, opacity = 1.0) {
+    const parameters = Object.assign({}, this.settings.material.parameters, {
       color: color,
-      opacity: opacity,
-      morphTargets: animated
+      opacity: opacity
     });
 
     if (this.settings.renderer === Renderer.SVG) {
@@ -331,8 +330,7 @@ export class ThreeBuilder {
 
     switch (this.settings.material.type) {
       case Material.standard: {
-        const mat = new THREE.MeshStandardMaterial(parameters);
-        return mat;
+        return new THREE.MeshStandardMaterial(parameters);
       }
       default:
         throw new Error('Unknown material.');

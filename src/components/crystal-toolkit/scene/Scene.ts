@@ -45,6 +45,8 @@ type SceneClickReference =
   | null
   | undefined;
 export default class Scene {
+  private destroyed = false;
+  private controlsInitTimer: ReturnType<typeof setTimeout> | null = null;
   private settings: SceneSettings;
   private renderer!: THREE.WebGLRenderer | SVGRenderer;
   private labelRenderer!: CSS2DRenderer;
@@ -133,6 +135,9 @@ export default class Scene {
   }
 
   mouseMoveListener = (e: Event) => {
+    if (this.destroyed || !this.renderer?.domElement) {
+      return;
+    }
     const mouseEvent = e as MouseEvent;
     if (this.renderer instanceof WebGLRenderer || true) {
       // tooltips
@@ -156,6 +161,9 @@ export default class Scene {
     }
   };
   clickListener = (e: Event) => {
+    if (this.destroyed || !this.renderer?.domElement) {
+      return;
+    }
     const mouseEvent = e as MouseEvent;
     if (this.renderer instanceof WebGLRenderer || true) {
       const p = this.getClickedReference(mouseEvent.offsetX, mouseEvent.offsetY, this.clickableObjects);
@@ -166,6 +174,9 @@ export default class Scene {
   };
 
   private configureScene() {
+    if (this.destroyed || !this.renderer?.domElement) {
+      return;
+    }
     this.scene = getSceneWithBackground(this.settings);
     this.clickableObjects = [];
     this.objectDictionnary = {};
@@ -181,10 +192,16 @@ export default class Scene {
     // if the scene is configured
     // we defer the initialization of the control to the next event loop to avoid
     // some control events that would trigger unnecessary rendering
-    setTimeout(() => this.configureControls(), 0);
+    this.controlsInitTimer = setTimeout(() => {
+      this.controlsInitTimer = null;
+      this.configureControls();
+    }, 0);
   }
 
   private configureControls() {
+    if (this.destroyed || !this.renderer?.domElement) {
+      return;
+    }
     switch (this.settings.controls) {
       case Control.ORBIT: {
         const controls = new OrbitControls(this.camera, this.renderer.domElement as HTMLElement);
@@ -358,6 +375,9 @@ export default class Scene {
   }
 
   public updateAnimationStyle(animationStyle: AnimationStyle) {
+    if (this.destroyed) {
+      return;
+    }
     this.settings.animation = animationStyle;
     switch (animationStyle) {
       case AnimationStyle.SLIDER:
@@ -432,7 +452,13 @@ export default class Scene {
   }
 
   public resizeRendererToDisplaySize() {
+    if (this.destroyed || !this.renderer?.domElement || !this.labelRenderer?.domElement) {
+      return;
+    }
     const canvas = this.renderer.domElement as HTMLCanvasElement;
+    if (!canvas.parentElement) {
+      return;
+    }
     this.cacheMountBBox(canvas.parentElement as Element);
     const { width, height } = this.cachedMountNodeSize;
     this.labelRenderer.setSize(width, height);
@@ -454,7 +480,6 @@ export default class Scene {
     // if we found an object, we should remove all tootips and clicks related to it
     let outlinedObject: string[] = [];
     if (this.scene.getObjectByName(sceneJson.name!)) {
-      console.log('Regenerating scene');
       // see https://jsfiddle.net/L981td24/17/
       this.animationHelper.reset();
       this.clickableObjects = [];
@@ -465,12 +490,9 @@ export default class Scene {
       this.removeObjectByName(sceneJson.name!);
       if (this.outlineScene.children.length > 0) {
         outlinedObject = this.selectedJsonObjects.map((o) => o.id).filter(Boolean) as string[];
-        console.log(outlinedObject);
         this.outlineScene.remove(...this.outlineScene.children);
       }
       this.selectedJsonObjects = [];
-    } else {
-      console.log('The scene is a new scene:', sceneJson.name);
     }
 
     const rootObject = new THREE.Object3D();
@@ -541,12 +563,15 @@ export default class Scene {
     // we can automatically output a screenshot to be the background of the parent div
     // this helps for automated testing, printing the web page, etc.
     if (this.settings.renderDivBackground) {
-      this.renderer.domElement.parentElement!.style.backgroundSize = '100%';
-      this.renderer.domElement.parentElement!.style.backgroundRepeat = 'no-repeat';
-      this.renderer.domElement.parentElement!.style.backgroundPosition = 'center';
-      if (this.renderer.domElement instanceof HTMLCanvasElement) {
+      const parent = this.renderer?.domElement?.parentElement;
+      if (parent) {
+        parent.style.backgroundSize = '100%';
+        parent.style.backgroundRepeat = 'no-repeat';
+        parent.style.backgroundPosition = 'center';
+      }
+      if (parent && this.renderer.domElement instanceof HTMLCanvasElement) {
         // TS magic, domElements is automatically coerced to HTMLCanvasElement
-        this.renderer.domElement.parentElement!.style.backgroundImage = `url('${this.renderer.domElement.toDataURL(
+        parent.style.backgroundImage = `url('${this.renderer.domElement.toDataURL(
           'image/png'
         )}')`;
       }
@@ -653,6 +678,9 @@ export default class Scene {
   }
 
   start() {
+    if (this.destroyed) {
+      return;
+    }
     if (!this.frameId) {
       this.frameId = requestAnimationFrame(() => this.animate());
     } else {
@@ -661,11 +689,16 @@ export default class Scene {
   }
 
   stop() {
-    cancelAnimationFrame(this.frameId!);
-    this.frameId = undefined;
+    if (this.frameId != null) {
+      cancelAnimationFrame(this.frameId);
+      this.frameId = undefined;
+    }
   }
 
   animate() {
+    if (this.destroyed) {
+      return;
+    }
     this.animationHelper.animate();
 
     //this.controls.update();
@@ -679,6 +712,9 @@ export default class Scene {
   }
 
   renderScene() {
+    if (this.destroyed || !this.renderer || !this.camera || !this.scene) {
+      return;
+    }
     if (this.renderer instanceof WebGLRenderer) {
       this.renderer.clear();
       this.renderer.setSize(this.cachedMountNodeSize.width, this.cachedMountNodeSize.height);
@@ -726,6 +762,9 @@ export default class Scene {
   }
 
   toggleVisibility(namesToVisibility: { [objectName: string]: boolean }) {
+    if (this.destroyed || !this.scene) {
+      return;
+    }
     if (!!namesToVisibility && Object.keys(namesToVisibility).length > 0) {
       Object.keys(namesToVisibility).forEach((objName) => {
         const obj = this.scene.getObjectByName(objName);
@@ -771,6 +810,9 @@ export default class Scene {
     clientY: number,
     objectsToCheck: Object3D[]
   ): SceneClickReference {
+    if (this.destroyed || !this.camera) {
+      return;
+    }
     //FIXME(chab) ideally we should recompute the objectsToCheck array for better performance
     if (!objectsToCheck || objectsToCheck.length === 0) {
       return;
@@ -826,20 +868,31 @@ export default class Scene {
   }
 
   public removeListener() {
+    const domElement = this.renderer?.domElement;
     window.removeEventListener('resize', this.windowListener, false);
-    this.renderer.domElement.removeEventListener('mousemove', this.mouseMoveListener);
-    this.renderer.domElement.removeEventListener('click', this.clickListener);
+    domElement?.removeEventListener?.('mousemove', this.mouseMoveListener);
+    domElement?.removeEventListener?.('click', this.clickListener);
     document.removeEventListener('mousemove', this.mouseTrackballUpdate, false);
   }
 
   // call this when the parent component is destroyed
   public onDestroy() {
+    if (this.destroyed) {
+      return;
+    }
+    this.destroyed = true;
+    if (this.controlsInitTimer != null) {
+      clearTimeout(this.controlsInitTimer);
+      this.controlsInitTimer = null;
+    }
     this.computeIdToThree = {};
     this.threeUUIDTojsonObject = {};
     this.removeListener();
     this.debugHelper && this.debugHelper.onDestroy();
-    this.inset.onDestroy();
+    this.debugHelper = null as any;
+    this.inset?.onDestroy();
     this.controls?.dispose();
+    this.controls = null;
     disposeSceneHierarchy(this.scene);
     // this.scene.dispose();
     if (this.renderer instanceof THREE.WebGLRenderer) {
@@ -856,12 +909,17 @@ export default class Scene {
       this.renderer.domElement.parentElement.removeChild(this.renderer.domElement);
     }
     // this.renderer.domElement!.parentElement!.removeChild(this.renderer.domElement);
-    this.renderer.domElement = undefined as any;
+    if (this.renderer) {
+      this.renderer.domElement = undefined as any;
+    }
     this.renderer = null as any;
     this.stop();
   }
 
   removeObjectByName(name: string) {
+    if (this.destroyed || !this.scene) {
+      return;
+    }
     // name is not necessarily unique, make this recursive ?
     const object = this.scene.getObjectByName(name);
     typeof object !== 'undefined' && this.scene.remove(object);

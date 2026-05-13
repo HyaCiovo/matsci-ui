@@ -291,7 +291,6 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
     ref: mountNodeRef,
     onResize: ({ width, height }) => {
       if (scene.current) {
-        console.log('resizing');
         scene.current.resizeRendererToDisplaySize();
       }
     }
@@ -552,7 +551,6 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
         });
       }
     }
-    console.log('new props');
   }, [props.customCameraState]);
 
   useEffect(() => {
@@ -569,12 +567,12 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
   return (
     <Enlargeable
       id={props.id}
-      className={props.className}
+      className={clsx('mcv-root', props.className)}
       hideButton
       expanded={expanded}
       setExpanded={setExpanded}
     >
-      <div className="ms-scene">
+      <div className="ms-scene" data-slot="viewer-shell">
         {props.showControls && (
           <>
             <ButtonBar>
@@ -723,13 +721,14 @@ export const CrystalToolkitAnimationScene: React.FC<CrystalToolkitAnimationScene
             className={clsx('ms-scene-settings-panel', {
               'ms-is-hidden': !showSettingsPanel
             })}
+            data-slot="settings-panel"
           >
             <ModalCloseButton className="ms-delete" onClick={() => setShowSettingsPanel(false)} />
             {settingsPanel}
           </div>
         )}
-        {hasBottomPanel && <div className="ms-scene-bottom-panel">{bottomPanel}</div>}
-        <div className="ms-scene-square-wrapper">
+        {hasBottomPanel && <div className="ms-scene-bottom-panel" data-slot="legend-panel">{bottomPanel}</div>}
+        <div className="ms-scene-square-wrapper" data-slot="scene-frame">
           <div className="ms-scene-square" style={{ width: size, height: size }}>
             <div
               id={props.id!}

@@ -302,8 +302,12 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
   const previousAnimationSetting = usePrevious(props.animation);
   // we use a ref to keep a reference to the underlying scene
   const scene: MutableRefObject<Scene | null> = useRef(null);
+  const sceneSubscriptionRef = useRef<{ unsubscribe: () => void } | null>(null);
+  const hasHandledInitialExpandedSync = useRef(false);
   const [expanded, setExpanded] = useState(false);
   const [showSettingsPanel, setShowSettingsPanel] = useState(false);
+  const settingsPanelRef = useRef<HTMLDivElement | null>(null);
+  const settingsTriggerRef = useRef<HTMLButtonElement | null>(null);
   const settingsPanel = React.Children.map(props.children, (child, i) => (i === 0 ? child : null));
   const hasSettingsPanel = settingsPanel && settingsPanel.length > 0;
   const bottomPanel = React.Children.map(props.children, (child, i) => (i === 1 ? child : null));
@@ -440,10 +444,13 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
      * Unclear what the role of the observable is here.
      */
     const subscription = subscribe(({ filetype }) => requestImage(filetype, _s));
+    sceneSubscriptionRef.current = subscription;
     return () => {
       // clean up code
-      subscription.unsubscribe();
+      sceneSubscriptionRef.current?.unsubscribe();
+      sceneSubscriptionRef.current = null;
       _s.onDestroy();
+      scene.current = null;
     };
   }, []);
 
@@ -491,6 +498,24 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
   }, [props.sceneSize]);
 
   useEffect(() => {
+    if (!scene.current) {
+      return;
+    }
+
+    const syncSceneSize = () => {
+      if (!scene.current) {
+        return;
+      }
+      scene.current.resizeRendererToDisplaySize();
+      scene.current.renderScene();
+    };
+
+    syncSceneSize();
+    const frameId = requestAnimationFrame(syncSceneSize);
+    return () => cancelAnimationFrame(frameId);
+  }, [expanded]);
+
+  useEffect(() => {
     const { filetype } = props.imageRequest;
     if (filetype) {
       requestImage(filetype, scene.current!);
@@ -505,6 +530,78 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
   const [cameraReducerState, cameraReducerDispatch] = useReducer(cameraReducer, initialState);
   const cameraState = cameraContext ? cameraContext.state : cameraReducerState;
   const cameraDispatch = cameraContext ? cameraContext.dispatch : cameraReducerDispatch;
+
+  useEffect(() => {
+    if (!hasHandledInitialExpandedSync.current) {
+      hasHandledInitialExpandedSync.current = true;
+      return;
+    }
+
+    if (!mountNodeRef.current || !scene.current) {
+      return;
+    }
+
+    const reinitializeScene = () => {
+      if (!mountNodeRef.current) {
+        return;
+      }
+
+      sceneSubscriptionRef.current?.unsubscribe();
+      scene.current?.onDestroy();
+
+      const inletSize = props.inletSize ?? 130;
+      const inletPadding = props.inletPadding ?? 0;
+      const axisView = (props.axisView as ScenePosition | undefined) ?? ScenePosition.NW;
+      const rebuiltScene = new Scene(
+        props.data,
+        mountNodeRef.current,
+        props.settings,
+        inletSize,
+        inletPadding,
+        (objects) => {
+          if (props.onObjectClicked) {
+            props.onObjectClicked(objects);
+          }
+        },
+        (position, quaternion, zoom) => {
+          cameraDispatch &&
+            cameraDispatch({
+              type: CameraReducerAction.NEW_POSITION,
+              payload: {
+                componentId: componentId.current,
+                position,
+                quaternion,
+                zoom
+              }
+            });
+        },
+        mountNodeDebugRef.current ?? undefined
+      );
+
+      scene.current = rebuiltScene;
+      sceneSubscriptionRef.current = subscribe(({ filetype }) => requestImage(filetype, rebuiltScene));
+
+      if (props.debug && mountNodeDebugRef.current) {
+        rebuiltScene.enableDebug(props.debug, mountNodeDebugRef.current);
+      }
+
+      if (props.data && (props.data as any).name && (props.data as any).contents) {
+        rebuiltScene.addToScene(props.data, true);
+        rebuiltScene.toggleVisibility(props.toggleVisibility as any);
+      }
+
+      rebuiltScene.updateInsetSettings(inletSize, inletPadding, axisView);
+      rebuiltScene.resizeRendererToDisplaySize();
+      rebuiltScene.renderScene();
+
+      if (props.animation) {
+        rebuiltScene.updateAnimationStyle(props.animation as AnimationStyle);
+      }
+    };
+
+    const frameId = requestAnimationFrame(reinitializeScene);
+    return () => cancelAnimationFrame(frameId);
+  }, [expanded]);
   if (cameraState) {
     useEffect(() => {
       props.setProps({ currentCameraState: cameraState });
@@ -552,12 +649,39 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
         });
       }
     }
-    console.log('new props');
   }, [props.customCameraState]);
 
   useEffect(() => {
     props.animation && scene.current!.updateAnimationStyle(props.animation as AnimationStyle);
   }, [props.animation]);
+
+  useEffect(() => {
+    if (!showSettingsPanel) {
+      return;
+    }
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node)) {
+        return;
+      }
+
+      if (settingsPanelRef.current?.contains(target)) {
+        return;
+      }
+
+      if (settingsTriggerRef.current?.contains(target)) {
+        return;
+      }
+
+      setShowSettingsPanel(false);
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+    };
+  }, [showSettingsPanel]);
 
   const size = getSceneSize(props.sceneSize);
 
@@ -565,12 +689,12 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
   return (
     <Enlargeable
       id={props.id}
-      className={props.className}
+      className={clsx('mcv-root', props.className)}
       hideButton
       expanded={expanded}
       setExpanded={setExpanded}
     >
-      <div className="ms-scene">
+      <div className="ms-scene" data-slot="viewer-shell">
         {props.showControls && (
           <>
             <ButtonBar>
@@ -599,6 +723,7 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
                     <button
                       data-tooltip-id={`settings-${tooltipId}`}
                       className="ms-button"
+                      ref={settingsTriggerRef}
                       onClick={() => setShowSettingsPanel(!showSettingsPanel)}
                     >
                       <FaCogs />
@@ -720,13 +845,15 @@ export const CrystalToolkitScene: React.FC<CrystalToolkitSceneProps> = ({
             className={clsx('ms-scene-settings-panel', {
               'ms-is-hidden': !showSettingsPanel
             })}
+            data-slot="settings-panel"
+            ref={settingsPanelRef}
           >
             <ModalCloseButton className="ms-delete" onClick={() => setShowSettingsPanel(false)} />
             {settingsPanel}
           </div>
         )}
-        {hasBottomPanel && <div className="ms-scene-bottom-panel">{bottomPanel}</div>}
-        <div className="ms-scene-square-wrapper">
+        {hasBottomPanel && <div className="ms-scene-bottom-panel" data-slot="legend-panel">{bottomPanel}</div>}
+        <div className="ms-scene-square-wrapper" data-slot="scene-frame">
           <div className="ms-scene-square" style={{ width: size, height: size }}>
             <div
               id={props.id!}

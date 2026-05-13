@@ -285,7 +285,6 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
     ref: mountNodeRef,
     onResize: ({ width, height }) => {
       if (scene.current) {
-        console.log('resizing');
         scene.current.resizeRendererToDisplaySize();
       }
     }
@@ -557,7 +556,6 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
         });
       }
     }
-    console.log('new props');
   }, [props.customCameraState]);
 
   useEffect(() => {
@@ -575,12 +573,12 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
   return (
     <Enlargeable
       id={props.id}
-      className={props.className}
+      className={clsx('mcv-root', props.className)}
       hideButton
       expanded={expanded}
       setExpanded={setExpanded}
     >
-      <div className="ms-scene">
+      <div className="ms-scene" data-slot="viewer-shell">
         {props.showControls && (
           <>
             <ButtonBar>
@@ -728,13 +726,14 @@ export const PhononAnimationScene: React.FC<PhononAnimationSceneProps> = ({
             className={clsx('ms-scene-settings-panel', {
               'ms-is-hidden': !showSettingsPanel
             })}
+            data-slot="settings-panel"
           >
             <ModalCloseButton onClick={() => setShowSettingsPanel(false)} />
             {settingsPanel}
           </div>
         )}
-        {hasBottomPanel && <div className="ms-scene-bottom-panel">{bottomPanel}</div>}
-        <div className="ms-scene-square-wrapper">
+        {hasBottomPanel && <div className="ms-scene-bottom-panel" data-slot="legend-panel">{bottomPanel}</div>}
+        <div className="ms-scene-square-wrapper" data-slot="scene-frame">
           <div className="ms-scene-square" style={{ width: size, height: size }}>
             <div
               id={props.id!}
