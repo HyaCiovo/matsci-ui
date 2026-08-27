@@ -36,6 +36,7 @@ export default [
   buildThemeConfig('src/themes/entries/bulma.ts', 'dist/themes/bulma.js', 'bulma.css'),
   buildThemeConfig('src/themes/entries/gnosys.ts', 'dist/themes/gnosys.js', 'gnosys.css'),
   buildThemeConfig('src/themes/entries/markdown.ts', 'dist/themes/markdown.js', 'markdown.css'),
+  buildThemeConfig('src/themes/entries/periodic-table.ts', 'dist/themes/periodic-table.js', 'periodic-table.css'),
   {
     input: entryPoints,
     output: {

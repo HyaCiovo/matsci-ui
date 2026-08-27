@@ -41,7 +41,8 @@
     "./themes/gnosys.css": "./dist/themes/gnosys.css",
     "./themes/markdown.css": "./dist/themes/markdown.css",
     "./themes/default.css": "./dist/themes/bulma.css",
-    "./themes/tech.css": "./dist/themes/gnosys.css"
+    "./themes/tech.css": "./dist/themes/gnosys.css",
+    "./periodic-table.css": "./dist/themes/periodic-table.css"
   },
   "files": [
     "dist",

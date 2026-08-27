@@ -77,6 +77,34 @@ describe('SelectableTable compatibility', () => {
     });
   });
 
+  it('does not render reference axes unless explicitly enabled', () => {
+    render(<SelectableTable maxElementSelectable={5} />);
+
+    expect(screen.queryByTestId('periodic-table-axis-top')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('periodic-table-axis-left')).not.toBeInTheDocument();
+  });
+
+  it('renders independently configurable top and left reference axes', () => {
+    const { rerender } = render(
+      <SelectableTable maxElementSelectable={5} showAxes={{ top: true }} />
+    );
+
+    expect(screen.getByTestId('periodic-table-axis-top')).toHaveTextContent('123456789101112131415161718');
+    expect(screen.queryByTestId('periodic-table-axis-left')).not.toBeInTheDocument();
+
+    rerender(<SelectableTable maxElementSelectable={5} showAxes={{ left: true }} />);
+
+    expect(screen.queryByTestId('periodic-table-axis-top')).not.toBeInTheDocument();
+    expect(screen.getByTestId('periodic-table-axis-left')).toHaveTextContent('1234567');
+  });
+
+  it('renders both reference axes when showAxes is true', () => {
+    render(<SelectableTable maxElementSelectable={5} showAxes />);
+
+    expect(screen.getByTestId('periodic-table-axis-top')).toBeInTheDocument();
+    expect(screen.getByTestId('periodic-table-axis-left')).toBeInTheDocument();
+  });
+
   it('consumes initial enabled elements from PeriodicContext', () => {
     render(
       <PeriodicContext enabledElements={['Li']}>

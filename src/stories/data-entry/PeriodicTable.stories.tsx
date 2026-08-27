@@ -28,3 +28,19 @@ export const Basic: Story = {
     </PeriodicContext>
   )
 };
+
+export const WithReferenceAxes: Story = {
+  args: {
+    maxElementSelectable: 5,
+    showAxes: true,
+  },
+  render: (args) => (
+    <PeriodicContext>
+      <SelectableTable
+        {...args}
+        forceTableLayout={TableLayout.FULL}
+        className="ms-max-750"
+      />
+    </PeriodicContext>
+  )
+};

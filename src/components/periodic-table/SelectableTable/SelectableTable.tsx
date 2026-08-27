@@ -24,6 +24,9 @@ import {
   getSelectableTableElementViewModels,
 } from './view-model';
 
+const PERIODIC_TABLE_GROUP_NUMBERS = Array.from({ length: 18 }, (_, index) => index + 1);
+const PERIODIC_TABLE_PERIOD_NUMBERS = Array.from({ length: 7 }, (_, index) => index + 1);
+
 function SelectableTableDetailObserver({
   onDetailedElementChange,
 }: Pick<SelectableTableProps, 'onDetailedElementChange'>) {
@@ -101,6 +104,16 @@ export interface SelectableTableProps {
   children?: React.ReactNode;
   unavailableElementTitle?: string;
   texts?: Partial<SelectableTableTexts>;
+  /**
+   * Renders periodic-table reference axes. `true` enables both axes; use an
+   * object when only the group (top) or period (left) axis is needed.
+   */
+  showAxes?: boolean | SelectableTableAxes;
+}
+
+export interface SelectableTableAxes {
+  top?: boolean;
+  left?: boolean;
 }
 
 export interface SelectableTableTexts {
@@ -110,6 +123,38 @@ export interface SelectableTableTexts {
 const DEFAULT_TEXTS: SelectableTableTexts = {
   unavailableElementTitle: 'Unavailable in current table',
 };
+
+function resolveAxisVisibility(showAxes: SelectableTableProps['showAxes']) {
+  if (showAxes === true) {
+    return { top: true, left: true };
+  }
+
+  if (!showAxes) {
+    return { top: false, left: false };
+  }
+
+  return { top: showAxes.top === true, left: showAxes.left === true };
+}
+
+function PeriodicTableAxis({ position }: { position: 'top' | 'left' }) {
+  const values = position === 'top' ? PERIODIC_TABLE_GROUP_NUMBERS : PERIODIC_TABLE_PERIOD_NUMBERS;
+  const totalSlots = position === 'left' ? 10 : values.length;
+
+  return (
+    <div
+      aria-hidden="true"
+      className={`ms-periodic-table-axis ms-periodic-table-axis--${position}`}
+      data-slot="periodic-table-axis"
+      data-testid={`periodic-table-axis-${position}`}
+    >
+      {Array.from({ length: totalSlots }, (_, index) => (
+        <span className="ms-periodic-table-axis__tick" key={index}>
+          {values[index] ?? ''}
+        </span>
+      ))}
+    </div>
+  );
+}
 
 function SelectableTableView({
   className,
@@ -124,6 +169,7 @@ function SelectableTableView({
   children,
   unavailableElementTitle,
   texts,
+  showAxes,
 }: Omit<
   SelectableTableProps,
   | 'enabledElements'
@@ -181,6 +227,7 @@ function SelectableTableView({
     [context?.disabledRecord, disabled, effectiveDisabledRecord, enabledRecord, hiddenRecord]
   );
   const layoutClass = getLayoutClass(forceTableLayout);
+  const axes = resolveAxisVisibility(showAxes);
 
   useEffect(() => {
     actions.setForwardChange(forwardOuterChange);
@@ -196,42 +243,53 @@ function SelectableTableView({
       <SelectableTableDetailObserver onDetailedElementChange={onDetailedElementChange} />
       <SelectableTableStateObserver onTableStateChange={onTableStateChange} />
       <div
-        className={clsx('ms-table-container', layoutClass)}
-        onMouseLeave={() => {
-          actions.setDetailedElement(null);
-        }}
+        className={clsx('ms-selectable-table__frame', {
+          'ms-selectable-table__frame--with-top-axis': axes.top,
+          'ms-selectable-table__frame--with-left-axis': axes.left,
+        })}
+        data-slot="periodic-table-frame"
       >
-        <PeriodicTableSpacer plugin={plugin} disabled={disabled} />
-        {elementViewModels.map(
-          ({
-            symbol: element,
-            xpos,
-            ypos,
-            detail,
-            enabled,
-            hidden,
-            disabled: elementDisabled,
-            interactionDisabled,
-            defaultDisabled,
-          }) => (
-          <PeriodicTableElementButton
-            key={element}
-            element={element}
-            xpos={xpos}
-            ypos={ypos}
-            detail={detail}
-            enabled={enabled}
-            disabled={elementDisabled}
-            hidden={hidden}
-            interactionDisabled={interactionDisabled}
-            defaultDisabled={defaultDisabled}
-            unavailableTitle={resolvedUnavailableElementTitle}
-            lastAction={lastAction}
-            onToggle={actions.toggleEnabledElement}
-            onHoverDetail={actions.setDetailedElement}
-          />
-          )
-        )}
+        {axes.top ? <PeriodicTableAxis position="top" /> : null}
+        {axes.left ? <PeriodicTableAxis position="left" /> : null}
+        <div
+          className={clsx('ms-table-container', layoutClass)}
+          data-slot="periodic-grid"
+          onMouseLeave={() => {
+            actions.setDetailedElement(null);
+          }}
+        >
+          <PeriodicTableSpacer plugin={plugin} disabled={disabled} />
+          {elementViewModels.map(
+            ({
+              symbol: element,
+              xpos,
+              ypos,
+              detail,
+              enabled,
+              hidden,
+              disabled: elementDisabled,
+              interactionDisabled,
+              defaultDisabled,
+            }) => (
+            <PeriodicTableElementButton
+              key={element}
+              element={element}
+              xpos={xpos}
+              ypos={ypos}
+              detail={detail}
+              enabled={enabled}
+              disabled={elementDisabled}
+              hidden={hidden}
+              interactionDisabled={interactionDisabled}
+              defaultDisabled={defaultDisabled}
+              unavailableTitle={resolvedUnavailableElementTitle}
+              lastAction={lastAction}
+              onToggle={actions.toggleEnabledElement}
+              onHoverDetail={actions.setDetailedElement}
+            />
+            )
+          )}
+        </div>
       </div>
       {children}
     </div>
@@ -256,6 +314,7 @@ export function SelectableTable({
   children,
   unavailableElementTitle,
   texts,
+  showAxes,
 }: SelectableTableProps) {
   const externalContext = useOptionalPeriodicSelectionContext();
   const tableView = (
@@ -272,6 +331,7 @@ export function SelectableTable({
       onDetailedElementChange={onDetailedElementChange}
       unavailableElementTitle={unavailableElementTitle}
       texts={texts}
+      showAxes={showAxes}
     >
       {children}
     </SelectableTableView>
@@ -294,4 +354,12 @@ export function SelectableTable({
       {tableView}
     </PeriodicSelectionProvider>
   );
+}
+
+export interface PeriodicTableProps extends Omit<SelectableTableProps, 'maxElementSelectable'> {
+  maxElementSelectable?: number;
+}
+
+export function PeriodicTable({ maxElementSelectable = 20, ...props }: PeriodicTableProps) {
+  return <SelectableTable {...props} maxElementSelectable={maxElementSelectable} />;
 }
